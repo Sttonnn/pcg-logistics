@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>แผนที่คลังสินค้า PCG</title>
+<script src="https://cdn.jsdelivr.net/npm/d3-array@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-geo@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="warehouse-data.js"></script>
+<style>
+  html, body { margin: 0; background: transparent; color: #201e1d; font-family: "IBM Plex Sans Thai", "Archivo", system-ui, sans-serif; }
+  a { color: #1d5fd0; } a:hover { color: #16409a; }
+  .wrap { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 14px; transition: grid-template-columns .25s ease, gap .25s ease; }
+  .wrap.closed { grid-template-columns: minmax(0, 1fr) 0px; gap: 0; }
+  .wrap.closed .side { visibility: hidden; overflow: hidden; }
+  .tog { position: absolute; z-index: 20; top: 12px; right: 366px; display: flex; align-items: center; gap: 6px; font: inherit; font-size: 12px; font-weight: 700; color: #201e1d; background: #fff; border: 1px solid rgba(32,30,29,0.16); border-radius: 999px; padding: 6px 12px 6px 9px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.12); transition: right .25s ease; }
+  .tog:hover { background: #f1f1f2; }
+  .tog svg { width: 15px; height: 15px; transition: transform .25s; }
+  .wrap.closed .tog { right: 12px; }
+  .wrap.closed .tog svg { transform: rotate(180deg); }
+  .map { position: relative; height: 540px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(32,30,29,0.12); background: #cfe4f2; }
+  .map svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .pins { position: absolute; inset: 0; pointer-events: none; }
+  .pw { position: absolute; transform: translate(-50%, -90%); pointer-events: auto; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .pw:hover { z-index: 5; }
+  .pw:hover .pin { transform: scale(1.15); }
+  .pin { transition: transform .15s; }
+  .lbl { display: flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; line-height: 1.3; color: #201e1d; background: #fff; border: 0; padding: 3px 9px 3px 7px; border-radius: 999px; white-space: nowrap; position: absolute; left: 100%; top: 50%; transform: translateY(-50%); margin-left: 3px; box-shadow: 0 2px 5px rgba(0,0,0,0.18); }
+  .lbl .dot { width: 7px; height: 7px; }
+  .cname { font: 700 11px Archivo, "IBM Plex Sans Thai", sans-serif; letter-spacing: .08em; fill: #9a9794; text-transform: uppercase; pointer-events: none; }
+  .rname { font: 700 11.5px "IBM Plex Sans Thai", sans-serif; pointer-events: none; paint-order: stroke; stroke: rgba(255,255,255,.7); stroke-width: 3px; }
+  .pname { font-size: 10px; font-family: "IBM Plex Sans Thai", sans-serif; pointer-events: none; paint-order: stroke; stroke: rgba(255,255,255,.75); stroke-width: 2.5px; }
+  .ititle { font: 700 12px "IBM Plex Sans Thai", sans-serif; fill: #9a4a33; }
+  .zc { position: absolute; transform: translate(-50%, -50%); min-width: 20px; height: 20px; padding: 0 5px; box-sizing: border-box; border-radius: 999px; background: #9a4a33; color: #fff; font: 700 10.5px Archivo, sans-serif; display: flex; align-items: center; justify-content: center; pointer-events: auto; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.3); }
+  .loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #6b6a68; }
+  @media (max-width: 600px) { .map { height: 620px !important; } }
+  .side { display: grid; gap: 12px; align-content: start; max-height: 540px; overflow-y: auto; }
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 11.5px; color: #6b6a68; }
+  .legend span { white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 10px; height: 10px; border-radius: 999px; flex: none; }
+  .card { background: #fff; border-radius: 14px; border: 1px solid rgba(32,30,29,0.1); padding: 14px 15px; display: grid; gap: 10px; }
+  .card h3 { margin: 0; font-family: Archivo, "IBM Plex Sans Thai", sans-serif; font-size: 16px; line-height: 1.35; }
+  .sub { font-size: 12px; color: #6b6a68; }
+  .kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+  .kv dt { color: #6b6a68; } .kv dd { margin: 0; text-align: right; font-weight: 700; }
+  .pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 700; padding: 4px 10px; border-radius: 999px; width: fit-content; }
+  .hint { font-size: 12.5px; color: #6b6a68; line-height: 1.6; }
+  .list { display: grid; gap: 6px; }
+  .row { display: flex; align-items: center; gap: 9px; border: 0; background: #fff; border-radius: 10px; padding: 8px 10px; font: inherit; font-size: 12.5px; text-align: left; cursor: pointer; border: 1px solid rgba(32,30,29,0.08); }
+  .row:hover { background: #f1f1f2; }
+  .row b { flex: 1; min-width: 0; font-weight: 700; }
+  .row i { font-style: normal; color: #6b6a68; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .pin { position: relative; width: 32px; height: 30px; display: block; transform-origin: 50% 90%; transition: transform .15s; }
+  .pin svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  .pin .n { position: absolute; top: -6px; right: -9px; min-width: 17px; height: 17px; padding: 0 4px; box-sizing: border-box; border-radius: 999px; background: #201e1d; color: #fff; border: 1.5px solid #fff; font: 700 9.5px/14px Archivo, sans-serif; text-align: center; }
+  .pin.sel { transform: scale(1.3); filter: drop-shadow(0 0 1.5px #201e1d); }
+  @media (max-width: 980px) {
+    .wrap, .wrap.closed { grid-template-columns: minmax(0, 1fr); }
+    .tog, .wrap.closed .tog { right: 12px; }
+    .wrap.closed .side { display: none; }
+    .map { height: 560px; }
+    @media (max-width: 600px) { .map { height: 620px !important; } }
+  .side { max-height: none; overflow: visible; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap">
+  <div id="map" class="map"><div class="loading">กำลังโหลดแผนที่…</div></div>
+  <div class="side">
+    <div class="legend">
+      <span><i class="dot" style="background:#17803d"></i>ปกติ</span>
+      <span><i class="dot" style="background:#b8760a"></i>ใกล้หมด (≤ 6 เดือน)</span>
+      <span><i class="dot" style="background:#c03a1c"></i>หมดแล้ว</span>
+      <span><i class="dot" style="background:#0d7d7d"></i>คลัง PCG</span>
+    </div>
+    <div id="detail"></div>
+  </div>
+</div>
+<script>
+// พิกัดระดับเมือง/อำเภอ (ประมาณ) — แก้ได้ที่นี่ถ้าต้องการตำแหน่งจริงของคลัง
+const GEO = {
+  "โคราช":[14.97,102.10], "หาดใหญ่":[7.01,100.47], "ศรีราชา A3":[13.16,100.94], "ศรีราชา A2":[13.18,100.92],
+  "ลาดพร้าว":[13.80,100.60], "ปากเกร็ด":[13.91,100.50], "เชียงใหม่":[18.79,98.98], "หนองแขม":[13.70,100.35],
+  "อุบลราชธานี":[15.24,104.85], "วังน้อย":[14.23,100.72], "คลัง5":[13.60,100.60], "คลัง 32":[13.57,100.66],
+  "เชียงราย":[19.91,99.83], "ขอนแก่น":[16.43,102.83], "วัตถุดิบWH29":[13.63,100.71], "สายไหม":[13.92,100.65],
+  "ราชบุรี":[13.54,99.82], "พิษณุโลก":[16.82,100.26], "สุราษฎร์ธานี":[9.14,99.33],
+  "พนมเปญ":[11.56,104.92], "Phnom Penh":[11.56,104.92], "Meanchey":[11.52,104.93], "Siem Reap":[13.36,103.86],
+  "Yangon":[16.84,96.17], "vanlenzula":[14.70,120.98], "Cebu":[10.32,123.89], "Davao":[7.19,125.46],
+  "Laguna":[14.21,121.16], "Pagasinan":[16.04,120.33], "Gr.Noida":[28.47,77.50], "Kolkata":[22.57,88.36],
+  "Indore":[22.72,75.86], "Alam Impian":[3.01,101.52]
+};
+const COUNTRY = { "Phnom Penh":"กัมพูชา" };
+const C = { ok:"#17803d", soon:"#b8760a", exp:"#c03a1c", own:"#0d7d7d" };
+const TINT = { ok:"#e7f4ec", soon:"#fdf2e0", exp:"#fdeae6", own:"#e4f2f2" };
+const LABEL = { ok:"ปกติ", soon:"ใกล้หมด", exp:"หมดแล้ว", own:"คลัง PCG" };
+const RANK = { exp:3, soon:2, ok:1, own:0 };
+const TH_M = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
+const thDate = s => { if (!s) return "—"; const p = s.split("-").map(Number); return p[2] + " " + TH_M[p[1]-1] + " " + (p[0]+543); };
+const fmt = (n, d) => n == null || !isFinite(n) ? "—" : n.toLocaleString("en-US", { minimumFractionDigits: d||0, maximumFractionDigits: d||0 });
+const monthsLeft = end => end ? (new Date(end + "T00:00:00") - new Date()) / (864e5 * 30.44) : null;
+const statusOf = w => { if (w.type === "คลัง PCG" || w.owned) return "own"; const m = monthsLeft(w.end); if (m == null) return "ok"; return m < 0 ? "exp" : m <= 6 ? "soon" : "ok"; };
+
+const scope = new URLSearchParams(location.search).get("scope") === "OS" ? "OS" : "TH";
+const D0 = window.WH_DATA || { domestic: [], oversea: [] };
+let EDITS = {}; try { EDITS = JSON.parse(localStorage.getItem("pcg-wh-edits") || "{}"); } catch (e) {}
+const build = (arr, pre) => {
+  const b = arr.map((w, i) => [pre + i, w]);
+  Object.keys(EDITS).filter(k => k.indexOf(pre + "new-") === 0).sort().forEach(k => b.push([k, {}]));
+  return b.filter(([id]) => !(EDITS[id] && EDITS[id]._deleted)).map(([id, w]) => Object.assign({}, w, EDITS[id] || {}, { _wh0: w.wh }));
+};
+const D = { domestic: build(D0.domestic, "TH:"), oversea: build(D0.oversea, "OS:") };
+const TH = scope === "TH";
+const rows = (TH ? D.domestic : D.oversea).map((w, i) => {
+  const rent = TH ? (w.rentMonth || 0) : (w.rentUsd || 0);
+  return Object.assign({}, w, { i, rent, st: statusOf(w), ml: monthsLeft(w.end), rate: w.area > 0 && rent > 0 ? rent / w.area : null });
+});
+
+let G = [], missing = [];
+const normP = s => { s = String(s || "").replace(/^(จ\.|จังหวัด)\s*/, "").trim(); return /^(กทม|กรุงเทพ)/.test(s) ? "กรุงเทพมหานคร" : s; };
+function buildGroups() {
+  const groups = {}, pc = {}; missing = [];
+  if (provs && window.d3) provs.features.forEach(f => { const c = d3.geoCentroid(f); if (isFinite(c[0])) pc[f.properties.p] = [+c[1].toFixed(2), +c[0].toFixed(2)]; });
+  rows.forEach(w => {
+    const g = GEO[w.wh] || GEO[w._wh0] || (w.lat && w.lng ? [+w.lat, +w.lng] : null) || pc[normP(w.province)];
+    if (!g) { missing.push(w.wh); return; }
+    const k = g.join(",");
+    (groups[k] = groups[k] || { ll: g, items: [] }).items.push(w);
+  });
+  G = Object.values(groups).map(g => {
+    g.items.sort((a, b) => (a.ml ?? 1e9) - (b.ml ?? 1e9));
+    g.st = g.items.reduce((s, w) => RANK[w.st] > RANK[s] ? w.st : s, g.items[0].st);
+    g.name = [...new Set(g.items.map(w => w.wh))].join(" / ");
+    return g;
+  });
+}
+
+let sel = null;
+const markers = [];
+const NAME_TH = { 764:"ประเทศไทย", 116:"กัมพูชา", 104:"เมียนมา", 418:"ลาว", 704:"เวียดนาม", 458:"มาเลเซีย", 608:"ฟิลิปปินส์", 356:"อินเดีย", 360:"อินโดนีเซีย", 50:"บังกลาเทศ", 156:"จีน" };
+const HOME = TH ? [764] : [116,104,608,458,356];
+const NS = "http://www.w3.org/2000/svg";
+let world = null;
+
+const REG = {
+  North:     { th:"ภาคเหนือ", fill:"#9fd08a", ink:"#3d6630" },
+  Northeast: { th:"ภาคตะวันออกเฉียงเหนือ", fill:"#f7c96b", ink:"#8a6420" },
+  Central:   { th:"ภาคกลาง", fill:"#f59d84", ink:"#9a4a33" },
+  East:      { th:"ภาคตะวันออก", fill:"#7cc6d6", ink:"#2f6b78" },
+  West:      { th:"ภาคตะวันตก", fill:"#bba3e0", ink:"#6a4e8a" },
+  South:     { th:"ภาคใต้", fill:"#6fc49c", ink:"#2f6f52" }
+};
+const ZOOM = [[100.2, 13.45], [100.95, 14.35]];
+const inZoom = ll => ll[1] >= ZOOM[0][0] && ll[1] <= ZOOM[1][0] && ll[0] >= ZOOM[0][1] && ll[0] <= ZOOM[1][1];
+let provs = null;
+buildGroups();
+const mk = (tag, attrs, parent) => { const n = document.createElementNS(NS, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); if (parent) parent.appendChild(n); return n; };
+
+const ROOF = { "#17803d": "#0c5427", "#b8760a": "#8a5806", "#c03a1c": "#7d220f", "#0d7d7d": "#064f4f" };
+const WALL = { "#b8760a": "#d18a14" };
+const whIcon = c => { const w = WALL[c] || c, r = ROOF[c] || "#201e1d"; return '<svg viewBox="0 0 40 38" aria-hidden="true">' +
+  '<ellipse cx="20" cy="34" rx="15" ry="3" fill="rgba(0,0,0,0.2)"/>' +
+  '<path d="M4 15 20 6l16 9v17H4z" fill="' + w + '"/>' +
+  '<path d="M2 15.5 20 5l18 10.5" fill="none" stroke="' + r + '" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>' +
+  '<rect x="12" y="19" width="16" height="13" fill="#fff"/>' +
+  '<path d="M12 23.5h16M12 27.5h16" stroke="' + w + '" stroke-width="1.4"/>' +
+  '</svg>'; };
+function drawPins(layer, proj, idxs, big) {
+  const pts = idxs.map(idx => { const xy = proj([G[idx].ll[1], G[idx].ll[0]]); return { idx, x: xy[0], y: xy[1] }; });
+  const clusters = [];
+  pts.forEach(p => {
+    const c = clusters.find(c => Math.hypot(c.x - p.x, c.y - p.y) < 34);
+    if (c) { c.m.push(p.idx); c.x = (c.x * (c.m.length - 1) + p.x) / c.m.length; c.y = (c.y * (c.m.length - 1) + p.y) / c.m.length; }
+    else clusters.push({ x: p.x, y: p.y, m: [p.idx] });
+  });
+  clusters.forEach(c => {
+    const items = c.m.flatMap(i => G[i].items);
+    const st = items.reduce((s, w) => RANK[w.st] > RANK[s] ? w.st : s, items[0].st);
+    const n = items.length;
+    const name = [...new Set(items.map(w => w.wh))];
+    const d = document.createElement("div"); d.className = "pw";
+    d.style.left = c.x + "px"; d.style.top = c.y + "px";
+    d.title = name.join(" / ") + (n > 1 ? " · " + n + " สัญญา" : "");
+    const isSel = sel != null && (typeof sel === "object" ? (sel.keys ? items.some(w => sel.keys.includes(w.region)) : sel.merge.some(i => c.m.includes(i))) : c.m.includes(sel));
+    d.innerHTML = '<div class="pin' + (isSel ? " sel" : "") + '">' + whIcon(C[st]) + (n > 1 ? '<span class="n">' + n + '</span>' : "") + '</div>' +
+      '<span class="lbl" style="border-color:' + C[st] + '"><i class="dot" style="background:' + C[st] + '"></i>' + (name.length > 1 ? name[0] + " +" + (name.length - 1) : name[0]) + '</span>';
+    d.onclick = () => select(c.m.length === 1 ? c.m[0] : { merge: c.m });
+    layer.appendChild(d);
+  });
+}
+
+function drawOS(el, svg, W, H, layer) {
+  const countries = topojson.feature(world, world.objects.countries).features;
+  const proj = d3.geoMercator();
+  proj.fitExtent([[54, 54], [W - 54, H - 54]], { type: "MultiPoint", coordinates: G.map(g => [g.ll[1], g.ll[0]]) });
+  const path = d3.geoPath(proj);
+  const g = mk("g", {}, svg);
+  countries.forEach(f => {
+    const home = HOME.includes(+f.id);
+    mk("path", { d: path(f) || "", fill: home ? "#fbf7f1" : "#ebe7e0", stroke: home ? "#cfc6ba" : "#ffffff", "stroke-width": home ? 1.4 : 1, "stroke-linejoin": "round" }, g);
+  });
+  countries.forEach(f => {
+    const nm = NAME_TH[+f.id]; if (!nm) return;
+    const c = path.centroid(f); if (!isFinite(c[0]) || c[0] < 10 || c[0] > W - 10 || c[1] < 10 || c[1] > H - 10) return;
+    mk("text", { x: c[0], y: c[1], "text-anchor": "middle", class: "cname" }, g).textContent = nm;
+  });
+  drawPins(layer, proj, G.map((_, i) => i));
+}
+
+function drawTH(el, svg, W, H, layer) {
+  const countries = topojson.feature(world, world.objects.countries).features;
+  const thF = countries.find(f => +f.id === 764);
+  const wide = W >= 520;
+  // inset keeps the zoom box's true aspect ratio; main map + inset are centred as one group
+  const zA = (() => { const t = d3.geoMercator().scale(1000).translate([0, 0]); const a = t(ZOOM[0]), b = t(ZOOM[1]); return Math.abs(b[0] - a[0]) / Math.abs(b[1] - a[1]); })();
+  let mainW, mainH, I, ox = 0;
+  if (wide) {
+    mainH = H; mainW = Math.min(W * 0.5, H * 0.62);
+    let ih = H * 0.7, iw = ih * zA;
+    const avail = W - mainW - 60;
+    if (iw > avail) { iw = avail; ih = iw / zA; }
+    ox = Math.max(0, (W - (mainW + 40 + iw)) / 2);
+    const iy = (H - ih) / 2 + 8;
+    I = [[ox + mainW + 40, iy], [ox + mainW + 40 + iw, iy + ih]];
+  } else {
+    mainW = W; mainH = H * 0.56;
+    let iw = W - 36, ih = iw / zA; const maxH = H - mainH - 40;
+    if (ih > maxH) { ih = maxH; iw = ih * zA; }
+    const ix = (W - iw) / 2;
+    I = [[ix, mainH + 28], [ix + iw, mainH + 28 + ih]];
+  }
+  const M = [[ox + 18, 44], [ox + mainW - 10, mainH - 14]];
+  const proj = d3.geoMercator().fitExtent(M, thF);
+  const path = d3.geoPath(proj);
+  mk("clipPath", { id: "cm" }, mk("defs", {}, svg)).appendChild(mk("rect", { x: 0, y: 0, width: wide ? ox + mainW + 16 : W, height: mainH }));
+  const gm = mk("g", { "clip-path": "url(#cm)" }, svg);
+  countries.forEach(f => { if (+f.id !== 764) mk("path", { d: path(f) || "", fill: "#ebe7e0", stroke: "#fff", "stroke-width": 1 }, gm); });
+  mk("path", { d: path(thF), fill: "none", stroke: "#ec3013", "stroke-opacity": ".14", "stroke-width": 7, "stroke-linejoin": "round" }, gm);
+  const cent = {};
+  provs.features.forEach(f => {
+    const R = REG[f.properties.r] || REG.Central;
+    mk("path", { d: path(f), fill: R.fill, stroke: R.fill, "stroke-width": 0.8, "stroke-linejoin": "round" }, gm);
+    const c = path.centroid(f), a = path.area(f);
+    const k = f.properties.r; cent[k] = cent[k] || { x: 0, y: 0, a: 0 };
+    if (isFinite(c[0])) { cent[k].x += c[0] * a; cent[k].y += c[1] * a; cent[k].a += a; }
+  });
+  const OFF = { Central: [-14, -26], East: [18, 26], West: [-10, 0], South: [22, -36], North: [0, -8], Northeast: [6, 0] };
+  const regLabels = [];
+  Object.keys(cent).forEach(k => {
+    const R = REG[k]; if (!R) return; const c = cent[k]; const o = OFF[k] || [0, 0];
+    return;
+    regLabels.push({ x: c.x / c.a + o[0], y: c.y / c.a + o[1], R });
+  });
+  ["เมียนมา:104", "ลาว:418", "กัมพูชา:116", "มาเลเซีย:458"].forEach(x => {
+    const [nm, id] = x.split(":"); const f = countries.find(f => +f.id === +id); if (!f) return;
+    const c = path.centroid(f); if (!isFinite(c[0]) || c[0] < 20 || c[0] > mainW - 20 || c[1] < 16 || c[1] > mainH - 10) return;
+    mk("text", { x: c[0], y: c[1], "text-anchor": "middle", class: "cname" }, gm).textContent = nm;
+  });
+  // zoom rectangle on main map
+  const z0 = proj(ZOOM[0]), z1 = proj(ZOOM[1]);
+  const zr = { x: Math.min(z0[0], z1[0]), y: Math.min(z0[1], z1[1]), w: Math.abs(z1[0] - z0[0]), h: Math.abs(z1[1] - z0[1]) };
+  // inset
+  const iw = I[1][0] - I[0][0], ih = I[1][1] - I[0][1];
+  const lines = wide ? [[zr.x + zr.w, zr.y, I[0][0], I[0][1]], [zr.x + zr.w, zr.y + zr.h, I[0][0], I[1][1]]] : [[zr.x, zr.y + zr.h, I[0][0], I[0][1]], [zr.x + zr.w, zr.y + zr.h, I[1][0], I[0][1]]];
+  lines.forEach(l => mk("line", { x1: l[0], y1: l[1], x2: l[2], y2: l[3], stroke: "#9a4a33", "stroke-opacity": ".35", "stroke-width": 1, "stroke-dasharray": "3 3" }, svg));
+  mk("rect", { x: zr.x, y: zr.y, width: zr.w, height: zr.h, fill: "#9a4a33", "fill-opacity": ".06", stroke: "#9a4a33", "stroke-width": 1.4, rx: 3 }, svg);
+  mk("rect", { x: I[0][0], y: I[0][1], width: iw, height: ih, fill: "#cfe4f2", stroke: "#9fb8c9", "stroke-width": 1.2, rx: 10 }, svg);
+  mk("clipPath", { id: "ci" }, svg.querySelector("defs")).appendChild(mk("rect", { x: I[0][0], y: I[0][1], width: iw, height: ih, rx: 10 }));
+  const box = { type: "MultiPoint", coordinates: [[ZOOM[0][0], ZOOM[0][1]], [ZOOM[0][0], ZOOM[1][1]], [ZOOM[1][0], ZOOM[1][1]], [ZOOM[1][0], ZOOM[0][1]]] };
+  const pi = d3.geoMercator().fitExtent([[I[0][0], I[0][1]], [I[1][0], I[1][1]]], box);
+  const ipath = d3.geoPath(pi);
+  const gi = mk("g", { "clip-path": "url(#ci)" }, svg);
+  countries.forEach(f => { if (+f.id !== 764) mk("path", { d: ipath(f) || "", fill: "#ebe7e0", stroke: "#fff", "stroke-width": 1 }, gi); });
+  const labels = [];
+  provs.features.forEach(f => {
+    const R = REG[f.properties.r] || REG.Central;
+    const bkk = f.properties.p === "กรุงเทพมหานคร";
+    const fc = bkk ? "#e8745a" : R.fill;
+    mk("path", { d: ipath(f), fill: fc, stroke: fc, "stroke-width": 1, "stroke-linejoin": "round" }, gi);
+    const c = ipath.centroid(f);
+    if (isFinite(c[0]) && c[0] > I[0][0] + 30 && c[0] < I[1][0] - 30 && c[1] > I[0][1] + 14 && c[1] < I[1][1] - 10) labels.push([c, f.properties.p, R.ink, bkk]);
+  });
+  labels.forEach(([c, p, ink, bkk]) => mk("text", { x: c[0], y: c[1], "text-anchor": "middle", class: "pname", fill: ink, "font-weight": bkk ? 700 : 500 }, gi).textContent = bkk ? "กรุงเทพฯ" : p);
+  mk("text", { x: I[0][0] + 2, y: I[0][1] - 9, class: "ititle" }, svg).textContent = "ขยาย · กรุงเทพฯ และปริมณฑล";
+  const zIdx = [], mIdx = [];
+  G.forEach((g, i) => (inZoom(g.ll) ? zIdx : mIdx).push(i));
+  drawPins(layer, proj, mIdx);
+  drawPins(layer, pi, zIdx);
+  // place region labels only where they don't overlap real pin/label boxes
+  const base = el.getBoundingClientRect();
+  const taken = [...layer.querySelectorAll(".pin, .lbl, .zc")].map(n => { const r = n.getBoundingClientRect(); return [r.left - base.left - 3, r.top - base.top - 3, r.right - base.left + 3, r.bottom - base.top + 3]; });
+  taken.push([zr.x, zr.y, zr.x + zr.w, zr.y + zr.h]);
+  const OFFS = [[0,0],[0,22],[0,-22],[55,0],[-55,0],[0,40],[0,-40],[55,22],[-55,22],[55,-22],[-55,-22],[80,0],[-80,0]];
+  regLabels.forEach(L => {
+    const t = mk("text", { x: L.x, y: L.y, "text-anchor": "middle", class: "rname", fill: L.R.ink }, gm);
+    t.textContent = L.R.th;
+    const bb = t.getBBox();
+    const ok = OFFS.find(([dx, dy]) => {
+      const b = [bb.x + dx, bb.y + dy, bb.x + bb.width + dx, bb.y + bb.height + dy];
+      if (b[0] < 4 || b[2] > mainW || b[1] < 4 || b[3] > mainH) return false;
+      return !taken.some(q => b[0] < q[2] && b[2] > q[0] && b[1] < q[3] && b[3] > q[1]);
+    });
+    if (!ok) { t.remove(); return; }
+    t.setAttribute("x", L.x + ok[0]); t.setAttribute("y", L.y + ok[1]);
+    taken.push([bb.x + ok[0], bb.y + ok[1], bb.x + bb.width + ok[0], bb.y + bb.height + ok[1]]);
+  });
+  if (zIdx.length) {
+    const n = zIdx.reduce((a, i) => a + G[i].items.length, 0);
+    const t = document.createElement("div"); t.className = "zc";
+    t.style.left = (zr.x + zr.w / 2) + "px"; t.style.top = (zr.y + zr.h / 2) + "px"; t.textContent = n;
+    t.title = n + " สัญญาในกรอบขยาย";
+    layer.appendChild(t);
+  }
+}
+
+// hide/move pin labels that collide with pins or other labels (measured after layout)
+function declutter(layer) {
+  const box = n => { const r = n.getBoundingClientRect(); return [r.left - 2, r.top - 2, r.right + 2, r.bottom + 2]; };
+  const hit = (b, list, self) => list.some(q => q.el !== self && b[0] < q.b[2] && b[2] > q.b[0] && b[1] < q.b[3] && b[3] > q.b[1]);
+  const taken = [...layer.querySelectorAll(".pin, .zc")].map(el => ({ el, b: box(el) }));
+  const set = (l, o) => Object.assign(l.style, { top: "auto", bottom: "auto", left: "auto", right: "auto", margin: "0", transform: "none" }, o);
+  const pos = [
+    l => set(l, { left: "100%", top: "50%", transform: "translateY(-50%)", marginLeft: "3px" }),
+    l => set(l, { right: "100%", top: "50%", transform: "translateY(-50%)", marginRight: "3px" }),
+    l => set(l, { top: "100%", left: "50%", transform: "translateX(-50%)", marginTop: "3px" }),
+    l => set(l, { bottom: "100%", left: "50%", transform: "translateX(-50%)", marginBottom: "3px" })
+  ];
+  [...layer.querySelectorAll(".pw")].forEach(pw => {
+    const l = pw.querySelector(".lbl"); if (!l) return;
+    let placed = false;
+    const own = pw.querySelector(".pin");
+    for (const p of pos) { p(l); const b = box(l); if (!hit(b, taken, own)) { taken.push({ el: l, b }); placed = true; break; } }
+    if (!placed) l.style.display = "none";
+  });
+  document.querySelectorAll("#map .pname").forEach(t => { if (hit(box(t), taken, null)) t.style.display = "none"; });
+}
+
+function drawMap() {
+  const el = document.getElementById("map");
+  const W = el.clientWidth, H = el.clientHeight;
+  el.innerHTML = "";
+  const svg = mk("svg", { viewBox: "0 0 " + W + " " + H }); el.appendChild(svg);
+  const layer = document.createElement("div"); layer.className = "pins"; el.appendChild(layer);
+  if (TH) drawTH(el, svg, W, H, layer); else drawOS(el, svg, W, H, layer);
+  declutter(layer);
+}
+
+const fail = msg => e => { console.error(e); document.getElementById("map").innerHTML = '<div class="loading">' + msg + '</div>'; };
+Promise.all([
+  fetch("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json").then(r => r.json()),
+  TH ? fetch("th-provinces.json").then(r => r.json()) : null
+]).then(([w, p]) => { world = w; provs = p; try { buildGroups(); drawMap(); } catch (e) { fail("วาดแผนที่ไม่สำเร็จ")(e); } })
+  .catch(fail("โหลดแผนที่ไม่สำเร็จ"));
+const money = w => w.rent > 0 ? (TH ? fmt(w.rent, 0) + " บาท" : "$" + fmt(w.rent, 0)) : (w.rentRaw || "—");
+const rateTxt = w => w.rate ? fmt(w.rate, TH ? 0 : 2) + (TH ? " บาท" : " USD") : "—";
+const ymd = end => { const t = new Date(); t.setHours(0, 0, 0, 0); const e = new Date(end + "T00:00:00"); const neg = e < t; const a = neg ? e : t, b = neg ? t : e; let y = b.getFullYear() - a.getFullYear(), m = b.getMonth() - a.getMonth(), d = b.getDate() - a.getDate(); if (d < 0) { m--; d += new Date(b.getFullYear(), b.getMonth(), 0).getDate(); } if (m < 0) { y--; m += 12; } const p = []; if (y) p.push(y + " ปี"); if (m) p.push(m + " เดือน"); if (d || !p.length) p.push(d + " วัน"); return (neg ? "เกินมา " : "") + p.join(" "); };
+const leftTxt = w => w.end ? ymd(w.end) : "—";
+
+const IC = {
+  ok: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/>',
+  soon: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+  exp: '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/>',
+  own: '<path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2M10 6h4M10 10h4M10 14h4M10 18h4"/>',
+  wh: '<path d="M22 8.35V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8.35A2 2 0 0 1 3.26 6.5l8-3.2a2 2 0 0 1 1.48 0l8 3.2A2 2 0 0 1 22 8.35Z"/><path d="M6 18h12M6 14h12"/><rect x="6" y="10" width="12" height="12"/>',
+  area: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>',
+  money: '<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/>',
+  rate: '<path d="M19 5 5 19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/>',
+  cal: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  time: '<path d="M5 22h14M5 2h14M17 22v-4.17a2 2 0 0 0-.59-1.42L12 12l-4.41 4.41A2 2 0 0 0 7 17.83V22M7 2v4.17a2 2 0 0 0 .59 1.42L12 12l4.41-4.41A2 2 0 0 0 17 6.17V2"/>',
+  plan: '<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
+  pin: '<path d="M20 10c0 4.99-5.54 10.19-7.4 11.8a1 1 0 0 1-1.2 0C9.54 20.19 4 14.99 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>',
+  go: '<path d="m9 18 6-6-6-6"/>'
+};
+const ico = (k, c, sz) => '<svg width="' + (sz || 16) + '" height="' + (sz || 16) + '" viewBox="0 0 24 24" fill="none" stroke="' + (c || "currentColor") + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;display:block">' + IC[k] + '</svg>';
+const badge = (k, c, bg, sz) => '<span style="width:' + (sz || 34) + 'px;height:' + (sz || 34) + 'px;border-radius:10px;background:' + bg + ';display:inline-flex;align-items:center;justify-content:center;flex:none">' + ico(k, c, Math.round((sz || 34) * 0.5)) + '</span>';
+const kvRow = (k, label, val, col) => '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid rgba(32,30,29,0.07)">' + badge(k, "#6b6a68", "#f1f1f2", 28) + '<span style="flex:1;font-size:12.5px;color:#6b6a68">' + label + '</span><b style="font-size:13px;font-variant-numeric:tabular-nums;text-align:right;color:' + (col || "#201e1d") + '">' + val + '</b></div>';
+
+function contractCard(w) {
+  return '<div class="card" style="gap:12px">' +
+    '<div style="display:flex;gap:12px;align-items:flex-start">' + badge(w.st === "own" ? "own" : "wh", C[w.st], TINT[w.st], 42) +
+      '<div style="display:grid;gap:3px;min-width:0"><h3>' + w.wh + '</h3><span class="sub" style="display:flex;align-items:center;gap:4px">' + ico("pin", "#9a9794", 13) + [w.code, w.province].filter(Boolean).join(" · ") + '</span></div></div>' +
+    '<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:' + TINT[w.st] + ';color:' + C[w.st] + '">' + ico(w.st, C[w.st], 20) +
+      '<div style="display:grid;gap:1px"><span style="font-size:11.5px;font-weight:700">' + LABEL[w.st] + '</span><b style="font-size:15px">' + (w.st === "own" ? "ไม่มีวันหมดสัญญา" : "คงเหลือ " + leftTxt(w)) + '</b></div></div>' +
+    '<div>' +
+      kvRow("area", "พื้นที่", fmt(w.area, 0) + " ตร.ม.") +
+      kvRow("money", "ค่าเช่า/เดือน", money(w)) +
+      kvRow("rate", "ค่าเช่า/ตร.ม.", rateTxt(w)) +
+      kvRow("cal", "วันหมดสัญญา", thDate(w.end)) +
+      (w.plan ? kvRow("plan", "แผนดำเนินการ", w.plan, "#1d5fd0") : '') +
+    '</div></div>';
+}
+
+function overview() {
+  const cnt = s => rows.filter(w => w.st === s).length;
+  const urgent = rows.filter(w => w.st === "soon" || w.st === "exp").sort((a, b) => a.ml - b.ml);
+  const tile = s => '<div style="display:grid;gap:8px;padding:12px;border-radius:12px;background:' + TINT[s] + '">' +
+    '<div style="display:flex;align-items:center;justify-content:space-between">' + ico(s, C[s], 20) + '<b style="font-size:24px;line-height:1;color:' + C[s] + ';font-variant-numeric:tabular-nums">' + cnt(s) + '</b></div>' +
+    '<span style="font-size:12px;font-weight:700;color:' + C[s] + '">' + LABEL[s] + '</span></div>';
+  let h = '<div class="card" style="gap:12px">' +
+    '<div style="display:flex;gap:12px;align-items:center">' + badge("wh", "#fff", "#201e1d", 40) +
+      '<div style="display:grid;gap:2px"><h3>' + (TH ? "คลังในประเทศ" : "คลังต่างประเทศ") + '</h3><span class="sub">' + rows.length + ' สัญญา · คลิกหมุดเพื่อดูรายละเอียด</span></div></div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">' + tile("ok") + tile("soon") + tile("exp") + (cnt("own") ? tile("own") : '') + '</div></div>';
+  if (urgent.length) h += '<div class="card" style="gap:8px"><div style="display:flex;align-items:center;gap:8px">' + ico("exp", C.exp, 18) + '<b style="font-size:13.5px">ต้องดำเนินการ · ' + urgent.length + '</b></div>' +
+    '<div class="list">' + urgent.map(w =>
+    '<button class="row" data-wh="' + w.i + '" style="border:1px solid rgba(32,30,29,0.08)">' + badge(w.st, C[w.st], TINT[w.st], 28) + '<b>' + w.wh + (w.plan ? '<span style="display:block;font-size:11px;font-weight:600;color:#1d5fd0">' + w.plan + '</span>' : '') + '</b><i style="color:' + C[w.st] + ';font-weight:700">' + leftTxt(w) + '</i>' + ico("go", "#9a9794", 14) + '</button>').join("") + '</div></div>';
+  if (missing.length) h += '<span class="hint" style="display:flex;gap:6px;align-items:flex-start">' + ico("pin", "#9a9794", 14) + 'ยังไม่มีพิกัด: ' + missing.join(", ") + '</span>';
+  return h;
+}
+
+function render() {
+  const el = document.getElementById("detail");
+  if (sel == null) el.innerHTML = overview();
+  else {
+    const grp = typeof sel === "object" && sel.keys;
+    const items = grp ? rows.filter(w => sel.keys.includes(w.region)).sort((a, b) => (a.ml ?? 1e9) - (b.ml ?? 1e9))
+      : typeof sel === "object" ? sel.merge.flatMap(i => G[i].items) : G[sel].items;
+    const cnt = s => items.filter(w => w.st === s).length;
+    el.innerHTML = '<button class="row" id="back" style="width:fit-content"><b>← ภาพรวม</b></button>' +
+      (grp ? '<div class="card" style="gap:12px"><div style="display:flex;gap:12px;align-items:center">' + badge("pin", "#fff", "#201e1d", 40) + '<div style="display:grid;gap:2px"><h3>' + sel.label + '</h3><span class="sub">' + items.length + ' สัญญา</span></div></div>' +
+        '<div style="display:grid;grid-template-columns:repeat(' + (cnt("own") ? 4 : 3) + ',1fr);gap:6px">' + ["ok", "soon", "exp"].concat(cnt("own") ? ["own"] : []).map(k => '<div style="display:grid;gap:6px;justify-items:start;padding:9px 10px;border-radius:10px;background:' + TINT[k] + '">' + ico(k, C[k], 16) + '<b style="font-size:18px;line-height:1;color:' + C[k] + '">' + cnt(k) + '</b><span style="font-size:10.5px;font-weight:700;color:' + C[k] + '">' + LABEL[k] + '</span></div>').join("") + '</div>' +
+        '<div>' + kvRow("area", "พื้นที่รวม", fmt(items.reduce((a, w) => a + (w.area || 0), 0), 0) + " ตร.ม.") +
+        kvRow("money", "ค่าเช่ารวม/เดือน", TH ? fmt(items.reduce((a, w) => a + (w.rent || 0), 0), 0) + " บาท" : "$" + fmt(items.reduce((a, w) => a + (w.rent || 0), 0), 0)) +
+        '</div></div>' : items.length > 1 ? '<span class="sub">' + items.length + ' สัญญาในบริเวณนี้</span>' : '') +
+      items.map(contractCard).join("");
+    document.getElementById("back").onclick = () => select(null);
+    if (grp) el.scrollTop = 0;
+  }
+  el.querySelectorAll("[data-wh]").forEach(b => b.onclick = () => {
+    const w = rows[+b.dataset.wh]; const idx = G.findIndex(g => g.items.includes(w));
+    if (idx >= 0) select(idx);
+  });
+  postSize();
+}
+
+function select(idx, fromParent) {
+  sel = idx;
+  if (!fromParent) parent.postMessage({ type: "wh-group-clear" }, "*");
+  if (world) drawMap();
+  render();
+}
+
+function postSize() {
+  requestAnimationFrame(() => parent.postMessage({ type: "wh-map-size", h: document.documentElement.scrollHeight }, "*"));
+}
+window.addEventListener("resize", () => { if (world) drawMap(); postSize(); });
+window.addEventListener("message", ev => {
+  const d = ev && ev.data; if (!d || d.type !== "wh-group") return;
+  select(d.keys ? { keys: d.keys, label: d.label } : null, true);
+});
+render();
+</script>
+</body>
+</html>
