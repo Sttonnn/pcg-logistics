@@ -235,6 +235,10 @@
   .btab th.on { background: #e3ecff; }
   .rk { display: inline-block; min-width: 26px; margin-right: 8px; font-size: 12.5px; font-weight: 800; color: #9aa6bd; }
   .btag { display: inline-block; margin-left: 10px; padding: 2px 9px; border-radius: 999px; background: #eef2f8; color: #5a6784; font-size: 11.5px; font-weight: 700; vertical-align: middle; }
+  .kindseg button { font-weight: 800; }
+  .kindseg .kc { font-size: 11.5px; font-weight: 700; opacity: .7; margin-left: 2px; }
+  .ktag { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 800; vertical-align: 1px; white-space: nowrap; }
+  .ktag.big { font-size: 13px; padding: 3px 10px; margin-left: 6px; }
   .brow2 { cursor: pointer; }
   .brow2:hover td, .brow2:focus td { background: #f4f8ff; outline: none; }
   .brow2 .bn { padding-left: 34px; font-weight: 700; }
@@ -273,131 +277,6 @@
   #toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); background: #16213a; color: #fff; padding: 11px 18px; border-radius: 14px; font-size: 13.5px; font-weight: 600; box-shadow: 0 10px 26px rgba(0,0,0,.3); display: none; z-index: 60; max-width: calc(100% - 32px); }
 
   @media (max-width: 1100px) { .kpis { grid-template-columns: repeat(2, minmax(0,1fr)); } .stats { grid-template-columns: repeat(2, minmax(0,1fr)); } .gauge { grid-column: 1 / -1; } .grid2 { grid-template-columns: minmax(0,1fr); } }
-
-  /* ===== ภาพรวมแบบใหม่ (30 ก.ย.) ===== */
-  .stats { grid-template-columns: repeat(4, minmax(0,1fr)); }
-  .card.ans { display: grid; gap: 8px; align-content: start; box-shadow: 0 14px 30px rgba(8,20,40,.28); }
-  .card.ans .lbl { font-size: 15px; font-weight: 800; opacity: 1; }
-  .card.ans .val { margin-top: 0; font-size: 46px; }
-  .card.ans .say { font-size: 13.5px; font-weight: 600; line-height: 1.45; }
-  .hbul { position: relative; height: 12px; border-radius: 999px; background: rgba(255,255,255,.25); margin: 4px 0 16px; }
-  .hbul i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 999px; background: #fff; }
-  .hbul em { position: absolute; top: -5px; bottom: -5px; width: 3px; margin-left: -1.5px; background: #0b1730; border-radius: 2px; }
-  .hbul em span { position: absolute; top: 22px; left: 50%; transform: translateX(-50%); font-style: normal; font-size: 11px; font-weight: 800; white-space: nowrap; }
-  .hstk { display: flex; height: 22px; border-radius: 8px; overflow: hidden; gap: 2px; }
-  .hstk i { display: flex; align-items: center; justify-content: center; font-style: normal; font-size: 12px; font-weight: 800; color: #7c2d12; min-width: 22px; }
-  .hleg { display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 700; opacity: .92; gap: 6px; }
-  .sech { display: flex; gap: 12px; align-items: center; }
-  .sech h2 { margin: 0; font-size: 20px; }
-  .sech .hint { margin: 2px 0 0; }
-  .secn { width: 36px; height: 36px; border-radius: 12px; flex: none; display: grid; place-items: center; background: linear-gradient(150deg,#1a5fe4,#0f3fa4); color: #fff; font-family: Archivo, sans-serif; font-weight: 900; font-size: 18px; box-shadow: 0 6px 14px rgba(15,63,164,.3); }
-  .q1c { color: #0f3fa4 !important; } .q2c { color: #c2410c !important; } .q3c { color: #a8250f !important; }
-  .rk { display: grid; }
-  .rk-head, .rk-row { display: grid; grid-template-columns: 30px minmax(150px,1.2fr) minmax(170px,1.5fr) minmax(190px,1.5fr) minmax(120px,1fr) 18px; gap: 14px; align-items: center; }
-  .rk-head { padding: 0 12px 8px; font-size: 12.5px; font-weight: 800; color: #5a6784; border-bottom: 1px solid #e6ebf3; }
-  .rk-head small { display: block; font-weight: 600; font-size: 11px; color: #7a849a; }
-  .rk-row { padding: 12px; border-bottom: 1px solid #eef1f6; cursor: pointer; border-radius: 12px; }
-  .rk-row:hover, .rk-row:focus { background: #f4f8ff; outline: none; }
-  .rk-n { font-family: Archivo, sans-serif; font-weight: 900; color: #9aa6bd; font-size: 15px; text-align: center; }
-  .rk-name { display: grid; min-width: 0; } .rk-name b { font-size: 16px; color: #0b1730; } .rk-name span { font-size: 12px; color: #5a6784; font-weight: 600; }
-  .rk-c small, .fsub { display: block; font-size: 11.5px; color: #5a6784; font-weight: 600; margin-top: 2px; }
-  .rk-f { display: grid; justify-items: start; }
-  .rk-row .go { color: #9aa6bd; font-size: 20px; }
-  .bul { display: flex; align-items: center; gap: 10px; }
-  .bul-t { position: relative; flex: 1; height: 10px; border-radius: 999px; background: #e6ebf3; }
-  .bul-t i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 999px; }
-  .bul-t em { position: absolute; top: -4px; bottom: -4px; width: 2px; margin-left: -1px; background: #16213a; }
-  .bul b { font-family: Archivo, sans-serif; font-size: 16px; min-width: 44px; text-align: right; }
-  .ages { display: flex; gap: 6px; flex-wrap: wrap; }
-  .ag { display: inline-flex; align-items: baseline; gap: 4px; padding: 4px 10px; border-radius: 999px; font-weight: 900; font-size: 15px; font-family: Archivo, sans-serif; white-space: nowrap; }
-  .ag small { font-family: 'IBM Plex Sans Thai', sans-serif; font-size: 11px; font-weight: 700; }
-  .ag.a { background: #fff4d6; color: #8a5200; } .ag.b { background: #ffe1c7; color: #c2410c; } .ag.c { background: #ffd9d1; color: #a8250f; }
-  .okt { color: #0a8a5f; font-weight: 700; font-size: 13px; }
-  .okline { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; text-align: left; border: 0; background: #effaf5; color: #0a6b4d; font-size: 13.5px; font-weight: 600; padding: 12px 14px; border-radius: 12px; margin-top: 10px; cursor: pointer; }
-  .okline span { margin-left: auto; font-weight: 800; }
-  .rk-row.ok { opacity: .8; }
-  .allok { padding: 18px; text-align: center; color: #0a6b4d; font-weight: 700; background: #effaf5; border-radius: 12px; margin-top: 10px; }
-  .acts { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; }
-  .actcol { display: grid; gap: 6px; align-content: start; }
-  .actcol h3 { margin: 0 0 4px; font-size: 15px; display: flex; align-items: center; gap: 8px; }
-  .dot { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
-  .act { display: grid; grid-template-columns: 74px minmax(0,1fr) auto; gap: 10px; align-items: center; padding: 10px; border-radius: 12px; background: #f7f9fc; cursor: pointer; }
-  .act:hover { background: #eef4ff; }
-  .act .ag { justify-content: center; }
-  .act b { display: block; font-size: 14px; } .act span { font-size: 12px; color: #5a6784; }
-  .upd { border: 0; background: #1a5fe4; color: #fff; font-weight: 700; font-size: 12.5px; padding: 7px 12px; border-radius: 999px; cursor: pointer; white-space: nowrap; }
-  .tr-head, .tr-row { display: grid; grid-template-columns: 90px minmax(0,1.4fr) minmax(0,1fr); gap: 16px; align-items: center; }
-  .tr-head { font-size: 12.5px; font-weight: 800; color: #5a6784; padding: 0 4px 6px; border-bottom: 1px solid #e6ebf3; }
-  .tr-row { padding: 10px 4px; border-bottom: 1px solid #eef1f6; }
-  .tr-row small { color: #5a6784; font-weight: 600; }
-  @media (max-width: 1000px) {
-    .stats { grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
-    .rk-head { display: none; }
-    .rk-row { grid-template-columns: 26px minmax(0,1fr) 16px; gap: 6px 10px; }
-    .rk-row .rk-c, .rk-row .rk-a, .rk-row .rk-f { grid-column: 2; }
-    .rk-row .go { grid-column: 3; grid-row: 1; }
-    .acts { grid-template-columns: minmax(0,1fr); }
-    .tr-head, .tr-row { grid-template-columns: 70px minmax(0,1fr); }
-    .tr-row .tr-f, .tr-head span:nth-child(3) { grid-column: 2; }
-  }
-
-  /* ===== ภาพรวมตามความต้องการผู้ใช้ (30 ก.ย.) ===== */
-  .sech { flex-wrap: wrap; }
-  .daynav { margin-left: auto; display: flex; align-items: center; gap: 8px; background: #f2f5fa; border-radius: 999px; padding: 4px; }
-  .daynav b { font-size: 15px; padding: 0 6px; }
-  .daynav button { border: 0; background: #fff; border-radius: 999px; min-width: 34px; height: 32px; font-weight: 800; cursor: pointer; box-shadow: var(--shadow-s); }
-  .daynav button:disabled { opacity: .35; cursor: default; }
-  .daynav .today { padding: 0 12px; color: #1a5fe4; font-size: 13px; }
-  .gcards { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
-  .gcard { text-align: left; border: 2px solid transparent; background: #fff; border-radius: 20px; padding: 16px; box-shadow: var(--shadow-s); display: grid; gap: 10px; cursor: pointer; font: inherit; color: inherit; transition: transform .15s, box-shadow .15s; }
-  .gcard:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
-  .gcard.on { border-color: #1a5fe4; background: #f4f8ff; }
-  .gc-h { display: grid; } .gc-h b { font-size: 17px; } .gc-h span { font-size: 12px; color: #5a6784; font-weight: 600; }
-  .gc-day { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 14px; background: #f6f8fb; }
-  .gc-day .gc-big { font-size: 26px; font-weight: 900; width: 34px; text-align: center; }
-  .gc-day b { display: block; font-size: 16px; } .gc-day small { color: #5a6784; font-weight: 600; font-size: 12px; }
-  .gc-row { display: flex; justify-content: space-between; font-size: 13.5px; color: #2a3b5f; font-weight: 600; }
-  .gc-row b { font-size: 15px; }
-  .gc-bar { height: 8px; border-radius: 999px; background: #e6ebf3; overflow: hidden; margin-top: -4px; } .gc-bar i { display: block; height: 100%; border-radius: 999px; }
-  .gsel { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #2a3b5f; }
-  .gsel button { border: 0; background: #eef2f8; border-radius: 999px; padding: 6px 12px; font-weight: 700; cursor: pointer; color: #1a5fe4; }
-  .mxwrap { overflow-x: auto; border-radius: 14px; border: 1px solid #eef1f6; }
-  .mx { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 13.5px; }
-  .mx th { background: #f5f7fb; font-size: 12px; font-weight: 800; color: #5a6784; padding: 8px 4px; text-align: center; line-height: 1.2; }
-  .mx th small { display: block; font-weight: 600; font-size: 10.5px; }
-  .mx th.sel { background: #1a5fe4; color: #fff; }
-  .mx td { border-top: 1px solid #eef1f6; padding: 6px 4px; text-align: center; }
-  .mx .mx-n { text-align: left; padding-left: 14px; white-space: nowrap; position: sticky; left: 0; background: #fff; z-index: 1; min-width: 130px; }
-  .mx th.mx-n { background: #f5f7fb; }
-  .mx .mx-n a { color: #0b1730; font-weight: 700; cursor: pointer; text-decoration: none; padding-left: 14px; }
-  .mx .mx-n a:hover { color: #1a5fe4; text-decoration: underline; }
-  .mx tr.mx-g td { background: #f3f6fb; } .mx tr.mx-g .mx-n { background: #f3f6fb; } .mx tr.mx-g .mx-n b { color: #0b6f7a; font-size: 14.5px; }
-  .mx tr.mx-t td { background: #16213a; color: #fff; } .mx tr.mx-t .mx-n { background: #16213a; } .mx tr.mx-t .mc span { color: rgba(255,255,255,.8); } .mx tr.mx-t .mc span.bad { color: #ffb4a3; }
-  .dc { font-weight: 900; font-size: 13px; }
-  .dc.ok { color: #0a8a5f; } .dc.nil { color: #c3cad8; }
-  .dc.miss { color: #fff; background: #f0553a !important; border-radius: 6px; box-shadow: inset 0 0 0 2px #fff; }
-  .dc.wip { color: #8a5200; background: #ffe7b3 !important; border-radius: 6px; box-shadow: inset 0 0 0 2px #fff; }
-  .dc.sum { border-left: 2px solid #e6ebf3; }
-  .lg { display: inline-block; min-width: 20px; text-align: center; border-radius: 5px; font-weight: 900; font-size: 12px; padding: 0 4px; }
-  .lg.ok { color: #0a8a5f; } .lg.miss { background: #f0553a; color: #fff; } .lg.wip { background: #ffe7b3; color: #8a5200; } .lg.nil { color: #9aa6bd; }
-  .mxm td.mc { padding: 8px 6px; } .mc b { display: block; font-size: 15px; font-family: Archivo, sans-serif; } .mc span { font-size: 11.5px; color: #7a849a; font-weight: 700; } .mc span.bad { color: #c9301a; }
-  .fg { display: grid; gap: 8px; } .fg-h { display: flex; align-items: center; gap: 10px; padding-bottom: 4px; border-bottom: 2px solid #eef1f6; } .fg-h b { font-size: 16px; color: #0b6f7a; }
-  .fw { display: grid; gap: 6px; padding-left: 8px; }
-  .fw-h { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; width: 100%; text-align: left; border: 0; background: #fbf7f6; border-radius: 12px; padding: 10px 12px; font: inherit; cursor: pointer; }
-  .fw-h:hover { background: #fff0ec; }
-  .fw-h b { font-size: 15px; } .fw-arr { color: #9aa6bd; font-size: 12px; width: 12px; }
-  .fw-sub { font-size: 12.5px; color: #5a6784; font-weight: 600; }
-  .fw-go { font-size: 13px; font-weight: 700; color: #1a5fe4; cursor: pointer; padding: 2px 10px; }
-  .lnk { color: #1a5fe4; font-weight: 700; cursor: pointer; text-decoration: underline; }
-  .kindseg button { font-weight: 800; }
-  .kindseg .kc { font-size: 11.5px; font-weight: 700; opacity: .7; margin-left: 2px; }
-  .ktag { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 800; vertical-align: 1px; white-space: nowrap; }
-  .ktag.big { font-size: 13px; padding: 3px 10px; margin-left: 6px; }
-  .gc-split { display: flex; gap: 6px; margin-top: -2px; } .gc-split span { flex: 1; font-size: 12px; font-weight: 700; padding: 4px 8px; border-radius: 8px; display: flex; justify-content: space-between; }
-  .fi { display: grid; grid-template-columns: 70px minmax(0,1fr) auto; gap: 10px; align-items: center; padding: 9px 10px; border-radius: 12px; background: #fbf7f6; }
-  .fi .ag { justify-content: center; } .fi b { display: block; font-size: 14px; } .fi span { font-size: 12px; color: #5a6784; }
-  @media (max-width: 1000px) { .gcards { grid-template-columns: repeat(2, minmax(0,1fr)); } }
-  @media (max-width: 600px) { .gcards { grid-template-columns: minmax(0,1fr); } .daynav { margin-left: 0; } .fi { grid-template-columns: 56px minmax(0,1fr); } .fi .upd { grid-column: 2; justify-self: start; } }
   @media (max-width: 760px) {
     .hero { padding: 16px 14px 22px; border-radius: 0 0 26px 26px; }
     h1 { font-size: 24px; }
@@ -424,11 +303,6 @@
     .btab tbody td, .btab tbody td:nth-child(1) { display: table-cell; padding: 10px 10px; border-top: 1px solid #eef1f6; font-size: 14px; }
     .btab .bn { white-space: nowrap; }
     .btag { display: none; }
-    .mx { min-width: 640px; }
-    .mx thead { display: table-header-group; }
-    .mx tbody tr { display: table-row; padding: 0; border: 0; }
-    .mx tbody td, .mx tbody td:nth-child(1) { display: table-cell; padding: 6px 4px; border-top: 1px solid #eef1f6; font-size: 13px; }
-    .mx tbody td.mx-n { padding-left: 10px; }
     tbody td:nth-child(1) { grid-column: 1; font-size: 12.5px; }
     #tbody td:nth-child(5) { grid-column: 2; grid-row: 1; justify-self: end; }
     #tbody td:nth-child(2) { grid-column: 1 / -1; }
@@ -645,23 +519,15 @@ const overdue = r => grp(r) === "prog" && !r.r && r.due && r.due < ASOF;
 function renderHero() {
   const last = LOG[LOG.length - 1];
   $("asof").textContent = "ข้อมูล ณ " + fmtD(ASOF) + (last ? " · อัปโหลดล่าสุด " + fmtD(last.at.slice(0, 10)) + " " + last.at.slice(11, 16) + " น." : "");
-  /* สรุปรวมบนสุด (ขอบเขต = กลุ่มที่เลือก): วันนี้ตรวจครบไหม · เดือนนี้ตรวจแล้วกี่ % · พบไม่ผ่าน · ยังไม่แก้ */
-  const GD = GROUPS.find(g => g.k === S.grp);
-  const L = rows({ wh: true, branch: true, rg: true, month: true }).filter(r => S.branch !== "all" ? r.p === S.wh && r.b === S.branch : GD ? GD.test(r) : true);
-  const day = S.day || ASOF, mon = day.slice(0, 7), insp = r => grp(r) === "done" || !!r.r;
-  const Dd = L.filter(r => isReal(r) && r.due === day), dk = Dd.filter(insp).length;
-  const Dm = L.filter(r => isReal(r) && r.due && r.due.slice(0, 7) === mon && r.due <= ASOF), mk = Dm.filter(insp).length, mp = Dm.length ? Math.round(mk / Dm.length * 100) : null;
-  const fm = L.filter(r => isFail(r) && failDate(r).slice(0, 7) === mon).length, fo = L.filter(r => isFail(r) && repSt(r) !== "fixed").length;
-  const tone = lv => ["linear-gradient(150deg,#13a878,#0a7353)", "linear-gradient(150deg,#f59e0b,#c2410c)", "linear-gradient(150deg,#f0553a,#b8260f)", "linear-gradient(150deg,#4a5877,#333f5a)"][lv];
-  const card2 = (lv, q, val, unit, say) => `<div class="card ans" style="background:${tone(lv)}"><div class="lbl">${q}</div><div class="val">${val}<small>${unit}</small></div><div class="say">${say}</div></div>`;
-  const mname = TH_M[+mon.slice(5) - 1];
-  $("seg").innerHTML = `<span style="font-size:13px;font-weight:700;color:rgba(255,255,255,.8)">กำลังดู:</span> <b style="font-size:16px">${S.branch !== "all" ? S.branch : GD ? GD.name : "ทุกคลัง (ส่วนกลาง WHA + 5 ภาค)"}</b>${S.kind !== "all" ? ` <span class="ktag big" style="color:${KIND[S.kind].color};background:${KIND[S.kind].bg}">${KIND[S.kind].label}</span>` : ""}`;
+  /* ตัวเลขบนสุด = 4 ตัวเดียวกับการ์ดด้านล่าง แยกตาม 2 คำถาม ใช้สีชุดเดียวกัน */
+  const s = stat(rows()), scope = S.wh === "all" ? "ทุกคลัง" : S.branch !== "all" ? S.branch : S.rg ? WH[S.wh] + " · " + S.rg : WH[S.wh];
+  const card = (bg, sh, q, lbl, val, unit, sub) => `<div class="card" style="background:${bg};box-shadow:${sh}"><div class="lbl"><span style="opacity:.8">${q}</span> ${lbl}</div><div class="val">${val}<small>${unit}</small></div><div class="sub">${sub}</div></div>`;
+  $("seg").innerHTML = `<span style="font-size:13px;font-weight:700;color:rgba(255,255,255,.8)">กำลังดู:</span> <b style="font-size:16px">${scope}</b>${S.kind !== "all" ? ` <span class="ktag big" style="color:${KIND[S.kind].color};background:${KIND[S.kind].bg}">${KIND[S.kind].label}</span>` : ""}`;
   $("stats").innerHTML =
-    card2(!Dd.length ? 3 : dk === Dd.length ? 0 : day === ASOF ? 1 : 2, "ตรวจครบไหม · " + fmtD(day), !Dd.length ? "–" : dk === Dd.length ? "ครบ" : "ขาด " + (Dd.length - dk), !Dd.length || dk === Dd.length ? "" : "ใบ",
-      !Dd.length ? "วันนี้ไม่มีงานตามแผน" : `ตรวจแล้ว ${dk} จาก ${Dd.length} ใบ`) +
-    card2(mp == null ? 3 : mp >= 95 ? 0 : mp >= 80 ? 1 : 2, "เดือน " + mname + " ตรวจแล้ว", mp == null ? "–" : mp + "%", "", `${mk} จาก ${Dm.length} ใบที่ถึงกำหนด`) +
-    card2(fm ? 2 : 0, "พบไม่ผ่าน · เดือน " + mname, fm, "เครื่อง", fm ? "ดูรายการในส่วนที่ 3" : "✓ ไม่พบปัญหา") +
-    card2(fo ? 2 : 0, "ไม่ผ่าน ยังไม่ได้แก้ (สะสม)", fo, "เครื่อง", fo ? "รอซ่อม / รออัปเดตสถานะ" : "✓ แก้ครบแล้ว");
+    card("linear-gradient(150deg,#1a5fe4,#0f3fa4)", "0 12px 26px rgba(15,63,164,.4)", "①", "งานเสร็จแล้ว", s.pct + "%", "", `เสร็จ ${s.done.toLocaleString()} จาก ${s.n.toLocaleString()} ใบงาน`) +
+    card(s.late ? "linear-gradient(150deg,#ff8a3d,#d9570f)" : "linear-gradient(150deg,#4a5877,#333f5a)", "0 12px 26px rgba(217,87,15,.35)", "①", "เลยกำหนด ยังไม่ได้ตรวจ", s.late.toLocaleString(), "ใบ", s.late ? "ต้องตามให้ทำ" : "ไม่มีงานค้าง") +
+    card("linear-gradient(150deg,#13a878,#0a7353)", "0 12px 26px rgba(10,115,83,.4)", "②", "ตรวจแล้วผ่าน", s.tested ? Math.round(s.pass / s.tested * 100) + "%" : "–", "", `ผ่าน ${s.pass.toLocaleString()} จาก ${s.tested.toLocaleString()} ใบที่ตรวจแล้ว`) +
+    card(s.open ? "linear-gradient(150deg,#f0553a,#b8260f)" : "linear-gradient(150deg,#4a5877,#333f5a)", "0 12px 26px rgba(184,38,15,.35)", "②", "ไม่ผ่าน ยังไม่ได้แก้", s.open.toLocaleString(), "ใบ", s.open ? "ต้องตามให้ซ่อม" : "แก้ครบแล้ว");
 }
 
 function renderFilters() {
@@ -878,33 +744,6 @@ function renderFocus() {
 
 /* ---- ดูจากใหญ่ไปเล็ก: คลัง → สาขา/อาคาร → ใบงาน ----
    ทุกระดับตอบ 2 คำถามแยกกัน: ① งานทำครบไหม (สีน้ำเงิน/ส้ม)  ② เครื่องปกติไหม (เขียว ✓ / แดง ✕) */
-/* ---- ตัวชี้วัดหลัก (อิง SMRP) ----
-   ทำตรงเวลา (PM Compliance) = ใบงานที่ปิดภายในกำหนด ±10% ของรอบ ÷ ใบงานที่ถึงกำหนดแล้ว · เป้า 90% */
-const TARGET = 90;
-const isReal = r => grp(r) !== "cancel" && grp(r) !== "wait";
-let GRACE = null, GRACE_SRC = null;
-function graceOf(r) {
-  if (GRACE_SRC !== DATA) {
-    const by = {}; GRACE = {}; GRACE_SRC = DATA;
-    DATA.forEach(x => { if (!x.due) return; const [p, pl, , eq] = x.id.split("|"); (by[p + "|" + pl + "|" + eq] = by[p + "|" + pl + "|" + eq] || []).push(x.due); });
-    Object.entries(by).forEach(([k, v]) => { v = [...new Set(v)].sort(); const g = [];
-      for (let i = 1; i < v.length; i++) g.push(dayDiff(v[i - 1], v[i]));
-      g.sort((a, b) => a - b); const iv = g.length ? g[g.length >> 1] : 30;
-      GRACE[k] = iv <= 2 ? 0 : Math.max(1, Math.round(iv * 0.1)); });
-  }
-  const [p, pl, , eq] = r.id.split("|"); const g = GRACE[p + "|" + pl + "|" + eq]; return g == null ? 3 : g;
-}
-const plusD = (iso, n) => { const d = new Date(iso + "T00:00:00"); d.setDate(d.getDate() + n); return d.toLocaleDateString("sv-SE"); };
-const dueBy = r => plusD(r.due, graceOf(r));
-const isDue = r => isReal(r) && !!r.due && (grp(r) === "done" || dueBy(r) < ASOF);
-const onTime = r => grp(r) === "done" && !!r.done && r.done <= dueBy(r);
-function comp(L) { const D = L.filter(isDue), ok = D.filter(onTime).length; return { due: D.length, ok, pct: D.length ? Math.round(ok / D.length * 100) : null }; }
-function aging(L) { const d = L.filter(overdue).map(r => dayDiff(r.due, ASOF));
-  return { n: d.length, a: d.filter(x => x <= 7).length, b: d.filter(x => x > 7 && x <= 30).length, c: d.filter(x => x > 30).length, max: d.length ? Math.max(...d) : 0 }; }
-function failsOpen(L) { const d = L.filter(r => isFail(r) && repSt(r) !== "fixed").map(downDays);
-  return { n: d.length, old: d.filter(x => x > 7).length, max: d.length ? Math.max(...d) : 0 }; }
-const compColor = p => p >= TARGET ? "#0a8a5f" : p >= 70 ? "#d97706" : "#c9301a";
-
 function stat(L) {
   const n = L.length, done = L.filter(r => grp(r) === "done").length, prog = L.filter(r => grp(r) === "prog").length;
   const late = L.filter(overdue), pass = L.filter(r => r.r === "pass").length, fail = L.filter(isFail);
@@ -948,18 +787,10 @@ const REGIONS = [
   ["ภาคใต้", ["สุราษฎร์ธานี", "หาดใหญ่"]]
 ];
 const regionOf = b => (REGIONS.find(([, bs]) => bs.includes(b)) || ["อื่นๆ"])[0];
-/* กลุ่มสรุป: ส่วนกลาง WHA + 5 ภาค (ผู้ใช้กำหนด 30 ก.ย.) */
-const GROUPS = [
-  { k: "WHA", name: "ส่วนกลาง WHA", sub: "WH05 · WH32", test: r => r.p === "WHA05",
-    members: L => [...new Set(L.filter(r => r.p === "WHA05").map(r => r.b))].sort().map(b => ["WHA05", b]) },
-  ...REGIONS.map(([rg, bs]) => ({ k: rg, name: rg, sub: bs.join(" · "), test: r => r.p === "RDC01" && bs.includes(r.b),
-    members: L => bs.filter(b => L.some(r => r.p === "RDC01" && r.b === b)).map(b => ["RDC01", b]) }))
-];
 const WHC = { WHA05: ["#1a5fe4", "#0f3fa4", "WH05 / WH32"], RDC01: ["#15a6a0", "#0b6f7a", "14 สาขาต่างจังหวัด"] };
 function renderDrill() {
   /* หน้าภาพรวม = ตารางคะแนน: 1 แถว = 1 สาขา/อาคาร แบ่งหัวตามคลังและภาค · กดแถว = ดูใบงานของสาขานั้น */
   const lvl = S.branch === "all" ? "board" : "wo";
-  $("months").style.display = lvl === "board" ? "none" : "";
   $("tblSec").style.display = lvl === "wo" ? "grid" : "none";
   document.querySelector(".howto").style.display = lvl === "wo" ? "" : "none";
   if (lvl === "wo") {
@@ -971,94 +802,63 @@ function renderDrill() {
       <div class="bd" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">${q1(s)}${q2(s)}</div></div>`;
     return;
   }
-  /* ===== หน้าภาพรวม (ตามที่ผู้ใช้ระบุ 30 ก.ย.) =====
-     ④ สรุปก่อน แยก ส่วนกลาง WHA + 5 ภาค → ① ตรวจครบไหม รายวัน → ② ตรวจแล้วไม่ผ่าน → ③ สถิติรายเดือน */
-  $("crumb").innerHTML = `<span class="cur">ภาพรวมการตรวจ PM</span><span class="chint" style="margin-left:auto;font-size:12.5px;font-weight:600;color:#5a6784">กดชื่อคลังเพื่อดูใบงาน</span>`;
-  const RA = rows({ wh: true, branch: true, rg: true, month: true });
-  const day = S.day || ASOF, mon = day.slice(0, 7);
-  const G = S.grp || "all", GD = GROUPS.find(g => g.k === G);
-  const inG = (g, r) => g.test(r);
-  const R = GD ? RA.filter(r => inG(GD, r)) : RA;
-  const insp = r => grp(r) === "done" || !!r.r;
-  const dueOn = (L, d) => L.filter(r => isReal(r) && r.due === d);
-  const dueIn = (L, m) => L.filter(r => isReal(r) && r.due && r.due.slice(0, 7) === m && r.due <= ASOF);
-  const cnt = L => { const n = L.length, k = L.filter(insp).length; return { n, k, miss: n - k, pct: n ? Math.round(k / n * 100) : null }; };
-  const thM = m => TH_M[+m.slice(5) - 1] + " " + (+m.slice(0, 4) + 543 - 2500);
-  const thD = d => +d.slice(8) + " " + TH_M[+d.slice(5, 7) - 1];
-
-  /* ---- ④ สรุปภาพรวม: การ์ด 6 กลุ่ม ---- */
-  const card = g => { const L = RA.filter(r => inG(g, r));
-    const t = cnt(dueOn(L, day)), m = cnt(dueIn(L, mon)), fm = L.filter(r => isFail(r) && failDate(r).slice(0, 7) === mon).length, fo = L.filter(r => isFail(r) && repSt(r) !== "fixed").length;
-    const tone = !t.n ? "#7a849a" : t.miss ? (day === ASOF ? "#d97706" : "#c9301a") : "#0a8a5f";
-    return `<button type="button" class="gcard${G === g.k ? " on" : ""}" data-grp="${g.k}">
-      <div class="gc-h"><b>${g.name}</b><span>${g.sub}</span></div>
-      <div class="gc-day" style="color:${tone}"><span class="gc-big">${t.n ? (t.miss ? "✕" : "✓") : "–"}</span><div><b>${t.n ? (t.miss ? "ขาด " + t.miss + " ใบ" : "ตรวจครบ") : "ไม่มีงาน"}</b><small>${thD(day)} · ตรวจ ${t.k}/${t.n}</small></div></div>
-      <div class="gc-row"><span>เดือน ${TH_M[+mon.slice(5) - 1]} ตรวจแล้ว</span><b style="color:${m.pct == null ? "#7a849a" : m.pct >= 95 ? "#0a8a5f" : m.pct >= 80 ? "#d97706" : "#c9301a"}">${m.pct == null ? "–" : m.pct + "%"}</b></div>
-      <div class="gc-bar"><i style="width:${m.pct || 0}%;background:${m.pct >= 95 ? "#13a878" : m.pct >= 80 ? "#f59e0b" : "#f0553a"}"></i></div>
-      ${S.kind === "all" ? `<div class="gc-split">${["wh", "mhe"].map(k => { const c2 = cnt(dueIn(L.filter(r => kindOf(r) === k), mon)); return `<span style="color:${KIND[k].color};background:${KIND[k].bg}">${KIND[k].short} <b>${c2.pct == null ? "–" : c2.pct + "%"}</b></span>`; }).join("")}</div>` : ""}
-      <div class="gc-row"><span>พบไม่ผ่าน (เดือนนี้)</span><b style="color:${fm ? "#c9301a" : "#0a8a5f"}">${fm} เครื่อง</b></div>
-      <div class="gc-row"><span>ยังไม่แก้ (สะสม)</span><b style="color:${fo ? "#c9301a" : "#0a8a5f"}">${fo} เครื่อง</b></div>
-    </button>`; };
-  const sec4 = `<section class="panel" style="display:grid;gap:14px">
-    <div class="sech"><span class="secn">1</span><div><h2>สรุปภาพรวม</h2><p class="hint">ส่วนกลาง WHA และ 5 ภาค · กดการ์ดเพื่อดูรายละเอียดเฉพาะกลุ่มนั้น</p></div>
-      <div class="daynav"><button type="button" data-dayshift="-1">◀</button><b>${fmtD(day)}</b><button type="button" data-dayshift="1"${day >= ASOF ? " disabled" : ""}>▶</button>${day !== ASOF ? `<button type="button" data-dayshift="0" class="today">วันล่าสุด</button>` : ""}</div></div>
-    <div class="gcards">${GROUPS.map(card).join("")}</div>
-    ${GD ? `<div class="gsel">กำลังดูรายละเอียด: <b>${GD.name}</b> <button type="button" data-grp="all">ดูทุกกลุ่ม ✕</button></div>` : ""}
-  </section>`;
-
-  /* แถวในตาราง: กลุ่ม → คลังในกลุ่ม */
-  const lines = [];
-  (GD ? [GD] : GROUPS).forEach(g => { lines.push({ kind: "g", g, L: RA.filter(r => inG(g, r)) });
-    g.members(RA).forEach(([p, b]) => lines.push({ kind: "b", p, b, L: RA.filter(r => r.p === p && r.b === b) })); });
-  const nameCell = x => x.kind === "g" ? `<td class="mx-n g"><b>${x.g.name}</b></td>` : `<td class="mx-n"><a data-pick="${x.p}|${x.b}|" tabindex="0">${x.b}</a></td>`;
-
-  /* ---- ① ตรวจครบไหม รายวัน (14 วันถึงวันที่เลือก) ---- */
-  const days = []; for (let i = 13; i >= 0; i--) days.push(plusD(day, -i));
-  const dcell = (L, d) => { const c = cnt(dueOn(L, d));
-    if (!c.n) return `<td class="dc nil">·</td>`;
-    if (!c.miss) return `<td class="dc ok" data-tip="${thD(d)} ตรวจครบ ${c.k}/${c.n} ใบ">✓</td>`;
-    return `<td class="dc ${d === ASOF ? "wip" : "miss"}" data-tip="${thD(d)} ตรวจแล้ว ${c.k}/${c.n} · ขาด ${c.miss} ใบ${d === ASOF ? " (วันนี้ยังทำได้)" : ""}">${c.miss}</td>`; };
-  const sec1 = `<section class="panel" style="display:grid;gap:12px">
-    <div class="sech"><span class="secn">2</span><div><h2>ตรวจครบไหม · รายวัน</h2><p class="hint">14 วันถึง ${fmtD(day)} · <span class="lg ok">✓</span> ตรวจครบ · <span class="lg miss">3</span> ขาด 3 ใบ · <span class="lg wip">2</span> วันนี้ยังค้าง · <span class="lg nil">·</span> ไม่มีงาน</p></div></div>
-    <div class="mxwrap"><table class="mx"><thead><tr><th class="mx-n">คลัง / สาขา</th>${days.map(d => `<th class="${d === day ? "sel" : ""}">${+d.slice(8)}<small>${TH_M[+d.slice(5, 7) - 1]}</small></th>`).join("")}<th>ขาดรวม</th></tr></thead>
-    <tbody>${lines.map(x => { const tot = days.reduce((a, d) => a + cnt(dueOn(x.L, d)).miss, 0);
-      return `<tr class="${x.kind === "g" ? "mx-g" : ""}">${nameCell(x)}${days.map(d => dcell(x.L, d)).join("")}<td class="dc sum ${tot ? "miss" : "ok"}">${tot || "✓"}</td></tr>`; }).join("")}</tbody></table></div>
-  </section>`;
-
-  /* ---- ② ตรวจแล้วไม่ผ่าน (จัดกลุ่มตามภาค → คลัง) ---- */
-  const FA = S.failAll ? "all" : "open";
-  const FL = R.filter(r => isFail(r) && (FA === "all" ? failDate(r).slice(0, 7) === mon : repSt(r) !== "fixed")).sort((a, b) => failDate(b).localeCompare(failDate(a)));
-  const byWh = {}; FL.forEach(r => (byWh[r.p + "|" + r.b] = byWh[r.p + "|" + r.b] || []).push(r));
-  const fItem = r => { const R2 = REP[repSt(r)], d = downDays(r); return `<div class="fi"><span class="ag ${d > 30 ? "c" : d > 7 ? "b" : "a"}">${d}<small>วัน</small></span>
-      <div><b>${kindTag(r)} ${r.e}</b><span>พบ ${fmtD(failDate(r))} · ไม่ผ่าน ${r.r.split(":")[1] || ""} รายการ · ${r.w || ""} · <i style="color:${R2.color};font-style:normal;font-weight:700">${R2.label}</i></span></div>
-      <button type="button" class="upd" data-edit="${fkey(r)}">อัปเดตการซ่อม</button></div>`; };
-  const fGroups = (GD ? [GD] : GROUPS).map(g => { const ws = g.members(RA).filter(([p, b]) => byWh[p + "|" + b]); if (!ws.length) return "";
-      const n = ws.reduce((a, [p, b]) => a + byWh[p + "|" + b].length, 0);
-      return `<div class="fg"><div class="fg-h"><b>${g.name}</b><span class="ag c">${n}<small>เครื่อง</small></span></div>
-        ${ws.map(([p, b]) => { const L2 = byWh[p + "|" + b], k = p + "|" + b, open = S.fOpen && S.fOpen[k], mx = Math.max(...L2.map(downDays));
-          return `<div class="fw"><button type="button" class="fw-h" data-ftog="${k}"><span class="fw-arr">${open ? "▼" : "▶"}</span><b>${b}</b><span class="ag c">${L2.length}<small>เครื่อง</small></span><span class="fw-sub">นานสุด ${mx} วัน · ${[...new Set(L2.map(r => r.e))].slice(0, 3).join(", ")}${new Set(L2.map(r => r.e)).size > 3 ? " …" : ""}</span></button>${open ? L2.map(fItem).join("") + `<a class="fw-go" data-pick="${p}|${b}|">ดูใบงานทั้งหมดของ ${b} ›</a>` : ""}</div>`; }).join("")}</div>`; }).join("");
-  const sec2 = `<section class="panel" style="display:grid;gap:12px">
-    <div class="sech"><span class="secn">3</span><div><h2>ตรวจแล้วไม่ผ่าน</h2><p class="hint">กดชื่อคลังเพื่อดูรายการเครื่อง · ตัวเลข = เสียมาแล้วกี่วัน · <a class="lnk" data-fexp="${S.fOpen && Object.values(S.fOpen).some(Boolean) ? 0 : 1}">${S.fOpen && Object.values(S.fOpen).some(Boolean) ? "ย่อทั้งหมด" : "เปิดทั้งหมด"}</a></p></div>
-      <div class="pills" style="margin-left:auto"><button type="button" class="${FA === "open" ? "on" : ""}" data-failall="0">ยังไม่แก้ (ทุกเดือน)</button><button type="button" class="${FA === "all" ? "on" : ""}" data-failall="1">พบในเดือน ${thM(mon)}</button></div></div>
-    ${fGroups || `<div class="allok">✓ ไม่มีเครื่องที่ตรวจไม่ผ่าน${FA === "open" ? "ค้างอยู่" : "ในเดือนนี้"}</div>`}
-  </section>`;
-
-  /* ---- ③ สถิติรายเดือน ---- */
-  const months = [...new Set(RA.map(r => r.due.slice(0, 7)).filter(m => m && m <= ASOF.slice(0, 7)))].sort();
-  const mcell = (L, m) => { const c = cnt(dueIn(L, m)), f = L.filter(r => isFail(r) && failDate(r).slice(0, 7) === m).length, t = L.filter(r => r.r && failDate(r).slice(0, 7) === m).length;
-    if (!c.n && !t) return `<td class="mc nil">·</td>`;
-    const col = c.pct == null ? "#7a849a" : c.pct >= 95 ? "#0a8a5f" : c.pct >= 80 ? "#d97706" : "#c9301a";
-    const sp = S.kind === "all" ? " · " + ["wh", "mhe"].map(k => { const c2 = cnt(dueIn(L.filter(r => kindOf(r) === k), m)); return KIND[k].short + " " + (c2.pct == null ? "–" : c2.pct + "%"); }).join(" / ") : "";
-    return `<td class="mc" data-tip="${thM(m)} · ต้องตรวจ ${c.n} ตรวจแล้ว ${c.k}${sp} · ผลตรวจ ${t} ใบ ไม่ผ่าน ${f}"><b style="color:${col}">${c.pct == null ? "–" : c.pct + "%"}</b><span class="${f ? "bad" : ""}">${f ? "พบ " + f : "ไม่พบ"}</span></td>`; };
-  const allLine = { kind: "t", L: R };
-  const sec3 = `<section class="panel" style="display:grid;gap:12px">
-    <div class="sech"><span class="secn">4</span><div><h2>สถิติรายเดือน</h2><p class="hint">บน = ตรวจแล้วกี่ % ของงานที่ถึงกำหนด (เขียว ≥95% · ส้ม 80–94% · แดง &lt;80%) · ล่าง = พบไม่ผ่านกี่เครื่อง</p></div></div>
-    <div class="mxwrap"><table class="mx mxm"><thead><tr><th class="mx-n">คลัง / สาขา</th>${months.map(m => `<th>${thM(m)}</th>`).join("")}</tr></thead>
-    <tbody><tr class="mx-t"><td class="mx-n g"><b>${GD ? "รวม " + GD.name : "รวมทั้งหมด"}</b></td>${months.map(m => mcell(allLine.L, m)).join("")}</tr>
-    ${lines.map(x => `<tr class="${x.kind === "g" ? "mx-g" : ""}">${nameCell(x)}${months.map(m => mcell(x.L, m)).join("")}</tr>`).join("")}</tbody></table></div>
-  </section>`;
-
-  $("drill").innerHTML = sec4 + sec1 + sec2 + sec3;
+  $("crumb").innerHTML = `<span class="cur">ตารางรวมทุกสาขา</span><span class="chint" style="margin-left:auto;font-size:12.5px;font-weight:600;color:#5a6784">กดที่แถวเพื่อดูใบงานของสาขานั้น</span>`;
+  const R0 = rows({ wh: true, branch: true, rg: true });
+  const passPct = s => s.tested ? Math.round(s.pass / s.tested * 100) : null;
+  /* ตัวกรองใหญ่ → เล็ก (คลัง → ภาค → สาขา) + เรียงลำดับ ตามที่ผู้ใช้ขอ 30 ก.ย. */
+  const BF = S.bf || (S.bf = { wh: "all", rg: "all", sort: "group", dir: -1 });
+  if (BF.rg !== "all") BF.wh = "RDC01";
+  const R = R0.filter(r => (BF.wh === "all" || r.p === BF.wh) && (BF.rg === "all" || (r.p === "RDC01" && regionOf(r.b) === BF.rg)));
+  const brList = [...new Set(R.map(r => r.p + "|" + r.b))].map(k => k.split("|"))
+    .sort((a, b) => a[0] === b[0] ? 0 : a[0] === "WHA05" ? -1 : 1);
+  const opt = (v, l, cur) => `<option value="${v}"${v === cur ? " selected" : ""}>${l}</option>`;
+  const SORTS = [["group", "ตามคลัง / ภาค"], ["pct", "① งานเสร็จ %"], ["late", "① เลยกำหนด"], ["pp", "② ตรวจผ่าน %"], ["open", "② ไม่ผ่านยังไม่แก้"], ["n", "จำนวนใบงาน"]];
+  const bar = `<div class="bfbar">
+    <label class="sel">คลัง<select data-bf="wh">${opt("all", "ทั้งหมด", BF.wh)}${opt("WHA05", "คลังในประเทศ (WHA05)", BF.wh)}${opt("RDC01", "คลัง RDC ต่างจังหวัด", BF.wh)}</select></label>
+    <label class="sel">ภาค<select data-bf="rg"${BF.wh === "WHA05" ? " disabled" : ""}>${opt("all", "ทั้งหมด", BF.rg)}${REGIONS.map(([rg]) => opt(rg, rg, BF.rg)).join("")}</select></label>
+    <label class="sel">สาขา<select data-bf="br">${opt("", "ทั้งหมด (" + brList.length + ")", "")}${brList.map(([p, b]) => opt(p + "|" + b, b, "")).join("")}</select></label>
+    <label class="sel">เรียงตาม<select data-bf="sort">${SORTS.map(([v, l]) => opt(v, l, BF.sort)).join("")}</select></label>
+    ${BF.sort !== "group" ? `<button type="button" class="sel bfdir" data-bfdir="1">${BF.dir < 0 ? "มาก → น้อย ▼" : "น้อย → มาก ▲"}</button>` : ""}
+    ${BF.wh !== "all" || BF.rg !== "all" || BF.sort !== "group" ? `<button type="button" class="bfreset" data-bfreset="1">ล้างตัวกรอง</button>` : ""}
+  </div>`;
+  const cells = s => {
+    const pp = passPct(s);
+    return `<td class="num c">${s.n}</td>
+      <td><div class="sbar"><div class="sfill" style="width:${s.pct}%"></div></div><span class="num spct">${s.pct}%</span></td>
+      <td class="c">${s.late ? `<span class="hot late num">${s.late}</span>` : `<span class="nil">–</span>`}</td>
+      <td class="c num">${pp == null ? `<span class="nil">–</span>` : `<span style="color:${pp < 90 ? "#a8250f" : "#0a6b4d"};font-weight:800">${pp}%</span>`}</td>
+      <td class="c">${s.open ? `<span class="hot bad num">${s.open}</span>` : `<span class="nil">–</span>`}</td>`;
+  };
+  const row = (p, b) => { const L = R.filter(r => r.p === p && r.b === b); if (!L.length) return "";
+    return `<tr class="brow2" data-pick="${p}|${b}|" tabindex="0"><td class="bn">${b}</td>${cells(stat(L))}<td class="go">›</td></tr>`; };
+  const groupRow = (title, sub, L, cls) => { const s = stat(L);
+    return `<tr class="gh ${cls}"><td class="bn"><b>${title}</b>${sub ? `<span>${sub}</span>` : ""}</td>${cells(s)}<td></td></tr>`; };
+  const W = R.filter(r => r.p === "WHA05"), D = R.filter(r => r.p === "RDC01");
+  let html = "";
+  if (BF.sort === "group") {
+    const wBranches = [...new Set(W.map(r => r.b))].sort();
+    if (W.length) html += groupRow("คลังกระจายสินค้าภายในประเทศ", "WHA05", W, "wh") + wBranches.map(b => row("WHA05", b)).join("");
+    if (D.length) html += groupRow("คลัง RDC ต่างจังหวัด", "RDC01 · " + new Set(D.map(r => r.b)).size + " สาขา", D, "wh");
+    REGIONS.forEach(([rg, bs]) => { const L = D.filter(r => bs.includes(r.b)); if (!L.length) return;
+      html += groupRow(rg, bs.length + " สาขา", L, "rg") + bs.map(b => row("RDC01", b)).join(""); });
+    const other = [...new Set(D.map(r => r.b))].filter(b => !REGIONS.some(([, bs]) => bs.includes(b)));
+    if (other.length) html += groupRow("อื่นๆ", "", D.filter(r => other.includes(r.b)), "rg") + other.map(b => row("RDC01", b)).join("");
+  } else {
+    /* เรียงลำดับ: ทุกสาขาในรายการเดียว (ไม่แบ่งหัวกลุ่ม) + ลำดับที่ + ป้ายบอกคลัง/ภาค */
+    const key = { pct: s => s.pct, late: s => s.late, pp: s => passPct(s), open: s => s.open, n: s => s.n }[BF.sort];
+    const list = brList.map(([p, b]) => { const s = stat(R.filter(r => r.p === p && r.b === b)); return { p, b, s, v: key(s) }; })
+      .sort((a, b) => (a.v == null) - (b.v == null) || BF.dir * ((a.v ?? 0) - (b.v ?? 0)) || a.b.localeCompare(b.b, "th"));
+    html = list.map((x, i) => `<tr class="brow2" data-pick="${x.p}|${x.b}|" tabindex="0"><td class="bn"><span class="rk">${i + 1}</span>${x.b}<span class="btag">${x.p === "WHA05" ? "คลังในประเทศ" : "RDC · " + regionOf(x.b)}</span></td>${cells(x.s)}<td class="go">›</td></tr>`).join("");
+  }
+  if (!html) html = `<tr><td colspan="7" style="text-align:center;color:#5a6784;padding:28px">ไม่มีใบงานตามตัวกรองนี้</td></tr>`;
+  const T = stat(R);
+  const th = (k, cls, label) => `<th class="${cls} sortable${BF.sort === k ? " on" : ""}" data-bfsort="${k}">${label}${BF.sort === k ? (BF.dir < 0 ? " ▼" : " ▲") : ""}</th>`;
+  const scope = BF.rg !== "all" ? "RDC · " + BF.rg : BF.wh === "WHA05" ? "คลังในประเทศ" : BF.wh === "RDC01" ? "คลัง RDC ทั้งหมด" : "ทุกคลัง";
+  $("drill").innerHTML = `<div class="board">${bar}<div class="bwrap"><table class="btab">
+    <thead><tr><th class="bn">สาขา / อาคาร</th>${th("n", "c", "ใบงาน")}${th("pct", "q1h", "① งานเสร็จ")}${th("late", "c q1h", "① เลยกำหนด<br><small>ยังไม่ได้ตรวจ</small>")}${th("pp", "c q2h", "② ตรวจผ่าน")}${th("open", "c q2h", "② ไม่ผ่าน<br><small>ยังไม่ได้แก้</small>")}<th></th></tr></thead>
+    <tbody>${html}</tbody>
+    <tfoot><tr class="gh tot"><td class="bn"><b>รวม${scope}</b></td>${cells(T)}<td></td></tr></tfoot></table></div>
+    <div class="bnote"><span class="hot late">ส้ม</span> = มีงานเลยกำหนดต้องตามให้ทำ · <span class="hot bad">แดง</span> = มีเครื่องไม่ผ่านที่ยังไม่ได้ซ่อม · ผ่านต่ำกว่า 90% ตัวเลขเป็นสีแดง</div></div>`;
 }
 
 /* เปลี่ยนระดับ + จำไว้ในประวัติเบราว์เซอร์ ให้ปุ่ม Back ของเบราว์เซอร์/มือถือ/iPad ย้อนกลับได้ */
@@ -1082,28 +882,14 @@ document.addEventListener("change", e => {
   if (k === "br") { if (v) { const [p, b] = v.split("|"); goLevel(p, b, p === "RDC01" ? regionOf(b) : null); } return; }
   if (k === "wh") { BF.wh = v; if (v !== "RDC01") BF.rg = "all"; }
   else if (k === "rg") BF.rg = v;
-  else if (k === "sort") { BF.sort = v; BF.dir = v === "comp" ? 1 : -1; }
-  renderHero(); renderDrill();
+  else if (k === "sort") { BF.sort = v; BF.dir = -1; }
+  renderDrill();
 });
 document.addEventListener("click", e => {
   const so = e.target.closest("[data-bfsort]");
   if (so && S.bf) { const k = so.dataset.bfsort; if (S.bf.sort === k) S.bf.dir *= -1; else { S.bf.sort = k; S.bf.dir = -1; } renderDrill(); return; }
   if (e.target.closest("[data-bfdir]") && S.bf) { S.bf.dir *= -1; renderDrill(); return; }
-  if (e.target.closest("[data-bfreset]")) { S.bf = null; render(); return; }
-  const kd = e.target.closest("[data-kind]");
-  if (kd) { S.kind = kd.dataset.kind; render(); return; }
-  const gp = e.target.closest("[data-grp]");
-  if (gp) { S.grp = gp.dataset.grp === "all" || S.grp === gp.dataset.grp ? null : gp.dataset.grp; render(); return; }
-  const ds = e.target.closest("[data-dayshift]");
-  if (ds) { const n = +ds.dataset.dayshift; S.day = n === 0 ? null : plusD(S.day || ASOF, n); if (S.day && S.day >= ASOF) S.day = null; render(); return; }
-  const ft = e.target.closest("[data-ftog]");
-  if (ft) { S.fOpen = S.fOpen || {}; S.fOpen[ft.dataset.ftog] = !S.fOpen[ft.dataset.ftog]; renderDrill(); return; }
-  const fex = e.target.closest("[data-fexp]");
-  if (fex) { const all = fex.dataset.fexp === "1"; S.fOpen = {}; if (all) document.querySelectorAll("[data-ftog]").forEach(x => S.fOpen[x.dataset.ftog] = true); renderDrill(); return; }
-  const fa = e.target.closest("[data-failall]");
-  if (fa) { S.failAll = fa.dataset.failall === "1"; renderDrill(); return; }
-  if (e.target.closest("[data-bfok]") && S.bf) { S.bf.showOk = !S.bf.showOk; renderDrill(); return; }
-  if (e.target.closest("[data-actall]")) { S.actAll = !S.actAll; renderDrill(); return; }
+  if (e.target.closest("[data-bfreset]")) { S.bf = null; renderDrill(); return; }
 });
 document.addEventListener("click", e => {
   const q = e.target.closest("[data-quickfix]");
@@ -1119,6 +905,8 @@ document.addEventListener("click", e => {
   if (pk) { const [p, b, rg] = pk.dataset.pick.split("|"); goLevel(p, b, rg); return; }
   const jp = e.target.closest("[data-jump]");
   if (jp) { const el = document.getElementById(jp.dataset.jump); if (el) el.scrollIntoView({ behavior: "smooth" }); return; }
+  const kd = e.target.closest("[data-kind]");
+  if (kd) { S.kind = kd.dataset.kind; render(); return; }
   const t = e.target.closest("[data-wh],[data-month],[data-branch],[data-type],[data-st],[data-view],[data-fst],[data-per]");
   if (!t) return;
   if (t.dataset.per) S.per = t.dataset.per;
