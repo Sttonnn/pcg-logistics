@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap">
+  <style>
+    body { margin: 0; background: #eef2f8; color: #16213a; font-family: "IBM Plex Sans Thai", "Archivo", system-ui, sans-serif; -webkit-text-size-adjust: 100%; }
+    * { box-sizing: border-box; }
+    a { color: #1a5fe4; }
+    a:hover { color: #0f3fa4; }
+    @keyframes mcPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.45; transform: scale(0.8); } }
+    @keyframes mcRise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 760px) {
+      .mhero { padding: 16px 14px 22px !important; border-radius: 0 0 26px 26px !important; }
+      .mtop { gap: 10px !important; }
+      .mdate { width: 100%; }
+      .mstats { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important; }
+      .mgauge { grid-column: 1 / -1; }
+      .mwrap { padding: 18px 12px 40px !important; }
+      .mtitle { font-size: 26px !important; }
+      .mlist-head { display: none !important; }
+      .mrow { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important; padding: 12px 14px !important; }
+      .mrow > div:first-child { grid-column: 1 / -1; }
+      .mshift-lbl { display: inline !important; }
+      .mcard-name { font-size: 14.5px !important; }
+    }
+  </style>
+</helmet>
+
+<div style="min-height: 100vh; display: flex; flex-direction: column">
+
+  <header class="mhero" style="position: relative; overflow: hidden; padding: 20px clamp(16px, 3vw, 40px) 30px; background: linear-gradient(150deg, #101b2d 0%, #16283c 50%, #10333a 100%); color: #ffffff; border-radius: 0 0 36px 36px; box-shadow: 0 18px 40px rgba(16,27,45,0.28)">
+    <div aria-hidden="true" style="position: absolute; top: -40%; left: -10%; width: 60vw; height: 60vw; border-radius: 999px; pointer-events: none; background: radial-gradient(circle, rgba(38,118,246,0.5), rgba(38,118,246,0) 66%)"></div>
+    <div aria-hidden="true" style="position: absolute; top: -50%; right: -12%; width: 50vw; height: 50vw; border-radius: 999px; pointer-events: none; background: radial-gradient(circle, rgba(26,200,196,0.4), rgba(26,200,196,0) 66%)"></div>
+
+    <div style="position: relative; max-width: 1440px; margin: 0 auto; display: grid; gap: 22px">
+      <div class="mtop" style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap">
+        <a href="index.html" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: #ffffff; font-size: 14px; font-weight: 700; padding: 9px 16px 9px 12px; border-radius: 999px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.24); white-space: nowrap; flex: none" style-hover="background: rgba(255,255,255,0.22); color: #ffffff">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>หน้าหลัก
+        </a>
+        <span style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 14px; background: #ffffff; box-shadow: 0 8px 20px rgba(0,0,0,0.25); flex: none">
+          <img src="assets/icon-machine.png" alt="Machine check" style="width: 76%; height: 76%; object-fit: contain; display: block">
+        </span>
+        <div style="display: grid; gap: 0; flex: 1 1 200px; min-width: 0">
+          <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.72)">PCG · WHA · ทีมช่าง</span>
+          <h1 class="mtitle" style="margin: 0; font-family: Archivo, 'IBM Plex Sans Thai', sans-serif; font-size: 30px; line-height: 1.2; font-weight: 900; letter-spacing: -0.01em">Daily Machine Check</h1>
+        </div>
+        <label class="mdate" style="display: flex; align-items: center; gap: 10px; padding: 6px 6px 6px 14px; border-radius: 14px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.24); flex: none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4 M16 2v4 M3 10h18 M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path></svg>
+          <span style="font-size: 13px; font-weight: 600; white-space: nowrap">วันที่ตรวจ</span>
+          <input type="date" value="{{ date }}" onChange="{{ setDate }}" style="flex: 1; min-width: 0; font: inherit; font-size: 16px; font-weight: 700; color: #16213a; background: #ffffff; border: 0; border-radius: 10px; padding: 7px 10px; min-height: 40px">
+        </label>
+      </div>
+
+      <div style="display: flex; gap: 8px; padding: 5px; border-radius: 18px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18); width: fit-content; max-width: 100%">
+        <sc-for list="{{ sites }}" as="s" hint-placeholder-count="2">
+          <button type="button" onClick="{{ s.pick }}" style="font: inherit; cursor: pointer; border: 0; border-radius: 14px; padding: 9px 16px; display: flex; align-items: center; gap: 10px; text-align: left; background: {{ s.bg }}; color: {{ s.fg }}; box-shadow: {{ s.shadow }}; min-width: 0">
+            <span style="display: grid; gap: 1px; min-width: 0">
+              <span style="font-size: 15px; font-weight: 700; white-space: nowrap">{{ s.name }}</span>
+              <span style="font-size: 12px; font-weight: 500; opacity: 0.8; white-space: nowrap">{{ s.sub }}</span>
+            </span>
+            <span style="font-size: 12px; font-weight: 800; padding: 3px 9px; border-radius: 999px; background: {{ s.pillBg }}; color: {{ s.pillFg }}; white-space: nowrap; flex: none">{{ s.pill }}</span>
+          </button>
+        </sc-for>
+      </div>
+
+      <div class="mstats" style="display: grid; grid-template-columns: 1.3fr 1fr 1fr 1fr; gap: 14px">
+        <div class="mgauge" style="display: flex; align-items: center; gap: 18px; padding: 16px 20px; border-radius: 22px; background: linear-gradient(145deg, rgba(255,255,255,0.16), rgba(255,255,255,0.06)); border: 1px solid rgba(255,255,255,0.22)">
+          <div style="position: relative; width: 104px; height: 104px; flex: none">
+            <svg width="104" height="104" viewBox="0 0 104 104" style="transform: rotate(-90deg); display: block">
+              <circle cx="52" cy="52" r="44" fill="none" stroke="rgba(255,255,255,0.16)" stroke-width="11"></circle>
+              <circle cx="52" cy="52" r="44" fill="none" stroke="{{ ringColor }}" stroke-width="11" stroke-linecap="round" stroke-dasharray="{{ dash }}"></circle>
+            </svg>
+            <span style="position: absolute; inset: 0; display: grid; place-items: center; font-family: Archivo, sans-serif; font-size: 24px; font-weight: 900">{{ pct }}</span>
+          </div>
+          <div style="display: grid; gap: 4px; min-width: 0">
+            <span style="font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.8); white-space: nowrap">ความพร้อมใช้งาน</span>
+            <span style="font-family: Archivo, sans-serif; font-size: 34px; line-height: 1; font-weight: 900; white-space: nowrap">{{ ready }}<span style="font-size: 18px; font-weight: 700; color: rgba(255,255,255,0.7)"> / {{ total }}</span></span>
+            <span style="font-size: 12.5px; color: rgba(255,255,255,0.78); white-space: nowrap">เครื่องพร้อมใช้</span>
+          </div>
+        </div>
+        <div style="display: grid; gap: 8px; align-content: space-between; padding: 16px 18px; border-radius: 22px; background: linear-gradient(150deg, #1a5fe4, #0f3fa4); box-shadow: 0 12px 26px rgba(15,63,164,0.4)">
+          <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px"><span style="font-size: 13px; font-weight: 600; white-space: nowrap">อุปกรณ์ทั้งหมด</span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.85; flex: none"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12 M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"></path></svg></span>
+          <span style="font-family: Archivo, sans-serif; font-size: 40px; line-height: 1; font-weight: 900">{{ total }}<span style="font-size: 15px; font-weight: 600"> เครื่อง</span></span>
+        </div>
+        <div style="display: grid; gap: 8px; align-content: space-between; padding: 16px 18px; border-radius: 22px; background: linear-gradient(150deg, #13a878, #0a7353); box-shadow: 0 12px 26px rgba(10,115,83,0.4)">
+          <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px"><span style="font-size: 13px; font-weight: 600; white-space: nowrap">ปกติ</span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.85; flex: none"><path d="M21.801 10A10 10 0 1 1 17 3.335 M9 11l3 3L22 4"></path></svg></span>
+          <span style="font-family: Archivo, sans-serif; font-size: 40px; line-height: 1; font-weight: 900">{{ ready }}<span style="font-size: 15px; font-weight: 600"> เครื่อง</span></span>
+        </div>
+        <div style="display: grid; gap: 8px; align-content: space-between; padding: 16px 18px; border-radius: 22px; background: {{ badCard }}; box-shadow: {{ badShadow }}">
+          <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px"><span style="font-size: 13px; font-weight: 600; white-space: nowrap">เสีย / ต้องซ่อม</span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.85; flex: none"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg></span>
+          <span style="font-family: Archivo, sans-serif; font-size: 40px; line-height: 1; font-weight: 900">{{ bad }}<span style="font-size: 15px; font-weight: 600"> เครื่อง</span></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="mwrap" style="flex: 1; width: 100%; max-width: 1440px; margin: 0 auto; padding: 26px clamp(16px, 3vw, 40px) 56px; display: grid; gap: 22px; align-content: start">
+
+    <div style="display: flex; gap: 6px; padding: 5px; border-radius: 18px; background: #ffffff; box-shadow: 0 6px 18px rgba(22,33,58,0.08); width: fit-content; max-width: 100%">
+      <sc-for list="{{ views }}" as="v" hint-placeholder-count="2">
+        <button type="button" onClick="{{ v.pick }}" style="font: inherit; cursor: pointer; border: 0; border-radius: 14px; padding: 10px 18px; display: inline-flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 700; white-space: nowrap; background: {{ v.bg }}; color: {{ v.fg }}; box-shadow: {{ v.shadow }}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ v.icon }}"></path></svg>{{ v.label }}
+        </button>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{ isToday }}" hint-placeholder-val="{{ true }}">
+    <div style="display: grid; gap: 22px">
+    <sc-if value="{{ hasBad }}" hint-placeholder-val="{{ false }}">
+      <section style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 14px 18px; border-radius: 20px; background: linear-gradient(120deg, #fff1ee, #ffe3dc); border: 1px solid #ffc4b8; box-shadow: 0 10px 24px rgba(226,64,36,0.14)">
+        <span style="display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(150deg, #f0553a, #c9301a); color: #ffffff; box-shadow: 0 8px 18px rgba(201,48,26,0.35); flex: none">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3 M12 9v4 M12 17h.01"></path></svg>
+        </span>
+        <div style="display: grid; gap: 2px; flex: 1 1 200px; min-width: 0">
+          <span style="font-size: 16px; font-weight: 700; color: #8f1f0d">ต้องดูแล {{ bad }} เครื่อง</span>
+          <span style="font-size: 13.5px; color: #8f1f0d">{{ badText }}</span>
+        </div>
+        <button type="button" onClick="{{ showBad }}" style="font: inherit; cursor: pointer; border: 0; border-radius: 999px; padding: 9px 16px; font-size: 13.5px; font-weight: 700; background: #c9301a; color: #ffffff; white-space: nowrap; flex: none; box-shadow: 0 6px 14px rgba(201,48,26,0.3)" style-hover="background: #a8250f">ดูเฉพาะที่เสีย</button>
+      </section>
+    </sc-if>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap">
+      <h2 style="margin: 0; font-size: 21px; font-weight: 700; display: flex; align-items: center; gap: 10px; min-width: 0">รายการอุปกรณ์ <span style="font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: #dde6f5; color: #2a3b5f; white-space: nowrap">{{ siteName }}</span></h2>
+      <div style="display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: #ffffff; box-shadow: 0 4px 14px rgba(22,33,58,0.08)">
+        <sc-for list="{{ filters }}" as="f" hint-placeholder-count="2">
+          <button type="button" onClick="{{ f.pick }}" style="font: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer; border: 0; border-radius: 999px; padding: 8px 16px; min-height: 38px; background: {{ f.bg }}; color: {{ f.fg }}; white-space: nowrap">{{ f.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div class="mlist" style="display: grid; border-radius: 22px; overflow: hidden; background: #ffffff; box-shadow: 0 10px 26px rgba(22,33,58,0.1)">
+      <div class="mlist-head" style="display: grid; grid-template-columns: minmax(0, 1fr) 150px 150px; gap: 10px; align-items: center; padding: 12px 18px; background: #f5f7fb; border-bottom: 1px solid #e6ebf3; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; color: #5a6784">
+        <span>อุปกรณ์</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 1 0 0-8 M12 2v2 M12 20v2 M4.93 4.93l1.41 1.41 M17.66 17.66l1.41 1.41 M2 12h2 M20 12h2 M6.34 17.66l-1.41 1.41 M19.07 4.93l-1.41 1.41"></path></svg>พลัดเข้า</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>พลัดดึก</span>
+      </div>
+      <sc-for list="{{ items }}" as="it" hint-placeholder-count="12">
+        <div class="mrow" style="display: grid; grid-template-columns: minmax(0, 1fr) 150px 150px; gap: 10px; align-items: center; padding: 12px 18px; border-bottom: 1px solid #eef1f6; border-left: 4px solid {{ it.edge }}; background: {{ it.rowBg }}; animation: mcRise 0.45s ease both">
+          <div style="display: flex; align-items: center; gap: 12px; min-width: 0">
+            <span style="font-family: Archivo, sans-serif; font-size: 12px; font-weight: 800; color: #5a6784; width: 22px; flex: none">{{ it.no }}</span>
+            <span style="display: grid; place-items: center; width: 36px; height: 36px; border-radius: 11px; background: linear-gradient(155deg, {{ it.c1 }}, {{ it.c2 }}); color: #ffffff; box-shadow: 0 6px 14px rgba(22,33,58,0.16); flex: none">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ it.icon }}"></path></svg>
+            </span>
+            <div style="display: grid; gap: 0; min-width: 0">
+              <span class="mcard-name" style="font-size: 15.5px; line-height: 1.3; font-weight: 700; color: #16213a">{{ it.name }}</span>
+              <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5a6784">{{ it.type }}</span>
+            </div>
+          </div>
+          <sc-for list="{{ it.shifts }}" as="sh" hint-placeholder-count="2">
+            <span style="display: inline-flex; align-items: center; gap: 7px; justify-self: start; padding: 7px 12px; border-radius: 999px; background: {{ sh.bg }}; color: {{ sh.fg }}; font-size: 13.5px; font-weight: 700; white-space: nowrap">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="{{ sh.mark }}"></path></svg>
+              <span class="mshift-lbl" style="display: none; font-weight: 600; opacity: 0.8">{{ sh.label }}</span>{{ sh.text }}
+            </span>
+          </sc-for>
+        </div>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; align-items: center; gap: 12px; padding: 22px; border-radius: 20px; background: #ffffff; box-shadow: 0 8px 22px rgba(22,33,58,0.08); font-size: 15px; font-weight: 600; color: #0a7353">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335 M9 11l3 3L22 4"></path></svg>ไม่มีอุปกรณ์ที่เสียในวันนี้
+      </div>
+    </sc-if>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isLog }}" hint-placeholder-val="{{ false }}">
+    <div style="display: grid; gap: 20px">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap">
+        <h2 style="margin: 0; font-size: 21px; font-weight: 700; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-width: 0"><span style="white-space: nowrap">ประวัติย้อนหลัง</span> <span style="font-size: 13px; line-height: 1.4; font-weight: 600; white-space: nowrap; padding: 4px 10px; border-radius: 999px; background: #dde6f5; color: #2a3b5f; white-space: nowrap">{{ siteName }} · {{ rangeLabel }}</span></h2>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap">
+          <div style="display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: #ffffff; box-shadow: 0 4px 14px rgba(22,33,58,0.08)">
+            <sc-for list="{{ ranges }}" as="r" hint-placeholder-count="3">
+              <button type="button" onClick="{{ r.pick }}" style="font: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer; border: 0; border-radius: 999px; padding: 8px 14px; min-height: 38px; background: {{ r.bg }}; color: {{ r.fg }}; white-space: nowrap">{{ r.label }}</button>
+            </sc-for>
+          </div>
+          <div style="display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: #ffffff; box-shadow: 0 4px 14px rgba(22,33,58,0.08)">
+            <sc-for list="{{ logFilters }}" as="f" hint-placeholder-count="2">
+              <button type="button" onClick="{{ f.pick }}" style="font: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer; border: 0; border-radius: 999px; padding: 8px 14px; min-height: 38px; background: {{ f.bg }}; color: {{ f.fg }}; white-space: nowrap">{{ f.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 14px">
+        <div style="display: flex; align-items: center; gap: 14px; padding: 16px 18px; border-radius: 20px; background: #ffffff; box-shadow: 0 10px 26px rgba(22,33,58,0.08)">
+          <span style="display: grid; place-items: center; width: 46px; height: 46px; border-radius: 14px; background: linear-gradient(150deg, #13a878, #0a7353); color: #ffffff; box-shadow: 0 8px 18px rgba(10,115,83,0.3); flex: none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"></path></svg></span>
+          <span style="display: grid; gap: 2px; min-width: 0"><span style="font-size: 13px; font-weight: 600; color: #5a6784; white-space: nowrap">ความพร้อมเฉลี่ย</span><span style="font-family: Archivo, sans-serif; font-size: 28px; line-height: 1.1; font-weight: 900">{{ avgPct }}</span></span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 14px; padding: 16px 18px; border-radius: 20px; background: #ffffff; box-shadow: 0 10px 26px rgba(22,33,58,0.08)">
+          <span style="display: grid; place-items: center; width: 46px; height: 46px; border-radius: 14px; background: linear-gradient(150deg, #f0553a, #b8260f); color: #ffffff; box-shadow: 0 8px 18px rgba(184,38,15,0.3); flex: none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg></span>
+          <span style="display: grid; gap: 2px; min-width: 0"><span style="font-size: 13px; font-weight: 600; color: #5a6784; white-space: nowrap">พลัดที่พบเสีย</span><span style="font-family: Archivo, sans-serif; font-size: 28px; line-height: 1.1; font-weight: 900">{{ badShifts }}<span style="font-size: 14px; font-weight: 600; color: #5a6784"> ครั้ง</span></span></span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 14px; padding: 16px 18px; border-radius: 20px; background: #ffffff; box-shadow: 0 10px 26px rgba(22,33,58,0.08)">
+          <span style="display: grid; place-items: center; width: 46px; height: 46px; border-radius: 14px; background: linear-gradient(150deg, #f39a1d, #c96a07); color: #ffffff; box-shadow: 0 8px 18px rgba(201,106,7,0.3); flex: none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6 M22 7l-8.5 8.5-5-5L2 17"></path></svg></span>
+          <span style="display: grid; gap: 2px; min-width: 0"><span style="font-size: 13px; font-weight: 600; color: #5a6784; white-space: nowrap">เสียบ่อยที่สุด</span><span style="font-size: 16px; line-height: 1.3; font-weight: 700">{{ topName }}</span><span style="font-size: 12.5px; color: #5a6784">{{ topNote }}</span></span>
+        </div>
+      </div>
+
+      <section style="display: grid; gap: 12px; padding: 18px; border-radius: 22px; background: #ffffff; box-shadow: 0 10px 26px rgba(22,33,58,0.08)">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap">
+          <h3 style="margin: 0; font-size: 16px; font-weight: 700">ภาพรวมรายเครื่อง รายวัน</h3>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap; font-size: 12.5px; color: #5a6784">
+            <span style="display: inline-flex; align-items: center; gap: 6px; white-space: nowrap"><span style="width: 12px; height: 12px; border-radius: 4px; background: #bfead6"></span>ปกติ</span>
+            <span style="display: inline-flex; align-items: center; gap: 6px; white-space: nowrap"><span style="width: 12px; height: 12px; border-radius: 4px; background: #ffb466"></span>เสีย 1 พลัด</span>
+            <span style="display: inline-flex; align-items: center; gap: 6px; white-space: nowrap"><span style="width: 12px; height: 12px; border-radius: 4px; background: #e8432a"></span>เสียทั้งวัน</span>
+          </div>
+        </div>
+        <div style="overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 4px">
+          <div style="display: grid; gap: 4px; width: max-content; min-width: 100%">
+            <div style="display: flex; gap: 4px; align-items: flex-end">
+              <span style="position: sticky; left: 0; z-index: 2; width: 212px; flex: none; background: #ffffff"></span>
+              <sc-for list="{{ heatDays }}" as="d" hint-placeholder-count="14">
+                <span style="width: {{ cellW }}; flex: none; display: grid; justify-items: center; gap: 0; font-size: 11px; line-height: 1.25; color: {{ d.fg }}; font-weight: {{ d.fw }}"><span>{{ d.wd }}</span><span style="font-family: Archivo, sans-serif; font-size: 12.5px">{{ d.dn }}</span></span>
+              </sc-for>
+            </div>
+            <sc-for list="{{ heatRows }}" as="row" hint-placeholder-count="12">
+              <div style="display: flex; gap: 4px; align-items: center">
+                <span style="position: sticky; left: 0; z-index: 1; width: 212px; flex: none; display: flex; align-items: center; gap: 8px; padding-right: 8px; background: #ffffff; min-width: 0">
+                  <span style="width: 8px; height: 8px; border-radius: 999px; background: {{ row.dot }}; flex: none"></span>
+                  <span title="{{ row.name }}" style="font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ row.short }}</span>
+                </span>
+                <sc-for list="{{ row.cells }}" as="c" hint-placeholder-count="14">
+                  <span title="{{ c.tip }}" style="width: {{ cellW }}; height: 24px; flex: none; border-radius: 7px; background: {{ c.bg }}; box-shadow: {{ c.ring }}"></span>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </section>
+
+      <section style="display: grid; gap: 12px">
+        <h3 style="margin: 0; font-size: 16px; font-weight: 700">บันทึกรายวัน</h3>
+        <sc-for list="{{ logDays }}" as="day" hint-placeholder-count="5">
+          <div style="display: flex; gap: 14px; align-items: stretch">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; flex: none; width: 58px">
+              <span style="display: grid; justify-items: center; width: 58px; padding: 7px 0; border-radius: 16px; background: {{ day.dateBg }}; color: {{ day.dateFg }}; box-shadow: {{ day.dateShadow }}">
+                <span style="font-size: 11px; font-weight: 600; opacity: 0.85">{{ day.wd }}</span>
+                <span style="font-family: Archivo, sans-serif; font-size: 20px; line-height: 1.1; font-weight: 900">{{ day.dn }}</span>
+                <span style="font-size: 11px; font-weight: 600; opacity: 0.85">{{ day.mon }}</span>
+              </span>
+              <span style="flex: 1; width: 2px; border-radius: 2px; background: #d6deec"></span>
+            </div>
+            <div style="flex: 1; min-width: 0; display: grid; gap: 10px; align-content: start; padding: 14px 16px; margin-bottom: 4px; border-radius: 18px; background: #ffffff; box-shadow: 0 8px 22px rgba(22,33,58,0.07); border-left: 4px solid {{ day.edge }}">
+              <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+                <span style="font-size: 15px; line-height: 1.4; font-weight: 700; white-space: nowrap; flex: none">{{ day.title }}</span>
+                <span style="font-size: 12.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: {{ day.pillBg }}; color: {{ day.pillFg }}; white-space: nowrap">พร้อมใช้ {{ day.ready }}</span>
+              </div>
+              <sc-if value="{{ day.hasIssues }}" hint-placeholder-val="{{ false }}">
+                <div style="display: grid; gap: 6px">
+                  <sc-for list="{{ day.issues }}" as="is" hint-placeholder-count="1">
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 8px 10px; border-radius: 12px; background: #fff3ef">
+                      <span style="display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(155deg, {{ is.c1 }}, {{ is.c2 }}); color: #ffffff; flex: none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ is.icon }}"></path></svg></span>
+                      <span style="font-size: 14px; font-weight: 700; flex: 1 1 140px; min-width: 0">{{ is.name }}</span>
+                      <span style="display: flex; gap: 6px; flex-wrap: wrap">
+                        <sc-for list="{{ is.shifts }}" as="s" hint-placeholder-count="1">
+                          <span style="font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: #ffd9d0; color: #a8250f; white-space: nowrap">{{ s }}</span>
+                        </sc-for>
+                      </span>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+        </sc-for>
+        <sc-if value="{{ logEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; align-items: center; gap: 12px; padding: 22px; border-radius: 20px; background: #ffffff; box-shadow: 0 8px 22px rgba(22,33,58,0.08); font-size: 15px; font-weight: 600; color: #0a7353">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335 M9 11l3 3L22 4"></path></svg>ไม่มีเครื่องเสียในช่วงนี้
+          </div>
+        </sc-if>
+      </section>
+    </div>
+    </sc-if>
+
+    <span style="font-size: 12px; color: #5a6784; line-height: 1.6">ข้อมูลตัวอย่าง · รอเชื่อมผลตรวจจาก Microsoft Forms</span>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;defaultSite&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;DOM&quot;,&quot;EXP&quot;],&quot;default&quot;:&quot;DOM&quot;,&quot;tsType&quot;:&quot;'DOM' | 'EXP'&quot;}}">
+const IC = {
+  Conveyor: "M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z M12 22V12 M3.29 7 12 12l8.71-5 M7.5 4.27l9 5.15",
+  Inventory: "M3 7V5a2 2 0 0 1 2-2h2 M17 3h2a2 2 0 0 1 2 2v2 M21 17v2a2 2 0 0 1-2 2h-2 M7 21H5a2 2 0 0 1-2-2v-2 M7 12h10",
+  Cleaning: "M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z",
+  Wrapping: "M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8 M21 3v5h-5",
+  Pallet: "M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12 M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17",
+  Compactor: "M3 3h18v5H3z M5 8v11a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8 M10 12h4",
+  Shuttle: "M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2 M15 18H9 M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14 M5 18a2 2 0 1 0 4 0 2 2 0 1 0-4 0 M15 18a2 2 0 1 0 4 0 2 2 0 1 0-4 0",
+  Palletizing: "M12 8V4H8 M4 10a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z M2 14h2 M20 14h2 M15 13v2 M9 13v2",
+  Compressor: "M12.8 19.6A2 2 0 1 0 14 16H2 M17.5 8a2.5 2.5 0 1 1 2 4H2 M9.8 4.4A2 2 0 1 1 11 8H2"
+};
+const COL = {
+  Conveyor: ["#2f7cf6", "#1a4fc4"], Inventory: ["#6b5cf6", "#4331c2"], Cleaning: ["#16b3c9", "#0b7f95"],
+  Wrapping: ["#b04ae8", "#7a24b8"], Pallet: ["#15b58a", "#0a7a5c"], Compactor: ["#f39a1d", "#c96a07"],
+  Shuttle: ["#f2653a", "#c33f16"], Palletizing: ["#e8457a", "#b21f52"], Compressor: ["#1ba5e0", "#0a6fa8"]
+};
+const EQUIP = {
+  DOM: [
+    ["Robot Cleaning", "Cleaning"], ["Drone", "Inventory"], ["Pallet Magazine", "Pallet"],
+    ["Tele Conveyor", "Conveyor"], ["Compress Machine", "Compactor"],
+    ["Pallet Wrapping No.1", "Wrapping"], ["Pallet Wrapping No.2", "Wrapping"],
+    ["Conveyor Manual No.1", "Conveyor"], ["Conveyor Manual No.2", "Conveyor"], ["Conveyor Manual No.3", "Conveyor"],
+    ["Conveyor Manual No.4", "Conveyor"], ["Conveyor Manual No.5", "Conveyor"]
+  ],
+  EXP: [
+    ["Robot", "Palletizing"], ["Tele Conveyor", "Conveyor"], ["Air Compressor", "Compressor"],
+    ["Conveyor Semi ป.33", "Conveyor"], ["Conveyor Semi ป.31", "Conveyor"],
+    ["Shuttle Car No.1", "Shuttle"], ["Shuttle Car No.2", "Shuttle"], ["Shuttle Car No.3", "Shuttle"],
+    ["Conveyor Manual ป.28", "Conveyor"], ["Conveyor Manual ป.26", "Conveyor"]
+  ]
+};
+const SITES = { DOM: "Domestic Warehouse", EXP: "Export Warehouse" };
+// Sample results [เข้า, ดึก]: "ok" | "bad" | "wait". Replace with Forms data.
+const SAMPLE = { "DOM-02": ["bad", "bad"] };
+const SUN = "M12 8a4 4 0 1 0 0 8 4 4 0 1 0 0-8 M12 2v2 M12 20v2 M4.93 4.93l1.41 1.41 M17.66 17.66l1.41 1.41 M2 12h2 M20 12h2 M6.34 17.66l-1.41 1.41 M19.07 4.93l-1.41 1.41";
+const MOON = "M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z";
+const ST = {
+  ok: { text: "ปกติ", bg: "#e3f6ee", fg: "#0a6b4d" },
+  bad: { text: "เสีย", bg: "#ffe3dc", fg: "#a8250f" },
+  wait: { text: "ยังไม่ตรวจ", bg: "#eef1f6", fg: "#5a6784" }
+};
+const SHIFT = ["พลัดเข้า", "พลัดดึก"];
+const MARK = { ok: "M20 6 9 17l-5-5", bad: "M18 6 6 18 M6 6l12 12", wait: "M12 6v6l4 2 M12 2a10 10 0 1 0 0 20 10 10 0 1 0 0-20" };
+
+class Component extends DCLogic {
+  state = { site: null, filter: "all", view: "today", range: 14, logFilter: "all", date: new Date().toLocaleDateString("sv-SE") };
+
+  rnd(str) { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0) / 4294967296; }
+
+  dayAt(off) { const d = new Date(this.state.date + "T00:00:00"); d.setDate(d.getDate() - off); return d; }
+
+  resultFor(key, off) {
+    if (off === 0 && SAMPLE[key]) return SAMPLE[key];
+    if (key === "DOM-02" && off <= 2) return off === 2 ? ["ok", "bad"] : ["bad", "bad"];
+    const ds = this.dayAt(off).toLocaleDateString("sv-SE");
+    return [0, 1].map(i => this.rnd(key + ds + i) < 0.035 ? "bad" : "ok");
+  }
+
+  build(site, off = 0) {
+    return EQUIP[site].map(([name, type], i) => {
+      const no = String(i + 1).padStart(2, "0"), key = site + "-" + no;
+      const res = this.resultFor(key, off);
+      return { key, no, name, type, res, isBad: res.includes("bad") };
+    });
+  }
+
+  buildLog(site, total) {
+    const n = this.state.range, TH = "th-TH";
+    const days = Array.from({ length: n }, (_, off) => ({ off, d: this.dayAt(off), list: this.build(site, off) }));
+    const counts = {}; let badShifts = 0, readySum = 0;
+    days.forEach(x => x.list.forEach(e => { const b = e.res.filter(r => r === "bad").length; badShifts += b; if (b) counts[e.name] = (counts[e.name] || 0) + 1; }));
+    days.forEach(x => readySum += x.list.filter(e => !e.isBad).length / total);
+    const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+    const wd = d => d.toLocaleDateString(TH, { weekday: "short" });
+    const asc = days.slice().reverse();
+    const cellColor = b => b === 2 ? "#e8432a" : b === 1 ? "#ffb466" : "#bfead6";
+    const logDays = days.filter(x => this.state.logFilter === "all" || x.list.some(e => e.isBad)).map(x => {
+      const bad = x.list.filter(e => e.isBad), ok = total - bad.length, today = x.off === 0;
+      return {
+        wd: wd(x.d), dn: x.d.getDate(), mon: x.d.toLocaleDateString(TH, { month: "short" }),
+        dateBg: today ? "linear-gradient(150deg, #1a5fe4, #0f3fa4)" : "#ffffff", dateFg: today ? "#ffffff" : "#16213a",
+        dateShadow: today ? "0 8px 18px rgba(15,63,164,0.3)" : "0 4px 12px rgba(22,33,58,0.08)",
+        title: bad.length ? "พบเครื่องเสีย " + bad.length + " เครื่อง" : "ปกติทุกเครื่อง",
+        ready: ok + "/" + total, edge: bad.length ? "#f0553a" : "#39c28b",
+        pillBg: bad.length ? "#ffe3dc" : "#e3f6ee", pillFg: bad.length ? "#a8250f" : "#0a6b4d",
+        hasIssues: bad.length > 0,
+        issues: bad.map(e => { const [c1, c2] = COL[e.type] || COL.Conveyor; return { name: e.name, c1, c2, icon: IC[e.type] || IC.Conveyor, shifts: e.res.map((r, i) => r === "bad" ? SHIFT[i] : null).filter(Boolean) }; })
+      };
+    });
+    return {
+      rangeLabel: n + " วันล่าสุด",
+      avgPct: Math.round(readySum / n * 100) + "%",
+      badShifts,
+      topName: top ? top[0] : "ไม่มี",
+      topNote: top ? "เสีย " + top[1] + " วัน จาก " + n + " วัน" : "ไม่มีเครื่องเสียในช่วงนี้",
+      cellW: n > 14 ? "24px" : "34px",
+      heatDays: asc.map(x => ({ wd: wd(x.d), dn: x.d.getDate(), fg: x.off === 0 ? "#1a5fe4" : "#5a6784", fw: x.off === 0 ? "800" : "600" })),
+      heatRows: EQUIP[site].map(([name], i) => {
+        const cells = asc.map(x => { const e = x.list[i], b = e.res.filter(r => r === "bad").length; return { bg: cellColor(b), ring: x.off === 0 ? "inset 0 0 0 2px rgba(26,95,228,0.55)" : "none", tip: name + " · " + x.d.toLocaleDateString(TH) + " · " + (b ? "เสีย " + b + " พลัด" : "ปกติ") }; });
+        return { name, short: name.replace("Conveyor Manual", "Conv. Manual").replace("Conveyor Semi", "Conv. Semi"), cells, dot: counts[name] ? "#e8432a" : "#39c28b" };
+      }),
+      logDays, logEmpty: logDays.length === 0
+    };
+  }
+
+  renderVals() {
+    const site = this.state.site || this.props.defaultSite || "DOM";
+    const all = this.build(site), bad = all.filter(e => e.isBad);
+    const shown = this.state.filter === "bad" ? bad : all;
+    const ratio = (all.length - bad.length) / all.length, C = 2 * Math.PI * 44;
+    const V = this.state.view;
+    const pill = on => ({ bg: on ? "#16213a" : "transparent", fg: on ? "#ffffff" : "#2a3b5f" });
+    const log = V === "log" ? this.buildLog(site, all.length) : {};
+    return {
+      ...log,
+      isToday: V === "today", isLog: V === "log",
+      views: [["today", "ภาพรวมวันนี้", "M3 3v16a2 2 0 0 0 2 2h16 M7 16h8 M7 11h12 M7 6h3"], ["log", "ประวัติย้อนหลัง", "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8 M3 3v5h5 M12 7v5l4 2"]].map(([k, label, icon]) => {
+        const on = V === k;
+        return { label, icon, bg: on ? "linear-gradient(150deg, #1a5fe4, #0f3fa4)" : "transparent", fg: on ? "#ffffff" : "#2a3b5f", shadow: on ? "0 8px 18px rgba(15,63,164,0.3)" : "none", pick: () => this.setState({ view: k }) };
+      }),
+      ranges: [7, 14, 30].map(n => ({ label: n + " วัน", ...pill(this.state.range === n), pick: () => this.setState({ range: n }) })),
+      logFilters: [["all", "ทุกวัน"], ["bad", "เฉพาะวันที่มีเสีย"]].map(([k, label]) => ({ label, ...pill(this.state.logFilter === k), pick: () => this.setState({ logFilter: k }) })),
+      date: this.state.date,
+      setDate: e => this.setState({ date: e.target.value }),
+      sites: Object.keys(SITES).map(k => {
+        const on = k === site, list = this.build(k), b = list.filter(e => e.isBad).length;
+        return {
+          name: SITES[k], sub: list.length + " เครื่อง",
+          pill: b ? "เสีย " + b : "ปกติ", pillBg: b ? "#ffe3dc" : "#d8f5e9", pillFg: b ? "#a8250f" : "#0a6b4d",
+          bg: on ? "#ffffff" : "transparent", fg: on ? "#16213a" : "#ffffff",
+          shadow: on ? "0 8px 20px rgba(0,0,0,0.25)" : "none",
+          pick: () => this.setState({ site: k, filter: "all" })
+        };
+      }),
+      siteName: SITES[site],
+      total: all.length, ready: all.length - bad.length, bad: bad.length,
+      pct: Math.round(ratio * 100) + "%",
+      dash: (C * ratio).toFixed(1) + " " + C.toFixed(1),
+      ringColor: bad.length ? "#ffb13d" : "#39d99a",
+      badCard: bad.length ? "linear-gradient(150deg, #f0553a, #b8260f)" : "linear-gradient(150deg, #4a5877, #333f5a)",
+      badShadow: bad.length ? "0 12px 26px rgba(184,38,15,0.42)" : "0 12px 26px rgba(22,33,58,0.3)",
+      hasBad: bad.length > 0,
+      badText: bad.map(e => e.name + " (" + e.res.map((r, i) => r === "bad" ? SHIFT[i] : null).filter(Boolean).join(", ") + ")").join(" · "),
+      showBad: () => this.setState({ filter: "bad" }),
+      filters: [["all", "ทั้งหมด " + all.length], ["bad", "เสีย " + bad.length]].map(([k, label]) => {
+        const on = this.state.filter === k;
+        return { label, bg: on ? (k === "bad" ? "#c9301a" : "#16213a") : "transparent", fg: on ? "#ffffff" : "#2a3b5f", pick: () => this.setState({ filter: k }) };
+      }),
+      empty: shown.length === 0,
+      items: shown.map(e => {
+        const [c1, c2] = COL[e.type] || COL.Conveyor;
+        return {
+          no: e.no, name: e.name, type: e.type, isBad: e.isBad,
+          c1, c2, icon: IC[e.type] || IC.Conveyor,
+          edge: e.isBad ? "#f0553a" : "transparent",
+          rowBg: e.isBad ? "#fff6f3" : "#ffffff",
+          shifts: e.res.map((r, i) => ({ label: SHIFT[i], mark: MARK[r], ...ST[r] }))
+        };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>
