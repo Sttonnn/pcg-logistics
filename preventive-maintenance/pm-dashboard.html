@@ -238,6 +238,12 @@
   .kindseg .kc { font-size: 11.5px; font-weight: 700; opacity: .7; margin-left: 2px; }
   .ktag { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 800; vertical-align: 1px; white-space: nowrap; }
   .ktag.big { font-size: 13px; padding: 3px 10px; margin-left: 6px; }
+  .gh.tog { cursor: pointer; }
+  .gh.tog:hover td { filter: brightness(.97); }
+  .gh.wh.tog:hover td { filter: brightness(1.25); }
+  .garr { display: inline-block; width: 18px; font-size: 11px; opacity: .7; }
+  .gh.tog .go { font-size: 12px; font-weight: 700; color: #1a5fe4; text-align: right; white-space: nowrap; }
+  .gh.wh.tog .go { color: #9cc0ff; }
   .brow2 { cursor: pointer; }
   .brow2:hover td, .brow2:focus td { background: #f4f8ff; outline: none; }
   .brow2 .bn { padding-left: 34px; font-weight: 700; }
@@ -368,102 +374,39 @@
     <label class="sel">สาขา<select data-bf="br"><option value="" selected="">ทั้งหมด (16)</option><option value="WHA05|WH05">WH05</option><option value="WHA05|WH32">WH32</option><option value="RDC01|เชียงใหม่">เชียงใหม่</option><option value="RDC01|พิษณุโลก">พิษณุโลก</option><option value="RDC01|เชียงราย">เชียงราย</option><option value="RDC01|โคราช">โคราช</option><option value="RDC01|สุราษฎร์ธานี">สุราษฎร์ธานี</option><option value="RDC01|หาดใหญ่">หาดใหญ่</option><option value="RDC01|หนองแขม">หนองแขม</option><option value="RDC01|ขอนแก่น">ขอนแก่น</option><option value="RDC01|ลาดพร้าว">ลาดพร้าว</option><option value="RDC01|อุบลราชธานี">อุบลราชธานี</option><option value="RDC01|ศรีราชา">ศรีราชา</option><option value="RDC01|ราชบุรี">ราชบุรี</option><option value="RDC01|สายไหม">สายไหม</option><option value="RDC01|ปากเกร็ด">ปากเกร็ด</option></select></label>
     <label class="sel">เรียงตาม<select data-bf="sort"><option value="group" selected="">ตามคลัง / ภาค</option><option value="pct">① งานเสร็จ %</option><option value="late">① เลยกำหนด</option><option value="pp">② ตรวจผ่าน %</option><option value="open">② ไม่ผ่านยังไม่แก้</option><option value="n">จำนวนใบงาน</option></select></label>
     
+    <button type="button" class="sel bfdir" data-gall="1">แสดงทุกคลัง ▼</button>
     
   </div><div class="bwrap"><table class="btab">
     <thead><tr><th class="bn">สาขา / อาคาร</th><th class="c sortable" data-bfsort="n">ใบงาน</th><th class="q1h sortable" data-bfsort="pct">① งานเสร็จ</th><th class="c q1h sortable" data-bfsort="late">① เลยกำหนด<br><small>ยังไม่ได้ตรวจ</small></th><th class="c q2h sortable" data-bfsort="pp">② ตรวจผ่าน</th><th class="c q2h sortable" data-bfsort="open">② ไม่ผ่าน<br><small>ยังไม่ได้แก้</small></th><th></th></tr></thead>
-    <tbody><tr class="gh wh"><td class="bn"><b>คลังกระจายสินค้าภายในประเทศ</b><span>WHA05</span></td><td class="num c">286</td>
+    <tbody><tr class="gh wh tog" data-gtog="WHA05" tabindex="0"><td class="bn"><span class="garr">▶</span><b>คลังกระจายสินค้าภายในประเทศ</b><span>WHA05 · 2 อาคาร</span></td><td class="num c">286</td>
       <td><div class="sbar"><div class="sfill" style="width:81%"></div></div><span class="num spct">81%</span></td>
       <td class="c"><span class="hot late num">50</span></td>
       <td class="c num"><span style="color:#0a6b4d;font-weight:800">97%</span></td>
-      <td class="c"><span class="hot bad num">7</span></td><td></td></tr><tr class="brow2" data-pick="WHA05|WH05|" tabindex="0"><td class="bn">WH05</td><td class="num c">187</td>
-      <td><div class="sbar"><div class="sfill" style="width:78%"></div></div><span class="num spct">78%</span></td>
-      <td class="c"><span class="hot late num">36</span></td>
-      <td class="c num"><span style="color:#0a6b4d;font-weight:800">95%</span></td>
-      <td class="c"><span class="hot bad num">7</span></td><td class="go">›</td></tr><tr class="brow2" data-pick="WHA05|WH32|" tabindex="0"><td class="bn">WH32</td><td class="num c">99</td>
-      <td><div class="sbar"><div class="sfill" style="width:86%"></div></div><span class="num spct">86%</span></td>
-      <td class="c"><span class="hot late num">14</span></td>
-      <td class="c num"><span style="color:#0a6b4d;font-weight:800">100%</span></td>
-      <td class="c"><span class="nil">–</span></td><td class="go">›</td></tr><tr class="gh wh"><td class="bn"><b>คลัง RDC ต่างจังหวัด</b><span>RDC01 · 14 สาขา</span></td><td class="num c">353</td>
+      <td class="c"><span class="hot bad num">7</span></td><td class="go">ดูคลัง</td></tr><tr class="gh wh"><td class="bn"><b>คลัง RDC ต่างจังหวัด</b><span>RDC01 · 14 สาขา</span></td><td class="num c">353</td>
       <td><div class="sbar"><div class="sfill" style="width:76%"></div></div><span class="num spct">76%</span></td>
       <td class="c"><span class="hot late num">46</span></td>
       <td class="c num"><span style="color:#a8250f;font-weight:800">89%</span></td>
-      <td class="c"><span class="hot bad num">30</span></td><td></td></tr><tr class="gh rg"><td class="bn"><b>กรุงเทพฯ</b><span>4 สาขา</span></td><td class="num c">97</td>
+      <td class="c"><span class="hot bad num">30</span></td><td class="go"></td></tr><tr class="gh rg tog" data-gtog="กรุงเทพฯ" tabindex="0"><td class="bn"><span class="garr">▶</span><b>กรุงเทพฯ</b><span>4 สาขา</span></td><td class="num c">97</td>
       <td><div class="sbar"><div class="sfill" style="width:92%"></div></div><span class="num spct">92%</span></td>
       <td class="c"><span class="hot late num">2</span></td>
       <td class="c num"><span style="color:#0a6b4d;font-weight:800">98%</span></td>
-      <td class="c"><span class="hot bad num">2</span></td><td></td></tr><tr class="brow2" data-pick="RDC01|สายไหม|" tabindex="0"><td class="bn">สายไหม</td><td class="num c">34</td>
-      <td><div class="sbar"><div class="sfill" style="width:88%"></div></div><span class="num spct">88%</span></td>
-      <td class="c"><span class="hot late num">2</span></td>
-      <td class="c num"><span style="color:#0a6b4d;font-weight:800">100%</span></td>
-      <td class="c"><span class="nil">–</span></td><td class="go">›</td></tr><tr class="brow2" data-pick="RDC01|หนองแขม|" tabindex="0"><td class="bn">หนองแขม</td><td class="num c">33</td>
-      <td><div class="sbar"><div class="sfill" style="width:88%"></div></div><span class="num spct">88%</span></td>
-      <td class="c"><span class="nil">–</span></td>
-      <td class="c num"><span style="color:#0a6b4d;font-weight:800">97%</span></td>
-      <td class="c"><span class="hot bad num">1</span></td><td class="go">›</td></tr><tr class="brow2" data-pick="RDC01|ลาดพร้าว|" tabindex="0"><td class="bn">ลาดพร้าว</td><td class="num c">15</td>
-      <td><div class="sbar"><div class="sfill" style="width:100%"></div></div><span class="num spct">100%</span></td>
-      <td class="c"><span class="nil">–</span></td>
-      <td class="c num"><span style="color:#0a6b4d;font-weight:800">93%</span></td>
-      <td class="c"><span class="hot bad num">1</span></td><td class="go">›</td></tr><tr class="brow2" data-pick="RDC01|ปากเกร็ด|" tabindex="0"><td class="bn">ปากเกร็ด</td><td class="num c">15</td>
-      <td><div class="sbar"><div class="sfill" style="width:100%"></div></div><span class="num spct">100%</span></td>
-      <td class="c"><span class="nil">–</span></td>
-      <td class="c num"><span style="color:#0a6b4d;font-weight:800">100%</span></td>
-      <td class="c"><span class="nil">–</span></td><td class="go">›</td></tr><tr class="gh rg"><td class="bn"><b>ภาคกลาง</b><span>2 สาขา</span></td><td class="num c">58</td>
+      <td class="c"><span class="hot bad num">2</span></td><td class="go">ดูคลัง</td></tr><tr class="gh rg tog" data-gtog="ภาคกลาง" tabindex="0"><td class="bn"><span class="garr">▶</span><b>ภาคกลาง</b><span>2 สาขา</span></td><td class="num c">58</td>
       <td><div class="sbar"><div class="sfill" style="width:17%"></div></div><span class="num spct">17%</span></td>
       <td class="c"><span class="hot late num">32</span></td>
       <td class="c num"><span style="color:#0a6b4d;font-weight:800">92%</span></td>
-      <td class="c"><span class="hot bad num">1</span></td><td></td></tr><tr class="brow2" data-pick="RDC01|ศรีราชา|" tabindex="0"><td class="bn">ศรีราชา</td><td class="num c">35</td>
-      <td><div class="sbar"><div class="sfill" style="width:14%"></div></div><span class="num spct">14%</span></td>
-      <td class="c"><span class="hot late num">20</span></td>
-      <td class="c num"><span style="color:#a8250f;font-weight:800">80%</span></td>
-      <td class="c"><span class="hot bad num">1</span></td><td class="go">›</td></tr><tr class="brow2" data-pick="RDC01|ราชบุรี|" tabindex="0"><td class="bn">ราชบุรี</td><td class="num c">23</td>
-      <td><div class="sbar"><div class="sfill" style="width:22%"></div></div><span class="num spct">22%</span></td>
-      <td class="c"><span class="hot late num">12</span></td>
-      <td class="c num"><span style="color:#0a6b4d;font-weight:800">100%</span></td>
-      <td class="c"><span class="nil">–</span></td><td class="go">›</td></tr><tr class="gh rg"><td class="bn"><b>ภาคเหนือ</b><span>3 สาขา</span></td><td class="num c">68</td>
+      <td class="c"><span class="hot bad num">1</span></td><td class="go">ดูคลัง</td></tr><tr class="gh rg tog" data-gtog="ภาคเหนือ" tabindex="0"><td class="bn"><span class="garr">▶</span><b>ภาคเหนือ</b><span>3 สาขา</span></td><td class="num c">68</td>
       <td><div class="sbar"><div class="sfill" style="width:78%"></div></div><span class="num spct">78%</span></td>
       <td class="c"><span class="hot late num">7</span></td>
       <td class="c num"><span style="color:#a8250f;font-weight:800">75%</span></td>
-      <td class="c"><span class="hot bad num">14</span></td><td></td></tr><tr class="brow2" data-pick="RDC01|เชียงใหม่|" tabindex="0"><td class="bn">เชียงใหม่</td><td class="num c">19</td>
-      <td><div class="sbar"><div class="sfill" style="width:63%"></div></div><span class="num spct">63%</span></td>
-      <td class="c"><span class="hot late num">4</span></td>
-      <td class="c num"><span style="color:#0a6b4d;font-weight:800">100%</span></td>
-      <td class="c"><span class="nil">–</span></td><td class="go">›</td></tr><tr class="brow2" data-pick="RDC01|เชียงราย|" tabindex="0"><td class="bn">เชียงราย</td><td class="num c">19</td>
-      <td><div class="sbar"><div class="sfill" style="width:89%"></div></div><span class="num spct">89%</span></td>
-      <td class="c"><span class="nil">–</span></td>
-      <td class="c num"><span style="color:#a8250f;font-weight:800">47%</span></td>
-      <td class="c"><span class="hot bad num">10</span></td><td class="go">›</td></tr><tr class="brow2" data-pick="RDC01|พิษณุโลก|" tabindex="0"><td class="bn">พิษณุโลก</td><td class="num c">30</td>
-      <td><div class="sbar"><div class="sfill" style="width:80%"></div></div><span class="num spct">80%</span></td>
-      <td class="c"><span class="hot late num">3</span></td>
-      <td class="c num"><span style="color:#a8250f;font-weight:800">83%</span></td>
-      <td class="c"><span class="hot bad num">4</span></td><td class="go">›</td></tr><tr class="gh rg"><td class="bn"><b>ภาคอีสาน</b><span>3 สาขา</span></td><td class="num c">56</td>
+      <td class="c"><span class="hot bad num">14</span></td><td class="go">ดูคลัง</td></tr><tr class="gh rg tog" data-gtog="ภาคอีสาน" tabindex="0"><td class="bn"><span class="garr">▶</span><b>ภาคอีสาน</b><span>3 สาขา</span></td><td class="num c">56</td>
       <td><div class="sbar"><div class="sfill" style="width:82%"></div></div><span class="num spct">82%</span></td>
       <td class="c"><span class="hot late num">4</span></td>
       <td class="c num"><span style="color:#a8250f;font-weight:800">87%</span></td>
-      <td class="c"><span class="hot bad num">6</span></td><td></td></tr><tr class="brow2" data-pick="RDC01|โคราช|" tabindex="0"><td class="bn">โคราช</td><td class="num c">19</td>
-      <td><div class="sbar"><div class="sfill" style="width:79%"></div></div><span class="num spct">79%</span></td>
-      <td class="c"><span class="hot late num">2</span></td>
-      <td class="c num"><span style="color:#a8250f;font-weight:800">67%</span></td>
-      <td class="c"><span class="hot bad num">5</span></td><td class="go">›</td></tr><tr class="brow2" data-pick="RDC01|ขอนแก่น|" tabindex="0"><td class="bn">ขอนแก่น</td><td class="num c">19</td>
-      <td><div class="sbar"><div class="sfill" style="width:79%"></div></div><span class="num spct">79%</span></td>
-      <td class="c"><span class="hot late num">2</span></td>
-      <td class="c num"><span style="color:#0a6b4d;font-weight:800">93%</span></td>
-      <td class="c"><span class="hot bad num">1</span></td><td class="go">›</td></tr><tr class="brow2" data-pick="RDC01|อุบลราชธานี|" tabindex="0"><td class="bn">อุบลราชธานี</td><td class="num c">18</td>
-      <td><div class="sbar"><div class="sfill" style="width:89%"></div></div><span class="num spct">89%</span></td>
-      <td class="c"><span class="nil">–</span></td>
-      <td class="c num"><span style="color:#0a6b4d;font-weight:800">100%</span></td>
-      <td class="c"><span class="nil">–</span></td><td class="go">›</td></tr><tr class="gh rg"><td class="bn"><b>ภาคใต้</b><span>2 สาขา</span></td><td class="num c">74</td>
+      <td class="c"><span class="hot bad num">6</span></td><td class="go">ดูคลัง</td></tr><tr class="gh rg tog" data-gtog="ภาคใต้" tabindex="0"><td class="bn"><span class="garr">▶</span><b>ภาคใต้</b><span>2 สาขา</span></td><td class="num c">74</td>
       <td><div class="sbar"><div class="sfill" style="width:93%"></div></div><span class="num spct">93%</span></td>
       <td class="c"><span class="hot late num">1</span></td>
       <td class="c num"><span style="color:#0a6b4d;font-weight:800">90%</span></td>
-      <td class="c"><span class="hot bad num">7</span></td><td></td></tr><tr class="brow2" data-pick="RDC01|สุราษฎร์ธานี|" tabindex="0"><td class="bn">สุราษฎร์ธานี</td><td class="num c">42</td>
-      <td><div class="sbar"><div class="sfill" style="width:98%"></div></div><span class="num spct">98%</span></td>
-      <td class="c"><span class="hot late num">1</span></td>
-      <td class="c num"><span style="color:#a8250f;font-weight:800">85%</span></td>
-      <td class="c"><span class="hot bad num">6</span></td><td class="go">›</td></tr><tr class="brow2" data-pick="RDC01|หาดใหญ่|" tabindex="0"><td class="bn">หาดใหญ่</td><td class="num c">32</td>
-      <td><div class="sbar"><div class="sfill" style="width:88%"></div></div><span class="num spct">88%</span></td>
-      <td class="c"><span class="nil">–</span></td>
-      <td class="c num"><span style="color:#0a6b4d;font-weight:800">97%</span></td>
-      <td class="c"><span class="hot bad num">1</span></td><td class="go">›</td></tr></tbody>
+      <td class="c"><span class="hot bad num">7</span></td><td class="go">ดูคลัง</td></tr></tbody>
     <tfoot><tr class="gh tot"><td class="bn"><b>รวมทุกคลัง</b></td><td class="num c">639</td>
       <td><div class="sbar"><div class="sfill" style="width:78%"></div></div><span class="num spct">78%</span></td>
       <td class="c"><span class="hot late num">96</span></td>
@@ -925,6 +868,7 @@ function renderDrill() {
     <label class="sel">สาขา<select data-bf="br">${opt("", "ทั้งหมด (" + brList.length + ")", "")}${brList.map(([p, b]) => opt(p + "|" + b, b, "")).join("")}</select></label>
     <label class="sel">เรียงตาม<select data-bf="sort">${SORTS.map(([v, l]) => opt(v, l, BF.sort)).join("")}</select></label>
     ${BF.sort !== "group" ? `<button type="button" class="sel bfdir" data-bfdir="1">${BF.dir < 0 ? "มาก → น้อย ▼" : "น้อย → มาก ▲"}</button>` : ""}
+    ${BF.sort === "group" ? `<button type="button" class="sel bfdir" data-gall="${Object.values(S.gOpen || {}).some(Boolean) ? 0 : 1}">${Object.values(S.gOpen || {}).some(Boolean) ? "ย่อทั้งหมด ▲" : "แสดงทุกคลัง ▼"}</button>` : ""}
     ${BF.wh !== "all" || BF.rg !== "all" || BF.sort !== "group" ? `<button type="button" class="bfreset" data-bfreset="1">ล้างตัวกรอง</button>` : ""}
   </div>`;
   const cells = s => {
@@ -937,18 +881,22 @@ function renderDrill() {
   };
   const row = (p, b) => { const L = R.filter(r => r.p === p && r.b === b); if (!L.length) return "";
     return `<tr class="brow2" data-pick="${p}|${b}|" tabindex="0"><td class="bn">${b}</td>${cells(stat(L))}<td class="go">›</td></tr>`; };
-  const groupRow = (title, sub, L, cls) => { const s = stat(L);
-    return `<tr class="gh ${cls}"><td class="bn"><b>${title}</b>${sub ? `<span>${sub}</span>` : ""}</td>${cells(s)}<td></td></tr>`; };
+  /* ยุบ/กาง (ผู้ใช้ขอ 30 ก.ย.): เริ่มต้นเห็นแค่แถวสรุปคลังในประเทศ + รายภาค กดแถวเพื่อแสดงคลัง/สาขาข้างใน */
+  const OPEN = S.gOpen || (S.gOpen = {});
+  const isOpen = k => !!OPEN[k] || (BF.rg !== "all" && BF.rg === k);
+  const groupRow = (title, sub, L, cls, tog) => { const s = stat(L), op = tog && isOpen(tog);
+    return `<tr class="gh ${cls}${tog ? " tog" : ""}"${tog ? ` data-gtog="${tog}" tabindex="0"` : ""}><td class="bn">${tog ? `<span class="garr">${op ? "▼" : "▶"}</span>` : ""}<b>${title}</b>${sub ? `<span>${sub}</span>` : ""}</td>${cells(s)}<td class="go">${tog ? (op ? "ย่อ" : "ดูคลัง") : ""}</td></tr>`; };
+  const kids = (tog, list) => isOpen(tog) ? list.join("") : "";
   const W = R.filter(r => r.p === "WHA05"), D = R.filter(r => r.p === "RDC01");
   let html = "";
   if (BF.sort === "group") {
     const wBranches = [...new Set(W.map(r => r.b))].sort();
-    if (W.length) html += groupRow("คลังกระจายสินค้าภายในประเทศ", "WHA05", W, "wh") + wBranches.map(b => row("WHA05", b)).join("");
+    if (W.length) html += groupRow("คลังกระจายสินค้าภายในประเทศ", "WHA05 · " + wBranches.length + " อาคาร", W, "wh", "WHA05") + kids("WHA05", wBranches.map(b => row("WHA05", b)));
     if (D.length) html += groupRow("คลัง RDC ต่างจังหวัด", "RDC01 · " + new Set(D.map(r => r.b)).size + " สาขา", D, "wh");
     REGIONS.forEach(([rg, bs]) => { const L = D.filter(r => bs.includes(r.b)); if (!L.length) return;
-      html += groupRow(rg, bs.length + " สาขา", L, "rg") + bs.map(b => row("RDC01", b)).join(""); });
+      html += groupRow(rg, bs.length + " สาขา", L, "rg", rg) + kids(rg, bs.map(b => row("RDC01", b))); });
     const other = [...new Set(D.map(r => r.b))].filter(b => !REGIONS.some(([, bs]) => bs.includes(b)));
-    if (other.length) html += groupRow("อื่นๆ", "", D.filter(r => other.includes(r.b)), "rg") + other.map(b => row("RDC01", b)).join("");
+    if (other.length) html += groupRow("อื่นๆ", "", D.filter(r => other.includes(r.b)), "rg", "อื่นๆ") + kids("อื่นๆ", other.map(b => row("RDC01", b)));
   } else {
     /* เรียงลำดับ: ทุกสาขาในรายการเดียว (ไม่แบ่งหัวกลุ่ม) + ลำดับที่ + ป้ายบอกคลัง/ภาค */
     const key = { pct: s => s.pct, late: s => s.late, pp: s => passPct(s), open: s => s.open, n: s => s.n }[BF.sort];
@@ -995,6 +943,10 @@ document.addEventListener("click", e => {
   const so = e.target.closest("[data-bfsort]");
   if (so && S.bf) { const k = so.dataset.bfsort; if (S.bf.sort === k) S.bf.dir *= -1; else { S.bf.sort = k; S.bf.dir = -1; } renderDrill(); return; }
   if (e.target.closest("[data-bfdir]") && S.bf) { S.bf.dir *= -1; renderDrill(); return; }
+  const gt = e.target.closest("[data-gtog]");
+  if (gt) { S.gOpen = S.gOpen || {}; const k = gt.dataset.gtog; S.gOpen[k] = !(S.gOpen[k] || (S.bf && S.bf.rg === k)); if (!S.gOpen[k] && S.bf && S.bf.rg === k) S.bf.rg = "all"; renderDrill(); return; }
+  const ga = e.target.closest("[data-gall]");
+  if (ga) { S.gOpen = {}; if (ga.dataset.gall === "1") ["WHA05", "อื่นๆ", ...REGIONS.map(([rg]) => rg)].forEach(k => S.gOpen[k] = true); renderDrill(); return; }
   if (e.target.closest("[data-bfreset]")) { S.bf = null; renderDrill(); return; }
 });
 document.addEventListener("click", e => {

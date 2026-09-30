@@ -239,6 +239,12 @@
   .kindseg .kc { font-size: 11.5px; font-weight: 700; opacity: .7; margin-left: 2px; }
   .ktag { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 800; vertical-align: 1px; white-space: nowrap; }
   .ktag.big { font-size: 13px; padding: 3px 10px; margin-left: 6px; }
+  .gh.tog { cursor: pointer; }
+  .gh.tog:hover td { filter: brightness(.97); }
+  .gh.wh.tog:hover td { filter: brightness(1.25); }
+  .garr { display: inline-block; width: 18px; font-size: 11px; opacity: .7; }
+  .gh.tog .go { font-size: 12px; font-weight: 700; color: #1a5fe4; text-align: right; white-space: nowrap; }
+  .gh.wh.tog .go { color: #9cc0ff; }
   .brow2 { cursor: pointer; }
   .brow2:hover td, .brow2:focus td { background: #f4f8ff; outline: none; }
   .brow2 .bn { padding-left: 34px; font-weight: 700; }
@@ -819,6 +825,7 @@ function renderDrill() {
     <label class="sel">สาขา<select data-bf="br">${opt("", "ทั้งหมด (" + brList.length + ")", "")}${brList.map(([p, b]) => opt(p + "|" + b, b, "")).join("")}</select></label>
     <label class="sel">เรียงตาม<select data-bf="sort">${SORTS.map(([v, l]) => opt(v, l, BF.sort)).join("")}</select></label>
     ${BF.sort !== "group" ? `<button type="button" class="sel bfdir" data-bfdir="1">${BF.dir < 0 ? "มาก → น้อย ▼" : "น้อย → มาก ▲"}</button>` : ""}
+    ${BF.sort === "group" ? `<button type="button" class="sel bfdir" data-gall="${Object.values(S.gOpen || {}).some(Boolean) ? 0 : 1}">${Object.values(S.gOpen || {}).some(Boolean) ? "ย่อทั้งหมด ▲" : "แสดงทุกคลัง ▼"}</button>` : ""}
     ${BF.wh !== "all" || BF.rg !== "all" || BF.sort !== "group" ? `<button type="button" class="bfreset" data-bfreset="1">ล้างตัวกรอง</button>` : ""}
   </div>`;
   const cells = s => {
@@ -831,18 +838,22 @@ function renderDrill() {
   };
   const row = (p, b) => { const L = R.filter(r => r.p === p && r.b === b); if (!L.length) return "";
     return `<tr class="brow2" data-pick="${p}|${b}|" tabindex="0"><td class="bn">${b}</td>${cells(stat(L))}<td class="go">›</td></tr>`; };
-  const groupRow = (title, sub, L, cls) => { const s = stat(L);
-    return `<tr class="gh ${cls}"><td class="bn"><b>${title}</b>${sub ? `<span>${sub}</span>` : ""}</td>${cells(s)}<td></td></tr>`; };
+  /* ยุบ/กาง (ผู้ใช้ขอ 30 ก.ย.): เริ่มต้นเห็นแค่แถวสรุปคลังในประเทศ + รายภาค กดแถวเพื่อแสดงคลัง/สาขาข้างใน */
+  const OPEN = S.gOpen || (S.gOpen = {});
+  const isOpen = k => !!OPEN[k] || (BF.rg !== "all" && BF.rg === k);
+  const groupRow = (title, sub, L, cls, tog) => { const s = stat(L), op = tog && isOpen(tog);
+    return `<tr class="gh ${cls}${tog ? " tog" : ""}"${tog ? ` data-gtog="${tog}" tabindex="0"` : ""}><td class="bn">${tog ? `<span class="garr">${op ? "▼" : "▶"}</span>` : ""}<b>${title}</b>${sub ? `<span>${sub}</span>` : ""}</td>${cells(s)}<td class="go">${tog ? (op ? "ย่อ" : "ดูคลัง") : ""}</td></tr>`; };
+  const kids = (tog, list) => isOpen(tog) ? list.join("") : "";
   const W = R.filter(r => r.p === "WHA05"), D = R.filter(r => r.p === "RDC01");
   let html = "";
   if (BF.sort === "group") {
     const wBranches = [...new Set(W.map(r => r.b))].sort();
-    if (W.length) html += groupRow("คลังกระจายสินค้าภายในประเทศ", "WHA05", W, "wh") + wBranches.map(b => row("WHA05", b)).join("");
+    if (W.length) html += groupRow("คลังกระจายสินค้าภายในประเทศ", "WHA05 · " + wBranches.length + " อาคาร", W, "wh", "WHA05") + kids("WHA05", wBranches.map(b => row("WHA05", b)));
     if (D.length) html += groupRow("คลัง RDC ต่างจังหวัด", "RDC01 · " + new Set(D.map(r => r.b)).size + " สาขา", D, "wh");
     REGIONS.forEach(([rg, bs]) => { const L = D.filter(r => bs.includes(r.b)); if (!L.length) return;
-      html += groupRow(rg, bs.length + " สาขา", L, "rg") + bs.map(b => row("RDC01", b)).join(""); });
+      html += groupRow(rg, bs.length + " สาขา", L, "rg", rg) + kids(rg, bs.map(b => row("RDC01", b))); });
     const other = [...new Set(D.map(r => r.b))].filter(b => !REGIONS.some(([, bs]) => bs.includes(b)));
-    if (other.length) html += groupRow("อื่นๆ", "", D.filter(r => other.includes(r.b)), "rg") + other.map(b => row("RDC01", b)).join("");
+    if (other.length) html += groupRow("อื่นๆ", "", D.filter(r => other.includes(r.b)), "rg", "อื่นๆ") + kids("อื่นๆ", other.map(b => row("RDC01", b)));
   } else {
     /* เรียงลำดับ: ทุกสาขาในรายการเดียว (ไม่แบ่งหัวกลุ่ม) + ลำดับที่ + ป้ายบอกคลัง/ภาค */
     const key = { pct: s => s.pct, late: s => s.late, pp: s => passPct(s), open: s => s.open, n: s => s.n }[BF.sort];
@@ -889,6 +900,10 @@ document.addEventListener("click", e => {
   const so = e.target.closest("[data-bfsort]");
   if (so && S.bf) { const k = so.dataset.bfsort; if (S.bf.sort === k) S.bf.dir *= -1; else { S.bf.sort = k; S.bf.dir = -1; } renderDrill(); return; }
   if (e.target.closest("[data-bfdir]") && S.bf) { S.bf.dir *= -1; renderDrill(); return; }
+  const gt = e.target.closest("[data-gtog]");
+  if (gt) { S.gOpen = S.gOpen || {}; const k = gt.dataset.gtog; S.gOpen[k] = !(S.gOpen[k] || (S.bf && S.bf.rg === k)); if (!S.gOpen[k] && S.bf && S.bf.rg === k) S.bf.rg = "all"; renderDrill(); return; }
+  const ga = e.target.closest("[data-gall]");
+  if (ga) { S.gOpen = {}; if (ga.dataset.gall === "1") ["WHA05", "อื่นๆ", ...REGIONS.map(([rg]) => rg)].forEach(k => S.gOpen[k] = true); renderDrill(); return; }
   if (e.target.closest("[data-bfreset]")) { S.bf = null; renderDrill(); return; }
 });
 document.addEventListener("click", e => {
