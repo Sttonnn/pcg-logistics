@@ -51,6 +51,7 @@ repo `sttonnn/robot-report` คือที่รวมทุก Dashboard (ต�
   - ไฟล์มีชื่อพนักงาน ห้าม commit ไฟล์ดิบลง repo (public)
   - CSV `PMWorkOrder_*.csv` ใช้ไม่ได้: num_of_passed = 0 ทุกแถว
 - วิธีอัปเดต: **ทาง A** อัปโหลด Excel บนหน้าเว็บ (login) → เว็บอ่านไฟล์ → บันทึก Supabase (ผู้ใช้เลือก 29 ก.ย.)
+- **30 ก.ย. เปิดใช้งานแล้ว** ที่ Portal pcg-logistics (การ์ดส้ม LIVE ใบที่ 4 → https://sttonnn.github.io/pcg-logistics/preventive-maintenance/pm-dashboard.html) · ยังเป็น mock up: Import Excel เก็บใน localStorage ของเบราว์เซอร์นั้นเท่านั้น (ยังไม่มี Supabase/login)
 - Mock up: `preventive-maintenance/pm-dashboard.html` (ข้อมูลจริงตัดชื่อแล้ว, อัปโหลดยังไม่บันทึก Supabase)
   - สร้างใหม่: `python3 preventive-maintenance/tools/pm_extract.py <xlsx> > data.json` แล้วแทน `/*__PM_DATA__*/[]` ใน `tools/pm_template.html`
   - แล้วรัน `node preventive-maintenance/tools/prerender.js` เพื่อฝังตารางลงใน HTML (iPad เปิดไฟล์ผ่าน Files/Quick Look ไม่รัน JavaScript → ถ้าไม่ฝังจะเห็นแค่หัว)
