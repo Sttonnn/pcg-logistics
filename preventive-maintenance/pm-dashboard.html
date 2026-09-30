@@ -225,6 +225,15 @@
   .btab td { padding: 11px 14px; border-top: 1px solid #eef1f6; vertical-align: middle; }
   .btab .c { text-align: center; }
   .btab .bn { width: 30%; }
+  .bfbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .bfbar select:disabled { opacity: .45; }
+  .bfdir { border: 0; cursor: pointer; padding: 8px 14px !important; color: var(--ink) !important; font-weight: 800 !important; }
+  .bfreset { border: 0; background: transparent; color: #1a5fe4; font-weight: 700; font-size: 13px; cursor: pointer; padding: 8px 6px; }
+  .btab th.sortable { cursor: pointer; user-select: none; }
+  .btab th.sortable:hover { background: #eaf0fb; }
+  .btab th.on { background: #e3ecff; }
+  .rk { display: inline-block; min-width: 26px; margin-right: 8px; font-size: 12.5px; font-weight: 800; color: #9aa6bd; }
+  .btag { display: inline-block; margin-left: 10px; padding: 2px 9px; border-radius: 999px; background: #eef2f8; color: #5a6784; font-size: 11.5px; font-weight: 700; vertical-align: middle; }
   .brow2 { cursor: pointer; }
   .brow2:hover td, .brow2:focus td { background: #f4f8ff; outline: none; }
   .brow2 .bn { padding-left: 34px; font-weight: 700; }
@@ -282,6 +291,13 @@
     thead { display: none; }
     tbody tr { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 4px 10px; padding: 12px 4px; border-bottom: 1px solid #eef1f6; }
     tbody td { padding: 0; border: 0; }
+    /* ตารางรวมคงเป็นตาราง เลื่อนซ้าย-ขวาในกรอบ */
+    .btab { min-width: 620px; font-size: 14px; }
+    .btab thead { display: table-header-group; }
+    .btab tbody tr { display: table-row; padding: 0; border: 0; }
+    .btab tbody td, .btab tbody td:nth-child(1) { display: table-cell; padding: 10px 10px; border-top: 1px solid #eef1f6; font-size: 14px; }
+    .btab .bn { white-space: nowrap; }
+    .btag { display: none; }
     tbody td:nth-child(1) { grid-column: 1; font-size: 12.5px; }
     #tbody td:nth-child(5) { grid-column: 2; grid-row: 1; justify-self: end; }
     #tbody td:nth-child(2) { grid-column: 1 / -1; }
@@ -341,8 +357,15 @@
   <div class="howto" style="display: none;">
     <span><b class="q1">① งานทำครบไหม?</b> <i class="sw" style="background:#1a5fe4"></i>เสร็จแล้ว <i class="sw" style="background:#7b61ff"></i>ตรวจแล้ว รอปิดงาน <i class="sw" style="background:#9cc0ff"></i>กำลังทำ <i class="sw" style="background:#ff8a3d"></i>เลยกำหนด</span>
     <span><b class="q2">② เครื่องปกติไหม?</b> <span style="color:#0a6b4d;font-weight:700">✓ ผ่าน</span> · <span style="color:#a8250f;font-weight:700">✕ ไม่ผ่าน</span> (นับเฉพาะงานที่ตรวจแล้ว)</span>  </div>
-  <div id="drill"><div class="board"><div class="bwrap"><table class="btab">
-    <thead><tr><th class="bn">สาขา / อาคาร</th><th class="c">ใบงาน</th><th class="q1h">① งานเสร็จ</th><th class="c q1h">① เลยกำหนด<br><small>ยังไม่ได้ตรวจ</small></th><th class="c q2h">② ตรวจผ่าน</th><th class="c q2h">② ไม่ผ่าน<br><small>ยังไม่ได้แก้</small></th><th></th></tr></thead>
+  <div id="drill"><div class="board"><div class="bfbar">
+    <label class="sel">คลัง<select data-bf="wh"><option value="all" selected="">ทั้งหมด</option><option value="WHA05">คลังในประเทศ (WHA05)</option><option value="RDC01">คลัง RDC ต่างจังหวัด</option></select></label>
+    <label class="sel">ภาค<select data-bf="rg"><option value="all" selected="">ทั้งหมด</option><option value="กรุงเทพฯ">กรุงเทพฯ</option><option value="ภาคกลาง">ภาคกลาง</option><option value="ภาคเหนือ">ภาคเหนือ</option><option value="ภาคอีสาน">ภาคอีสาน</option><option value="ภาคใต้">ภาคใต้</option></select></label>
+    <label class="sel">สาขา<select data-bf="br"><option value="" selected="">ทั้งหมด (16)</option><option value="WHA05|WH05">WH05</option><option value="WHA05|WH32">WH32</option><option value="RDC01|เชียงใหม่">เชียงใหม่</option><option value="RDC01|พิษณุโลก">พิษณุโลก</option><option value="RDC01|เชียงราย">เชียงราย</option><option value="RDC01|โคราช">โคราช</option><option value="RDC01|สุราษฎร์ธานี">สุราษฎร์ธานี</option><option value="RDC01|หาดใหญ่">หาดใหญ่</option><option value="RDC01|หนองแขม">หนองแขม</option><option value="RDC01|ขอนแก่น">ขอนแก่น</option><option value="RDC01|ลาดพร้าว">ลาดพร้าว</option><option value="RDC01|อุบลราชธานี">อุบลราชธานี</option><option value="RDC01|ศรีราชา">ศรีราชา</option><option value="RDC01|ราชบุรี">ราชบุรี</option><option value="RDC01|สายไหม">สายไหม</option><option value="RDC01|ปากเกร็ด">ปากเกร็ด</option></select></label>
+    <label class="sel">เรียงตาม<select data-bf="sort"><option value="group" selected="">ตามคลัง / ภาค</option><option value="pct">① งานเสร็จ %</option><option value="late">① เลยกำหนด</option><option value="pp">② ตรวจผ่าน %</option><option value="open">② ไม่ผ่านยังไม่แก้</option><option value="n">จำนวนใบงาน</option></select></label>
+    
+    
+  </div><div class="bwrap"><table class="btab">
+    <thead><tr><th class="bn">สาขา / อาคาร</th><th class="c sortable" data-bfsort="n">ใบงาน</th><th class="q1h sortable" data-bfsort="pct">① งานเสร็จ</th><th class="c q1h sortable" data-bfsort="late">① เลยกำหนด<br><small>ยังไม่ได้ตรวจ</small></th><th class="c q2h sortable" data-bfsort="pp">② ตรวจผ่าน</th><th class="c q2h sortable" data-bfsort="open">② ไม่ผ่าน<br><small>ยังไม่ได้แก้</small></th><th></th></tr></thead>
     <tbody><tr class="gh wh"><td class="bn"><b>คลังกระจายสินค้าภายในประเทศ</b><span>WHA05</span></td><td class="num c">286</td>
       <td><div class="sbar"><div class="sfill" style="width:81%"></div></div><span class="num spct">81%</span></td>
       <td class="c"><span class="hot late num">50</span></td>
@@ -871,8 +894,24 @@ function renderDrill() {
     return;
   }
   $("crumb").innerHTML = `<span class="cur">ตารางรวมทุกสาขา</span><span class="chint" style="margin-left:auto;font-size:12.5px;font-weight:600;color:#5a6784">กดที่แถวเพื่อดูใบงานของสาขานั้น</span>`;
-  const R = rows({ wh: true, branch: true, rg: true });
+  const R0 = rows({ wh: true, branch: true, rg: true });
   const passPct = s => s.tested ? Math.round(s.pass / s.tested * 100) : null;
+  /* ตัวกรองใหญ่ → เล็ก (คลัง → ภาค → สาขา) + เรียงลำดับ ตามที่ผู้ใช้ขอ 30 ก.ย. */
+  const BF = S.bf || (S.bf = { wh: "all", rg: "all", sort: "group", dir: -1 });
+  if (BF.rg !== "all") BF.wh = "RDC01";
+  const R = R0.filter(r => (BF.wh === "all" || r.p === BF.wh) && (BF.rg === "all" || (r.p === "RDC01" && regionOf(r.b) === BF.rg)));
+  const brList = [...new Set(R.map(r => r.p + "|" + r.b))].map(k => k.split("|"))
+    .sort((a, b) => a[0] === b[0] ? 0 : a[0] === "WHA05" ? -1 : 1);
+  const opt = (v, l, cur) => `<option value="${v}"${v === cur ? " selected" : ""}>${l}</option>`;
+  const SORTS = [["group", "ตามคลัง / ภาค"], ["pct", "① งานเสร็จ %"], ["late", "① เลยกำหนด"], ["pp", "② ตรวจผ่าน %"], ["open", "② ไม่ผ่านยังไม่แก้"], ["n", "จำนวนใบงาน"]];
+  const bar = `<div class="bfbar">
+    <label class="sel">คลัง<select data-bf="wh">${opt("all", "ทั้งหมด", BF.wh)}${opt("WHA05", "คลังในประเทศ (WHA05)", BF.wh)}${opt("RDC01", "คลัง RDC ต่างจังหวัด", BF.wh)}</select></label>
+    <label class="sel">ภาค<select data-bf="rg"${BF.wh === "WHA05" ? " disabled" : ""}>${opt("all", "ทั้งหมด", BF.rg)}${REGIONS.map(([rg]) => opt(rg, rg, BF.rg)).join("")}</select></label>
+    <label class="sel">สาขา<select data-bf="br">${opt("", "ทั้งหมด (" + brList.length + ")", "")}${brList.map(([p, b]) => opt(p + "|" + b, b, "")).join("")}</select></label>
+    <label class="sel">เรียงตาม<select data-bf="sort">${SORTS.map(([v, l]) => opt(v, l, BF.sort)).join("")}</select></label>
+    ${BF.sort !== "group" ? `<button type="button" class="sel bfdir" data-bfdir="1">${BF.dir < 0 ? "มาก → น้อย ▼" : "น้อย → มาก ▲"}</button>` : ""}
+    ${BF.wh !== "all" || BF.rg !== "all" || BF.sort !== "group" ? `<button type="button" class="bfreset" data-bfreset="1">ล้างตัวกรอง</button>` : ""}
+  </div>`;
   const cells = s => {
     const pp = passPct(s);
     return `<td class="num c">${s.n}</td>
@@ -886,18 +925,30 @@ function renderDrill() {
   const groupRow = (title, sub, L, cls) => { const s = stat(L);
     return `<tr class="gh ${cls}"><td class="bn"><b>${title}</b>${sub ? `<span>${sub}</span>` : ""}</td>${cells(s)}<td></td></tr>`; };
   const W = R.filter(r => r.p === "WHA05"), D = R.filter(r => r.p === "RDC01");
-  const wBranches = [...new Set(W.map(r => r.b))].sort();
-  let html = groupRow("คลังกระจายสินค้าภายในประเทศ", "WHA05", W, "wh") + wBranches.map(b => row("WHA05", b)).join("");
-  html += groupRow("คลัง RDC ต่างจังหวัด", "RDC01 · 14 สาขา", D, "wh");
-  REGIONS.forEach(([rg, bs]) => { const L = D.filter(r => bs.includes(r.b)); if (!L.length) return;
-    html += groupRow(rg, bs.length + " สาขา", L, "rg") + bs.map(b => row("RDC01", b)).join(""); });
-  const other = [...new Set(D.map(r => r.b))].filter(b => !REGIONS.some(([, bs]) => bs.includes(b)));
-  if (other.length) html += groupRow("อื่นๆ", "", D.filter(r => other.includes(r.b)), "rg") + other.map(b => row("RDC01", b)).join("");
+  let html = "";
+  if (BF.sort === "group") {
+    const wBranches = [...new Set(W.map(r => r.b))].sort();
+    if (W.length) html += groupRow("คลังกระจายสินค้าภายในประเทศ", "WHA05", W, "wh") + wBranches.map(b => row("WHA05", b)).join("");
+    if (D.length) html += groupRow("คลัง RDC ต่างจังหวัด", "RDC01 · " + new Set(D.map(r => r.b)).size + " สาขา", D, "wh");
+    REGIONS.forEach(([rg, bs]) => { const L = D.filter(r => bs.includes(r.b)); if (!L.length) return;
+      html += groupRow(rg, bs.length + " สาขา", L, "rg") + bs.map(b => row("RDC01", b)).join(""); });
+    const other = [...new Set(D.map(r => r.b))].filter(b => !REGIONS.some(([, bs]) => bs.includes(b)));
+    if (other.length) html += groupRow("อื่นๆ", "", D.filter(r => other.includes(r.b)), "rg") + other.map(b => row("RDC01", b)).join("");
+  } else {
+    /* เรียงลำดับ: ทุกสาขาในรายการเดียว (ไม่แบ่งหัวกลุ่ม) + ลำดับที่ + ป้ายบอกคลัง/ภาค */
+    const key = { pct: s => s.pct, late: s => s.late, pp: s => passPct(s), open: s => s.open, n: s => s.n }[BF.sort];
+    const list = brList.map(([p, b]) => { const s = stat(R.filter(r => r.p === p && r.b === b)); return { p, b, s, v: key(s) }; })
+      .sort((a, b) => (a.v == null) - (b.v == null) || BF.dir * ((a.v ?? 0) - (b.v ?? 0)) || a.b.localeCompare(b.b, "th"));
+    html = list.map((x, i) => `<tr class="brow2" data-pick="${x.p}|${x.b}|" tabindex="0"><td class="bn"><span class="rk">${i + 1}</span>${x.b}<span class="btag">${x.p === "WHA05" ? "คลังในประเทศ" : "RDC · " + regionOf(x.b)}</span></td>${cells(x.s)}<td class="go">›</td></tr>`).join("");
+  }
+  if (!html) html = `<tr><td colspan="7" style="text-align:center;color:#5a6784;padding:28px">ไม่มีใบงานตามตัวกรองนี้</td></tr>`;
   const T = stat(R);
-  $("drill").innerHTML = `<div class="board"><div class="bwrap"><table class="btab">
-    <thead><tr><th class="bn">สาขา / อาคาร</th><th class="c">ใบงาน</th><th class="q1h">① งานเสร็จ</th><th class="c q1h">① เลยกำหนด<br><small>ยังไม่ได้ตรวจ</small></th><th class="c q2h">② ตรวจผ่าน</th><th class="c q2h">② ไม่ผ่าน<br><small>ยังไม่ได้แก้</small></th><th></th></tr></thead>
+  const th = (k, cls, label) => `<th class="${cls} sortable${BF.sort === k ? " on" : ""}" data-bfsort="${k}">${label}${BF.sort === k ? (BF.dir < 0 ? " ▼" : " ▲") : ""}</th>`;
+  const scope = BF.rg !== "all" ? "RDC · " + BF.rg : BF.wh === "WHA05" ? "คลังในประเทศ" : BF.wh === "RDC01" ? "คลัง RDC ทั้งหมด" : "ทุกคลัง";
+  $("drill").innerHTML = `<div class="board">${bar}<div class="bwrap"><table class="btab">
+    <thead><tr><th class="bn">สาขา / อาคาร</th>${th("n", "c", "ใบงาน")}${th("pct", "q1h", "① งานเสร็จ")}${th("late", "c q1h", "① เลยกำหนด<br><small>ยังไม่ได้ตรวจ</small>")}${th("pp", "c q2h", "② ตรวจผ่าน")}${th("open", "c q2h", "② ไม่ผ่าน<br><small>ยังไม่ได้แก้</small>")}<th></th></tr></thead>
     <tbody>${html}</tbody>
-    <tfoot><tr class="gh tot"><td class="bn"><b>รวมทุกคลัง</b></td>${cells(T)}<td></td></tr></tfoot></table></div>
+    <tfoot><tr class="gh tot"><td class="bn"><b>รวม${scope}</b></td>${cells(T)}<td></td></tr></tfoot></table></div>
     <div class="bnote"><span class="hot late">ส้ม</span> = มีงานเลยกำหนดต้องตามให้ทำ · <span class="hot bad">แดง</span> = มีเครื่องไม่ผ่านที่ยังไม่ได้ซ่อม · ผ่านต่ำกว่า 90% ตัวเลขเป็นสีแดง</div></div>`;
 }
 
@@ -915,6 +966,22 @@ try { history.replaceState({ wh: "all", b: "all", rg: null }, ""); } catch (e) {
 
 function render() { renderFilters(); renderHero(); renderTabs(); if (S.view === "overview") { renderDrill(); if (S.wh !== "all" && S.branch !== "all") renderTable(); } else renderFail(); }
 
+/* ตัวกรอง/เรียงลำดับของตารางรวม */
+document.addEventListener("change", e => {
+  const el = e.target.closest("[data-bf]"); if (!el) return;
+  const BF = S.bf, k = el.dataset.bf, v = el.value;
+  if (k === "br") { if (v) { const [p, b] = v.split("|"); goLevel(p, b, p === "RDC01" ? regionOf(b) : null); } return; }
+  if (k === "wh") { BF.wh = v; if (v !== "RDC01") BF.rg = "all"; }
+  else if (k === "rg") BF.rg = v;
+  else if (k === "sort") { BF.sort = v; BF.dir = -1; }
+  renderDrill();
+});
+document.addEventListener("click", e => {
+  const so = e.target.closest("[data-bfsort]");
+  if (so && S.bf) { const k = so.dataset.bfsort; if (S.bf.sort === k) S.bf.dir *= -1; else { S.bf.sort = k; S.bf.dir = -1; } renderDrill(); return; }
+  if (e.target.closest("[data-bfdir]") && S.bf) { S.bf.dir *= -1; renderDrill(); return; }
+  if (e.target.closest("[data-bfreset]")) { S.bf = null; renderDrill(); return; }
+});
 document.addEventListener("click", e => {
   const q = e.target.closest("[data-quickfix]");
   if (q) { e.preventDefault(); FIX[q.dataset.quickfix] = { st: "fixed", date: q.dataset.date, note: "รอบถัดไปตรวจผ่าน" }; saveFix(); render(); toast("ปิดเป็นแก้ไขแล้ว"); return; }
