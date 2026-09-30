@@ -389,6 +389,11 @@
   .fw-sub { font-size: 12.5px; color: #5a6784; font-weight: 600; }
   .fw-go { font-size: 13px; font-weight: 700; color: #1a5fe4; cursor: pointer; padding: 2px 10px; }
   .lnk { color: #1a5fe4; font-weight: 700; cursor: pointer; text-decoration: underline; }
+  .kindseg button { font-weight: 800; }
+  .kindseg .kc { font-size: 11.5px; font-weight: 700; opacity: .7; margin-left: 2px; }
+  .ktag { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 800; vertical-align: 1px; white-space: nowrap; }
+  .ktag.big { font-size: 13px; padding: 3px 10px; margin-left: 6px; }
+  .gc-split { display: flex; gap: 6px; margin-top: -2px; } .gc-split span { flex: 1; font-size: 12px; font-weight: 700; padding: 4px 8px; border-radius: 8px; display: flex; justify-content: space-between; }
   .fi { display: grid; grid-template-columns: 70px minmax(0,1fr) auto; gap: 10px; align-items: center; padding: 9px 10px; border-radius: 12px; background: #fbf7f6; }
   .fi .ag { justify-content: center; } .fi b { display: block; font-size: 14px; } .fi span { font-size: 12px; color: #5a6784; }
   @media (max-width: 1000px) { .gcards { grid-template-columns: repeat(2, minmax(0,1fr)); } }
@@ -471,6 +476,7 @@
 <main>
   <div class="tabs" id="tabs"></div>
   <div class="filters">
+    <div class="pills kindseg" id="kinds"></div>
     <div class="pills" id="months"></div>
     <label class="sel" style="display:none">สาขา / อาคาร <select id="branch"></select></label>
     <label class="sel">ประเภท <select id="type"></select></label>
@@ -611,7 +617,12 @@ const nextPass = r => DATA.filter(x => x.p === r.p && x.e === r.e && x.n === r.n
 const daysPill = r => { const d = downDays(r), st = repSt(r);
   return st === "fixed" ? `<span class="pill" style="background:#e3f6ee;color:#0a6b4d">ใช้เวลาแก้ <span class="days">${d}</span> วัน</span>`
     : `<span class="pill" style="background:${d > 7 ? "#c9301a" : "#ffe3dc"};color:${d > 7 ? "#fff" : "#a8250f"}">เสียมาแล้ว <span class="days">${d}</span> วัน</span>`; };
-const S = { view: "overview", fst: "all", wh: "all", month: "all", branch: "all", type: "all", cancel: false, plan: false, per: "all", anchor: null, rg: null, st: "all", q: "", limit: 25 };
+/* ประเภทการตรวจ (ผู้ใช้ขอ 30 ก.ย.): รถ MHE = แบตเตอรี่ Lead-Acid / Lithium / Gas / MHE · ที่เหลือ = ตรวจคลังสินค้า */
+const MHE_T = ["Lead-Acid", "Lithium", "Gas", "MHE"];
+const kindOf = r => MHE_T.includes(r.t) ? "mhe" : "wh";
+const KIND = { wh: { label: "ตรวจคลังสินค้า", short: "คลัง", color: "#0b6f7a", bg: "#e0f4f3" }, mhe: { label: "ตรวจรถ MHE", short: "รถ MHE", color: "#7a3fd0", bg: "#efe7fd" } };
+const kindTag = r => `<span class="ktag" style="color:${KIND[kindOf(r)].color};background:${KIND[kindOf(r)].bg}">${KIND[kindOf(r)].short}</span>`;
+const S = { kind: "all", view: "overview", fst: "all", wh: "all", month: "all", branch: "all", type: "all", cancel: false, plan: false, per: "all", anchor: null, rg: null, st: "all", q: "", limit: 25 };
 
 function rows(ignore = {}) {
   return DATA.filter(r =>
@@ -619,6 +630,7 @@ function rows(ignore = {}) {
     (ignore.rg || !S.rg || r.p !== "RDC01" || regionOf(r.b) === S.rg) &&
     (ignore.month || S.month === "all" || r.due.slice(0, 7) === S.month) &&
     (ignore.branch || S.branch === "all" || r.b === S.branch) &&
+    (ignore.kind || S.kind === "all" || kindOf(r) === S.kind) &&
     (ignore.type || S.type === "all" || r.t === S.type) &&
     (S.cancel || GROUP[r.s] !== "cancel") &&
     (ignore.plan || S.plan || GROUP[r.s] !== "wait"));
@@ -643,7 +655,7 @@ function renderHero() {
   const tone = lv => ["linear-gradient(150deg,#13a878,#0a7353)", "linear-gradient(150deg,#f59e0b,#c2410c)", "linear-gradient(150deg,#f0553a,#b8260f)", "linear-gradient(150deg,#4a5877,#333f5a)"][lv];
   const card2 = (lv, q, val, unit, say) => `<div class="card ans" style="background:${tone(lv)}"><div class="lbl">${q}</div><div class="val">${val}<small>${unit}</small></div><div class="say">${say}</div></div>`;
   const mname = TH_M[+mon.slice(5) - 1];
-  $("seg").innerHTML = `<span style="font-size:13px;font-weight:700;color:rgba(255,255,255,.8)">กำลังดู:</span> <b style="font-size:16px">${S.branch !== "all" ? S.branch : GD ? GD.name : "ทุกคลัง (ส่วนกลาง WHA + 5 ภาค)"}</b>`;
+  $("seg").innerHTML = `<span style="font-size:13px;font-weight:700;color:rgba(255,255,255,.8)">กำลังดู:</span> <b style="font-size:16px">${S.branch !== "all" ? S.branch : GD ? GD.name : "ทุกคลัง (ส่วนกลาง WHA + 5 ภาค)"}</b>${S.kind !== "all" ? ` <span class="ktag big" style="color:${KIND[S.kind].color};background:${KIND[S.kind].bg}">${KIND[S.kind].label}</span>` : ""}`;
   $("stats").innerHTML =
     card2(!Dd.length ? 3 : dk === Dd.length ? 0 : day === ASOF ? 1 : 2, "ตรวจครบไหม · " + fmtD(day), !Dd.length ? "–" : dk === Dd.length ? "ครบ" : "ขาด " + (Dd.length - dk), !Dd.length || dk === Dd.length ? "" : "ใบ",
       !Dd.length ? "วันนี้ไม่มีงานตามแผน" : `ตรวจแล้ว ${dk} จาก ${Dd.length} ใบ`) +
@@ -660,7 +672,11 @@ function renderFilters() {
   const brs = [...new Set(base.map(r => r.b))].sort((a, b) => (a === "ไม่ระบุ") - (b === "ไม่ระบุ") || a.localeCompare(b, "th"));
   if (S.branch !== "all" && !brs.includes(S.branch)) S.branch = "all";
   $("branch").innerHTML = `<option value="all">ทั้งหมด</option>` + brs.map(b => `<option ${S.branch === b ? "selected" : ""}>${b}</option>`).join("");
-  const tys = [...new Set(DATA.map(r => r.t))].filter(t => t !== "-");
+  const kc = k => DATA.filter(r => (k === "all" || kindOf(r) === k) && GROUP[r.s] !== "cancel" && GROUP[r.s] !== "wait").length;
+  $("kinds").innerHTML = [["all", "ทั้งหมด"], ["wh", KIND.wh.label], ["mhe", KIND.mhe.label]]
+    .map(([k, l]) => `<button type="button" class="${S.kind === k ? "on" : ""}" data-kind="${k}">${l} <span class="kc">${kc(k)}</span></button>`).join("");
+  const tys = [...new Set(DATA.filter(r => S.kind === "all" || kindOf(r) === S.kind).map(r => r.t))].filter(t => t !== "-");
+  if (S.type !== "all" && !tys.includes(S.type)) S.type = "all";
   $("type").innerHTML = `<option value="all">ทั้งหมด</option>` + tys.map(t => `<option ${S.type === t ? "selected" : ""}>${t}</option>`).join("");
   $("showCancel").checked = S.cancel;
   $("showPlan").checked = S.plan;
@@ -740,7 +756,7 @@ function renderFail() {
   $("fTag").textContent = L.length + " ใบงาน";
   $("fBody").innerHTML = L.map(r => { const st = repSt(r), R = REP[st], f = FIX[fkey(r)] || {};
     return `<tr class="${st === "fixed" ? "" : "bad"}"><td class="num" style="font-weight:700;white-space:nowrap">${r.w}</td>
-      <td><div style="font-weight:700">${r.e}</div><div style="font-size:12px;color:#5a6784">ไม่ผ่าน ${r.r.split(":")[1]} ข้อ${f.note ? " · 📝 " + f.note : ""}</div></td><td>${r.t === "-" ? "ไม่ระบุ" : r.t}</td>
+      <td><div style="font-weight:700">${r.e}</div><div style="font-size:12px;color:#5a6784">ไม่ผ่าน ${r.r.split(":")[1]} ข้อ${f.note ? " · 📝 " + f.note : ""}</div></td><td>${kindTag(r)} <span style="font-size:12.5px;color:#5a6784">${r.t === "-" ? "" : r.t}</span></td>
       <td style="white-space:nowrap">${r.p}<div style="font-size:12px;color:#5a6784">${r.b}</div></td><td style="white-space:nowrap">${fmtD(failDate(r))}${st === "fixed" ? `<div style="font-size:12px;color:#0a6b4d">แก้เสร็จ ${fmtD(f.date)}</div>` : ""}</td>
       <td><button type="button" class="pill" data-edit="${fkey(r)}" style="cursor:pointer;border:0;background:${R.bg};color:${R.fg}">${R.label} ✎</button></td><td>${daysPill(r)}</td></tr>`; }).join("") || `<tr><td colspan="7" style="text-align:center;color:#5a6784;padding:22px">ไม่มีใบงานที่ไม่ผ่าน</td></tr>`;
 }
@@ -804,7 +820,7 @@ function renderTable() {
     const g = ST[grp(r)], od = overdue(r);
     const res = r.r === "pass" ? `<span class="pill" style="background:#e3f6ee;color:#0a6b4d">✓ ผ่าน</span>` : isFail(r) ? `<span class="pill" style="background:#ffe3dc;color:#a8250f">✕ ไม่ผ่าน ${r.r.split(":")[1]}</span><div style="margin-top:6px;display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="pill" style="padding:3px 9px;font-size:11.5px;background:${REP[repSt(r)].bg};color:${REP[repSt(r)].fg}">${REP[repSt(r)].label}</span><button type="button" class="btn ${repSt(r) === "fixed" ? "ghost" : "fix"}" data-edit="${fkey(r)}" style="padding:4px 10px;font-size:11.5px">อัปเดตการซ่อม</button></div>` : `<span style="color:#9aa6bd">ยังไม่ตรวจ</span>`;
     return `<tr class="${isFail(r) ? "bad" : ""}"><td class="num" style="font-weight:700;white-space:nowrap">${r.w === "-" ? "<span style='color:#9aa6bd'>ยังไม่มีเลข</span>" : r.w}</td>
-      <td><div style="font-weight:700">${r.e}</div><div style="font-size:12px;color:#5a6784">${r.n}</div></td><td>${r.t === "-" ? "ไม่ระบุ" : r.t}</td>
+      <td><div style="font-weight:700">${r.e}</div><div style="font-size:12px;color:#5a6784">${r.n}</div></td><td>${kindTag(r)} <span style="font-size:12.5px;color:#5a6784">${r.t === "-" ? "" : r.t}</span></td>
       <td style="white-space:nowrap">${fmtD(r.due)}${od ? `<div style="font-size:12px;color:#a8250f;font-weight:700">เลยกำหนด</div>` : ""}</td>
       <td><span class="pill" style="background:${g.bg};color:${g.fg}">${r.s}</span></td><td>${res}</td></tr>`;
   }).join("") || `<tr><td colspan="6" style="text-align:center;color:#5a6784;padding:22px">ไม่พบใบงาน</td></tr>`;
@@ -979,6 +995,7 @@ function renderDrill() {
       <div class="gc-day" style="color:${tone}"><span class="gc-big">${t.n ? (t.miss ? "✕" : "✓") : "–"}</span><div><b>${t.n ? (t.miss ? "ขาด " + t.miss + " ใบ" : "ตรวจครบ") : "ไม่มีงาน"}</b><small>${thD(day)} · ตรวจ ${t.k}/${t.n}</small></div></div>
       <div class="gc-row"><span>เดือน ${TH_M[+mon.slice(5) - 1]} ตรวจแล้ว</span><b style="color:${m.pct == null ? "#7a849a" : m.pct >= 95 ? "#0a8a5f" : m.pct >= 80 ? "#d97706" : "#c9301a"}">${m.pct == null ? "–" : m.pct + "%"}</b></div>
       <div class="gc-bar"><i style="width:${m.pct || 0}%;background:${m.pct >= 95 ? "#13a878" : m.pct >= 80 ? "#f59e0b" : "#f0553a"}"></i></div>
+      ${S.kind === "all" ? `<div class="gc-split">${["wh", "mhe"].map(k => { const c2 = cnt(dueIn(L.filter(r => kindOf(r) === k), mon)); return `<span style="color:${KIND[k].color};background:${KIND[k].bg}">${KIND[k].short} <b>${c2.pct == null ? "–" : c2.pct + "%"}</b></span>`; }).join("")}</div>` : ""}
       <div class="gc-row"><span>พบไม่ผ่าน (เดือนนี้)</span><b style="color:${fm ? "#c9301a" : "#0a8a5f"}">${fm} เครื่อง</b></div>
       <div class="gc-row"><span>ยังไม่แก้ (สะสม)</span><b style="color:${fo ? "#c9301a" : "#0a8a5f"}">${fo} เครื่อง</b></div>
     </button>`; };
@@ -1013,7 +1030,7 @@ function renderDrill() {
   const FL = R.filter(r => isFail(r) && (FA === "all" ? failDate(r).slice(0, 7) === mon : repSt(r) !== "fixed")).sort((a, b) => failDate(b).localeCompare(failDate(a)));
   const byWh = {}; FL.forEach(r => (byWh[r.p + "|" + r.b] = byWh[r.p + "|" + r.b] || []).push(r));
   const fItem = r => { const R2 = REP[repSt(r)], d = downDays(r); return `<div class="fi"><span class="ag ${d > 30 ? "c" : d > 7 ? "b" : "a"}">${d}<small>วัน</small></span>
-      <div><b>${r.e}</b><span>พบ ${fmtD(failDate(r))} · ไม่ผ่าน ${r.r.split(":")[1] || ""} รายการ · ${r.w || ""} · <i style="color:${R2.color};font-style:normal;font-weight:700">${R2.label}</i></span></div>
+      <div><b>${kindTag(r)} ${r.e}</b><span>พบ ${fmtD(failDate(r))} · ไม่ผ่าน ${r.r.split(":")[1] || ""} รายการ · ${r.w || ""} · <i style="color:${R2.color};font-style:normal;font-weight:700">${R2.label}</i></span></div>
       <button type="button" class="upd" data-edit="${fkey(r)}">อัปเดตการซ่อม</button></div>`; };
   const fGroups = (GD ? [GD] : GROUPS).map(g => { const ws = g.members(RA).filter(([p, b]) => byWh[p + "|" + b]); if (!ws.length) return "";
       const n = ws.reduce((a, [p, b]) => a + byWh[p + "|" + b].length, 0);
@@ -1031,7 +1048,8 @@ function renderDrill() {
   const mcell = (L, m) => { const c = cnt(dueIn(L, m)), f = L.filter(r => isFail(r) && failDate(r).slice(0, 7) === m).length, t = L.filter(r => r.r && failDate(r).slice(0, 7) === m).length;
     if (!c.n && !t) return `<td class="mc nil">·</td>`;
     const col = c.pct == null ? "#7a849a" : c.pct >= 95 ? "#0a8a5f" : c.pct >= 80 ? "#d97706" : "#c9301a";
-    return `<td class="mc" data-tip="${thM(m)} · ต้องตรวจ ${c.n} ตรวจแล้ว ${c.k} · ผลตรวจ ${t} ใบ ไม่ผ่าน ${f}"><b style="color:${col}">${c.pct == null ? "–" : c.pct + "%"}</b><span class="${f ? "bad" : ""}">${f ? "พบ " + f : "ไม่พบ"}</span></td>`; };
+    const sp = S.kind === "all" ? " · " + ["wh", "mhe"].map(k => { const c2 = cnt(dueIn(L.filter(r => kindOf(r) === k), m)); return KIND[k].short + " " + (c2.pct == null ? "–" : c2.pct + "%"); }).join(" / ") : "";
+    return `<td class="mc" data-tip="${thM(m)} · ต้องตรวจ ${c.n} ตรวจแล้ว ${c.k}${sp} · ผลตรวจ ${t} ใบ ไม่ผ่าน ${f}"><b style="color:${col}">${c.pct == null ? "–" : c.pct + "%"}</b><span class="${f ? "bad" : ""}">${f ? "พบ " + f : "ไม่พบ"}</span></td>`; };
   const allLine = { kind: "t", L: R };
   const sec3 = `<section class="panel" style="display:grid;gap:12px">
     <div class="sech"><span class="secn">4</span><div><h2>สถิติรายเดือน</h2><p class="hint">บน = ตรวจแล้วกี่ % ของงานที่ถึงกำหนด (เขียว ≥95% · ส้ม 80–94% · แดง &lt;80%) · ล่าง = พบไม่ผ่านกี่เครื่อง</p></div></div>
@@ -1072,6 +1090,8 @@ document.addEventListener("click", e => {
   if (so && S.bf) { const k = so.dataset.bfsort; if (S.bf.sort === k) S.bf.dir *= -1; else { S.bf.sort = k; S.bf.dir = -1; } renderDrill(); return; }
   if (e.target.closest("[data-bfdir]") && S.bf) { S.bf.dir *= -1; renderDrill(); return; }
   if (e.target.closest("[data-bfreset]")) { S.bf = null; render(); return; }
+  const kd = e.target.closest("[data-kind]");
+  if (kd) { S.kind = kd.dataset.kind; render(); return; }
   const gp = e.target.closest("[data-grp]");
   if (gp) { S.grp = gp.dataset.grp === "all" || S.grp === gp.dataset.grp ? null : gp.dataset.grp; render(); return; }
   const ds = e.target.closest("[data-dayshift]");
