@@ -384,6 +384,7 @@
       <button type="button" class="navb" id="perToday" style="width:auto;padding:0 14px;font-size:13px">วันนี้</button>
       <button type="button" class="navb" id="perNext" aria-label="ช่วงถัดไป">▶</button>
     </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><b style="font-size:13.5px;color:#5a6784">รอบการตรวจ</b><div class="pills" id="frqFilter"></div></div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
       <div class="pills" id="stFilter"></div>
       <label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5a6784" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.3-4.3 M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/></svg><input id="q" placeholder="ค้นหา เลขใบงาน / อุปกรณ์ / แผน"></label>
@@ -513,7 +514,7 @@ const SUBS = {
 const subOf = r => (SUBS[kindOf(r)].find(([, , f]) => f(r)) || [])[0];
 const subLabel = r => (SUBS[kindOf(r)].find(([k]) => k === subOf(r)) || [, ""])[1];
 const kindTag = r => `<span class="ktag" style="color:${KIND[kindOf(r)].color};background:${KIND[kindOf(r)].bg}">${KIND[kindOf(r)].short} · ${subLabel(r)}</span>`;
-const S = { sub: "all", kind: "all", view: "overview", fst: "all", wh: "all", month: "all", branch: "all", type: "all", cancel: false, plan: false, per: "all", anchor: null, rg: null, st: "all", q: "", limit: 25 };
+const S = { sub: "all", kind: "all", view: "overview", fst: "all", wh: "all", month: "all", branch: "all", type: "all", cancel: false, plan: false, per: "all", freq: "all", anchor: null, rg: null, st: "all", q: "", limit: 25 };
 
 function rows(ignore = {}) {
   return DATA.filter(r =>
@@ -664,6 +665,22 @@ function renderTypes() {
   }).join("");
 }
 
+/* รอบการตรวจของแผน: ดูจากชื่อแผนก่อน (Daily / ประจำสัปดาห์ / ประจำเดือน) ถ้าไม่บอก ใช้ช่วงห่างกำหนดการ (median) ของแผน+อุปกรณ์ */
+const FREQ = { day: ["รายวัน", "#0f3fa4", "#e6eefc"], week: ["รายสัปดาห์", "#6a3fd0", "#efe9ff"], month: ["รายเดือน", "#0a6b4d", "#e3f6ee"], other: ["อื่นๆ", "#5a6784", "#eef1f6"] };
+let FQ = null, FQn = -1;
+function freqOf(r) {
+  const n = r.n || "";
+  if (/daily|ประจำวัน|รายวัน/i.test(n)) return "day";
+  if (/สัปดาห์|weekly/i.test(n)) return "week";
+  if (/เดือน|monthly/i.test(n)) return "month";
+  if (FQn !== DATA.length) { FQn = DATA.length; FQ = {}; const by = {};
+    DATA.forEach(x => { const [p, pl, , eq] = x.id.split("|"); if (x.due) (by[p + "|" + pl + "|" + eq] = by[p + "|" + pl + "|" + eq] || []).push(x.due); });
+    Object.entries(by).forEach(([k, ds]) => { ds = [...new Set(ds)].sort(); const g = ds.slice(1).map((d, i) => dayDiff(ds[i], d)).sort((a, b) => a - b);
+      const m = g.length ? g[g.length >> 1] : null; FQ[k] = m == null ? "other" : m <= 2 ? "day" : m <= 10 ? "week" : m <= 45 ? "month" : "other"; }); }
+  const [p, pl, , eq] = r.id.split("|"); return FQ[p + "|" + pl + "|" + eq] || "other";
+}
+const freqTag = r => { const [l, c, bg] = FREQ[freqOf(r)]; return `<span class="ktag" style="color:${c};background:${bg}">${l}</span>`; };
+
 /* ช่วงเวลาของรายการใบงาน: Daily / Weekly (จันทร์–อาทิตย์) / Monthly */
 const addD = (iso, n) => { const d = new Date(iso + "T00:00:00"); d.setDate(d.getDate() + n); return d.toLocaleDateString("sv-SE"); };
 function perRange() {
@@ -695,11 +712,14 @@ function renderTable() {
   const nOf = f => base.filter(f).length;
   $("perSum").innerHTML = base.length ? `กำหนดทำ <b>${base.length}</b> ใบ · เสร็จ <b style="color:#0a6b4d">${nOf(r => grp(r) === "done")}</b> · กำลังทำ <b style="color:#0f3fa4">${nOf(r => grp(r) === "prog")}</b> · เลยกำหนด <b style="color:#a8250f">${nOf(overdue)}</b> · ไม่ผ่าน <b style="color:#a8250f">${nOf(isFail)}</b>` : "ไม่มีใบงานที่กำหนดทำในช่วงนี้";
   const hit = (r, k) => k === "all" || (k === "fail" ? isFail(r) : k === "late" ? overdue(r) : grp(r) === k);
-  const cnt = k => base.filter(r => hit(r, k)).length;
+  const cnt = k => base.filter(r => hit(r, k) && (S.freq === "all" || freqOf(r) === S.freq)).length;
+  const fBase = base.filter(r => hit(r, S.st));
+  const fk = [["all", "ทั้งหมด"], ["day", "รายวัน"], ["week", "รายสัปดาห์"], ["month", "รายเดือน"], ["other", "อื่นๆ"]].filter(([k]) => k === "all" || k === S.freq || fBase.some(r => freqOf(r) === k));
+  $("frqFilter").innerHTML = fk.map(([k, l]) => `<button type="button" class="${S.freq === k ? "on" : ""}" data-freq="${k}" style="${S.freq === k && k !== "all" ? "background:" + FREQ[k][1] : ""}">${l} ${k === "all" ? fBase.length : fBase.filter(r => freqOf(r) === k).length}</button>`).join("");
   const keys = [["all", "ทั้งหมด"], ["done", "เสร็จ"], ["prog", "กำลังทำ"], ["late", "เลยกำหนด"], ["fail", "ไม่ผ่าน"]].concat(S.plan ? [["wait", "แผนงาน"]] : []);
   if (!keys.some(([k]) => k === S.st)) S.st = "all";
   $("stFilter").innerHTML = keys.map(([k, l]) => `<button type="button" class="${S.st === k ? "on" : ""}" data-st="${k}" style="${S.st === k && (k === "fail" || k === "late") ? "background:#c9301a" : ""}">${l} ${cnt(k)}</button>`).join("");
-  const R = base.filter(r => hit(r, S.st) &&
+  const R = base.filter(r => hit(r, S.st) && (S.freq === "all" || freqOf(r) === S.freq) &&
     (!q || (r.w + " " + r.e + " " + r.n).toLowerCase().includes(q)))
     /* เรื่องที่ต้องตามขึ้นก่อน: ไม่ผ่านยังไม่แก้ → เลยกำหนด → ที่เหลือ (ใหม่สุดก่อน) */
     .sort((a, b) => ((isFail(b) && repSt(b) !== "fixed") - (isFail(a) && repSt(a) !== "fixed")) || (overdue(b) - overdue(a)) || b.due.localeCompare(a.due));
@@ -708,7 +728,7 @@ function renderTable() {
     const g = ST[grp(r)], od = overdue(r);
     const res = r.r === "pass" ? `<span class="pill" style="background:#e3f6ee;color:#0a6b4d">✓ ผ่าน</span>` : isFail(r) ? `<span class="pill" style="background:#ffe3dc;color:#a8250f">✕ ไม่ผ่าน ${r.r.split(":")[1]}</span><div style="margin-top:6px;display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="pill" style="padding:3px 9px;font-size:11.5px;background:${REP[repSt(r)].bg};color:${REP[repSt(r)].fg}">${REP[repSt(r)].label}</span><button type="button" class="btn ${repSt(r) === "fixed" ? "ghost" : "fix"}" data-edit="${fkey(r)}" style="padding:4px 10px;font-size:11.5px">อัปเดตการซ่อม</button></div>` : `<span style="color:#9aa6bd">ยังไม่ตรวจ</span>`;
     return `<tr class="${isFail(r) ? "bad" : ""}"><td class="num" style="font-weight:700;white-space:nowrap">${r.w === "-" ? "<span style='color:#9aa6bd'>ยังไม่มีเลข</span>" : r.w}</td>
-      <td><div style="font-weight:700">${r.e}</div><div style="font-size:12px;color:#5a6784">${r.n}</div></td><td>${kindTag(r)} <span style="font-size:12.5px;color:#5a6784">${r.t === "-" ? "" : r.t}</span></td>
+      <td><div style="font-weight:700">${r.e}</div><div style="font-size:12px;color:#5a6784">${r.n}</div></td><td>${kindTag(r)} ${freqTag(r)} <span style="font-size:12.5px;color:#5a6784">${r.t === "-" ? "" : r.t}</span></td>
       <td style="white-space:nowrap">${fmtD(r.due)}${od ? `<div style="font-size:12px;color:#a8250f;font-weight:700">เลยกำหนด</div>` : ""}</td>
       <td><span class="pill" style="background:${g.bg};color:${g.fg}">${r.s}</span></td><td>${res}</td></tr>`;
   }).join("") || `<tr><td colspan="6" style="text-align:center;color:#5a6784;padding:22px">ไม่พบใบงาน</td></tr>`;
@@ -938,6 +958,8 @@ document.addEventListener("click", e => {
   if (jp) { const el = document.getElementById(jp.dataset.jump); if (el) el.scrollIntoView({ behavior: "smooth" }); return; }
   const kd = e.target.closest("[data-kind]");
   if (kd) { S.kind = kd.dataset.kind; S.sub = "all"; render(); return; }
+  const fq = e.target.closest("[data-freq]");
+  if (fq) { S.freq = fq.dataset.freq; S.limit = 25; renderTable(); return; }
   const sb = e.target.closest("[data-sub]");
   if (sb) { S.sub = sb.dataset.sub; render(); return; }
   const t = e.target.closest("[data-wh],[data-month],[data-branch],[data-type],[data-st],[data-view],[data-fst],[data-per]");
