@@ -28,7 +28,7 @@ repo `sttonnn/robot-report` คือที่รวมทุก Dashboard (ต�
 - Robot Performance Dashboard (robot-dashboard.html) ใช้ pipeline Excel → Power Automate → Dropbox robot.csv → Supabase
   - 30 ก.ย.: ซ่อนตู้ที่ไม่มีสายส่งของวันที่ 29/09/2026 (โชว์เป็นตู้ 4 — เลขบนจอเป็นลำดับ seqOf ไม่ใช่เลขตู้ในไฟล์) ด้วย `PHANTOM` (key = วันที่) ใน renderVals ของ index.html · แก้ถาวร = Clear contents แถวนั้นใน Excel แล้วเอา PHANTOM ออกได้
   - 30 ก.ย.: ปุ่ม "ลบ" ข้างเลขตู้ในตารางรายละเอียดตู้ = ซ่อนชั่วคราว (hideCont → Supabase robot_entries.hidden, ทุกเครื่องเห็นตรงกัน) · กู้คืนด้วย "เลิกซ่อนทั้งหมด" · ตัวกรองเช็กทั้งคีย์ วันที่#ตู้ และ วันที่#S<สายส่ง>
-  - 2 ต.ค.: คอลัมน์ "วิธีโหลด" ท้ายตารางรายละเอียดตู้ (หลังสายส่ง) = dropdown Robot / Robot+สายพาน / สายพาน (ค่า robot/both/belt) · state `loads`, localStorage `pcg-robot-loads`, Supabase `robot_entries.load_method` (ต้องรัน `alter table robot_entries add column load_method text;` ก่อน ไม่งั้นเก็บแค่ในเครื่อง + ขึ้นข้อความเตือน) · แก้เฉพาะ pcg-logistics/robot-dashboard.html
+  - 2 ต.ค.: คอลัมน์ "วิธีโหลด" ท้ายตารางรายละเอียดตู้ (หลังสายส่ง) = dropdown Robot / Robot+สายพาน / สายพาน (ค่า robot/both/belt) · state `loads`, localStorage `pcg-robot-loads`, Supabase `robot_entries.load_method` (ต้องรัน `alter table robot_entries add column load_method text;` ก่อน ไม่งั้นเก็บแค่ในเครื่อง + ขึ้นข้อความเตือน) · มีชิปสรุป Robot / Robot+สายพาน / สายพาน / ยังไม่เลือก ใต้หัว "รายละเอียดตู้" (ตามช่วงที่เลือก) · Supabase MCP ของ session นี้เข้าได้แค่ money-app → ผู้ใช้ต้องรัน SQL เอง · แก้เฉพาะ pcg-logistics/robot-dashboard.html
 - PCG Warehouse Dashboard + warehouse-map.html (ตาราง Supabase `warehouses`)
 - PCG Project Portal (index.html) — การ์ด Daily Machine Check ยัง Coming Soon
 
