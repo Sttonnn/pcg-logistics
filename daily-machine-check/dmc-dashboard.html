@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daily Machine Check · PCG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap">
+<style>
+  /* Daily Machine Check — ดีไซน์ใหม่ 3 ต.ค. (ผู้ใช้ขอ: หัวไม่ให้เหมือน PM + มีแถบซ้าย)
+     โทนหลัก = เขียวอมฟ้า (teal) ต่างจาก PM ที่เป็นกรม/น้ำเงิน · หัวเป็นแถบขาวสะอาด + การ์ดสถานะ ไม่ใช่ hero มืด */
+  :root { --bg: #f1f5f4; --ink: #10201f; --ink2: #47605d; --ink3: #6f8582; --line: #dfe8e6; --card: #ffffff;
+    --teal: #0f9d8a; --teal2: #0b7468; --tealT: #dcf5f0; --ok: #12a46b; --okT: #e2f6ec; --okF: #0a6b45;
+    --bad: #e5482b; --badT: #ffe6df; --badF: #a8250f; --wait: #8a9a98; --waitT: #edf2f1; --amber: #f2a01c;
+    --shadow: 0 1px 2px rgba(16,32,31,.06), 0 10px 26px rgba(16,32,31,.07); }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: "IBM Plex Sans Thai", "Archivo", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  button { font: inherit; }
+  .num { font-family: Archivo, "IBM Plex Sans Thai", sans-serif; font-variant-numeric: tabular-nums; }
+
+  /* ---------- แถบซ้าย ---------- */
+  .side { position: fixed; inset: 0 auto 0 0; width: 264px; z-index: 40; display: flex; flex-direction: column; gap: 4px; padding: 20px 14px 16px; overflow-y: auto; color: #e9f6f3;
+    background: radial-gradient(110% 50% at 0% 0%, rgba(25,214,180,.28), transparent 60%), radial-gradient(90% 45% at 100% 100%, rgba(242,160,28,.16), transparent 60%), linear-gradient(185deg, #0b2a2a, #0d3533 55%, #0f2f3a); }
+  .brand { display: flex; align-items: center; gap: 11px; padding: 2px 6px 16px; border-bottom: 1px solid rgba(255,255,255,.1); margin-bottom: 4px; }
+  .brand .lg { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; flex: none; color: #06302b;
+    background: linear-gradient(150deg, #5ef0d2, #19c3a6); box-shadow: 0 10px 22px rgba(25,195,166,.4); }
+  .brand b { display: block; font-family: Archivo, sans-serif; font-weight: 900; font-size: 16px; line-height: 1.15; letter-spacing: -.01em; }
+  .brand small { font-size: 11.5px; font-weight: 600; opacity: .6; }
+  .sh { font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; opacity: .45; margin: 16px 10px 6px; }
+  .sitem { display: flex; align-items: center; gap: 11px; width: 100%; padding: 10px 11px; border: 0; border-radius: 14px; background: transparent; color: rgba(233,246,243,.82);
+    font-size: 14px; font-weight: 700; text-align: left; cursor: pointer; transition: background .15s; position: relative; }
+  .sitem:hover { background: rgba(255,255,255,.07); }
+  .sitem.on { background: rgba(94,240,210,.14); color: #fff; box-shadow: inset 0 0 0 1px rgba(94,240,210,.35); }
+  .sitem.on::before { content: ""; position: absolute; left: -14px; top: 10px; bottom: 10px; width: 4px; border-radius: 0 4px 4px 0; background: #5ef0d2; }
+  .sitem .ic { width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; flex: none; background: rgba(255,255,255,.08); }
+  .sitem.on .ic { background: linear-gradient(150deg, #5ef0d2, #19c3a6); color: #06302b; }
+  .sitem .tx { display: grid; flex: 1; min-width: 0; line-height: 1.25; }
+  .sitem .tx small { font-size: 11.5px; font-weight: 600; opacity: .62; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sbadge { font-size: 11.5px; font-weight: 800; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+  .sbadge.ok { background: rgba(18,164,107,.22); color: #7ff0bf; } .sbadge.bad { background: #e5482b; color: #fff; }
+  .sguide { margin-top: auto; display: grid; gap: 5px; padding: 15px; border: 0; border-radius: 18px; cursor: pointer; text-align: left; color: #10201f;
+    background: linear-gradient(150deg, #f8f1c8, #f2c94c); box-shadow: 0 12px 26px rgba(242,201,76,.25); transition: transform .15s; }
+  .sguide:hover { transform: translateY(-2px); }
+  .sguide b { display: flex; align-items: center; gap: 8px; font-size: 15px; } .sguide small { font-size: 12px; font-weight: 600; opacity: .75; }
+  .sfoot { font-size: 11.5px; opacity: .5; padding: 12px 8px 0; line-height: 1.5; }
+  .scrim { display: none; position: fixed; inset: 0; z-index: 39; background: rgba(6,20,20,.45); }
+
+  /* ---------- พื้นที่หลัก ---------- */
+  .main { margin-left: 264px; min-height: 100vh; }
+  .topbar { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 14px clamp(16px, 3vw, 36px);
+    background: rgba(241,245,244,.88); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  .menu { display: none; width: 42px; height: 42px; border-radius: 12px; border: 0; background: #0d3533; color: #fff; cursor: pointer; place-items: center; }
+  .crumb { display: grid; line-height: 1.2; min-width: 0; }
+  .crumb small { font-size: 12px; font-weight: 600; color: var(--ink3); } .crumb small a { color: var(--teal2); text-decoration: none; font-weight: 700; }
+  .crumb h1 { margin: 2px 0 0; font-family: Archivo, "IBM Plex Sans Thai", sans-serif; font-weight: 900; font-size: 24px; letter-spacing: -.01em; }
+  .tright { margin-left: auto; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .shiftnow { display: inline-flex; align-items: center; gap: 7px; padding: 8px 13px; border-radius: 999px; font-size: 13px; font-weight: 700; background: #fff; box-shadow: var(--shadow); }
+  .dpick { display: inline-flex; align-items: center; gap: 4px; padding: 4px; border-radius: 14px; background: #fff; box-shadow: var(--shadow); }
+  .dpick button { width: 34px; height: 34px; border: 0; border-radius: 10px; background: transparent; cursor: pointer; color: var(--ink2); display: grid; place-items: center; }
+  .dpick button:hover { background: var(--waitT); }
+  .dpick input { border: 0; font: inherit; font-weight: 700; font-size: 14px; color: var(--ink); background: transparent; padding: 6px 4px; }
+  .dpick .today { width: auto; padding: 0 12px; font-size: 13px; font-weight: 800; color: var(--teal2); }
+  .wrap { padding: 22px clamp(16px, 3vw, 36px) 48px; display: grid; gap: 20px; max-width: 1400px; }
+
+  /* แผงสถานะ: วงแหวนใหญ่ + 3 ตัวเลข + ความคืบหน้าแต่ละพลัด */
+  .status { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 2fr); gap: 16px; }
+  .ready { position: relative; overflow: hidden; display: flex; align-items: center; gap: 22px; padding: 22px 24px; border-radius: 24px; color: #fff;
+    background: linear-gradient(140deg, #0f9d8a, #0b6f66 60%, #0a5257); box-shadow: 0 16px 34px rgba(11,111,102,.3); }
+  .ready.warn { background: linear-gradient(140deg, #e88a12, #c4570e 60%, #a8400f); box-shadow: 0 16px 34px rgba(196,87,14,.3); }
+  .ready::after { content: ""; position: absolute; right: -60px; top: -60px; width: 220px; height: 220px; border-radius: 50%; background: rgba(255,255,255,.08); }
+  .ring { position: relative; width: 132px; height: 132px; flex: none; }
+  .ring b { position: absolute; inset: 0; display: grid; place-items: center; font-family: Archivo, sans-serif; font-weight: 900; font-size: 32px; }
+  .ready .lbl { font-size: 13px; font-weight: 700; opacity: .85; letter-spacing: .02em; }
+  .ready .big { font-family: Archivo, sans-serif; font-weight: 900; font-size: 44px; line-height: 1; margin: 4px 0 6px; }
+  .ready .big small { font-size: 20px; opacity: .75; }
+  .ready .say { font-size: 14px; font-weight: 600; opacity: .92; line-height: 1.45; position: relative; z-index: 1; }
+  .tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .tile { background: var(--card); border-radius: 20px; padding: 16px 18px; box-shadow: var(--shadow); display: grid; gap: 4px; align-content: start; position: relative; overflow: hidden; }
+  .tile::before { content: ""; position: absolute; left: 0; top: 0; right: 0; height: 4px; background: var(--c); }
+  .tile .t { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--ink2); }
+  .tile .t i { width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; background: var(--ct); color: var(--c); font-style: normal; }
+  .tile .v { font-family: Archivo, sans-serif; font-weight: 900; font-size: 38px; line-height: 1.05; color: var(--cv, var(--ink)); }
+  .tile .v small { font-size: 15px; font-weight: 700; color: var(--ink3); margin-left: 4px; font-family: "IBM Plex Sans Thai", sans-serif; }
+  .shiftbar { grid-column: 1 / -1; background: var(--card); border-radius: 20px; padding: 14px 18px; box-shadow: var(--shadow); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  .sb { display: grid; gap: 7px; }
+  .sb .h { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 800; }
+  .sb .h span { margin-left: auto; font-size: 12.5px; font-weight: 700; color: var(--ink3); }
+  .track { display: flex; height: 10px; border-radius: 999px; overflow: hidden; background: var(--waitT); }
+  .track i { display: block; height: 100%; }
+
+  .alert { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 20px; background: #fff; box-shadow: var(--shadow); border-left: 6px solid var(--bad); }
+  .alert .ai { width: 42px; height: 42px; border-radius: 13px; display: grid; place-items: center; flex: none; color: #fff; background: linear-gradient(150deg, #f0553a, #b8260f); }
+  .alert b { font-size: 15.5px; color: var(--badF); } .alert div div { font-size: 13.5px; color: var(--ink2); margin-top: 2px; }
+  .btn { border: 0; border-radius: 12px; padding: 10px 16px; font-weight: 800; font-size: 13.5px; cursor: pointer; white-space: nowrap; }
+  .btn.red { background: var(--bad); color: #fff; } .btn.red:hover { background: #c33416; }
+
+  .panel { background: var(--card); border-radius: 24px; box-shadow: var(--shadow); overflow: hidden; }
+  .phead { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 16px 20px; border-bottom: 1px solid var(--line); }
+  .phead h2 { margin: 0; font-size: 18px; font-weight: 800; }
+  .chip { font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 999px; background: var(--tealT); color: var(--teal2); }
+  .seg { margin-left: auto; display: inline-flex; gap: 3px; padding: 3px; border-radius: 12px; background: var(--waitT); flex-wrap: wrap; }
+  .seg button { border: 0; background: transparent; padding: 7px 13px; border-radius: 9px; font-size: 13px; font-weight: 800; color: var(--ink2); cursor: pointer; }
+  .seg button.on { background: #fff; color: var(--ink); box-shadow: 0 2px 6px rgba(16,32,31,.12); }
+  .seg button.on.r { background: var(--bad); color: #fff; }
+  .seg + .seg { margin-left: 0; }
+
+  /* เช็กลิสต์อุปกรณ์ */
+  .lhead, .lrow { display: grid; grid-template-columns: 44px minmax(0, 1fr) 150px 150px; align-items: center; gap: 12px; padding: 0 20px; }
+  .lhead { height: 40px; font-size: 12px; font-weight: 800; color: var(--ink3); background: #f7faf9; letter-spacing: .03em; }
+  .lhead span { display: inline-flex; align-items: center; gap: 6px; }
+  .lrow { min-height: 64px; border-top: 1px solid var(--line); position: relative; }
+  .lrow.bad { background: #fff7f4; } .lrow.bad::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--bad); }
+  .lrow .no { font-size: 12.5px; font-weight: 800; color: var(--ink3); }
+  .eq { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .eq .ei { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; color: #fff; flex: none; }
+  .eq b { display: block; font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .eq small { font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink3); }
+  .st { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 800; white-space: nowrap; }
+  .st .sl { display: none; font-weight: 600; opacity: .8; }
+  .empty { padding: 30px; text-align: center; color: var(--ink3); font-weight: 600; }
+
+  /* ประวัติ */
+  .kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .heat { overflow-x: auto; padding: 14px 20px 18px; }
+  .hgrid { display: grid; gap: 4px; align-items: center; width: max-content; }
+  .hname { position: sticky; left: 0; background: #fff; z-index: 1; font-size: 13px; font-weight: 700; padding-right: 10px; white-space: nowrap; display: flex; align-items: center; gap: 7px; width: 200px; }
+  .hname i { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+  .hday { font-size: 10.5px; font-weight: 700; color: var(--ink3); text-align: center; line-height: 1.2; }
+  .hc { height: 24px; border-radius: 7px; }
+  .legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; font-weight: 700; color: var(--ink2); margin-left: auto; }
+  .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 4px; vertical-align: -1px; margin-right: 5px; }
+  .tl { display: grid; gap: 10px; padding: 16px 20px 20px; }
+  .tlr { display: grid; grid-template-columns: 62px minmax(0, 1fr); gap: 12px; align-items: start; }
+  .tld { border-radius: 14px; padding: 7px 0; text-align: center; line-height: 1.15; background: #fff; box-shadow: var(--shadow); }
+  .tld.today { background: linear-gradient(150deg, #0f9d8a, #0b6f66); color: #fff; }
+  .tld small { display: block; font-size: 11px; font-weight: 700; opacity: .7; } .tld b { font-family: Archivo, sans-serif; font-size: 22px; font-weight: 900; }
+  .tlc { border-radius: 16px; padding: 12px 14px; background: #fff; box-shadow: var(--shadow); border-left: 4px solid var(--c); display: grid; gap: 8px; }
+  .tlc .h { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-weight: 800; font-size: 14.5px; }
+  .issue { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 12px; background: #fff5f2; font-size: 13.5px; font-weight: 700; }
+  .issue .ei { width: 28px; height: 28px; border-radius: 9px; display: grid; place-items: center; color: #fff; flex: none; }
+  .issue .sp { margin-left: auto; display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end; }
+  .tag { font-size: 11.5px; font-weight: 800; padding: 3px 9px; border-radius: 999px; }
+
+  dialog { border: 0; border-radius: 22px; padding: 0; width: min(680px, calc(100% - 32px)); box-shadow: 0 24px 60px rgba(6,20,20,.35); }
+  dialog::backdrop { background: rgba(6,20,20,.45); }
+  .guide { padding: 20px 22px; display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
+  .guide h3 { margin: 6px 0 0; font-size: 15.5px; } .guide p, .guide li { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--ink2); }
+  .guide ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+  .foot { font-size: 12px; color: var(--ink3); }
+
+  @media (max-width: 1100px) {
+    .side { transform: translateX(-105%); transition: transform .25s ease; } .side.open { transform: none; } .side.open + .scrim { display: block; }
+    .main { margin-left: 0; } .menu { display: grid; }
+    .status { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 760px) {
+    .crumb h1 { font-size: 20px; } .tright { margin-left: 0; width: 100%; } .dpick { flex: 1; } .dpick input { flex: 1; min-width: 0; }
+    .ready { padding: 18px; gap: 16px; } .ring { width: 104px; height: 104px; } .ring b { font-size: 26px; } .ready .big { font-size: 36px; }
+    .tiles, .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; } .tile { padding: 12px; } .tile .v { font-size: 28px; } .tile .t { font-size: 12px; } .tile .t i { display: none; }
+    .shiftbar { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+    .lhead { display: none; } .lrow { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); padding: 12px 14px; gap: 8px; }
+    .lrow .no { display: none; } .lrow .eq { grid-column: 1 / -1; } .st .sl { display: inline; }
+    .kpis .tile .v { font-size: 22px; }
+    .alert { flex-wrap: wrap; } .alert .btn { width: 100%; }
+  }
+  @media print { .side, .scrim, .menu { display: none !important; } .main { margin-left: 0; } }
+</style>
+</head>
+<body>
+<aside class="side" id="side" aria-label="เมนู"></aside>
+<div class="scrim" id="scrim"></div>
+
+<div class="main">
+  <div class="topbar">
+    <button class="menu" id="menu" type="button" aria-label="เปิดเมนู"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 6h16 M4 12h16 M4 18h16"/></svg></button>
+    <div class="crumb"><small><a href="../index.html">หน้าหลัก</a> · Daily Machine Check · <span id="viewName"></span></small><h1 id="title"></h1></div>
+    <div class="tright">
+      <span class="shiftnow" id="shiftNow"></span>
+      <div class="dpick">
+        <button type="button" id="dPrev" aria-label="วันก่อนหน้า"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+        <input type="date" id="date" aria-label="วันที่ตรวจ">
+        <button type="button" id="dNext" aria-label="วันถัดไป"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+        <button type="button" class="today" id="dToday">วันนี้</button>
+      </div>
+    </div>
+  </div>
+  <div class="wrap" id="app"></div>
+</div>
+
+<dialog id="guideDlg"><form method="dialog" class="guide">
+  <div style="display:flex;align-items:center;gap:10px"><span style="width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(150deg,#f8f1c8,#f2c94c)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg></span><b style="font-size:18px">คู่มือการอ่าน Daily Machine Check</b><button value="x" class="btn" style="margin-left:auto;background:var(--waitT)">ปิด</button></div>
+  <p>ทีมช่างตรวจเครื่องวันละ <b>2 พลัด</b> (☀ พลัดเข้า / ☾ พลัดดึก) ผ่าน Microsoft Forms · Dashboard สรุปว่าเครื่องพร้อมใช้งานกี่เครื่อง</p>
+  <h3>แผงสถานะด้านบน</h3>
+  <ul>
+    <li><b>ความพร้อมใช้งาน %</b> = เครื่องที่ไม่เสียเลยทั้ง 2 พลัด ÷ เครื่องทั้งหมดของคลัง · <span style="color:#0b6f66;font-weight:700">เขียว</span> = ปกติทุกเครื่อง · <span style="color:#c4570e;font-weight:700">ส้ม</span> = มีเครื่องเสีย</li>
+    <li><b>เสีย / ต้องซ่อม</b> = เครื่องที่พบเสียอย่างน้อย 1 พลัดในวันที่เลือก</li>
+    <li><b>แถบพลัดเข้า / พลัดดึก</b> = ตรวจแล้วกี่เครื่อง (เขียว ปกติ · แดง เสีย · เทา ยังไม่ตรวจ)</li>
+  </ul>
+  <h3>สถานะแต่ละเครื่อง</h3>
+  <ul><li><span class="st" style="background:var(--okT);color:var(--okF)">✓ ปกติ</span> <span class="st" style="background:var(--badT);color:var(--badF)">✕ เสีย</span> <span class="st" style="background:var(--waitT);color:#5a6a68">◷ ยังไม่ตรวจ</span></li>
+    <li>แถวที่มีเครื่องเสียมีแถบแดงด้านซ้าย · กด "ดูเฉพาะที่เสีย" เพื่อกรอง</li></ul>
+  <h3>ประวัติย้อนหลัง</h3>
+  <ul><li>เลือกช่วง 7 / 14 / 30 วัน · ตาราง สีเขียว = ปกติ · ส้ม = เสีย 1 พลัด · แดง = เสียทั้งวัน · ช่องที่มีกรอบ = วันที่เลือก</li>
+    <li>บันทึกรายวัน: วันไหนเสียเครื่องอะไร พลัดไหน · กด "เฉพาะวันที่มีเสีย" เพื่อดูแค่วันที่มีปัญหา</li></ul>
+  <p style="font-size:12.5px;color:#8a5200;background:#fff4dd;padding:8px 10px;border-radius:10px">ตอนนี้เป็นข้อมูลตัวอย่าง · รอเชื่อมผลตรวจจริงจาก Microsoft Forms</p>
+</form></dialog>
+
+<script>
+const $ = id => document.getElementById(id);
+const sv = (d, z = 18, w = 2.1) => `<svg width="${z}" height="${z}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`;
+const IC = {
+  Conveyor: "M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z M12 22V12 M3.29 7 12 12l8.71-5 M7.5 4.27l9 5.15",
+  Inventory: "M3 7V5a2 2 0 0 1 2-2h2 M17 3h2a2 2 0 0 1 2 2v2 M21 17v2a2 2 0 0 1-2 2h-2 M7 21H5a2 2 0 0 1-2-2v-2 M7 12h10",
+  Cleaning: "M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z",
+  Wrapping: "M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8 M21 3v5h-5",
+  Pallet: "M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12 M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17",
+  Compactor: "M3 3h18v5H3z M5 8v11a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8 M10 12h4",
+  Shuttle: "M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2 M15 18H9 M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14 M5 18a2 2 0 1 0 4 0 2 2 0 1 0-4 0 M15 18a2 2 0 1 0 4 0 2 2 0 1 0-4 0",
+  Palletizing: "M12 8V4H8 M4 10a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z M2 14h2 M20 14h2 M15 13v2 M9 13v2",
+  Compressor: "M12.8 19.6A2 2 0 1 0 14 16H2 M17.5 8a2.5 2.5 0 1 1 2 4H2 M9.8 4.4A2 2 0 1 1 11 8H2"
+};
+const COL = { Conveyor: ["#2f7cf6", "#1a4fc4"], Inventory: ["#6b5cf6", "#4331c2"], Cleaning: ["#16b3c9", "#0b7f95"], Wrapping: ["#b04ae8", "#7a24b8"], Pallet: ["#15b58a", "#0a7a5c"],
+  Compactor: ["#f39a1d", "#c96a07"], Shuttle: ["#f2653a", "#c33f16"], Palletizing: ["#e8457a", "#b21f52"], Compressor: ["#1ba5e0", "#0a6fa8"] };
+const EQUIP = {
+  DOM: [["Robot Cleaning", "Cleaning"], ["Drone", "Inventory"], ["Pallet Magazine", "Pallet"], ["Tele Conveyor", "Conveyor"], ["Compress Machine", "Compactor"],
+    ["Pallet Wrapping No.1", "Wrapping"], ["Pallet Wrapping No.2", "Wrapping"], ["Conveyor Manual No.1", "Conveyor"], ["Conveyor Manual No.2", "Conveyor"],
+    ["Conveyor Manual No.3", "Conveyor"], ["Conveyor Manual No.4", "Conveyor"], ["Conveyor Manual No.5", "Conveyor"]],
+  EXP: [["Robot", "Palletizing"], ["Tele Conveyor", "Conveyor"], ["Air Compressor", "Compressor"], ["Conveyor Semi ป.33", "Conveyor"], ["Conveyor Semi ป.31", "Conveyor"],
+    ["Shuttle Car No.1", "Shuttle"], ["Shuttle Car No.2", "Shuttle"], ["Shuttle Car No.3", "Shuttle"], ["Conveyor Manual ป.28", "Conveyor"], ["Conveyor Manual ป.26", "Conveyor"]]
+};
+const SITES = { DOM: { name: "Domestic Warehouse", short: "Domestic", th: "คลังในประเทศ" }, EXP: { name: "Export Warehouse", short: "Export", th: "คลังส่งออก" } };
+const SUN = "M12 8a4 4 0 1 0 0 8 4 4 0 1 0 0-8 M12 2v2 M12 20v2 M4.93 4.93l1.41 1.41 M17.66 17.66l1.41 1.41 M2 12h2 M20 12h2 M6.34 17.66l-1.41 1.41 M19.07 4.93l-1.41 1.41";
+const MOON = "M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z";
+const SHIFT = [["พลัดเข้า", SUN], ["พลัดดึก", MOON]];
+const ST = { ok: ["ปกติ", "var(--okT)", "var(--okF)", "M20 6 9 17l-5-5"], bad: ["เสีย", "var(--badT)", "var(--badF)", "M18 6 6 18 M6 6l12 12"],
+  wait: ["ยังไม่ตรวจ", "var(--waitT)", "#5a6a68", "M12 6v6l4 2 M12 2a10 10 0 1 0 0 20 10 10 0 1 0 0-20"] };
+const UI = { home: "M3 3v16a2 2 0 0 0 2 2h16 M7 16h8 M7 11h12 M7 6h3", log: "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8 M3 3v5h5 M12 7v5l4 2",
+  wh: "M22 8.35V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8.35A2 2 0 0 1 3.26 6.5l8-3.2a2 2 0 0 1 1.48 0l8 3.2A2 2 0 0 1 22 8.35Z M6 10h12v12H6z M6 14h12 M6 18h12",
+  ship: "M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1 .6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1 M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.94 5.34 2.81 7.76 M19 13V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6 M12 10v4 M12 2v3",
+  book: "M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z", gear: "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z",
+  alert: "M12 9v4 M12 17h.01 M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z",
+  layers: "M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z M2 12l10 4.5L22 12", check: "M22 11.08V12a10 10 0 1 1-5.93-9.14 M22 4 12 14.01l-3-3",
+  wrench: "M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z",
+  pulse: "M22 12h-4l-3 9L9 3l-3 9H2", trend: "M22 7 13.5 15.5 8.5 10.5 2 17 M16 7h6v6" };
+
+const iso = d => d.toLocaleDateString("sv-SE");
+const TODAY = iso(new Date());
+const S = { site: "DOM", view: "today", filter: "all", range: 14, logFilter: "all", date: TODAY };
+
+/* ---- ข้อมูลตัวอย่าง (เหมือนต้นแบบดีไซน์) — แทนด้วยผลจาก Microsoft Forms / Supabase ภายหลัง ---- */
+function rnd(str) { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0) / 4294967296; }
+const dayAt = off => { const d = new Date(S.date + "T00:00:00"); d.setDate(d.getDate() - off); return d; };
+function resultFor(key, off) {
+  if (key === "DOM-02" && off <= 2) return off === 2 ? ["ok", "bad"] : ["bad", "bad"];
+  const ds = iso(dayAt(off));
+  if (ds > TODAY) return ["wait", "wait"];
+  return [0, 1].map(i => rnd(key + ds + i) < 0.035 ? "bad" : "ok");
+}
+function build(site, off = 0) {
+  return EQUIP[site].map(([name, type], i) => {
+    const no = String(i + 1).padStart(2, "0"), key = site + "-" + no, res = resultFor(key, off);
+    return { key, no, name, type, res, isBad: res.includes("bad") };
+  });
+}
+const eqIcon = (type, sz = 38, isz = 19) => { const [a, b] = COL[type] || COL.Conveyor; return `<span class="ei" style="width:${sz}px;height:${sz}px;background:linear-gradient(155deg,${a},${b});box-shadow:0 6px 14px ${a}55">${sv(IC[type] || IC.Conveyor, isz)}</span>`; };
+const stChip = (r, i) => { const [t, bg, fg, mk] = ST[r]; return `<span class="st" style="background:${bg};color:${fg}">${sv(mk, 14, 2.8)}<span class="sl">${SHIFT[i][0]} ·</span>${t}</span>`; };
+const thDate = (d, o) => d.toLocaleDateString("th-TH", o);
+
+function renderSide() {
+  const siteItem = k => { const L = build(k), b = L.filter(e => e.isBad).length;
+    return `<button type="button" class="sitem ${S.site === k ? "on" : ""}" data-site="${k}"><span class="ic">${sv(k === "DOM" ? UI.wh : UI.ship, 19)}</span>
+      <span class="tx">${SITES[k].short}<small>${L.length} เครื่อง</small></span><span class="sbadge ${b ? "bad" : "ok"}">${b ? "เสีย " + b : "ปกติ"}</span></button>`; };
+  const viewItem = (k, l, sub, ic) => `<button type="button" class="sitem ${S.view === k ? "on" : ""}" data-view="${k}"><span class="ic">${sv(ic, 19)}</span><span class="tx">${l}<small>${sub}</small></span></button>`;
+  $("side").innerHTML = `<div class="brand"><span class="lg">${sv(UI.gear, 22, 2.2)}</span><span><b>Daily Machine Check</b><small>PCG · WHA · ทีมช่าง</small></span></div>
+    <div class="sh">คลังสินค้า</div>${siteItem("DOM")}${siteItem("EXP")}
+    <div class="sh">มุมมอง</div>${viewItem("today", "ภาพรวมวันนี้", "เช็กลิสต์ 2 พลัด", UI.home)}${viewItem("log", "ประวัติย้อนหลัง", "7 / 14 / 30 วัน", UI.log)}
+    <button type="button" class="sguide" data-guide="1" style="margin-top:18px"><b>${sv(UI.book, 20)} คู่มือการอ่าน</b><small>สีและตัวเลขแต่ละช่องหมายถึงอะไร</small></button>
+    <div class="sfoot">ข้อมูลตัวอย่าง · รอเชื่อมผลตรวจจาก Microsoft Forms</div>`;
+}
+
+function renderTop() {
+  $("title").textContent = SITES[S.site].name;
+  $("viewName").textContent = S.view === "today" ? "ภาพรวมวันนี้" : "ประวัติย้อนหลัง";
+  $("date").value = S.date; $("date").max = TODAY;
+  $("dNext").disabled = S.date >= TODAY; $("dNext").style.opacity = S.date >= TODAY ? .35 : 1;
+  const h = new Date().getHours(), day = h >= 8 && h < 20;
+  $("shiftNow").innerHTML = S.date === TODAY ? `${sv(day ? SUN : MOON, 16, 2.4)} ตอนนี้: ${day ? "พลัดเข้า" : "พลัดดึก"}` : `${sv(UI.log, 16, 2.4)} ดูย้อนหลัง`;
+  $("shiftNow").style.color = day ? "#c26a00" : "#3b4ba8";
+}
+
+function statusPanel(all, bad) {
+  const total = all.length, ready = total - bad.length, ratio = ready / total, C = 2 * Math.PI * 52;
+  const shiftStat = i => { const c = { ok: 0, bad: 0, wait: 0 }; all.forEach(e => c[e.res[i]]++); return c; };
+  const sbar = i => { const c = shiftStat(i), w = x => (x / total * 100) + "%";
+    return `<div class="sb"><div class="h">${sv(SHIFT[i][1], 16, 2.4)} ${SHIFT[i][0]}<span>ตรวจแล้ว ${c.ok + c.bad}/${total}${c.bad ? ` · <b style="color:var(--badF)">เสีย ${c.bad}</b>` : ""}</span></div>
+      <div class="track"><i style="width:${w(c.ok)};background:var(--ok)"></i><i style="width:${w(c.bad)};background:var(--bad)"></i></div></div>`; };
+  const tile = (lbl, ic, v, c, ct, cv) => `<div class="tile" style="--c:${c};--ct:${ct};${cv ? "--cv:" + cv : ""}"><div class="t"><i>${sv(ic, 16, 2.3)}</i>${lbl}</div><div class="v">${v}<small>เครื่อง</small></div></div>`;
+  const say = bad.length ? `ต้องดูแล ${bad.length} เครื่อง: ${bad.map(e => e.name).join(", ")}` : "เครื่องทุกตัวพร้อมใช้งาน";
+  return `<section class="status">
+    <div class="ready ${bad.length ? "warn" : ""}">
+      <div class="ring"><svg width="100%" height="100%" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="12"/>
+        <circle cx="60" cy="60" r="52" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-dasharray="${(C * ratio).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 60 60)"/></svg><b>${Math.round(ratio * 100)}%</b></div>
+      <div style="position:relative;z-index:1;min-width:0"><div class="lbl">ความพร้อมใช้งาน · ${thDate(new Date(S.date + "T00:00:00"), { day: "numeric", month: "short", year: "2-digit" })}</div>
+        <div class="big">${ready}<small> / ${total}</small></div><div class="say">${say}</div></div>
+    </div>
+    <div class="tiles">
+      ${tile("อุปกรณ์ทั้งหมด", UI.layers, total, "#0f9d8a", "var(--tealT)")}
+      ${tile("ปกติ", UI.check, ready, "var(--ok)", "var(--okT)", "var(--okF)")}
+      ${tile("เสีย / ต้องซ่อม", UI.wrench, bad.length, bad.length ? "var(--bad)" : "#9aaba8", bad.length ? "var(--badT)" : "var(--waitT)", bad.length ? "var(--badF)" : "")}
+      <div class="shiftbar">${sbar(0)}${sbar(1)}</div>
+    </div></section>`;
+}
+
+function viewToday() {
+  const all = build(S.site), bad = all.filter(e => e.isBad), shown = S.filter === "bad" ? bad : all;
+  const alert = bad.length ? `<div class="alert"><span class="ai">${sv(UI.alert, 20, 2.4)}</span><div style="flex:1;min-width:0"><b>ต้องดูแล ${bad.length} เครื่อง</b>
+    <div>${bad.map(e => e.name + " (" + e.res.map((r, i) => r === "bad" ? SHIFT[i][0] : null).filter(Boolean).join(", ") + ")").join(" · ")}</div></div>
+    <button type="button" class="btn red" data-filter="bad">ดูเฉพาะที่เสีย</button></div>` : "";
+  const rows = shown.map(e => `<div class="lrow ${e.isBad ? "bad" : ""}"><span class="no">${e.no}</span>
+      <div class="eq">${eqIcon(e.type)}<div style="min-width:0"><b>${e.name}</b><small>${e.type}</small></div></div>${e.res.map(stChip).join("")}</div>`).join("");
+  return statusPanel(all, bad) + alert + `<section class="panel">
+    <div class="phead"><h2>รายการอุปกรณ์</h2><span class="chip">${SITES[S.site].name}</span>
+      <div class="seg"><button type="button" class="${S.filter === "all" ? "on" : ""}" data-filter="all">ทั้งหมด ${all.length}</button><button type="button" class="${S.filter === "bad" ? "on r" : ""}" data-filter="bad">เสีย ${bad.length}</button></div></div>
+    <div class="lhead"><span>#</span><span>อุปกรณ์</span><span>${sv(SUN, 14, 2.4)} พลัดเข้า</span><span>${sv(MOON, 14, 2.4)} พลัดดึก</span></div>
+    ${rows || `<div class="empty">ไม่มีอุปกรณ์ที่เสียในวันนี้</div>`}</section>
+    <div class="foot">ข้อมูลตัวอย่าง · รอเชื่อมผลตรวจจาก Microsoft Forms</div>`;
+}
+
+function viewLog() {
+  const n = S.range, total = EQUIP[S.site].length;
+  const days = Array.from({ length: n }, (_, off) => ({ off, d: dayAt(off), list: build(S.site, off) }));
+  const counts = {}; let badShifts = 0, readySum = 0;
+  days.forEach(x => { x.list.forEach(e => { const b = e.res.filter(r => r === "bad").length; badShifts += b; if (b) counts[e.name] = (counts[e.name] || 0) + 1; }); readySum += x.list.filter(e => !e.isBad).length / total; });
+  const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+  const asc = days.slice().reverse(), cw = n > 14 ? 24 : 34;
+  const cell = b => b === 2 ? "#e5482b" : b === 1 ? "#f7b25a" : "#bfe9d6";
+  const kpi = (lbl, ic, v, c, ct, sub) => `<div class="tile" style="--c:${c};--ct:${ct}"><div class="t"><i>${sv(ic, 16, 2.3)}</i>${lbl}</div><div class="v" style="font-size:${sub ? 19 : 30}px">${v}</div>${sub ? `<div style="font-size:12px;color:var(--ink3);font-weight:600">${sub}</div>` : ""}</div>`;
+  const heat = `<div class="hgrid" style="grid-template-columns:200px repeat(${n},${cw}px)"><span></span>${asc.map(x => `<span class="hday" style="${x.off === 0 ? "color:var(--teal2);font-weight:800" : ""}">${thDate(x.d, { weekday: "narrow" })}<br>${x.d.getDate()}</span>`).join("")}
+    ${EQUIP[S.site].map(([name], i) => `<span class="hname"><i style="background:${counts[name] ? "var(--bad)" : "var(--ok)"}"></i>${name.replace("Conveyor Manual", "Conv. Manual").replace("Conveyor Semi", "Conv. Semi")}</span>` +
+      asc.map(x => { const b = x.list[i].res.filter(r => r === "bad").length; return `<span class="hc" title="${name} · ${thDate(x.d)} · ${b ? "เสีย " + b + " พลัด" : "ปกติ"}" style="background:${cell(b)};${x.off === 0 ? "box-shadow:inset 0 0 0 2px #0b7468" : ""}"></span>`; }).join("")).join("")}</div>`;
+  const logDays = days.filter(x => S.logFilter === "all" || x.list.some(e => e.isBad)).map(x => {
+    const bad = x.list.filter(e => e.isBad);
+    return `<div class="tlr"><div class="tld ${x.off === 0 ? "today" : ""}"><small>${thDate(x.d, { weekday: "short" })}</small><b>${x.d.getDate()}</b><small>${thDate(x.d, { month: "short" })}</small></div>
+      <div class="tlc" style="--c:${bad.length ? "var(--bad)" : "var(--ok)"}"><div class="h">${bad.length ? "พบเครื่องเสีย " + bad.length + " เครื่อง" : "ปกติทุกเครื่อง"}
+        <span class="tag" style="background:${bad.length ? "var(--badT)" : "var(--okT)"};color:${bad.length ? "var(--badF)" : "var(--okF)"}">พร้อมใช้ ${total - bad.length}/${total}</span></div>
+        ${bad.map(e => `<div class="issue">${eqIcon(e.type, 28, 15)}${e.name}<span class="sp">${e.res.map((r, i) => r === "bad" ? `<span class="tag" style="background:var(--badT);color:var(--badF)">${SHIFT[i][0]}</span>` : "").join("")}</span></div>`).join("")}</div></div>`;
+  }).join("");
+  const seg = (arr, cur, attr) => `<div class="seg">${arr.map(([k, l]) => `<button type="button" class="${cur === k ? "on" : ""}" data-${attr}="${k}">${l}</button>`).join("")}</div>`;
+  return `<section class="panel"><div class="phead"><h2>ประวัติย้อนหลัง</h2><span class="chip">${SITES[S.site].name} · ${n} วันล่าสุด</span>
+      ${seg([[7, "7 วัน"], [14, "14 วัน"], [30, "30 วัน"]], n, "range")}</div>
+    <div style="padding:16px 20px" class="kpis">
+      ${kpi("ความพร้อมเฉลี่ย", UI.pulse, Math.round(readySum / n * 100) + "%", "#0f9d8a", "var(--tealT)")}
+      ${kpi("พลัดที่พบเสีย", UI.wrench, badShifts + " ครั้ง", badShifts ? "var(--bad)" : "var(--ok)", badShifts ? "var(--badT)" : "var(--okT)")}
+      ${kpi("เสียบ่อยที่สุด", UI.trend, top ? top[0] : "ไม่มี", "var(--amber)", "#fff1d6", top ? "เสีย " + top[1] + " วัน จาก " + n + " วัน" : "ไม่มีเครื่องเสียในช่วงนี้")}</div></section>
+    <section class="panel"><div class="phead"><h2>ภาพรวมรายเครื่อง รายวัน</h2>
+      <span class="legend"><span><i style="background:#bfe9d6"></i>ปกติ</span><span><i style="background:#f7b25a"></i>เสีย 1 พลัด</span><span><i style="background:#e5482b"></i>เสียทั้งวัน</span></span></div>
+      <div class="heat">${heat}</div></section>
+    <section class="panel"><div class="phead"><h2>บันทึกรายวัน</h2>${seg([["all", "ทุกวัน"], ["bad", "เฉพาะวันที่มีเสีย"]], S.logFilter, "logf")}</div>
+      <div class="tl">${logDays || `<div class="empty">ไม่มีวันที่พบเครื่องเสียในช่วงนี้</div>`}</div></section>
+    <div class="foot">ข้อมูลตัวอย่าง · รอเชื่อมผลตรวจจาก Microsoft Forms</div>`;
+}
+
+function render() { renderSide(); renderTop(); $("app").innerHTML = S.view === "today" ? viewToday() : viewLog(); }
+
+const closeSide = () => $("side").classList.remove("open");
+$("menu").onclick = () => $("side").classList.add("open");
+$("scrim").onclick = closeSide;
+const shiftDate = n => { const d = new Date(S.date + "T00:00:00"); d.setDate(d.getDate() + n); const v = iso(d); if (v <= TODAY) { S.date = v; render(); } };
+$("dPrev").onclick = () => shiftDate(-1); $("dNext").onclick = () => shiftDate(1);
+$("dToday").onclick = () => { S.date = TODAY; render(); };
+$("date").onchange = e => { if (e.target.value) { S.date = e.target.value > TODAY ? TODAY : e.target.value; render(); } };
+document.addEventListener("click", e => {
+  const t = e.target.closest("[data-site],[data-view],[data-filter],[data-range],[data-logf],[data-guide]"); if (!t) return;
+  const d = t.dataset;
+  if (d.guide) { closeSide(); $("guideDlg").showModal(); return; }
+  if (d.site) { S.site = d.site; S.filter = "all"; }
+  if (d.view) S.view = d.view;
+  if (d.filter) S.filter = d.filter;
+  if (d.range) S.range = +d.range;
+  if (d.logf) S.logFilter = d.logf;
+  if (t.closest(".side")) { closeSide(); window.scrollTo({ top: 0, behavior: "smooth" }); }
+  render();
+});
+render();
+</script>
+</body>
+</html>
