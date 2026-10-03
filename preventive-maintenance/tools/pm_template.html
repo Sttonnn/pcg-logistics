@@ -314,6 +314,22 @@
   .guide { box-sizing: border-box; width: 100%; grid-template-columns: minmax(0,1fr); } .guide h3 { margin: 6px 0 2px; font-size: 15.5px; } .guide p, .guide li { font-size: 13.5px; line-height: 1.6; color: #2a3b5f; margin: 0; } .guide ul { margin: 0; padding-left: 18px; display: grid; gap: 3px; }
   .guide table { width: 100%; min-width: 0; border-collapse: collapse; font-size: 13px; } .guide td, .guide th { padding: 6px 8px; border-bottom: 1px solid #e6ebf3; text-align: left; position: static; }
   .guide .gc { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; } .guide .gc div { border-radius: 12px; padding: 10px 12px; color: #fff; font-size: 12.5px; line-height: 1.5; } .guide .gc b { display: block; font-size: 13.5px; }
+  /* ความพร้อมใช้งานรายคลัง (ผู้ใช้ขอ 3 ต.ค.) */
+  .rdy-h { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+  .rdy-h h2 { margin: 0; font-size: 19px; }
+  .rdy-tot { display: flex; align-items: center; gap: 10px; margin-left: auto; padding: 8px 14px; border-radius: 14px; background: #f3f6fb; font-size: 13px; font-weight: 700; color: #3c4a68; }
+  .rdy-tot b { font-size: 22px; font-family: Archivo, sans-serif; }
+  .rdy-g { font-size: 12px; font-weight: 800; letter-spacing: .08em; color: #5a6784; margin: 12px 2px 8px; text-transform: uppercase; }
+  .rdy-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  @media (max-width: 760px) { .rdy-tot { margin-left: 0; width: 100%; } .rdy .p { font-size: 19px; } }
+  .rdy { border: 0; text-align: left; font: inherit; cursor: pointer; display: grid; gap: 7px; padding: 12px 14px; border-radius: 16px; background: #fff; box-shadow: 0 1px 2px rgba(16,27,45,.06), 0 6px 16px rgba(16,27,45,.07); border-top: 4px solid var(--c); transition: transform .15s; }
+  .rdy:hover { transform: translateY(-2px); }
+  .rdy .n { display: flex; align-items: baseline; gap: 6px; font-weight: 800; font-size: 14.5px; color: #16213a; }
+  .rdy .p { margin-left: auto; font-family: Archivo, sans-serif; font-size: 22px; font-weight: 900; color: var(--c); }
+  .rdy .bar { height: 8px; border-radius: 999px; background: #edf1f7; overflow: hidden; display: flex; }
+  .rdy .bar i { height: 100%; }
+  .rdy .s { font-size: 12px; font-weight: 600; color: #5a6784; display: flex; gap: 6px; flex-wrap: wrap; }
+  .rdy .s .bad { color: #a8250f; font-weight: 800; }
   #tip { position: fixed; pointer-events: none; z-index: 50; background: #16213a; color: #fff; font-size: 12.5px; line-height: 1.5; padding: 8px 11px; border-radius: 10px; box-shadow: 0 8px 20px rgba(0,0,0,.25); opacity: 0; transition: opacity .12s; max-width: 260px; }
   #toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); background: #16213a; color: #fff; padding: 11px 18px; border-radius: 14px; font-size: 13.5px; font-weight: 600; box-shadow: 0 10px 26px rgba(0,0,0,.3); display: none; z-index: 60; max-width: calc(100% - 32px); }
 
@@ -408,6 +424,7 @@
   <div class="howto">
     <span><b class="q1">① งานทำครบไหม?</b> <i class="sw" style="background:#1a5fe4"></i>เสร็จแล้ว <i class="sw" style="background:#7b61ff"></i>ตรวจแล้ว รอปิดงาน <i class="sw" style="background:#9cc0ff"></i>กำลังทำ <i class="sw" style="background:#ff8a3d"></i>เลยกำหนด</span>
     <span><b class="q2">② เครื่องปกติไหม?</b> <span style="color:#0a6b4d;font-weight:700">✓ ผ่าน</span> · <span style="color:#a8250f;font-weight:700">✕ ไม่ผ่าน</span> (นับเฉพาะงานที่ตรวจแล้ว)</span>  </div>
+  <section class="panel" id="readySec"></section>
   <div id="drill"></div>
 
   <section class="panel" id="tblSec" style="display:grid;gap:12px">
@@ -1021,7 +1038,43 @@ document.addEventListener("click", e => {
   else if (e.target.closest(".side [data-kind]")) setTimeout(closeSide, 0);
 });
 document.querySelectorAll("[data-kic]").forEach(el => el.outerHTML = kIcon(el.dataset.kic, 13));
-function render() { renderFilters(); renderHero(); renderTabs(); renderSide(); if (S.view === "overview") { renderDrill(); if (S.wh !== "all" && S.branch !== "all") renderTable(); } else renderFail(); }
+
+/* ---- ความพร้อมใช้งานรายคลัง: 1 เครื่อง = รหัสโรงงาน+รหัสอุปกรณ์ · ดูผลตรวจล่าสุดของเครื่อง
+   ผ่าน หรือ ไม่ผ่านแต่แก้แล้ว = พร้อมใช้ · ไม่ผ่านยังไม่แก้ = ไม่พร้อม (รอซ่อม) · ยังไม่เคยมีผลตรวจ = แยกนับ
+   ไม่นับใบงานตรวจโซน (ภายใน/ภายนอกคลัง ออฟฟิศ Safety พื้นที่ MHE) เพราะไม่ใช่เครื่อง ---- */
+const ZONE_SUB = ["in", "out", "office", "safety", "mhearea"];
+function readyOf(L) {
+  const eq = {};
+  L.forEach(r => { if (kindOf(r) === "wh" && ZONE_SUB.includes(subOf(r))) return;
+    const k = r.p + "|" + r.id.split("|")[3]; const e = eq[k] || (eq[k] = { last: null });
+    if (r.r && (!e.last || (r.done || r.due) > (e.last.done || e.last.due))) e.last = r; });
+  const list = Object.values(eq), n = list.length, chk = list.filter(e => e.last);
+  const down = chk.filter(e => isFail(e.last) && repSt(e.last) !== "fixed").length;
+  return { n, chk: chk.length, down, ready: chk.length - down, none: n - chk.length, pct: chk.length ? Math.round((chk.length - down) / chk.length * 100) : null };
+}
+function renderReady() {
+  const box = $("readySec");
+  if (S.view !== "overview" || S.branch !== "all") { box.style.display = "none"; return; }
+  box.style.display = "";
+  const base = rows({ month: true, wh: true, rg: true, branch: true });
+  const col = p => p == null ? "#9aa6bd" : p >= 95 ? "#13a878" : p >= 85 ? "#f08a24" : "#e04a2a";
+  const card = (p, b, rg) => { const L = base.filter(r => r.p === p && r.b === b); if (!L.length) return ""; const x = readyOf(L); if (!x.n) return "";
+    const w = v => (x.n ? v / x.n * 100 : 0) + "%";
+    return `<button type="button" class="rdy" style="--c:${col(x.pct)}" data-pick="${p}|${b}|${rg || ""}"><span class="n">${b}<span class="p">${x.pct == null ? "–" : x.pct + "%"}</span></span>
+      <span class="bar"><i style="width:${w(x.ready)};background:${col(x.pct)}"></i><i style="width:${w(x.down)};background:#e04a2a"></i></span>
+      <span class="s">พร้อมใช้ ${x.ready}/${x.chk} เครื่อง${x.down ? `<span class="bad">· รอซ่อม ${x.down}</span>` : ""}${x.none ? `<span>· ยังไม่มีผลตรวจ ${x.none}</span>` : ""}</span></button>`; };
+  const whaB = [...new Set(base.filter(r => r.p === "WHA05").map(r => r.b))].sort();
+  const groups = [["คลังกระจายสินค้าภายในประเทศ (WHA)", whaB.map(b => card("WHA05", b))]]
+    .concat(REGIONS.map(([rg, bs]) => ["RDC · " + rg, bs.map(b => card("RDC01", b, rg))]))
+    .map(([t, cs]) => [t, cs.filter(Boolean)]).filter(([, cs]) => cs.length);
+  const T = readyOf(base);
+  const kindLbl = S.kind === "all" ? "เครื่องจักร + รถ MHE" : KIND[S.kind].label;
+  box.innerHTML = `<div class="rdy-h"><span style="width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:#fff;background:linear-gradient(150deg,#13a878,#0a7353);box-shadow:0 8px 18px rgba(10,115,83,.35)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14 M22 4 12 14.01l-3-3"/></svg></span>
+      <div style="display:grid"><h2>ความพร้อมใช้งาน รายคลัง</h2><span style="font-size:12.5px;color:#5a6784">${kindLbl} · ดูจากผลตรวจ PM ล่าสุดของแต่ละเครื่อง · กดการ์ดเพื่อดูใบงาน</span></div>
+      <span class="rdy-tot">รวมทุกคลัง <b style="color:${col(T.pct)}">${T.pct == null ? "–" : T.pct + "%"}</b><span>พร้อมใช้ ${T.ready}/${T.chk} เครื่อง${T.down ? ` · <span style="color:#a8250f">รอซ่อม ${T.down}</span>` : ""}</span></span></div>
+    ${groups.map(([t, cs]) => `<div class="rdy-g">${t}</div><div class="rdy-grid">${cs.join("")}</div>`).join("") || `<div style="color:#5a6784">ไม่มีข้อมูลเครื่องในตัวกรองนี้</div>`}`;
+}
+function render() { renderFilters(); renderHero(); renderTabs(); renderSide(); renderReady(); if (S.view === "overview") { renderDrill(); if (S.wh !== "all" && S.branch !== "all") renderTable(); } else renderFail(); }
 
 /* ตัวกรอง/เรียงลำดับของตารางรวม */
 document.addEventListener("change", e => {
