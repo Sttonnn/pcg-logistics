@@ -504,6 +504,13 @@ const daysPill = r => { const d = downDays(r), st = repSt(r);
 const MHE_T = ["Lead-Acid", "Lithium", "Gas", "MHE"];
 const kindOf = r => MHE_T.includes(r.t) ? "mhe" : "wh";
 const KIND = { wh: { label: "ตรวจคลังสินค้า", short: "คลัง", color: "#0b6f7a", bg: "#e0f4f3" }, mhe: { label: "ตรวจรถ MHE", short: "รถ MHE", color: "#7a3fd0", bg: "#efe7fd" } };
+/* ไอคอนแยก ตรวจคลัง (อาคารคลัง) / รถ MHE (รถยก) — ผู้ใช้ขอ 3 ต.ค. */
+const KICON = {
+  all: "M3 3h7v7H3z M14 3h7v7h-7z M14 14h7v7h-7z M3 14h7v7H3z",
+  wh: "M22 8.35V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8.35A2 2 0 0 1 3.26 6.5l8-3.2a2 2 0 0 1 1.48 0l8 3.2A2 2 0 0 1 22 8.35Z M6 10h12v12H6z M6 14h12 M6 18h12",
+  mhe: "M12 12H5a2 2 0 0 0-2 2v5 M15 19a2 2 0 1 1-4 0a2 2 0 1 1 4 0 M7 19a2 2 0 1 1-4 0a2 2 0 1 1 4 0 M8 19h3 M16 2v17h6 M6 12V7a2 2 0 0 1 2-2h3l5 5"
+};
+const kIcon = (k, sz = 16) => `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.18em;flex:none" aria-hidden="true"><path d="${KICON[k]}"/></svg>`;
 /* หมวดย่อย (ผู้ใช้ขอ 30 ก.ย.): ตรวจคลัง = พื้นที่ที่ตรวจ · รถ MHE = ชนิดรถ */
 const SUBS = {
   wh: [["in", "ภายในคลัง", r => /ภายในคลัง/.test(r.e)], ["out", "ภายนอกคลัง", r => /ภายนอกคลัง/.test(r.e)], ["office", "ออฟฟิศ", r => /ออฟฟิศ|office/i.test(r.e)],
@@ -513,7 +520,7 @@ const SUBS = {
 };
 const subOf = r => (SUBS[kindOf(r)].find(([, , f]) => f(r)) || [])[0];
 const subLabel = r => (SUBS[kindOf(r)].find(([k]) => k === subOf(r)) || [, ""])[1];
-const kindTag = r => `<span class="ktag" style="color:${KIND[kindOf(r)].color};background:${KIND[kindOf(r)].bg}">${KIND[kindOf(r)].short} · ${subLabel(r)}</span>`;
+const kindTag = r => `<span class="ktag" style="color:${KIND[kindOf(r)].color};background:${KIND[kindOf(r)].bg}">${kIcon(kindOf(r), 13)} ${KIND[kindOf(r)].short} · ${subLabel(r)}</span>`;
 const S = { sub: "all", kind: "all", view: "overview", fst: "all", wh: "all", month: "all", branch: "all", type: "all", cancel: false, plan: false, per: "all", freq: "all", anchor: null, rg: null, st: "all", q: "", limit: 25 };
 
 function rows(ignore = {}) {
@@ -541,7 +548,7 @@ function renderHero() {
   /* ตัวเลขบนสุด = 4 ตัวเดียวกับการ์ดด้านล่าง แยกตาม 2 คำถาม ใช้สีชุดเดียวกัน */
   const s = stat(rows()), scope = S.wh === "all" ? "ทุกคลัง" : S.branch !== "all" ? S.branch : S.rg ? WH[S.wh] + " · " + S.rg : WH[S.wh];
   const card = (bg, sh, q, lbl, val, unit, sub) => `<div class="card" style="background:${bg};box-shadow:${sh}"><div class="lbl"><span style="opacity:.8">${q}</span> ${lbl}</div><div class="val">${val}<small>${unit}</small></div><div class="sub">${sub}</div></div>`;
-  $("seg").innerHTML = `<span style="font-size:13px;font-weight:700;color:rgba(255,255,255,.8)">กำลังดู:</span> <b style="font-size:16px">${scope}</b>${S.kind !== "all" ? ` <span class="ktag big" style="color:${KIND[S.kind].color};background:${KIND[S.kind].bg}">${KIND[S.kind].label}${S.sub !== "all" ? " · " + (SUBS[S.kind].find(([k]) => k === S.sub) || [, ""])[1] : ""}</span>` : ""}`;
+  $("seg").innerHTML = `<span style="font-size:13px;font-weight:700;color:rgba(255,255,255,.8)">กำลังดู:</span> <b style="font-size:16px">${scope}</b>${S.kind !== "all" ? ` <span class="ktag big" style="color:${KIND[S.kind].color};background:${KIND[S.kind].bg}">${kIcon(S.kind, 15)} ${KIND[S.kind].label}${S.sub !== "all" ? " · " + (SUBS[S.kind].find(([k]) => k === S.sub) || [, ""])[1] : ""}</span>` : ""}`;
   $("stats").innerHTML =
     card("linear-gradient(150deg,#1a5fe4,#0f3fa4)", "0 12px 26px rgba(15,63,164,.4)", "①", "งานเสร็จแล้ว", s.pct + "%", "", `เสร็จ ${s.done.toLocaleString()} จาก ${s.n.toLocaleString()} ใบงาน`) +
     card(s.late ? "linear-gradient(150deg,#ff8a3d,#d9570f)" : "linear-gradient(150deg,#4a5877,#333f5a)", "0 12px 26px rgba(217,87,15,.35)", "①", "เลยกำหนด ยังไม่ได้ตรวจ", s.late.toLocaleString(), "ใบ", s.late ? "ต้องตามให้ทำ" : "ไม่มีงานค้าง") +
@@ -559,7 +566,7 @@ function renderFilters() {
   $("branch").innerHTML = `<option value="all">ทั้งหมด</option>` + brs.map(b => `<option ${S.branch === b ? "selected" : ""}>${b}</option>`).join("");
   const kc = k => DATA.filter(r => (k === "all" || kindOf(r) === k) && GROUP[r.s] !== "cancel" && GROUP[r.s] !== "wait").length;
   $("kinds").innerHTML = [["all", "ทั้งหมด"], ["wh", KIND.wh.label], ["mhe", KIND.mhe.label]]
-    .map(([k, l]) => `<button type="button" class="${S.kind === k ? "on" : ""}" data-kind="${k}">${l} <span class="kc">${kc(k)}</span></button>`).join("");
+    .map(([k, l]) => `<button type="button" class="${S.kind === k ? "on" : ""}" data-kind="${k}" style="${k !== "all" && S.kind !== k ? "color:" + KIND[k].color : ""}">${kIcon(k, 17)} ${l} <span class="kc">${kc(k)}</span></button>`).join("");
   const sc = k => DATA.filter(r => kindOf(r) === S.kind && subOf(r) === k && GROUP[r.s] !== "cancel" && GROUP[r.s] !== "wait").length;
   $("subs").style.display = S.kind === "all" ? "none" : "";
   $("subs").innerHTML = S.kind === "all" ? "" : `<span class="sublbl">${S.kind === "mhe" ? "ชนิดรถ" : "พื้นที่ตรวจ"}</span>` + [["all", "ทั้งหมด"], ...SUBS[S.kind].map(([k, l]) => [k, l])].filter(([k]) => k === "all" || sc(k))
