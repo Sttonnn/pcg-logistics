@@ -200,6 +200,20 @@
   .spt td { vertical-align: top; } .spt tr.sadd td { background: #eaf8ef; } .spt tr.schg td { background: #fff8e1; }
   .sbadge { display: inline-block; font-size: 10.5px; font-weight: 800; border-radius: 6px; padding: 1px 6px; margin-left: 4px; white-space: nowrap; } .sbadge.add { background: #d3f2df; color: #18794a; } .sbadge.chg { background: #fde9b6; color: #8a6a00; }
   .spt input.it { min-width: 260px; }
+  .prop-hero .kick { font-size: 12px; font-weight: 800; letter-spacing: .06em; color: var(--acc2); text-transform: uppercase; }
+  .mi { border: 1px solid var(--line); border-radius: 10px; padding: 6px 9px; font-size: 13px; background: #fff; margin: 0 4px; }
+  .agenda { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; } .agenda a { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: var(--ink); background: var(--head); border-radius: 12px; padding: 7px 12px; font-weight: 700; font-size: 13px; }
+  .agenda a b { width: 22px; height: 22px; border-radius: 7px; background: var(--dark); color: var(--acc); display: grid; place-items: center; font-size: 12px; } .agenda a:hover { background: #fffbea; }
+  .pc3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 12px; }
+  .pbox { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; } .pbh { background: var(--dark); color: #fff; padding: 10px 14px; font-weight: 800; } .pbh b { color: var(--acc); font-size: 20px; margin: 0 4px; }
+  .pbox .mx td { padding: 7px 14px; } .ptot { display: grid; place-content: center; text-align: center; gap: 2px; background: linear-gradient(140deg, #fff8dc, #fff); padding: 18px; }
+  .ptot b { font-family: Archivo, sans-serif; font-size: 64px; line-height: 1; color: var(--acc2); } .ptot span { font-weight: 800; } .ptot small { color: var(--ink2); font-size: 12px; }
+  #p-price .bt th, #p-price .bt td { padding: 6px 5px; font-size: 12.5px; } #p-price .bt .pc { min-width: 52px; } #p-price .bt td:first-child { min-width: 170px; }
+  .lowc { background: #fffbea; } .tsub { font-size: 10.5px; color: var(--acc2); font-weight: 700; white-space: nowrap; } .pm td, .pm th { padding: 6px 7px; font-size: 12.5px; }
+  .pm th.pmh { background: var(--dark); color: #fff; text-align: left; font-size: 13px; }
+  .sup .ok { color: #18794a; font-weight: 900; font-size: 15px; } .sup .ng { color: var(--exp); font-weight: 800; } .sup td { font-size: 12.5px; } .sup input { min-width: 90px; } .sup input.it { min-width: 240px; }
+  .stdg { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 6px; padding: 12px; } .stdg span { background: var(--head); border-radius: 9px; padding: 6px 9px; font-size: 12.5px; font-weight: 700; } .stdg span::first-letter { color: #18794a; }
+  @media print { .hero, #side, .fbar, .no-print, footer, .warn, .toast { display: none !important; } .lay { display: block; padding: 0; } body { background: #fff; } .panel { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; } .tw { overflow: visible; } .tw input, .tw select { border: 0; padding: 0; background: none; -webkit-appearance: none; appearance: none; } }
   @media (max-width: 1150px) { .two { grid-template-columns: minmax(0,1fr); } }
   @media (max-width: 1000px) { .lay, .lay.mini-side { grid-template-columns: minmax(0,1fr); } .sidetg { display: none; } #side { position: static; margin-top: 12px; } #side .navs { display: flex; overflow-x: auto; } #side .nav { width: auto; flex: none; } .nav small, .sinfo { display: none; } .mini { grid-template-columns: repeat(2, minmax(0,1fr)); } }
   @media (max-width: 980px) { .kpis { grid-template-columns: repeat(3, minmax(0,1fr)); } }
@@ -268,6 +282,7 @@
   <div class="view" data-v="bid" id="vBid"></div>
   <div class="view" data-v="trend" id="vTrend"></div>
   <div class="view" data-v="deliv" id="vDeliv"></div>
+  <div class="view" data-v="prop" id="vProp"></div>
 </main>
 </div></div>
 <footer>ข้อมูลรถจากไฟล์ Excel "ข้อมูล MHE" ชีต BI Logistics + BI หน่วยงาน · ตารางราคาจากไฟล์ราคาประมูล · คงเหลือคำนวณจากวันที่หมดสัญญาเทียบกับวันนี้ · อัปโหลดไฟล์รถใหม่ = รวมกับข้อมูลเดิม · ทุกการแก้ไขบันทึกขึ้นระบบกลาง</footer>
@@ -280,6 +295,7 @@
 /*__BID_PARSE__*/
 const BIDBASE = /*__BID_DATA__*/null;
 const SPECBASE = /*__SPEC_DATA__*/null;
+const PROPBASE = /*__PROP_DATA__*/null;
 const BASE = /*__MHE_DATA__*/[];
 const ASOF = "/*__ASOF__*/";
 const SB = "https://mgnshovnibcmiptoxdfe.supabase.co/rest/v1/mhe_vehicles";
@@ -314,11 +330,12 @@ const FIELDS = [
   ["เตรียมต่อสัญญารอบถัดไป", [["renew", "การตัดสินใจ", "r"], ["renewNote", "หมายเหตุรอบต่อสัญญา", "w"]]]
 ];
 const DEC = { "": "ยังไม่ตัดสินใจ", renew: "ต่อสัญญาเดิม", bid: "ประมูล / เปลี่ยนรุ่น", return: "คืนรถ ไม่ต่อ" };
-const CMP = FIELDS.flatMap(g => g[1].map(f => f[0])).filter(k => k !== "renew" && k !== "renewNote");
+const RENEWK = ["renew", "renewNote", "renewItem", "renewTerm", "renewEnergy"];
+const CMP = FIELDS.flatMap(g => g[1].map(f => f[0])).filter(k => !RENEWK.includes(k));
 
 /* ---- ข้อมูล: ไฟล์ที่ฝังไว้ + ที่บันทึกบนเว็บ (Supabase mhe_vehicles, ไม่มีตาราง → localStorage) ---- */
 let OVR = {}, ONLINE = false, LAST = "";
-const S = { by: null, srev: null, scls: 0, scmp: "", sed: false, dst: "all", grp: "unit", gc: new Set(), mini: (() => { try { return localStorage.getItem("pcg-mhe-side") === "mini"; } catch (e) { return false; } })(), tU: new Set(), tMode: "sum", view: (location.hash.slice(1) || "sum"), round: null, ed: false, bsh: 0, bed: false, sopen: new Set(), unit: "all", site: "all", type: "all", en: "all", bk: "all", year: "all", q: "", sort: "rem", lim: 60, open: new Set(["Logistics"]) };
+const S = { pf: "", pt: "", pr: null, pq: "fleet", ped: false, by: null, srev: null, scls: 0, scmp: "", sed: false, dst: "all", grp: "unit", gc: new Set(), mini: (() => { try { return localStorage.getItem("pcg-mhe-side") === "mini"; } catch (e) { return false; } })(), tU: new Set(), tMode: "sum", view: (location.hash.slice(1) || "sum"), round: null, ed: false, bsh: 0, bed: false, sopen: new Set(), unit: "all", site: "all", type: "all", en: "all", bk: "all", year: "all", q: "", sort: "rem", lim: 60, open: new Set(["Logistics"]) };
 function warn(msg) { $("warn").innerHTML = msg || ""; $("warn").classList.toggle("show", !!msg); }
 function toast(m) { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 2200); }
 function lsGet() { try { return JSON.parse(localStorage.getItem(LS) || "{}"); } catch (e) { return {}; } }
@@ -430,13 +447,14 @@ function render() {
   if (S.ed) renderEdList(list);
   renderWhere();
   $("edBtn").textContent = S.ed ? "✓ เสร็จ" : "✎ แก้ไขในตาราง"; $("edBtn").className = "btn " + (S.ed ? "p" : "l");
-  if (!["sum", "renew", "spec", "bid", "trend", "deliv"].includes(S.view)) S.view = "sum";
+  if (!["sum", "renew", "prop", "spec", "bid", "trend", "deliv"].includes(S.view)) S.view = "sum";
   document.querySelectorAll(".view").forEach(v => v.classList.toggle("on", v.dataset.v === S.view));
-  $("fbar").style.display = ["bid", "deliv"].includes(S.view) ? "none" : "";
+  $("fbar").style.display = ["bid", "deliv", "prop"].includes(S.view) ? "none" : "";
   renderSide();
   if (S.view === "renew") renderRenew(base);
   if (S.view === "spec") renderSpecSheet(base);
   if (S.view === "deliv") renderDeliv();
+  if (S.view === "prop") renderProp(ALL);
   if (S.view === "bid") renderBid();
   if (S.view === "trend") renderTrend();
   $("fUnit").style.display = $("rowUnit").querySelector("b").style.display = S.view === "trend" ? "none" : "";
@@ -520,6 +538,7 @@ const IC = {
   renew: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M12 7v5l3 2"/></svg>',
   spec: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18V9h7l3 4v5"/><path d="M13 13h3V4"/><path d="M16 18h5"/><circle cx="6" cy="18.5" r="1.8"/><circle cx="12" cy="18.5" r="1.8"/></svg>',
   trend: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><rect x="5" y="12" width="3" height="6"/><rect x="10.5" y="8" width="3" height="10"/><rect x="16" y="4" width="3" height="14"/></svg>',
+  prop: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4M7 13l3-3 2 2 4-4"/></svg>',
   deliv: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 7h13v10H1z"/><path d="M14 11h4l3 3v3h-7"/><circle cx="5.5" cy="18.5" r="1.8"/><circle cx="17.5" cy="18.5" r="1.8"/></svg>',
   bid: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 10h16M10 4v16"/><path d="M14 14h3M14 17h3"/></svg>'
 };
@@ -537,9 +556,10 @@ function renderSide() {
   $("side").innerHTML = `<div class="sbox navs"><button class="sidetg" data-sidetg title="${S.mini ? "ขยายเมนู" : "ย่อเมนู"}">${S.mini ? "»" : "« ย่อเมนู"}</button><h5>เมนู</h5>
     ${nav("sum", "Summary MHE", "ภาพรวมรถทุกคัน", ALL.length)}
     ${nav("renew", "เตรียมต่อสัญญา", "รอบถัดไป · " + (S.round + 543), nR)}
+    ${nav("prop", "รายละเอียดต่อสัญญา", "นำเสนอผู้บริหาร · เลือกช่วงเวลา", null)}
     ${nav("spec", "Specification รถ MHE", "Option แต่ละรุ่น · " + (specRevs().slice(-1)[0] || { rev: "-" }).rev, null)}
     ${nav("trend", "แนวโน้มค่าเช่ารายปี", "ตั้งแต่ 2024 · แยก/รวมหน่วยงาน", null)}
-    ${nav("bid", "ตารางราคาประมูล", "รอบ " + B.year + " · " + bidRounds().length + " รอบที่บันทึก", (B.sheets[0] || { rows: [] }).rows.length || null)}
+    ${nav("bid", "ตารางราคาประมูล", "รอบ " + rl(B) + " · " + bidRounds().length + " รอบที่บันทึก", (B.sheets[0] || { rows: [] }).rows.length || null)}
     ${nav("deliv", "ส่งมอบรถ", "หลังต่อสัญญา", dlvRows().filter(r => dstOf(r) === "late").length || null)}</div>
     <div class="sbox sinfo"><div><span class="sdot" style="background:${ONLINE ? "var(--ok)" : "var(--m3)"}"></span><b>${ONLINE ? "บันทึกขึ้นระบบกลาง" : "เก็บในเครื่องนี้เท่านั้น"}</b></div>
     <div>ข้อมูลจากไฟล์ ${esc(ASOF)}</div>${LAST ? `<div>แก้บนเว็บล่าสุด ${new Date(LAST).toLocaleString("th-TH", { dateStyle: "medium", timeStyle: "short" })}</div>` : ""}
@@ -664,8 +684,8 @@ function renderBid() {
   const lowTot = term => rows.reduce((s, r) => s + (minOf(r, term) || 0) * qtyOf(r), 0);
   const pc = (v, mn) => v == null ? '<td class="pc vl0"><span class="z">·</span></td>' : isN(v) ? `<td class="pc ${v === mn ? "min" : ""}">${money(v)}</td>` : `<td class="pc tx">${esc(v)}</td>`;
   const E = S.bed, inp = (path, v, cls, ph) => `<input data-b="${path}" value="${esc(v ?? "")}" class="${cls || ""}" placeholder="${ph || ""}">`;
-  $("vBid").innerHTML = `<section class="panel"><div class="frow" style="margin-bottom:10px"><b style="font-size:12px;color:var(--ink2);min-width:78px">รอบประมูล</b><span class="tabs">${bidRounds().map(r => `<button class="${r.year === B.year ? "on" : ""}" data-by="${r.year}" ${E ? "disabled" : ""}>${r.year}</button>`).join("")}</span>${E ? "" : '<button class="chip" data-bnew style="margin-left:6px">＋ เริ่มรอบใหม่</button>'}<span class="note" style="margin-left:8px">เก็บทุกรอบไว้เทียบว่าเช่าถูกลงหรือแพงขึ้น</span></div>
-    <div class="phead"><h2>ตารางราคาประมูล · รอบ ${B.year} ${E ? inp("title", B.title, "it") : `<span style="color:var(--acc2)">· ${esc(B.title)}</span>`}</h2>
+  $("vBid").innerHTML = `<section class="panel"><div class="frow" style="margin-bottom:10px"><b style="font-size:12px;color:var(--ink2);min-width:78px">รอบประมูล</b><span class="tabs">${bidRounds().map(r => `<button class="${r.key === B.key ? "on" : ""}" data-by="${esc(r.key)}" ${E ? "disabled" : ""}>${esc(rl(r))}</button>`).join("")}</span>${E ? "" : '<button class="chip" data-bnew style="margin-left:6px">＋ เริ่มรอบใหม่</button>'}<span class="note" style="margin-left:8px">เก็บทุกรอบไว้เทียบว่าเช่าถูกลงหรือแพงขึ้น</span></div>
+    <div class="phead"><h2>ตารางราคาประมูล · รอบ ${esc(rl(B))} ${E ? inp("title", B.title, "it") : `<span style="color:var(--acc2)">· ${esc(B.title)}</span>`}</h2>
       <span class="tabs">${B.sheets.map((s, i) => `<button class="${i === S.bsh ? "on" : ""}" data-bsh="${i}">${esc(s.name)}</button>`).join("")}</span>
       <span style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">${E ? `<button class="btn p" data-bsave>✓ บันทึก</button><button class="btn l" data-bcancel>ยกเลิก</button>` : `<button class="btn l" data-bedit>✎ แก้ไขตาราง</button><button class="btn l" data-bup>⬆ อัปโหลดตารางราคา</button><button class="btn l" data-bexp>⬇ Export Excel</button>`}</span></div>
     <div class="mini"><div class="f"><span>รายการ (${esc(sh.name)})</span><b>${rows.length}</b><small>สเปก</small></div><div class="f"><span>จำนวนรถรวม</span><b>${qAll}</b><small>คัน</small></div>
@@ -795,16 +815,18 @@ function renderWhere() {
 }
 /* ---- ตารางราคาประมูล: เก็บแยกรอบตามปี (ผู้ใช้ขอ 5 ต.ค. เพื่อเทียบว่าเช่าถูกลง/แพงขึ้น) · id BID:<ปี ค.ศ.> ---- */
 function bidRounds() {
-  const m = {};
-  if (BIDBASE && BIDBASE.sheets) m[BIDBASE.year || 2026] = Object.assign({ year: 2026 }, BIDBASE);
-  const lg = OVR["BID:main"]; if (lg && lg.rec && !lg.removed) m[lg.rec.year || 2026] = Object.assign({ year: 2026 }, lg.rec);
-  Object.values(OVR).forEach(x => { const k = x.id.match(/^BID:(\d{4})$/); if (!k) return; if (x.removed) delete m[k[1]]; else if (x.rec) m[k[1]] = Object.assign({}, x.rec, { year: +k[1] }); });
-  return Object.keys(m).map(Number).sort((a, b) => a - b).map(y => m[y]);
+  const m = {}, put = (k, r) => { m[k] = Object.assign({ year: parseInt(k) || 2026 }, r, { key: k }); };
+  if (PROPBASE && PROPBASE.round) put(PROPBASE.round.key, PROPBASE.round);   /* รอบ ม.ค. 2026 (07/69-06/70) จาก PPT นำเสนอผู้บริหาร */
+  if (BIDBASE && BIDBASE.sheets) put(String(BIDBASE.year || 2026), BIDBASE);
+  const lg = OVR["BID:main"]; if (lg && lg.rec && !lg.removed) put(String(lg.rec.year || 2026), lg.rec);
+  Object.values(OVR).forEach(x => { const k = x.id.match(/^BID:(.+)$/); if (!k || k[1] === "main") return; if (x.removed) delete m[k[1]]; else if (x.rec) put(k[1], x.rec); });
+  return Object.values(m).sort((a, b) => (a.date || String(a.year)).localeCompare(b.date || String(b.year)));
 }
+const rl = r => r.label || String(r.year);
 function bidData() {
-  const R = bidRounds(); if (!R.length) return { year: THIS_Y, title: "", sheets: [], confirm: [] };
-  if (S.by == null || !R.some(r => r.year === S.by)) S.by = R[R.length - 1].year;
-  return R.find(r => r.year === S.by);
+  const R = bidRounds(); if (!R.length) return { key: String(THIS_Y), year: THIS_Y, title: "", sheets: [], confirm: [] };
+  if (S.by == null || !R.some(r => r.key === S.by)) S.by = R[R.length - 1].key;
+  return R.find(r => r.key === S.by);
 }
 const itemKey = s => String(s || "").toLowerCase().replace(/[\s.]+/g, "");
 function bidHistHtml() {
@@ -814,8 +836,8 @@ function bidHistHtml() {
   R.forEach(r => (r.sheets.find(s => s.name === sh.name) || { rows: [] }).rows.forEach(row => { const k = itemKey(row.item); if (!seen.has(k)) { seen.add(k); keys.push([k, row.item]); } }));
   const cellOf = (r, k) => { const s = r.sheets.find(x => x.name === sh.name); const row = s && s.rows.find(x => itemKey(x.item) === k); if (!row) return null; const m = minV(row, 1) || minV(row, 0); return m ? { v: m.v, who: m.who.map(i => (s.vendors[i] || {}).name || "").map(n => n.split(" ")[0]).join(", "), t: minV(row, 1) ? "5 ปี" : "3 ปี" } : null; };
   return `<section class="panel"><div class="phead"><h2>ประวัติราคาแต่ละรอบ · ${esc(sh.name)}</h2><span class="note">ราคาต่ำสุดต่อคันต่อเดือน (สัญญา 5 ปี ถ้าไม่มีใช้ 3 ปี) · ▲ แพงขึ้น ▼ ถูกลง เทียบรอบก่อน</span></div>
-    ${R.length < 2 ? `<div class="note" style="margin-bottom:10px">ตอนนี้มีรอบเดียว (${R.map(r => r.year).join(", ")}) · เมื่อบันทึกรอบถัดไป ("＋ เริ่มรอบใหม่" หรืออัปโหลดตารางราคาของปีใหม่) ตารางนี้จะเทียบให้อัตโนมัติ</div>` : ""}
-    <div class="tw"><table class="mx"><thead><tr><th>รายการ</th>${R.map((r, i) => `<th class="r ${i ? "gl" : ""}">รอบ ${r.year}<small style="display:block;font-weight:600;color:var(--ink3)">${esc(r.title || "")}</small></th>${i ? '<th class="r">เทียบรอบก่อน</th>' : ""}`).join("")}</tr></thead><tbody>
+    ${R.length < 2 ? `<div class="note" style="margin-bottom:10px">ตอนนี้มีรอบเดียว (${R.map(rl).join(", ")}) · เมื่อบันทึกรอบถัดไป ("＋ เริ่มรอบใหม่" หรืออัปโหลดตารางราคาของปีใหม่) ตารางนี้จะเทียบให้อัตโนมัติ</div>` : ""}
+    <div class="tw"><table class="mx"><thead><tr><th>รายการ</th>${R.map((r, i) => `<th class="r ${i ? "gl" : ""}">รอบ ${esc(rl(r))}<small style="display:block;font-weight:600;color:var(--ink3)">${esc(r.title || "")}</small></th>${i ? '<th class="r">เทียบรอบก่อน</th>' : ""}`).join("")}</tr></thead><tbody>
     ${keys.map(([k, name]) => { let prev = null; return `<tr><td class="t1">${esc(name)}</td>${R.map((r, i) => { const c = cellOf(r, k); let d = "";
       if (i) { d = c && prev ? (() => { const p = (c.v - prev.v) / prev.v * 100; return `<td class="r num" style="color:${p > 0 ? "var(--exp)" : p < 0 ? "var(--ok)" : "var(--ink3)"}">${p ? (p > 0 ? "▲ " : "▼ ") + Math.abs(p).toFixed(1) + "%" : "เท่าเดิม"}</td>`; })() : '<td class="r"><span class="z">·</span></td>'; }
       const h = `<td class="r num ${i ? "gl" : ""}">${c ? `<b>${money(c.v)}</b><div class="t2">${esc(c.who)}</div>` : '<span class="z">·</span>'}</td>` + d; prev = c || prev; return h; }).join("")}</tr>`; }).join("")}</tbody></table></div></section>`;
@@ -946,15 +968,135 @@ function exportDeliv() {
   const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "ส่งมอบรถ"); XLSX.writeFile(wb, "PCG MHE ส่งมอบรถ.xlsx");
 }
 
+/* ---- รายละเอียดต่อสัญญา (ผู้ใช้ขอ 5 ต.ค.: ตาม PPT นำเสนอผู้บริหาร "ต่อสัญญา รถ MHE รอบประจำปี" ตัด Action plan · เลือกช่วงเวลาที่รถหมดอายุได้) ---- */
+const ym = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
+const ymLbl = s => s ? s.slice(5, 7) + "/" + String((+s.slice(0, 4) + 543) % 100).padStart(2, "0") : "";
+const propCfg = () => { const b = PROPBASE || {}, o = (OVR["CFG:proposal"] && OVR["CFG:proposal"].rec) || {}; return { options: o.options || b.options || { suppliers: [], rows: [] }, service: o.service || b.service || { suppliers: [], rows: [] }, std: o.std || b.std || {}, note: o.note != null ? o.note : (b.note || "") }; };
+const inPeriod = r => r.end && r.end.slice(0, 7) >= S.pf && r.end.slice(0, 7) <= S.pt;
+const TYK = { "Reach Truck": [/\brt\b|reach/, "RT"], "Counter Balance": [/counter|\bct\b/, "CT"], "Order Pick": [/order|\bop\b/, "Order Pick"], "Stacker": [/stacker/, "Stacker"], "Power Pallet": [/pallet/, "Power pallet"], "Forklift Gas": [/gas/, "Gas-CT"] };
+const fx = n => String(+(+n).toFixed(1));
+function autoItem(r) { const k = TYK[r.type], t = r.cap ? fx(r.cap / 1000) : "", m = r.h && r.h > 1000 ? fx(r.h / 1000) : ""; return [(k ? k[1] : r.type), t ? `(${t}T)` : "", m ? m + "M" : ""].filter(Boolean).join(" "); }
+function matchItem(r, rows) {
+  const k = TYK[r.type]; if (!k || !rows) return null; const t = r.cap ? fx(r.cap / 1000) : null, m = r.h && r.h > 1000 ? r.h / 1000 : null;
+  let best = null, bs = -1, bd = 1e9;
+  rows.forEach(x => { const s = x.item.toLowerCase(); if (!k[0].test(s)) return; if (r.type !== "Forklift Gas" && /gas/.test(s)) return;
+    let sc = 2; if (t && new RegExp("(^|[\\s(])" + t.replace(".", "\\.") + "(\\.0)?\\s*t", "i").test(s)) sc++;
+    const hm = s.match(/(\d+(?:\.\d+)?)\s*m(?![a-z])/), dh = m && hm ? Math.abs(+hm[1] - m) : 9; if (dh < .05) sc++;
+    if (/cold/.test(s) !== /cold/i.test((r.size || "") + (r.model || ""))) sc -= .5; if (/drive\s*in/.test(s) !== /drive\s*in/i.test(r.size || "")) sc -= .5;
+    if (sc > bs || sc === bs && dh < bd) { bs = sc; bd = dh; best = x; } });
+  return bs >= 3 ? best : null;
+}
+const propRound = () => { const R = bidRounds(); if (!R.length) return null; if (!S.pr || !R.some(r => r.key === S.pr)) S.pr = R[0].key; return R.find(r => r.key === S.pr); };
+const itemOf = (r, rows) => r.renewItem || (matchItem(r, rows) || {}).item || autoItem(r);
+const newEn = r => r.renewEnergy || (r.energy === "Gas" || r.type === "Forklift Gas" ? "Gas" : "Lithium");
+function renderProp(base) {
+  if (!S.pf) { S.pf = THIS_Y + "-07"; S.pt = (THIS_Y + 1) + "-06"; }
+  const RD = propRound(), sh = RD ? RD.sheets[0] : null, rowsB = sh ? sh.rows : [];
+  const L = base.filter(inPeriod).sort((a, b) => (a.unit + siteOf(a)).localeCompare(b.unit + siteOf(b), "th") || (a.end || "").localeCompare(b.end || ""));
+  const isLog = r => r.unit === "Logistics", LG = L.filter(isLog), OT = L.filter(r => !isLog(r)), cfg = propCfg(), E = S.ped;
+  const cnt = (a, f) => { const c = {}; a.forEach(r => { const k = f(r); c[k] = (c[k] || 0) + 1; }); return Object.entries(c).sort((x, y) => y[1] - x[1]); };
+  const pre = [[`${THIS_Y}-07`, `${THIS_Y + 1}-06`], [`${THIS_Y + 1}-07`, `${THIS_Y + 2}-06`], [`${THIS_Y}-01`, `${THIS_Y}-12`], [`${THIS_Y + 1}-01`, `${THIS_Y + 1}-12`], [ym(new Date()), ym(new Date(Date.now() + 365 * 864e5))]];
+  const per = `${ymLbl(S.pf)} – ${ymLbl(S.pt)}`, it = r => itemOf(r, rowsB);
+  /* ตารางประเภท × คลัง × ระยะสัญญา */
+  const matrix = (a, colOf, title) => { const cols = cnt(a, colOf).map(x => x[0]), items = cnt(a, it).map(x => x[0]);
+    const sub = b => { const n3 = b.filter(r => String(r.renewTerm) === "3").length, n5 = b.filter(r => String(r.renewTerm) === "5").length; return n3 || n5 ? `<div class="tsub">${n3 ? "3ป " + n3 : ""}${n3 && n5 ? " · " : ""}${n5 ? "5ป " + n5 : ""}</div>` : ""; };
+    const cell = b => b.length ? `<b>${b.length}</b>${sub(b)}` : '<span class="z">·</span>', tm = (b, k) => b.filter(r => String(r.renewTerm || "") === k).length || '<span class="z">·</span>';
+    return `<div class="tw" style="margin-bottom:12px"><table class="mx pm"><thead><tr><th colspan="${cols.length + 5}" class="pmh">${title} ${a.length} คัน</th></tr>
+      <tr><th>ประเภท / สเปก</th>${cols.map(x => `<th class="c">${esc(x)}</th>`).join("")}<th class="c gl">รวม</th><th class="c gl">สัญญา<br>3 ปี</th><th class="c">สัญญา<br>5 ปี</th><th class="c" style="color:var(--m3)">ยังไม่<br>ระบุ</th></tr></thead><tbody>
+      ${items.map(i => { const b = a.filter(r => it(r) === i); return `<tr><td class="t1">${esc(i)}</td>${cols.map(col => `<td class="c num">${cell(b.filter(r => colOf(r) === col))}</td>`).join("")}<td class="c num gl"><b>${b.length}</b></td><td class="c num gl">${tm(b, "3")}</td><td class="c num">${tm(b, "5")}</td><td class="c num" style="color:var(--m3)">${tm(b, "")}</td></tr>`; }).join("")}</tbody>
+      <tfoot><tr><td>รวม</td>${cols.map(col => `<td class="c num">${a.filter(r => colOf(r) === col).length}</td>`).join("")}<td class="c num gl">${a.length}</td><td class="c num gl">${tm(a, "3")}</td><td class="c num">${tm(a, "5")}</td><td class="c num">${tm(a, "")}</td></tr></tfoot></table></div>`; };
+  /* ราคา */
+  const isN2 = v => typeof v === "number" && isFinite(v), V = sh ? sh.vendors : [];
+  const qOf = row => S.pq === "file" ? (row.qty || 0) : L.filter(r => itemKey(it(r)) === itemKey(row.item)).length;
+  const pRows = rowsB.filter(row => qOf(row) > 0), mapped = new Set(rowsB.map(r => itemKey(r.item))), unm = L.filter(r => !mapped.has(itemKey(it(r))));
+  const tot = (i, t) => pRows.reduce((s, row) => s + (isN2((row.p[i] || [])[t]) ? row.p[i][t] * qOf(row) : 0), 0), full = (i, t) => pRows.every(row => isN2((row.p[i] || [])[t]));
+  const minR = (row, t) => { const ns = row.p.map(p => p && p[t]).filter(isN2); return ns.length ? Math.min(...ns) : null; }, low = t => pRows.reduce((s, row) => s + (minR(row, t) || 0) * qOf(row), 0);
+  const VI = V.map((_, i) => i).filter(i => pRows.some(row => row.p[i] && (row.p[i][0] != null || row.p[i][1] != null)));
+  const curRent = L.filter(r => mapped.has(itemKey(it(r)))).reduce((s, r) => s + (+r.price || 0), 0), l5 = low(1), dif = curRent ? (l5 - curRent) / curRent * 100 : null;
+  const pc = (v, mn) => v == null ? '<td class="pc"><span class="z">·</span></td>' : isN2(v) ? `<td class="pc ${v === mn ? "min" : ""}">${money(v)}</td>` : `<td class="pc tx">${esc(v)}</td>`;
+  /* หน่วยงานที่มีการปรับเปลี่ยน */
+  const chg = cnt(L, r => r.unit).map(([u, n]) => { const a = L.filter(r => r.unit === u); return { u, n, bat: a.filter(r => r.energy === "Lead-Acid" && newEn(r) === "Lithium").length, bid: a.filter(r => r.renew === "bid").length, ret: a.filter(r => r.renew === "return").length, keep: a.filter(r => r.renew === "renew").length, sites: new Set(a.map(siteOf)).size }; });
+  const oldLA = L.filter(r => r.energy === "Lead-Acid").length, toLi = L.filter(r => r.energy === "Lead-Acid" && newEn(r) === "Lithium").length;
+  const ed = (path, v, cls) => `<input data-pp="${path}" value="${esc(v ?? "")}" class="${cls || ""}">`;
+  const supTable = (key, o, title) => `<section class="panel" id="p-${key}"><div class="phead"><h2>${title}</h2>${E ? `<button class="btn l" data-ppadd="${key}" style="margin-left:auto;padding:6px 11px">＋ เพิ่มแถว</button><button class="btn l" data-ppsup="${key}" style="padding:6px 11px">＋ เพิ่ม Supplier</button>` : ""}</div>
+    <div class="tw"><table class="mx sup"><thead><tr><th>${key === "options" ? "Option" : "เงื่อนไขบริการ"}</th>${o.suppliers.map((s, j) => `<th class="c gl">${E ? ed(`${key}|h|${j}`, s) : esc(s)}</th>`).join("")}${E ? "<th></th>" : ""}</tr></thead><tbody>
+    ${o.rows.map((r, i) => `<tr><td class="t1">${E ? ed(`${key}|r|${i}|0`, r[0], "it") : esc(r[0])}</td>${o.suppliers.map((_, j) => { const v = r[j + 1] || ""; return `<td class="c gl">${E ? ed(`${key}|r|${i}|${j + 1}`, v) : v === "✓" ? '<span class="ok">✓</span>' : /^(ไม่มี|✗|-)$/.test(v) ? '<span class="ng">✗ ' + esc(v === "✗" ? "" : v) + "</span>" : esc(v)}</td>`; }).join("")}${E ? `<td><button class="btn d" data-ppdel="${key}|${i}" style="padding:4px 8px">✕</button></td>` : ""}</tr>`).join("")}</tbody></table></div>
+    ${key === "options" && !E ? '<div class="note" style="margin-top:6px">✓ = มี (ในไฟล์ PPT เป็นรูปเครื่องหมายถูก) · กด ✎ แก้ไขข้อมูล Supplier เพื่อเปลี่ยน</div>' : ""}</section>`;
+  $("vProp").innerHTML = `<section class="panel prop-hero"><div class="phead"><div><div class="kick">นำเสนอผู้บริหาร · Executive Summary</div><h2 style="font-size:24px">ต่อสัญญา รถ MHE รอบ ${per}</h2><div class="note">รถที่หมดสัญญาช่วง ${thd(S.pf + "-01")} – ${thd(S.pt + "-28").replace(/^\d+ /, "สิ้น ")} · ข้อมูล ณ ${esc(ASOF)}</div></div>
+      <span class="no-print" style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap"><button class="btn l" data-pprint>🖨 พิมพ์ / PDF</button><button class="btn l" data-pexp>⬇ Export Excel</button>${E ? '<button class="btn p" data-ppsave>✓ บันทึกข้อมูล Supplier</button><button class="btn l" data-ppcancel>ยกเลิก</button>' : '<button class="btn l" data-ppedit>✎ แก้ไขข้อมูล Supplier</button>'}</span></div>
+    <div class="frow no-print" style="margin-bottom:8px"><b style="font-size:12px;color:var(--ink2);min-width:96px">ช่วงที่รถหมดสัญญา</b><input type="month" id="pf" value="${S.pf}" class="mi"> ถึง <input type="month" id="pt" value="${S.pt}" class="mi">
+      ${pre.map(([a, b]) => `<button class="chip ${S.pf === a && S.pt === b ? "on" : ""}" data-pper="${a}|${b}">${ymLbl(a)} – ${ymLbl(b)}</button>`).join("")}</div>
+    <div class="frow no-print"><b style="font-size:12px;color:var(--ink2);min-width:96px">ราคาจากรอบประมูล</b><select id="pr" class="mi">${bidRounds().map(r => `<option ${RD && r.key === RD.key ? "selected" : ""} value="${esc(r.key)}">${esc(rl(r))} · ${esc(r.title || "")}</option>`).join("")}</select>
+      <span class="tabs" style="margin-left:6px"><button class="${S.pq === "file" ? "" : "on"}" data-pq="fleet">จำนวนตามรถที่หมดในช่วงนี้</button><button class="${S.pq === "file" ? "on" : ""}" data-pq="file">จำนวนตามไฟล์ราคา</button></span></div>
+    <div class="agenda">${[["p-count", "จำนวนรถที่หมดในรอบ"], ["p-type", "ประเภทรถที่หมด"], ["p-list", "รายละเอียดรถที่หมดสัญญา"], ["p-chg", "หน่วยงานที่มีการปรับเปลี่ยนรถ"], ["p-price", "ราคาค่าเช่า"], ["p-options", "Option รถ MHE ของ Supplier"], ["p-service", "After-sales Service"], ["p-std", "Standard Option"]].map(([a, t], i) => `<a href="#${a}" data-jump="${a}"><b>${i + 1}</b>${t}</a>`).join("")}</div></section>
+  <section class="panel" id="p-count"><div class="phead"><h2>จำนวนรถที่หมดในรอบ ${per}</h2></div>
+    <div class="pc3"><div class="pbox"><div class="pbh">หน่วยงาน Logistics <b>${LG.length}</b> คัน</div><table class="mx"><tbody>${cnt(LG, siteOf).map(([s, n]) => `<tr><td>${esc(s)}</td><td class="r num"><b>${n}</b></td></tr>`).join("") || '<tr><td class="z">–</td></tr>'}</tbody></table></div>
+      <div class="pbox"><div class="pbh">หน่วยงานอื่น <b>${OT.length}</b> คัน</div><table class="mx"><tbody>${cnt(OT, r => r.unit).map(([s, n]) => `<tr><td>${esc(s)}</td><td class="r num"><b>${n}</b></td></tr>`).join("") || '<tr><td class="z">–</td></tr>'}</tbody></table></div>
+      <div class="pbox ptot"><span>รวมทั้งหมด</span><b>${L.length}</b><span>คัน</span><small>ค่าเช่าปัจจุบันรวม ${money(L.reduce((s, r) => s + (+r.price || 0), 0))} บาท/เดือน</small></div></div></section>
+  <section class="panel" id="p-type"><div class="phead"><h2>ประเภทรถที่หมด · แยกคลัง / หน่วยงาน และระยะสัญญาใหม่</h2><span class="note">ระยะสัญญา 3 / 5 ปี เลือกได้ในตารางรายละเอียดรถด้านล่าง</span></div>
+    ${LG.length ? matrix(LG, siteOf, "Logistics") : ""}${OT.length ? matrix(OT, r => r.unit, "หน่วยงานอื่น") : ""}${L.length ? "" : '<div class="empty">ไม่มีรถหมดสัญญาในช่วงนี้</div>'}
+    <div class="note" style="margin-top:4px">${E ? `<input data-pp="note" value="${esc(cfg.note)}" style="width:100%">` : esc(cfg.note)}${oldLA ? ` · (ในช่วงนี้แบตน้ำเดิม ${oldLA} คัน → เปลี่ยนเป็น Lithium ${toLi} คัน)` : ""}</div></section>
+  <section class="panel" id="p-list"><div class="phead"><h2>รายละเอียดรถที่หมดสัญญา ${per} · ทุกหน่วยงาน</h2><span class="note">เลือกรายการประมูล / ระยะสัญญา / แบตใหม่ ได้ทุกคัน บันทึกทันที</span></div>
+    <datalist id="dlItem">${rowsB.map(r => `<option value="${esc(r.item)}">`).join("")}</datalist>
+    <div class="tw"><table class="vt ve"><thead><tr><th>หน่วยงาน / คลัง</th><th>ประเภท · รุ่นเดิม</th><th>Serial</th><th>แบตเดิม</th><th>หมดสัญญา</th><th class="r">ค่าเช่าเดิม</th><th>รายการ / สเปกใหม่</th><th>สัญญาใหม่</th><th>แบตใหม่</th><th>การตัดสินใจ</th><th>หมายเหตุ</th></tr></thead><tbody>
+    ${L.map(r => `<tr><td><div class="t1">${esc(r.unit)}</div><div class="t2">${esc(siteOf(r))}</div></td><td><div class="t1">${esc(r.type)}</div><div class="t2">${esc(r.model)} · ${esc(r.size || "")}</div></td><td class="num t2">${esc(r.serial || "–")}</td><td>${r.energy ? `<span class="en ${r.energy}">${r.energy}</span>` : "–"}</td><td><b>${thd(r.end)}</b></td><td class="r num">${money(r.price)}</td>
+      <td style="min-width:210px"><input data-f="${esc(r.id)}|renewItem" list="dlItem" value="${esc(r.renewItem || "")}" placeholder="${esc(itemOf(Object.assign({}, r, { renewItem: "" }), rowsB))}"></td>
+      <td style="min-width:90px"><select data-f="${esc(r.id)}|renewTerm">${[["", "–"], ["3", "3 ปี"], ["5", "5 ปี"]].map(([k, l]) => `<option ${String(r.renewTerm || "") === k ? "selected" : ""} value="${k}">${l}</option>`).join("")}</select></td>
+      <td style="min-width:110px"><select data-f="${esc(r.id)}|renewEnergy">${["", "Lithium", "Lead-Acid", "Gas"].map(k => `<option ${String(r.renewEnergy || "") === k ? "selected" : ""} value="${k}">${k || "อัตโนมัติ (" + newEn(Object.assign({}, r, { renewEnergy: "" })) + ")"}</option>`).join("")}</select></td>
+      <td style="min-width:140px"><select data-f="${esc(r.id)}|renew">${Object.entries(DEC).map(([k, l]) => `<option ${k === (r.renew || "") ? "selected" : ""} value="${k}">${l}</option>`).join("")}</select></td>
+      <td style="min-width:140px"><input data-f="${esc(r.id)}|renewNote" value="${esc(r.renewNote || "")}"></td></tr>`).join("") || '<tr><td colspan="11" class="empty">ไม่มีรถหมดสัญญาในช่วงนี้</td></tr>'}</tbody></table></div>
+    <div class="note" style="margin-top:6px">ช่องรายการ/สเปกใหม่ว่าง = จับคู่กับรายการในตารางราคาอัตโนมัติ (ตัวเทา) จากประเภท · ตัน · ความสูง · พิมพ์ทับได้</div></section>
+  <section class="panel" id="p-chg"><div class="phead"><h2>หน่วยงานที่มีการปรับเปลี่ยนรถ</h2></div>
+    <div class="tw"><table class="mx"><thead><tr><th>หน่วยงาน</th><th class="c">รถหมดสัญญา</th><th class="c">คลัง</th><th class="c">แบตน้ำ → Lithium</th><th class="c">ต่อสัญญาเดิม</th><th class="c">ประมูล / เปลี่ยนรุ่น</th><th class="c">คืนรถ</th><th class="c">ยังไม่ตัดสินใจ</th></tr></thead><tbody>
+    ${chg.map(x => `<tr><td class="t1"><span class="uname"><i style="background:${ucol(x.u)}"></i>${esc(x.u)}</span></td><td class="c num"><b>${x.n}</b></td><td class="c num">${x.sites}</td><td class="c num" style="color:#18794a">${x.bat || '<span class="z">·</span>'}</td><td class="c num">${x.keep || '<span class="z">·</span>'}</td><td class="c num" style="color:var(--acc2)">${x.bid || '<span class="z">·</span>'}</td><td class="c num" style="color:var(--exp)">${x.ret || '<span class="z">·</span>'}</td><td class="c num" style="color:var(--ink3)">${x.n - x.keep - x.bid - x.ret || '<span class="z">·</span>'}</td></tr>`).join("")}</tbody></table></div></section>
+  <section class="panel" id="p-price"><div class="phead"><h2>ราคาค่าเช่า รอบ ${per}</h2><span class="note">${RD ? esc(rl(RD) + " · " + (RD.title || "")) : "ยังไม่มีตารางราคา"} · ต่อคันต่อเดือน (บาท) · ช่องเขียว = ถูกสุดของแถว</span></div>
+    ${RD ? `<div class="mini" style="margin-bottom:12px"><div class="f"><span>ค่าเช่าเดิม (รถที่จับคู่รายการได้)</span><b>${money(curRent)}</b><small>บาท/เดือน</small></div><div class="f"><span>ราคาใหม่ต่ำสุด · 3 ปี</span><b>${money(low(0))}</b><small>บาท/เดือน</small></div>
+      <div class="f"><span>ราคาใหม่ต่ำสุด · 5 ปี</span><b>${money(l5)}</b><small>บาท/เดือน</small></div><div class="f"><span>เทียบค่าเช่าเดิม (5 ปี)</span><b style="color:${dif == null ? "var(--ink)" : dif > 0 ? "var(--exp)" : "var(--ok)"}">${dif == null ? "–" : (dif > 0 ? "▲ " : "▼ ") + Math.abs(dif).toFixed(1) + "%"}</b><small>${dif == null ? "" : dif > 0 ? "แพงขึ้น" : "ถูกลง"}</small></div></div>
+    <div class="tw"><table class="bt"><thead><tr><th rowspan="2">MHE</th><th rowspan="2">ประเภทแบต</th><th rowspan="2" class="c">จำนวน</th><th colspan="2" class="vn" style="background:#fbf6e3">ต่ำสุด</th>${VI.map(i => `<th colspan="2" class="vn">${esc(V[i].name)}<small>${esc(V[i].contact || "")}</small></th>`).join("")}</tr>
+      <tr><th class="c" style="border-left:2px solid var(--line);background:#fbf6e3">3 ปี</th><th class="c" style="background:#fbf6e3">5 ปี</th>${VI.map(() => '<th class="c" style="border-left:2px solid var(--line)">3 ปี</th><th class="c">5 ปี</th>').join("")}</tr></thead><tbody>
+      ${pRows.map(row => { const m3 = minR(row, 0), m5 = minR(row, 1); return `<tr><td><b>${esc(row.item)}</b></td><td>${esc(row.energy || "")}</td><td class="c num"><b>${qOf(row)}</b>${S.pq !== "file" && row.qty ? `<div class="t2">ไฟล์ ${row.qty}</div>` : ""}</td><td class="pc vl lowc"><b>${m3 != null ? money(m3) : "–"}</b></td><td class="pc lowc"><b>${m5 != null ? money(m5) : "–"}</b></td>${VI.map(i => pc((row.p[i] || [])[0], m3).replace('class="pc', 'class="pc vl') + pc((row.p[i] || [])[1], m5)).join("")}</tr>`; }).join("") || `<tr><td colspan="${5 + VI.length * 2}" class="empty">ไม่มีรถในช่วงนี้ที่จับคู่กับรายการในตารางราคา</td></tr>`}</tbody>
+      <tfoot><tr><td colspan="2"><b>รวม / เดือน</b></td><td class="c num"><b>${pRows.reduce((s, r) => s + qOf(r), 0)}</b></td><td class="pc vl lowc"><b>${money(low(0))}</b></td><td class="pc lowc"><b>${money(l5)}</b></td>${VI.map(i => `<td class="pc vl">${tot(i, 0) ? money(tot(i, 0)) + (full(i, 0) ? "" : "*") : "–"}</td><td class="pc">${tot(i, 1) ? money(tot(i, 1)) + (full(i, 1) ? "" : "*") : "–"}</td>`).join("")}</tr></tfoot></table></div>
+    <div class="note" style="margin-top:6px">* ผู้ขายเสนอไม่ครบทุกรายการ${unm.length ? ` · รถ ${unm.length} คันยังจับคู่กับรายการในตารางราคาไม่ได้ (${esc([...new Set(unm.map(it))].slice(0, 5).join(", "))}${unm.length > 5 ? " …" : ""}) แก้ที่ช่อง "รายการ / สเปกใหม่"` : ""}</div>` : '<div class="empty">ยังไม่มีตารางราคา</div>'}</section>
+  ${supTable("options", cfg.options, "Option รถ MHE ของ Supplier")}${supTable("service", cfg.service, "After-sales Service")}
+  <section class="panel" id="p-std"><div class="phead"><h2>Standard Option ที่ต้องมี</h2><span class="note">ตามสไลด์ ALL OPTION</span></div>
+    <div class="pc3">${Object.entries(cfg.std).map(([k, a]) => `<div class="pbox"><div class="pbh">${esc(k)} <b>${a.length}</b> รายการ</div><div class="stdg">${a.map((x, i) => E ? ed(`std|${k}|${i}`, x) : `<span>✓ ${esc(x)}</span>`).join("")}</div></div>`).join("")}</div></section>`;
+}
+let PDRAFT = null;
+function propInput(el) {
+  const k = el.dataset.pp.split("|"), v = el.value;
+  if (k[0] === "note") PDRAFT.note = v; else if (k[0] === "std") PDRAFT.std[k[1]][+k[2]] = v;
+  else { const o = PDRAFT[k[0]]; if (k[1] === "h") o.suppliers[+k[2]] = v; else o.rows[+k[2]][+k[3]] = v; }
+}
+function exportProp() {
+  const RD = propRound(), rowsB = RD ? RD.sheets[0].rows : [], L = ALL.filter(inPeriod), wb = XLSX.utils.book_new(), hs = { font: { bold: true, color: { rgb: "FFFFFF" } }, fill: { fgColor: { rgb: "22262C" } } };
+  const add = (name, aoa) => { const ws = XLSX.utils.aoa_to_sheet(aoa); (aoa[0] || []).forEach((_, j) => { const c = ws[XLSX.utils.encode_cell({ r: 0, c: j })]; if (c) c.s = hs; }); ws["!cols"] = (aoa[0] || []).map(() => ({ wch: 18 })); XLSX.utils.book_append_sheet(wb, ws, name); };
+  add("รายละเอียดรถ", [["หน่วยงาน", "คลัง", "ประเภท", "รุ่นเดิม", "ขนาด", "Serial", "แบตเดิม", "วันที่หมดสัญญา", "ค่าเช่าเดิม", "รายการ/สเปกใหม่", "สัญญาใหม่ (ปี)", "แบตใหม่", "การตัดสินใจ", "หมายเหตุ"], ...L.map(r => [r.unit, siteOf(r), r.type, r.model, r.size, r.serial, r.energy, r.end, r.price, itemOf(r, rowsB), r.renewTerm || "", newEn(r), DEC[r.renew || ""], r.renewNote || ""])]);
+  const it = r => itemOf(r, rowsB), items = [...new Set(L.map(it))], cols = [...new Set(L.map(r => r.unit === "Logistics" ? siteOf(r) : r.unit))];
+  add("ประเภท x คลัง", [["ประเภท / สเปก", ...cols.flatMap(c => [c + " 3 ปี", c + " 5 ปี", c + " ไม่ระบุ"]), "รวม"], ...items.map(i => [i, ...cols.flatMap(c => ["3", "5", ""].map(tm => L.filter(r => it(r) === i && (r.unit === "Logistics" ? siteOf(r) : r.unit) === c && String(r.renewTerm || "") === tm).length || "")), L.filter(r => it(r) === i).length])]);
+  const cfg = propCfg(); add("Option Supplier", [["Option", ...cfg.options.suppliers], ...cfg.options.rows]); add("After-sales", [["เงื่อนไข", ...cfg.service.suppliers], ...cfg.service.rows]);
+  XLSX.writeFile(wb, `ต่อสัญญา MHE ${ymLbl(S.pf).replace("/", "-")} ถึง ${ymLbl(S.pt).replace("/", "-")}.xlsx`);
+}
+
 /* ---- เหตุการณ์ ---- */
 document.addEventListener("click", async e => {
-  const t = e.target.closest("button,a[data-open],[data-unit],[data-tog],[data-s],[data-year],tr[data-gu],tr[data-sk],tr[data-id]"); if (!t) return;
+  const t = e.target.closest("button,a[data-open],a[data-jump],[data-unit],[data-tog],[data-s],[data-year],tr[data-gu],tr[data-sk],tr[data-id]"); if (!t) return;
   if (t.dataset.gu) { const u = t.dataset.gu; S.gc.has(u) ? S.gc.delete(u) : S.gc.add(u); render(); return; }
-  if (t.dataset.by) { S.by = +t.dataset.by; S.bsh = 0; renderBid(); return; }
+  if (t.dataset.pper) { [S.pf, S.pt] = t.dataset.pper.split("|"); render(); return; }
+  if (t.dataset.pq) { S.pq = t.dataset.pq; render(); return; }
+  if (t.dataset.jump) { e.preventDefault(); const el = $(t.dataset.jump); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); return; }
+  if ("pprint" in t.dataset) { window.print(); return; }
+  if ("pexp" in t.dataset) { exportProp(); return; }
+  if ("ppedit" in t.dataset) { PDRAFT = JSON.parse(JSON.stringify(propCfg())); S.ped = true; render(); return; }
+  if ("ppcancel" in t.dataset) { PDRAFT = null; S.ped = false; render(); return; }
+  if ("ppsave" in t.dataset) { await sbSave([{ id: "CFG:proposal", rec: PDRAFT }]); PDRAFT = null; S.ped = false; render(); toast("บันทึกข้อมูล Supplier แล้ว"); return; }
+  if (t.dataset.ppadd) { const o = PDRAFT[t.dataset.ppadd]; o.rows.push(["รายการใหม่", ...o.suppliers.map(() => "")]); render(); return; }
+  if (t.dataset.ppsup) { const o = PDRAFT[t.dataset.ppsup]; o.suppliers.push("Supplier ใหม่"); o.rows.forEach(r => r.push("")); render(); return; }
+  if (t.dataset.ppdel) { const [k, i] = t.dataset.ppdel.split("|"); PDRAFT[k].rows.splice(+i, 1); render(); return; }
+  if (t.dataset.by) { S.by = t.dataset.by; S.bsh = 0; renderBid(); return; }
   if ("bnew" in t.dataset) { newRoundDlg(); return; }
-  if ("nrok" in t.dataset) { const y = +$("nrY").value; if (!y) return; if (bidRounds().some(r => r.year === y)) { toast("มีรอบปี " + y + " อยู่แล้ว"); return; } const last = bidRounds().slice(-1)[0], cp = $("nrC").checked && last;
+  if ("nrok" in t.dataset) { const y = +$("nrY").value; if (!y) return; if (bidRounds().some(r => r.key === String(y))) { toast("มีรอบปี " + y + " อยู่แล้ว"); return; } const last = bidRounds().slice(-1)[0], cp = $("nrC").checked && last;
     const rec = { year: y, date: "", title: $("nrT").value.trim(), confirm: [], sheets: cp ? last.sheets.map(s => ({ name: s.name, vendors: s.vendors.map(v => Object.assign({}, v)), rows: s.rows.map(r => ({ item: r.item, energy: r.energy, qty: r.qty, alloc: r.alloc.map(a => a.slice()), p: r.p.map(() => [null, null]) })) })) : [{ name: "Lithium", vendors: [{ name: "ผู้ขาย 1", contact: "" }], rows: [] }] };
-    await sbSave([{ id: "BID:" + y, rec }]); S.by = y; $("dlg").close(); render(); toast("สร้างรอบ " + y + " แล้ว · กด ✎ แก้ไขตาราง เพื่อกรอกราคา"); return; }
+    await sbSave([{ id: "BID:" + y, rec }]); S.by = String(y); $("dlg").close(); render(); toast("สร้างรอบ " + y + " แล้ว · กด ✎ แก้ไขตาราง เพื่อกรอกราคา"); return; }
   if (t.dataset.srev) { S.srev = t.dataset.srev; S.scls = 0; S.scmp = ""; render(); return; }
   if (t.dataset.scls) { S.scls = +t.dataset.scls; render(); return; }
   if ("spedit" in t.dataset) { SDRAFT = JSON.parse(JSON.stringify(specRevs().find(r => r.rev === S.srev))); S.sed = true; render(); return; }
@@ -984,13 +1126,13 @@ document.addEventListener("click", async e => {
   if (t.dataset.bsh) { S.bsh = +t.dataset.bsh; renderBid(); return; }
   if ("bedit" in t.dataset) { BDRAFT = JSON.parse(JSON.stringify(bidData())); S.bed = true; renderBid(); return; }
   if ("bcancel" in t.dataset) { S.bed = false; BDRAFT = null; renderBid(); return; }
-  if ("bsave" in t.dataset) { await sbSave([{ id: "BID:" + BDRAFT.year, rec: BDRAFT }]); S.bed = false; BDRAFT = null; render(); toast(ONLINE ? "บันทึกตารางราคาแล้ว" : "บันทึกในเบราว์เซอร์นี้แล้ว"); return; }
+  if ("bsave" in t.dataset) { await sbSave([{ id: "BID:" + BDRAFT.key, rec: BDRAFT }]); S.bed = false; BDRAFT = null; render(); toast(ONLINE ? "บันทึกตารางราคาแล้ว" : "บันทึกในเบราว์เซอร์นี้แล้ว"); return; }
   if ("badd" in t.dataset) { const sh = BDRAFT.sheets[S.bsh]; sh.rows.push({ item: "รายการใหม่", energy: sh.name, qty: null, alloc: [], p: sh.vendors.map(() => [null, null]) }); renderBid(); return; }
   if (t.dataset.bdel) { BDRAFT.sheets[S.bsh].rows.splice(+t.dataset.bdel, 1); renderBid(); return; }
   if ("bvadd" in t.dataset) { BDRAFT.sheets.forEach(s => { s.vendors.push({ name: "ผู้ขายใหม่", contact: "" }); s.rows.forEach(r => r.p.push([null, null])); }); renderBid(); return; }
   if ("bup" in t.dataset) { $("bfile").click(); return; }
   if ("bexp" in t.dataset) { exportBid(); return; }
-  if ("bcommit" in t.dataset && PEND_BID) { t.disabled = true; const o = PEND_BID; PEND_BID = null; const yy = +$("bY").value || o.year; await sbSave([{ id: "BID:" + yy, rec: { year: yy, date: o.date, title: $("bT").value.trim() || o.title, sheets: o.sheets, confirm: o.confirm } }]); S.by = yy; if (!OVR["CFG:confirm"] && o.confirm.length) await sbSave([{ id: "CFG:confirm", rec: { rows: o.confirm.map(c => ({ unit: c.unit, qty: c.qty, status: c.status || "", note: "" })) } }]); $("dlg").close(); S.bsh = 0; render(); toast("นำเข้าตารางราคาแล้ว"); return; }
+  if ("bcommit" in t.dataset && PEND_BID) { t.disabled = true; const o = PEND_BID; PEND_BID = null; const yy = +$("bY").value || o.year; await sbSave([{ id: "BID:" + yy, rec: { year: yy, date: o.date, title: $("bT").value.trim() || o.title, sheets: o.sheets, confirm: o.confirm } }]); S.by = String(yy); if (!OVR["CFG:confirm"] && o.confirm.length) await sbSave([{ id: "CFG:confirm", rec: { rows: o.confirm.map(c => ({ unit: c.unit, qty: c.qty, status: c.status || "", note: "" })) } }]); $("dlg").close(); S.bsh = 0; render(); toast("นำเข้าตารางราคาแล้ว"); return; }
   if (t.dataset.bk) { S.view = "sum"; history.replaceState(null, "", "#sum"); S.bk = S.bk === t.dataset.bk || t.dataset.bk === "all" ? "all" : t.dataset.bk; S.year = "all"; S.lim = 60; render(); document.querySelector(".vt").scrollIntoView({ behavior: "smooth", block: "start" }); return; }
   if (t.dataset.unit) { S.unit = S.unit === t.dataset.unit ? "all" : t.dataset.unit; S.site = "all"; if (S.unit !== "all") S.open.add(S.unit); S.lim = 60; render(); return; }
   if (t.dataset.tog) { const u = t.dataset.tog; S.open.has(u) ? S.open.delete(u) : S.open.add(u); render(); return; }
@@ -1010,16 +1152,18 @@ document.addEventListener("click", async e => {
   if ("save" in t.dataset) { saveCar(); return; }
   if (t.dataset.revert) { await sbSave([{ id: t.dataset.revert, rec: null, removed: false }]); delete OVR[t.dataset.revert]; $("dlg").close(); render(); toast("คืนค่าตามไฟล์แล้ว"); return; }
   if (t.dataset.del) { if (!t.classList.contains("arm")) { t.classList.add("arm"); t.textContent = "กดอีกครั้งเพื่อยืนยันลบ"; return; } await sbSave([{ id: t.dataset.del, removed: true }]); $("dlg").close(); render(); toast("ลบแล้ว"); return; }
-  if ("commit" in t.dataset && PEND) { t.disabled = true; t.textContent = "กำลังบันทึก…"; await sbSave(PEND.map(r => { const rec = Object.assign({}, r), o = ALL.find(x => x.id === r.id); delete rec.id; if (o) { rec.renew = o.renew || ""; rec.renewNote = o.renewNote || ""; } return { id: r.id, rec }; })); PEND = null; $("dlg").close(); render(); toast(ONLINE ? "บันทึกแล้ว" : "บันทึกในเบราว์เซอร์นี้แล้ว"); return; }
+  if ("commit" in t.dataset && PEND) { t.disabled = true; t.textContent = "กำลังบันทึก…"; await sbSave(PEND.map(r => { const rec = Object.assign({}, r), o = ALL.find(x => x.id === r.id); delete rec.id; if (o) RENEWK.forEach(k => rec[k] = o[k] || ""); return { id: r.id, rec }; })); PEND = null; $("dlg").close(); render(); toast(ONLINE ? "บันทึกแล้ว" : "บันทึกในเบราว์เซอร์นี้แล้ว"); return; }
 });
 $("file").addEventListener("change", e => { const f = e.target.files[0]; if (f) upload(f); e.target.value = ""; });
 $("bfile").addEventListener("change", e => { const f = e.target.files[0]; if (f) bidUpload(f); e.target.value = ""; });
 document.addEventListener("change", async e => { const el = e.target; if (!el.dataset) return;
-  if (el.dataset.f) { await saveField(el); if (el.dataset.f.endsWith("|renew")) render(); }
+  if (el.dataset.f) { await saveField(el); if (/\|renew(Item|Term|Energy)?$/.test(el.dataset.f)) render(); }
+  else if (el.id === "pf" || el.id === "pt") { S[el.id] = el.value; if (S.pf > S.pt) [S.pf, S.pt] = [S.pt, S.pf]; render(); }
+  else if (el.id === "pr") { S.pr = el.value; render(); }
   else if (el.dataset.c) saveConf(el);
   else if (el.dataset.dl) saveDlv(el);
   else if (el.id === "scmp") { S.scmp = el.value; render(); } });
-document.addEventListener("input", e => { if (!e.target.dataset) return; if (e.target.dataset.b && BDRAFT) bidInput(e.target); if (e.target.dataset.sp && SDRAFT) specInput(e.target); });
+document.addEventListener("input", e => { if (!e.target.dataset) return; if (e.target.dataset.b && BDRAFT) bidInput(e.target); if (e.target.dataset.sp && SDRAFT) specInput(e.target); if (e.target.dataset.pp && PDRAFT) propInput(e.target); });
 let SDRAFT = null;
 $("q").addEventListener("input", e => { S.q = e.target.value.trim(); S.lim = 60; render(); });
 $("sort").addEventListener("change", e => { S.sort = e.target.value; render(); });

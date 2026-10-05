@@ -13,9 +13,11 @@ const parse = fs.readFileSync(path.join(dir, "mhe_parse.js"), "utf8"), bparse = 
 const bid = bidFile ? bidParse(XLSX, XLSX.read(fs.readFileSync(bidFile), { type: "buffer" })) : null;
 const bm = bidFile && path.basename(bidFile).match(/(20\d\d)[-_.](\d{1,2})[-_.](\d{1,2})/);   /* ปีของรอบประมูล = ปีในชื่อไฟล์ราคา */
 if (bid) { bid.year = bm ? +bm[1] : new Date().getFullYear(); bid.date = bm ? `${bm[1]}-${bm[2].padStart(2, "0")}-${bm[3].padStart(2, "0")}` : ""; }
+const prop = fs.existsSync(path.join(dir, "proposal_base.json")) ? JSON.parse(fs.readFileSync(path.join(dir, "proposal_base.json"), "utf8")) : null;
 const spec = fs.existsSync(path.join(dir, "spec_rev4.json")) ? JSON.parse(fs.readFileSync(path.join(dir, "spec_rev4.json"), "utf8")) : null;
 t = t.replace("/*__MHE_PARSE__*/", () => parse).replace("/*__BID_PARSE__*/", () => bparse)
      .replace("/*__BID_DATA__*/null", () => JSON.stringify(bid).replace(/</g, "\\u003c"))
+     .replace("/*__PROP_DATA__*/null", () => JSON.stringify(prop).replace(/</g, "\\u003c"))
      .replace("/*__SPEC_DATA__*/null", () => JSON.stringify(spec).replace(/</g, "\\u003c"))
      .replace("/*__MHE_DATA__*/[]", () => JSON.stringify(rows).replace(/</g, "\\u003c"))
      .replace('"/*__ASOF__*/"', () => JSON.stringify(asof));
