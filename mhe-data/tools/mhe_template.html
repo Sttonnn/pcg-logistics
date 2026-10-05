@@ -197,6 +197,9 @@
   .wrow:hover { background: #fffbea; } .wn { grid-area: n; font-weight: 700; font-size: 13px; } .wc { grid-area: c; text-align: right; font-weight: 900; font-family: Archivo, sans-serif; }
   .wb { grid-area: b; height: 8px; background: #f0f0eb; border-radius: 99px; overflow: hidden; } .wb i { display: block; height: 100%; border-radius: 99px; }
   .we { grid-area: e; font-size: 11px; color: var(--ink3); font-weight: 700; }
+  .spt td { vertical-align: top; } .spt tr.sadd td { background: #eaf8ef; } .spt tr.schg td { background: #fff8e1; }
+  .sbadge { display: inline-block; font-size: 10.5px; font-weight: 800; border-radius: 6px; padding: 1px 6px; margin-left: 4px; white-space: nowrap; } .sbadge.add { background: #d3f2df; color: #18794a; } .sbadge.chg { background: #fde9b6; color: #8a6a00; }
+  .spt input.it { min-width: 260px; }
   @media (max-width: 1150px) { .two { grid-template-columns: minmax(0,1fr); } }
   @media (max-width: 1000px) { .lay, .lay.mini-side { grid-template-columns: minmax(0,1fr); } .sidetg { display: none; } #side { position: static; margin-top: 12px; } #side .navs { display: flex; overflow-x: auto; } #side .nav { width: auto; flex: none; } .nav small, .sinfo { display: none; } .mini { grid-template-columns: repeat(2, minmax(0,1fr)); } }
   @media (max-width: 980px) { .kpis { grid-template-columns: repeat(3, minmax(0,1fr)); } }
@@ -264,6 +267,7 @@
   <div class="view" data-v="spec" id="vSpec"></div>
   <div class="view" data-v="bid" id="vBid"></div>
   <div class="view" data-v="trend" id="vTrend"></div>
+  <div class="view" data-v="deliv" id="vDeliv"></div>
 </main>
 </div></div>
 <footer>ข้อมูลรถจากไฟล์ Excel "ข้อมูล MHE" ชีต BI Logistics + BI หน่วยงาน · ตารางราคาจากไฟล์ราคาประมูล · คงเหลือคำนวณจากวันที่หมดสัญญาเทียบกับวันนี้ · อัปโหลดไฟล์รถใหม่ = รวมกับข้อมูลเดิม · ทุกการแก้ไขบันทึกขึ้นระบบกลาง</footer>
@@ -275,6 +279,7 @@
 /*__MHE_PARSE__*/
 /*__BID_PARSE__*/
 const BIDBASE = /*__BID_DATA__*/null;
+const SPECBASE = /*__SPEC_DATA__*/null;
 const BASE = /*__MHE_DATA__*/[];
 const ASOF = "/*__ASOF__*/";
 const SB = "https://mgnshovnibcmiptoxdfe.supabase.co/rest/v1/mhe_vehicles";
@@ -313,7 +318,7 @@ const CMP = FIELDS.flatMap(g => g[1].map(f => f[0])).filter(k => k !== "renew" &
 
 /* ---- ข้อมูล: ไฟล์ที่ฝังไว้ + ที่บันทึกบนเว็บ (Supabase mhe_vehicles, ไม่มีตาราง → localStorage) ---- */
 let OVR = {}, ONLINE = false, LAST = "";
-const S = { grp: "unit", gc: new Set(), mini: (() => { try { return localStorage.getItem("pcg-mhe-side") === "mini"; } catch (e) { return false; } })(), tU: new Set(), tMode: "sum", view: (location.hash.slice(1) || "sum"), round: null, ed: false, bsh: 0, bed: false, sopen: new Set(), unit: "all", site: "all", type: "all", en: "all", bk: "all", year: "all", q: "", sort: "rem", lim: 60, open: new Set(["Logistics"]) };
+const S = { by: null, srev: null, scls: 0, scmp: "", sed: false, dst: "all", grp: "unit", gc: new Set(), mini: (() => { try { return localStorage.getItem("pcg-mhe-side") === "mini"; } catch (e) { return false; } })(), tU: new Set(), tMode: "sum", view: (location.hash.slice(1) || "sum"), round: null, ed: false, bsh: 0, bed: false, sopen: new Set(), unit: "all", site: "all", type: "all", en: "all", bk: "all", year: "all", q: "", sort: "rem", lim: 60, open: new Set(["Logistics"]) };
 function warn(msg) { $("warn").innerHTML = msg || ""; $("warn").classList.toggle("show", !!msg); }
 function toast(m) { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 2200); }
 function lsGet() { try { return JSON.parse(localStorage.getItem(LS) || "{}"); } catch (e) { return {}; } }
@@ -345,7 +350,7 @@ async function sbSave(rows) {
 }
 function db() {
   const m = new Map(BASE.map(r => [r.id, r]));
-  Object.values(OVR).forEach(x => { if (/^(BID|CFG):/.test(x.id)) return; if (x.removed) m.delete(x.id); else if (x.rec) m.set(x.id, Object.assign({}, x.rec, { id: x.id, _web: x.updated_at })); });
+  Object.values(OVR).forEach(x => { if (/^(BID|CFG|SPEC|DLV):/.test(x.id)) return; if (x.removed) m.delete(x.id); else if (x.rec) m.set(x.id, Object.assign({}, x.rec, { id: x.id, _web: x.updated_at })); });
   return [...m.values()];
 }
 let ALL = [];
@@ -425,12 +430,13 @@ function render() {
   if (S.ed) renderEdList(list);
   renderWhere();
   $("edBtn").textContent = S.ed ? "✓ เสร็จ" : "✎ แก้ไขในตาราง"; $("edBtn").className = "btn " + (S.ed ? "p" : "l");
-  if (!["sum", "renew", "spec", "bid", "trend"].includes(S.view)) S.view = "sum";
+  if (!["sum", "renew", "spec", "bid", "trend", "deliv"].includes(S.view)) S.view = "sum";
   document.querySelectorAll(".view").forEach(v => v.classList.toggle("on", v.dataset.v === S.view));
-  $("fbar").style.display = S.view === "bid" ? "none" : "";
+  $("fbar").style.display = ["bid", "deliv"].includes(S.view) ? "none" : "";
   renderSide();
   if (S.view === "renew") renderRenew(base);
-  if (S.view === "spec") renderSpec(base);
+  if (S.view === "spec") renderSpecSheet(base);
+  if (S.view === "deliv") renderDeliv();
   if (S.view === "bid") renderBid();
   if (S.view === "trend") renderTrend();
   $("fUnit").style.display = $("rowUnit").querySelector("b").style.display = S.view === "trend" ? "none" : "";
@@ -514,6 +520,7 @@ const IC = {
   renew: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M12 7v5l3 2"/></svg>',
   spec: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18V9h7l3 4v5"/><path d="M13 13h3V4"/><path d="M16 18h5"/><circle cx="6" cy="18.5" r="1.8"/><circle cx="12" cy="18.5" r="1.8"/></svg>',
   trend: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><rect x="5" y="12" width="3" height="6"/><rect x="10.5" y="8" width="3" height="10"/><rect x="16" y="4" width="3" height="14"/></svg>',
+  deliv: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 7h13v10H1z"/><path d="M14 11h4l3 3v3h-7"/><circle cx="5.5" cy="18.5" r="1.8"/><circle cx="17.5" cy="18.5" r="1.8"/></svg>',
   bid: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 10h16M10 4v16"/><path d="M14 14h3M14 17h3"/></svg>'
 };
 const THIS_Y = new Date().getFullYear();
@@ -521,7 +528,6 @@ const endY = r => r.end ? +r.end.slice(0, 4) : null;
 const rounds = () => { const ys = [...new Set(ALL.map(endY).filter(y => y && y >= THIS_Y))].sort(); if (!ys.includes(THIS_Y)) ys.unshift(THIS_Y); return ys; };
 const inRound = (r, y) => { const e = endY(r); return e != null && (y === THIS_Y ? e <= y : e === y); };
 const roundLbl = y => y === THIS_Y ? `หมดถึงสิ้นปี ${y + 543} (รวมที่หมดแล้ว)` : `หมดในปี ${y + 543}`;
-const bidData = () => (OVR["BID:main"] && OVR["BID:main"].rec) || BIDBASE || { title: "", sheets: [], confirm: [] };
 const confRows = () => (OVR["CFG:confirm"] && OVR["CFG:confirm"].rec && OVR["CFG:confirm"].rec.rows) || (bidData().confirm || []).map(c => ({ unit: c.unit, qty: c.qty, status: c.status || "", note: "" }));
 
 function renderSide() {
@@ -531,9 +537,10 @@ function renderSide() {
   $("side").innerHTML = `<div class="sbox navs"><button class="sidetg" data-sidetg title="${S.mini ? "ขยายเมนู" : "ย่อเมนู"}">${S.mini ? "»" : "« ย่อเมนู"}</button><h5>เมนู</h5>
     ${nav("sum", "Summary MHE", "ภาพรวมรถทุกคัน", ALL.length)}
     ${nav("renew", "เตรียมต่อสัญญา", "รอบถัดไป · " + (S.round + 543), nR)}
-    ${nav("spec", "Specification รถ MHE", models + " รุ่น", null)}
+    ${nav("spec", "Specification รถ MHE", "Option แต่ละรุ่น · " + (specRevs().slice(-1)[0] || { rev: "-" }).rev, null)}
     ${nav("trend", "แนวโน้มค่าเช่ารายปี", "ตั้งแต่ 2024 · แยก/รวมหน่วยงาน", null)}
-    ${nav("bid", "ตารางราคาประมูล", esc(B.title || "ยังไม่มีข้อมูล"), (B.sheets[0] || { rows: [] }).rows.length || null)}</div>
+    ${nav("bid", "ตารางราคาประมูล", "รอบ " + B.year + " · " + bidRounds().length + " รอบที่บันทึก", (B.sheets[0] || { rows: [] }).rows.length || null)}
+    ${nav("deliv", "ส่งมอบรถ", "หลังต่อสัญญา", dlvRows().filter(r => dstOf(r) === "late").length || null)}</div>
     <div class="sbox sinfo"><div><span class="sdot" style="background:${ONLINE ? "var(--ok)" : "var(--m3)"}"></span><b>${ONLINE ? "บันทึกขึ้นระบบกลาง" : "เก็บในเครื่องนี้เท่านั้น"}</b></div>
     <div>ข้อมูลจากไฟล์ ${esc(ASOF)}</div>${LAST ? `<div>แก้บนเว็บล่าสุด ${new Date(LAST).toLocaleString("th-TH", { dateStyle: "medium", timeStyle: "short" })}</div>` : ""}
     <div style="margin-top:4px">ทุกคนที่มีลิงก์แก้ไขได้ · ทุกเครื่องเห็นตรงกัน</div></div>`;
@@ -553,7 +560,7 @@ function renderEdList(list) {
       <td><button class="btn l" data-open="${esc(r.id)}" style="padding:5px 9px" title="ดู / แก้ทุกช่อง">⋯</button></td></tr>`).join("") + "</tbody>";
 }
 async function saveField(el) {
-  const [id, k] = el.dataset.f.split("|"), r = ALL.find(x => x.id === id); if (!r) return;
+  const f = el.dataset.f, id = f.slice(0, f.lastIndexOf("|")), k = f.slice(f.lastIndexOf("|") + 1), r = ALL.find(x => x.id === id); if (!r) return;
   let v = el.value.trim(); if (k === "price") v = v === "" ? null : +v;
   if (String(r[k] ?? "") === String(v ?? "")) return;
   r[k] = v; const rec = Object.assign({}, r); delete rec.id; delete rec._web;
@@ -622,7 +629,7 @@ function renderSpec(base) {
   const show = (vals, fmt) => vals.length ? vals.slice(0, 2).map(fmt || (v => esc(v))).join(" / ") + (vals.length > 2 ? ` <span class="z">+${vals.length - 2}</span>` : "") : '<span class="z">–</span>';
   const keys = Object.keys(G).sort((a, b) => { const ta = TYPES.indexOf(G[a][0].type), tb = TYPES.indexOf(G[b][0].type); return (ta < 0 ? 99 : ta) - (tb < 0 ? 99 : tb) || G[b].length - G[a].length; });
   let lastT = "";
-  $("vSpec").innerHTML = `<section class="panel"><div class="phead"><h2>Specification รถ MHE</h2><span class="note">${keys.length} รุ่น · ${base.length} คัน · ตามตัวกรองด้านบน · กดแถวเพื่อดูรถแต่ละคัน</span></div>
+  $("vSpecFleet").innerHTML = `<section class="panel"><div class="phead"><h2>รุ่นที่ใช้อยู่ตอนนี้</h2><span class="note">${keys.length} รุ่น · ${base.length} คัน · ตามตัวกรองด้านบน · กดแถวเพื่อดูรถแต่ละคัน</span></div>
     <div class="tw"><table class="mx"><thead><tr><th>รุ่นรถ</th><th>แบต</th><th class="r">รับน้ำหนัก (กก.)</th><th class="r">ยกสูง (มม.)</th><th>ขนาด / เสา</th><th>รุ่นแบต</th><th>Supplier</th><th class="c">คัน</th><th>หน่วยงาน</th><th>หมดสัญญาเร็วสุด</th></tr></thead><tbody>
     ${keys.map(k => { const a = G[k], ty = a[0].type, op = S.sopen.has(k), first = a.slice().sort((x, y) => (x.end || "9").localeCompare(y.end || "9"))[0];
       const uc = {}; a.forEach(r => uc[r.unit] = (uc[r.unit] || 0) + 1);
@@ -657,7 +664,8 @@ function renderBid() {
   const lowTot = term => rows.reduce((s, r) => s + (minOf(r, term) || 0) * qtyOf(r), 0);
   const pc = (v, mn) => v == null ? '<td class="pc vl0"><span class="z">·</span></td>' : isN(v) ? `<td class="pc ${v === mn ? "min" : ""}">${money(v)}</td>` : `<td class="pc tx">${esc(v)}</td>`;
   const E = S.bed, inp = (path, v, cls, ph) => `<input data-b="${path}" value="${esc(v ?? "")}" class="${cls || ""}" placeholder="${ph || ""}">`;
-  $("vBid").innerHTML = `<section class="panel"><div class="phead"><h2>ตารางราคาประมูล ${E ? inp("title", B.title, "it") : `<span style="color:var(--acc2)">· ${esc(B.title)}</span>`}</h2>
+  $("vBid").innerHTML = `<section class="panel"><div class="frow" style="margin-bottom:10px"><b style="font-size:12px;color:var(--ink2);min-width:78px">รอบประมูล</b><span class="tabs">${bidRounds().map(r => `<button class="${r.year === B.year ? "on" : ""}" data-by="${r.year}" ${E ? "disabled" : ""}>${r.year}</button>`).join("")}</span>${E ? "" : '<button class="chip" data-bnew style="margin-left:6px">＋ เริ่มรอบใหม่</button>'}<span class="note" style="margin-left:8px">เก็บทุกรอบไว้เทียบว่าเช่าถูกลงหรือแพงขึ้น</span></div>
+    <div class="phead"><h2>ตารางราคาประมูล · รอบ ${B.year} ${E ? inp("title", B.title, "it") : `<span style="color:var(--acc2)">· ${esc(B.title)}</span>`}</h2>
       <span class="tabs">${B.sheets.map((s, i) => `<button class="${i === S.bsh ? "on" : ""}" data-bsh="${i}">${esc(s.name)}</button>`).join("")}</span>
       <span style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">${E ? `<button class="btn p" data-bsave>✓ บันทึก</button><button class="btn l" data-bcancel>ยกเลิก</button>` : `<button class="btn l" data-bedit>✎ แก้ไขตาราง</button><button class="btn l" data-bup>⬆ อัปโหลดตารางราคา</button><button class="btn l" data-bexp>⬇ Export Excel</button>`}</span></div>
     <div class="mini"><div class="f"><span>รายการ (${esc(sh.name)})</span><b>${rows.length}</b><small>สเปก</small></div><div class="f"><span>จำนวนรถรวม</span><b>${qAll}</b><small>คัน</small></div>
@@ -679,7 +687,7 @@ function renderBid() {
         <td class="pc vl"><b>${m3 != null ? money(m3) : "–"}</b><div class="t2">${esc(who(m3, 0))}</div></td><td class="pc"><b>${m5 != null ? money(m5) : "–"}</b><div class="t2">${esc(who(m5, 1))}</div></td>
         ${E ? `<td><button class="btn d" data-bdel="${ri}" style="padding:5px 9px">✕</button></td>` : ""}</tr>`; }).join("")}</tbody>
     <tfoot><tr><td colspan="2"><b>รวม</b></td><td class="c num"><b>${qAll}</b></td>${VI.map(i => `<td class="pc vl">${vs[i].t3 ? money(vs[i].t3) : ""}</td><td class="pc">${vs[i].t5 ? money(vs[i].t5) : ""}</td>`).join("")}<td class="pc vl"><b>${money(lowTot(0))}</b></td><td class="pc"><b>${money(lowTot(1))}</b></td>${E ? "<td></td>" : ""}</tr></tfoot></table></div>
-    ${E ? `<div class="more" style="display:flex;gap:8px;justify-content:center"><button class="btn l" data-badd>＋ เพิ่มรายการ</button><button class="btn l" data-bvadd>＋ เพิ่มผู้ขาย</button></div>` : ""}</section>`;
+    ${E ? `<div class="more" style="display:flex;gap:8px;justify-content:center"><button class="btn l" data-badd>＋ เพิ่มรายการ</button><button class="btn l" data-bvadd>＋ เพิ่มผู้ขาย</button></div>` : ""}</section>` + (E ? "" : bidHistHtml());
 }
 function bidInput(el) {
   const sh = BDRAFT.sheets[S.bsh], k = el.dataset.b.split("|"), raw = el.value.trim();
@@ -693,10 +701,13 @@ function bidInput(el) {
 async function bidUpload(file) {
   let o; try { o = bidParse(XLSX, XLSX.read(await file.arrayBuffer(), { type: "array" })); } catch (e) { toast("อ่านไฟล์ไม่ได้: " + e.message); return; }
   if (!o.sheets.length) { toast("ไม่พบชีตราคา (ต้องมีแถวหัวคอลัมน์ A = MHE)"); return; }
+  const fm = file.name.match(/(20\d\d)[-_.](\d{1,2})[-_.](\d{1,2})/); o.year = fm ? +fm[1] : THIS_Y; o.date = fm ? `${fm[1]}-${fm[2].padStart(2, "0")}-${fm[3].padStart(2, "0")}` : "";
   PEND_BID = o;
-  $("dlg").innerHTML = `<div class="dh"><div><h3>นำเข้าตารางราคา · ${esc(file.name)}</h3><div class="t2">${esc(o.title)} · แทนที่ตารางราคาเดิมทั้งหมด (สถานะยืนยันกับหน่วยงานไม่หาย)</div></div><button class="x" data-close>✕</button></div>
+  $("dlg").innerHTML = `<div class="dh"><div><h3>นำเข้าตารางราคา · ${esc(file.name)}</h3><div class="t2">${esc(o.title)} · บันทึกเป็นรอบใหม่ตามปีที่เลือก (สถานะยืนยันกับหน่วยงานไม่หาย)</div></div><button class="x" data-close>✕</button></div>
     <div class="db"><div class="sumg">${o.sheets.map(s => `<div class="f"><span>ชีต ${esc(s.name)}</span><b>${s.rows.length}</b><small>รายการ · ${s.vendors.length} ผู้ขาย</small></div>`).join("")}<div class="f"><span>หน่วยงาน (Confirm)</span><b>${o.confirm.length}</b></div></div>
-    <div class="note">ผู้ขาย: ${esc(o.sheets[0].vendors.map(v => v.name).join(", "))}</div></div>
+    <div class="note">ผู้ขาย: ${esc(o.sheets[0].vendors.map(v => v.name).join(", "))}</div>
+    <div class="grid"><div class="f"><span>บันทึกเป็นรอบปี (ค.ศ.)</span><input id="bY" type="number" value="${o.year}"></div><div class="f w"><span>ชื่อรอบ</span><input id="bT" value="${esc(o.title)}"></div></div>
+    <div class="note">ถ้าปีนี้มีรอบอยู่แล้ว จะแทนที่รอบของปีนั้น · รอบปีอื่นยังเก็บไว้</div></div>
     <div class="df"><button class="btn p" data-bcommit>✓ นำเข้า</button><button class="btn l" data-close>ยกเลิก</button></div>`;
   if (!$("dlg").open) $("dlg").showModal();
 }
@@ -730,7 +741,7 @@ function renderTrend() {
   const sel = S.tU.size ? us.filter(u => S.tU.has(u)) : us, L = pool.filter(r => sel.includes(r.unit || "ไม่ระบุ"));
   const ys0 = L.flatMap(r => [r.start, r.end].filter(Boolean).map(d => +d.slice(0, 4)));
   if (!ys0.length) { $("vTrend").innerHTML = '<section class="panel"><div class="empty">ไม่มีข้อมูลสัญญา</div></section>'; return; }
-  const Y = []; for (let y = Math.max(TREND_FROM, Math.min(...ys0)); y <= Math.max(...ys0); y++) Y.push(y);
+  const Y = []; for (let y = Math.max(TREND_FROM, Math.min(...ys0)); y <= Math.min(THIS_Y, Math.max(...ys0)); y++) Y.push(y);
   const cell = {}, veh = {}; Y.forEach(y => { cell[y] = {}; veh[y] = 0; sel.forEach(u => cell[y][u] = 0); });
   L.forEach(r => Y.forEach(y => { const m = monthsIn(r, y); if (m) { cell[y][r.unit || "ไม่ระบุ"] += m * r.price; veh[y] += m / 12; } }));
   const tot = y => sel.reduce((s, u) => s + cell[y][u], 0), mx = Math.max(1, ...Y.map(tot));
@@ -743,7 +754,7 @@ function renderTrend() {
       <div class="f"><span>ปี ${THIS_Y - 1}</span><b>${mb(prev)}</b><small>ล้านบาท</small></div>
       <div class="f"><span>เปลี่ยนแปลงจากปีก่อน</span><b style="color:${ch == null ? "var(--ink)" : ch > 0 ? "var(--exp)" : "var(--ok)"}">${ch == null ? "–" : (ch > 0 ? "▲ " : "▼ ") + Math.abs(ch).toFixed(1) + "%"}</b><small>${ch == null ? "" : ch > 0 ? "ค่าเช่าเพิ่มขึ้น" : "ค่าเช่าลดลง"}</small></div>
       <div class="f"><span>ค่าเช่าเฉลี่ยต่อคัน ปี ${THIS_Y}</span><b>${veh[THIS_Y] ? money(Math.round(cur / veh[THIS_Y] / 12)) : "–"}</b><small>บาท/คัน/เดือน · เฉลี่ย ${veh[THIS_Y].toFixed(0)} คัน</small></div></div></section>
-  <section class="panel"><div class="phead"><h2>ค่าเช่าต่อปี <span class="note" style="margin:0">(ล้านบาท)</span></h2><span class="note">แท่งจาง = ปีถัดไปตามสัญญาปัจจุบัน (ยังไม่รวมการต่อสัญญาใหม่)</span></div>
+  <section class="panel"><div class="phead"><h2>ค่าเช่าต่อปี <span class="note" style="margin:0">(ล้านบาท)</span></h2><span class="note">ตั้งแต่ ${TREND_FROM} ถึงปีนี้ · ไม่พยากรณ์ปีถัดไป</span></div>
     <div class="tchart">${Y.map(y => { const t = tot(y), fut = y > THIS_Y;
       return `<div class="tcol ${fut ? "fut" : ""} ${y === THIS_Y ? "now" : ""}" title="ปี ${y}: ${money(Math.round(t))} บาท${sel.map(u => "\n" + u + " " + money(Math.round(cell[y][u]))).join("")}"><span class="tv">${t ? mb(t) : ""}</span>
         <span class="tbar" style="height:${t / mx * 100}%">${split ? sel.map(u => cell[y][u] ? `<i style="height:${cell[y][u] / t * 100}%;background:${ucol(u)}"></i>` : "").join("") : `<i style="height:100%;background:var(--acc)"></i>`}</span><span class="ty">${y}${y === THIS_Y ? "<small>ปีนี้</small>" : ""}</span></div>`; }).join("")}</div>
@@ -753,7 +764,7 @@ function renderTrend() {
     ${Y.map((y, i) => { const t = tot(y), p = i ? tot(Y[i - 1]) : 0, c = p ? (t - p) / p * 100 : null;
       return `<tr class="${y === THIS_Y ? "on" : ""}" style="${y > THIS_Y ? "color:var(--ink3)" : ""}"><td><b>${y}</b>${y === THIS_Y ? ' <span class="web" style="background:var(--tint);color:var(--acc2)">ปีนี้</span>' : y > THIS_Y ? ' <span class="t2">ตามสัญญา</span>' : ""}</td>${sel.map(u => `<td class="r num">${cell[y][u] ? money(Math.round(cell[y][u])) : '<span class="z">·</span>'}</td>`).join("")}
         <td class="r num gl"><b>${money(Math.round(t))}</b></td><td class="r num" style="color:${c == null ? "" : c > 0 ? "var(--exp)" : "var(--ok)"}">${c == null || !isFinite(c) ? "–" : (c > 0 ? "▲ " : "▼ ") + Math.abs(c).toFixed(1) + "%"}</td><td class="r num">${veh[y].toFixed(1)}</td><td class="r num">${veh[y] ? money(Math.round(t / veh[y] / 12)) : "–"}</td></tr>`; }).join("")}</tbody></table></div>
-    <div class="note" style="margin-top:8px">คำนวณจากรถที่อยู่ในข้อมูลตอนนี้ (${L.length} คัน) × ค่าเช่า/เดือนปัจจุบัน × จำนวนเดือนที่สัญญาครอบแต่ละปี · ปีเก่ามีเฉพาะรถที่ยังอยู่ในไฟล์ (รถที่คืนไปแล้วไม่ได้นับ) และใช้ค่าเช่าปัจจุบัน จึงอาจต่ำกว่ายอดที่จ่ายจริง · ปีถัดไปลดลงเพราะสัญญาที่หมดยังไม่ได้ต่อ</div></section>`;
+    <div class="note" style="margin-top:8px">คำนวณจากรถที่อยู่ในข้อมูลตอนนี้ (${L.length} คัน) × ค่าเช่า/เดือนปัจจุบัน × จำนวนเดือนที่สัญญาครอบแต่ละปี · ปีเก่ามีเฉพาะรถที่ยังอยู่ในไฟล์ (รถที่คืนไปแล้วไม่ได้นับ) และใช้ค่าเช่าปัจจุบัน จึงอาจต่ำกว่ายอดที่จ่ายจริง</div></section>`;
 }
 
 /* ---- รายการรถแยกกลุ่มตามหน่วยงาน (ผู้ใช้ขอ 5 ต.ค.) ---- */
@@ -782,10 +793,184 @@ function renderWhere() {
         ${sitesOf(u, b).map(s => { const c = b.filter(r => siteOf(r) === s), soon = c.filter(r => ["exp", "m3", "m6"].includes(bOf(r))).length;
           return `<button class="wrow" data-u="${esc(u)}" data-s="${esc(s)}"><span class="wn">${esc(s)}</span><span class="wb"><i style="width:${c.length / mx * 100}%;background:${ucol(u)}"></i></span><span class="wc">${c.length}</span><span class="we">${enTxt(c)}${soon ? ` · <span style="color:var(--m3)">ใกล้หมด ${soon}</span>` : ""}</span></button>`; }).join("")}</div>`; }).join("")}</div>`;
 }
+/* ---- ตารางราคาประมูล: เก็บแยกรอบตามปี (ผู้ใช้ขอ 5 ต.ค. เพื่อเทียบว่าเช่าถูกลง/แพงขึ้น) · id BID:<ปี ค.ศ.> ---- */
+function bidRounds() {
+  const m = {};
+  if (BIDBASE && BIDBASE.sheets) m[BIDBASE.year || 2026] = Object.assign({ year: 2026 }, BIDBASE);
+  const lg = OVR["BID:main"]; if (lg && lg.rec && !lg.removed) m[lg.rec.year || 2026] = Object.assign({ year: 2026 }, lg.rec);
+  Object.values(OVR).forEach(x => { const k = x.id.match(/^BID:(\d{4})$/); if (!k) return; if (x.removed) delete m[k[1]]; else if (x.rec) m[k[1]] = Object.assign({}, x.rec, { year: +k[1] }); });
+  return Object.keys(m).map(Number).sort((a, b) => a - b).map(y => m[y]);
+}
+function bidData() {
+  const R = bidRounds(); if (!R.length) return { year: THIS_Y, title: "", sheets: [], confirm: [] };
+  if (S.by == null || !R.some(r => r.year === S.by)) S.by = R[R.length - 1].year;
+  return R.find(r => r.year === S.by);
+}
+const itemKey = s => String(s || "").toLowerCase().replace(/[\s.]+/g, "");
+function bidHistHtml() {
+  const R = bidRounds(), minV = (row, t) => { const ns = row.p.map(p => p && p[t]).filter(isN); if (!ns.length) return null; const m = Math.min(...ns); return { v: m, who: row.p.map((p, i) => p && p[t] === m ? i : -1).filter(i => i >= 0) }; };
+  const B = bidData(), sh = B.sheets[S.bsh]; if (!sh) return "";
+  const keys = []; const seen = new Set();
+  R.forEach(r => (r.sheets.find(s => s.name === sh.name) || { rows: [] }).rows.forEach(row => { const k = itemKey(row.item); if (!seen.has(k)) { seen.add(k); keys.push([k, row.item]); } }));
+  const cellOf = (r, k) => { const s = r.sheets.find(x => x.name === sh.name); const row = s && s.rows.find(x => itemKey(x.item) === k); if (!row) return null; const m = minV(row, 1) || minV(row, 0); return m ? { v: m.v, who: m.who.map(i => (s.vendors[i] || {}).name || "").map(n => n.split(" ")[0]).join(", "), t: minV(row, 1) ? "5 ปี" : "3 ปี" } : null; };
+  return `<section class="panel"><div class="phead"><h2>ประวัติราคาแต่ละรอบ · ${esc(sh.name)}</h2><span class="note">ราคาต่ำสุดต่อคันต่อเดือน (สัญญา 5 ปี ถ้าไม่มีใช้ 3 ปี) · ▲ แพงขึ้น ▼ ถูกลง เทียบรอบก่อน</span></div>
+    ${R.length < 2 ? `<div class="note" style="margin-bottom:10px">ตอนนี้มีรอบเดียว (${R.map(r => r.year).join(", ")}) · เมื่อบันทึกรอบถัดไป ("＋ เริ่มรอบใหม่" หรืออัปโหลดตารางราคาของปีใหม่) ตารางนี้จะเทียบให้อัตโนมัติ</div>` : ""}
+    <div class="tw"><table class="mx"><thead><tr><th>รายการ</th>${R.map((r, i) => `<th class="r ${i ? "gl" : ""}">รอบ ${r.year}<small style="display:block;font-weight:600;color:var(--ink3)">${esc(r.title || "")}</small></th>${i ? '<th class="r">เทียบรอบก่อน</th>' : ""}`).join("")}</tr></thead><tbody>
+    ${keys.map(([k, name]) => { let prev = null; return `<tr><td class="t1">${esc(name)}</td>${R.map((r, i) => { const c = cellOf(r, k); let d = "";
+      if (i) { d = c && prev ? (() => { const p = (c.v - prev.v) / prev.v * 100; return `<td class="r num" style="color:${p > 0 ? "var(--exp)" : p < 0 ? "var(--ok)" : "var(--ink3)"}">${p ? (p > 0 ? "▲ " : "▼ ") + Math.abs(p).toFixed(1) + "%" : "เท่าเดิม"}</td>`; })() : '<td class="r"><span class="z">·</span></td>'; }
+      const h = `<td class="r num ${i ? "gl" : ""}">${c ? `<b>${money(c.v)}</b><div class="t2">${esc(c.who)}</div>` : '<span class="z">·</span>'}</td>` + d; prev = c || prev; return h; }).join("")}</tr>`; }).join("")}</tbody></table></div></section>`;
+}
+function newRoundDlg() {
+  const R = bidRounds(), last = R[R.length - 1];
+  $("dlg").innerHTML = `<div class="dh"><div><h3>เริ่มรอบประมูลใหม่</h3><div class="t2">เก็บแยกจากรอบเดิม เพื่อเทียบราคาย้อนหลัง</div></div><button class="x" data-close>✕</button></div>
+    <div class="db"><div class="grid"><div class="f"><span>ปี (ค.ศ.)</span><input id="nrY" type="number" value="${(last ? last.year : THIS_Y) + 1}"></div><div class="f w"><span>ชื่อรอบ</span><input id="nrT" value="รถยกหมดสัญญา ${(last ? last.year : THIS_Y) + 1 + 544}"></div></div>
+    <label class="note" style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="nrC" checked style="width:auto"> คัดลอกรายการ / คลัง×จำนวน / ผู้ขาย จากรอบ ${last ? last.year : "-"} (ราคาเว้นว่างไว้ให้กรอกใหม่)</label></div>
+    <div class="df"><button class="btn p" data-nrok>✓ สร้างรอบ</button><button class="btn l" data-close>ยกเลิก</button></div>`;
+  if (!$("dlg").open) $("dlg").showModal();
+}
+
+/* ---- Spec sheet: Option ของรถแต่ละประเภท แยก Rev (ผู้ใช้ขอ 5 ต.ค.) · id SPEC:<rev> ---- */
+function specRevs() {
+  const m = {}; if (SPECBASE) m[SPECBASE.rev] = SPECBASE;
+  Object.values(OVR).forEach(x => { const k = x.id.match(/^SPEC:(.+)$/); if (!k) return; if (x.removed) delete m[k[1]]; else if (x.rec) m[k[1]] = x.rec; });
+  return Object.values(m).sort((a, b) => (a.date || "").localeCompare(b.date || "") || String(a.rev).localeCompare(String(b.rev)));
+}
+const SVC = /ช่าง|บริการ|ประกัน|รถสำรอง|lead time|อะไหล่|training|ยาง|ล้อได้|mantennace|ระยะเวลา battery|full battery|time charge/i;
+const isOpt = v => /^(มี|ไม่มี|-|new option)/i.test(String(v || "").trim());
+const secOf = r => SVC.test(r[0]) ? "svc" : isOpt(r[1]) && isOpt(r[2]) ? "opt" : "main";
+const clsType = n => /counter/i.test(n) ? "Counter Balance" : /reach/i.test(n) ? "Reach Truck" : /order/i.test(n) ? "Order Pick" : /stacker/i.test(n) ? "Stacker" : /pallet/i.test(n) ? "Power Pallet" : /gas/i.test(n) ? "Forklift Gas" : "";
+function renderSpecSheet(base) {
+  const RV = specRevs(); if (!RV.length) { $("vSpec").innerHTML = '<section class="panel"><div class="empty">ยังไม่มี Spec sheet</div></section><div id="vSpecFleet"></div>'; renderSpec(base); return; }
+  if (!S.srev || !RV.some(r => r.rev === S.srev)) S.srev = RV[RV.length - 1].rev;
+  const D = S.sed ? SDRAFT : RV.find(r => r.rev === S.srev); if (S.scls >= D.classes.length) S.scls = 0;
+  const C = D.classes[S.scls], CMPR = S.scmp && S.scmp !== S.srev ? RV.find(r => r.rev === S.scmp) : null;
+  const cC = CMPR && CMPR.classes.find(c => c.name === C.name), cv = lab => { const r = cC && cC.rows.find(x => x[0] === lab); return r ? r[2] : null; };
+  const yes = v => /^(มี|new option)/i.test(String(v || "").trim()), no = v => /^(ไม่มี|-)$/.test(String(v || "").trim());
+  const added = C.rows.filter(r => no(r[1]) && yes(r[2])).map(r => r[0].split(":")[0].replace(/^-\s*/, "").trim());
+  const changed = C.rows.filter(r => secOf(r) !== "opt" && r[0] !== "Model" && r[1] !== r[2] && !(no(r[1]) && yes(r[2]))).length;
+  const lead = (C.rows.find(r => /lead time/i.test(r[0])) || [])[2], ty = clsType(C.name), nFleet = ty ? ALL.filter(r => r.type === ty).length : 0;
+  const E = S.sed, ip = (path, v, cls) => `<input data-sp="${path}" value="${esc(v ?? "")}" class="${cls || ""}">`;
+  const SEC = { main: "สเปกหลัก", opt: "Option / อุปกรณ์ติดรถ", svc: "บริการหลังการขาย / เงื่อนไข" };
+  const row = (r, i) => { const ch = r[1] !== r[2], add = no(r[1]) && yes(r[2]), c = CMPR ? cv(r[0]) : undefined;
+    return `<tr class="${add ? "sadd" : ch ? "schg" : ""}"><td>${E ? ip(`r|${i}|0`, r[0], "it") : esc(r[0])}</td><td>${E ? ip(`r|${i}|1`, r[1]) : esc(r[1])}</td>
+      <td>${E ? ip(`r|${i}|2`, r[2]) : `<b>${esc(r[2])}</b>${add ? ' <span class="sbadge add">＋ เพิ่ม</span>' : ch ? ' <span class="sbadge chg">เปลี่ยน</span>' : ""}`}</td>
+      ${CMPR ? `<td class="gl">${c == null ? '<span class="z">ไม่มีใน ' + esc(CMPR.rev) + "</span>" : esc(c)}${c != null && c !== r[2] ? ' <span class="sbadge chg">ต่างจาก ' + esc(S.srev) + "</span>" : ""}</td>` : ""}
+      ${E ? `<td><button class="btn d" data-spdel="${i}" style="padding:4px 8px">✕</button></td>` : ""}</tr>`; };
+  $("vSpec").innerHTML = `<section class="panel"><div class="phead"><h2>Specification รถ MHE · Option แต่ละรุ่น</h2>
+      <span class="note">Spec sheet ที่ใช้ประมูล · เก็บทุก Rev ไว้เทียบเวลาต่อสัญญาใหม่</span>
+      <span style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">${E ? `<button class="btn p" data-spsave>✓ บันทึกทับ ${esc(D.rev)}</button><button class="btn l" data-spnew>บันทึกเป็น Rev ใหม่</button><button class="btn l" data-spcancel>ยกเลิก</button>` : `<button class="btn l" data-spedit>✎ แก้ไข Spec</button>`}</span></div>
+    <div class="frow" style="margin-bottom:8px"><b style="font-size:12px;color:var(--ink2);min-width:78px">Revision</b><span class="tabs">${RV.map(r => `<button class="${r.rev === S.srev ? "on" : ""}" data-srev="${esc(r.rev)}">${esc(r.rev)} · ${r.date ? thd(r.date) : ""}</button>`).join("")}</span>
+      ${RV.length > 1 ? `<span class="note" style="margin-left:10px">เทียบกับ <select id="scmp" style="border:1px solid var(--line);border-radius:8px;padding:4px 6px"><option value="">— ไม่เทียบ —</option>${RV.filter(r => r.rev !== S.srev).map(r => `<option ${S.scmp === r.rev ? "selected" : ""} value="${esc(r.rev)}">${esc(r.rev)}</option>`).join("")}</select></span>` : ""}</div>
+    <div class="frow" style="margin-bottom:12px"><b style="font-size:12px;color:var(--ink2);min-width:78px">ประเภทรถ</b><span class="rchips">${D.classes.map((c, i) => `<button class="chip ${i === S.scls ? "on" : ""}" data-scls="${i}">${esc(c.name)}</button>`).join("")}${E ? '<button class="chip" data-spcls>＋ เพิ่มประเภท</button>' : ""}</span></div>
+    <div class="mini"><div class="f"><span>รุ่นเดิม → รุ่นใหม่</span><b style="font-size:18px">${esc((C.rows.find(r => r[0] === "Model") || [])[1] || "–")} → ${esc((C.rows.find(r => r[0] === "Model") || [])[2] || "–")}</b><small>${esc(C.name)}</small></div>
+      <div class="f"><span>Option ที่เพิ่มในรุ่นใหม่</span><b style="color:var(--ok)">${added.length}</b><small>${esc(added.slice(0, 4).join(" · "))}${added.length > 4 ? " …" : ""}</small></div>
+      <div class="f"><span>สเปกที่เปลี่ยน</span><b style="color:var(--m12)">${changed}</b><small>รายการ (ไม่นับ Option)</small></div>
+      <div class="f"><span>Lead Time ส่งมอบ</span><b>${esc(lead || "–")}</b><small>วัน${ty ? ` · ใช้อยู่ ${nFleet} คัน (${esc(ty)})` : ""}</small></div></div>
+    ${E ? `<div class="grid" style="margin:12px 0"><div class="f"><span>ชื่อประเภท</span>${ip("name", C.name)}</div><div class="f"><span>หัวคอลัมน์ 1</span>${ip("c|0", C.cols[0])}</div><div class="f"><span>หัวคอลัมน์ 2</span>${ip("c|1", C.cols[1])}</div></div>` : ""}
+    <div class="tw" style="margin-top:12px"><table class="mx spt"><thead><tr><th>รายละเอียด</th><th>${esc(C.cols[0] || "Old Model")}</th><th>${esc(C.cols[1] || "New Model")} · ${esc(D.rev)}</th>${CMPR ? `<th class="gl">New Model · ${esc(CMPR.rev)}</th>` : ""}${E ? "<th></th>" : ""}</tr></thead><tbody>
+    ${E ? C.rows.map(row).join("") : ["main", "opt", "svc"].map(s => { const rs = C.rows.map((r, i) => [r, i]).filter(([r]) => secOf(r) === s); return rs.length ? `<tr class="sp-t"><td colspan="${3 + (CMPR ? 1 : 0)}">${SEC[s]} · ${rs.length} รายการ</td></tr>` + rs.map(([r, i]) => row(r, i)).join("") : ""; }).join("")}</tbody></table></div>
+    ${E ? '<div class="more"><button class="btn l" data-spadd>＋ เพิ่มแถว</button></div>' : `<div class="note" style="margin-top:8px">พื้นเขียว = Option ที่รุ่นใหม่เพิ่มมา · พื้นเหลือง = สเปกเปลี่ยน · ข้อมูลจาก Spec sheet ${esc(D.rev)} (${D.date ? thd(D.date) : ""})</div>`}</section>
+    <div id="vSpecFleet"></div>`;
+  renderSpec(base);
+}
+function specInput(el) {
+  const C = SDRAFT.classes[S.scls], k = el.dataset.sp.split("|"), v = el.value;
+  if (k[0] === "name") C.name = v; else if (k[0] === "c") C.cols[+k[1]] = v; else if (k[0] === "r") C.rows[+k[1]][+k[2]] = v;
+}
+
+/* ---- วันที่ส่งมอบรถหลังต่อสัญญา (ผู้ใช้ขอ 5 ต.ค.) · id DLV:<...> ---- */
+const DST = { done: ["ส่งมอบแล้ว", "var(--ok)"], late: ["เลยกำหนด", "var(--exp)"], soon: ["ใกล้ถึงกำหนด (≤30 วัน)", "var(--m3)"], wait: ["รอส่งมอบ", "var(--m12)"], nosign: ["ยังไม่เซ็นสัญญา", "var(--na)"] };
+const addDays = (iso, n) => { const [y, m, d] = iso.split("-").map(Number); const t = new Date(Date.UTC(y, m - 1, d + n)); return t.toISOString().slice(0, 10); };
+const dueOf = r => r.due || (r.sign && r.lead ? addDays(r.sign, +r.lead) : "");
+const dstOf = r => r.done ? "done" : !dueOf(r) ? "nosign" : dOf(dueOf(r)) < 0 ? "late" : dOf(dueOf(r)) <= 30 ? "soon" : "wait";
+const dlvRows = () => Object.values(OVR).filter(x => /^DLV:/.test(x.id) && !x.removed && x.rec).map(x => Object.assign({}, x.rec, { id: x.id }));
+function leadFor(item) {
+  const RV = specRevs(), D = RV[RV.length - 1]; if (!D) return 150;
+  const ty = /reach|^rt\b|\brt\b/i.test(item) ? "Reach" : /stacker/i.test(item) ? "Stacker" : /order|pick/i.test(item) ? "Order" : /counter|ct\b|gas/i.test(item) ? "Counter" : "";
+  const c = D.classes.find(x => ty && x.name.toLowerCase().includes(ty.toLowerCase())), r = c && c.rows.find(x => /lead time/i.test(x[0]));
+  return r ? parseInt(r[2]) || 150 : 150;
+}
+function renderDeliv() {
+  const L = dlvRows().filter(r => S.dst === "all" || dstOf(r) === S.dst).sort((a, b) => (dueOf(a) || "9").localeCompare(dueOf(b) || "9"));
+  const A = dlvRows(), q = a => a.reduce((s, r) => s + (+r.qty || 1), 0), by = k => A.filter(r => dstOf(r) === k);
+  const dl = A.filter(r => r.done && dueOf(r)).map(r => (Date.parse(r.done) - Date.parse(dueOf(r))) / 864e5), avg = dl.length ? dl.reduce((a, b) => a + b, 0) / dl.length : null;
+  const R = bidRounds(), B = R[R.length - 1];
+  const inp = (r, k, type, cls) => `<input data-dl="${esc(r.id)}|${k}" type="${type || "text"}" value="${esc(r[k] ?? "")}" class="${cls || "w1"}" ${k === "due" ? `placeholder="${esc(r.sign && r.lead ? addDays(r.sign, +r.lead) : "")}"` : ""}>`;
+  $("vDeliv").innerHTML = `<section class="panel"><div class="phead"><h2>วันที่ส่งมอบรถ หลังต่อสัญญา</h2><span class="note">กำหนดส่ง = วันเซ็นสัญญา + Lead Time (จาก Spec sheet) · แก้ช่องในตารางได้เลย บันทึกทันที</span>
+      <span style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">${B ? `<button class="btn l" data-dgen>สร้างจากตารางประมูลรอบ ${B.year}</button>` : ""}<button class="btn p" data-dadd>＋ เพิ่มรายการ</button><button class="btn l" data-dexp>⬇ Export</button></span></div>
+    <div class="mini" style="grid-template-columns:repeat(5,minmax(0,1fr))"><div class="f"><span>รถที่ต้องส่งมอบ</span><b>${q(A)}</b><small>คัน · ${A.length} รายการ</small></div>
+      <div class="f"><span>ส่งมอบแล้ว</span><b style="color:var(--ok)">${q(by("done"))}</b><small>คัน</small></div><div class="f"><span>รอส่งมอบ</span><b style="color:var(--m12)">${q(by("wait")) + q(by("soon"))}</b><small>คัน · ใกล้ถึงกำหนด ${q(by("soon"))}</small></div>
+      <div class="f"><span>เลยกำหนดส่ง</span><b style="color:var(--exp)">${q(by("late"))}</b><small>คัน · ยังไม่เซ็นสัญญา ${q(by("nosign"))}</small></div>
+      <div class="f"><span>ส่งมอบเฉลี่ย เทียบกำหนด</span><b style="color:${avg == null ? "var(--ink)" : avg > 0 ? "var(--exp)" : "var(--ok)"}">${avg == null ? "–" : (avg > 0 ? "ช้า " : "เร็ว ") + Math.abs(Math.round(avg))}</b><small>${avg == null ? "ยังไม่มีรถที่ส่งมอบ" : "วัน (จาก " + dl.length + " รายการ)"}</small></div></div></section>
+  <section class="panel"><div class="rchips" style="margin-bottom:10px"><button class="chip ${S.dst === "all" ? "on" : ""}" data-dst="all">ทั้งหมด <em>${A.length}</em></button>${Object.entries(DST).map(([k, v]) => `<button class="chip ${S.dst === k ? "on" : ""}" data-dst="${k}"><span class="dot" style="background:${v[1]}"></span>${v[0]} <em>${by(k).length}</em></button>`).join("")}</div>
+    <div class="tw"><table class="vt ve"><thead><tr><th>สถานะ</th><th>หน่วยงาน</th><th>คลัง</th><th>รายการ / สเปก</th><th>แบต</th><th>จำนวน</th><th>ผู้ขาย</th><th>วันเซ็นสัญญา</th><th>Lead (วัน)</th><th>กำหนดส่ง</th><th>ส่งมอบจริง</th><th>Serial ใหม่</th><th>หมายเหตุ</th><th></th></tr></thead><tbody>
+    ${L.map(r => { const s = dstOf(r), du = dueOf(r), dd = du ? dOf(du) : null, late = r.done && du ? Math.round((Date.parse(r.done) - Date.parse(du)) / 864e5) : null;
+      return `<tr><td style="min-width:130px"><span class="st" style="--c:${DST[s][1]}">${DST[s][0]}</span><div class="t2" style="margin-top:3px">${s === "done" ? (late > 0 ? `ช้ากว่ากำหนด ${late} วัน` : late < 0 ? `เร็วกว่ากำหนด ${-late} วัน` : "ตรงกำหนด") : dd == null ? "" : dd < 0 ? `เลยมา ${-dd} วัน` : `อีก ${dd} วัน`}</div></td>
+        <td>${inp(r, "unit")}</td><td>${inp(r, "site", "", "w2")}</td><td>${inp(r, "item", "", "w2")}</td><td>${inp(r, "energy", "", "w0")}</td><td>${inp(r, "qty", "number", "w0")}</td><td>${inp(r, "vendor")}</td>
+        <td>${inp(r, "sign", "date")}</td><td>${inp(r, "lead", "number", "w0")}</td><td>${inp(r, "due", "date")}</td><td>${inp(r, "done", "date")}</td><td>${inp(r, "newSn")}</td><td>${inp(r, "note", "", "w2")}</td>
+        <td><button class="btn d" data-ddel="${esc(r.id)}" style="padding:4px 8px">✕</button></td></tr>`; }).join("") || `<tr><td colspan="14" class="empty">${A.length ? "ไม่มีรายการในสถานะนี้" : "ยังไม่มีรายการส่งมอบ · กด \"สร้างจากตารางประมูล\" หรือ \"＋ เพิ่มรายการ\""}</td></tr>`}</tbody></table></div>
+    <div class="note" style="margin-top:8px">ช่องกำหนดส่งเว้นว่าง = คำนวณอัตโนมัติ (ตัวเทา) · กรอกเองได้ถ้าผู้ขายแจ้งวันใหม่ · กรอก "ส่งมอบจริง" แล้วสถานะเปลี่ยนเป็นส่งมอบแล้ว</div></section>`;
+}
+function dgenDlg() {
+  const B = bidRounds().slice(-1)[0]; if (!B) return;
+  $("dlg").innerHTML = `<div class="dh"><div><h3>สร้างรายการส่งมอบจากตารางประมูลรอบ ${B.year}</h3><div class="t2">${esc(B.title)} · 1 รายการ = 1 สเปก × 1 คลัง (ตามช่อง คลัง × จำนวน)</div></div><button class="x" data-close>✕</button></div>
+    <div class="db"><div class="grid"><div class="f"><span>ใช้ชีต (แบต)</span><select id="dgS">${B.sheets.map((s, i) => `<option value="${i}">${esc(s.name)}</option>`).join("")}</select></div>
+      <div class="f"><span>ผู้ขายที่ได้งาน</span><select id="dgV"><option value="">ราคาต่ำสุดแต่ละรายการ (5 ปี)</option>${B.sheets[0].vendors.map((v, i) => `<option value="${i}">${esc(v.name)}</option>`).join("")}</select></div>
+      <div class="f"><span>วันเซ็นสัญญา</span><input id="dgD" type="date"></div></div>
+      <div class="note">Lead Time ใส่ให้ตามประเภทจาก Spec sheet (Reach 180 · Counter/Order Pick 150 · Stacker 120 วัน) แก้ได้ทีหลัง · รายการที่สร้างแล้วจะไม่สร้างซ้ำ</div></div>
+    <div class="df"><button class="btn p" data-dgok>✓ สร้างรายการ</button><button class="btn l" data-close>ยกเลิก</button></div>`;
+  if (!$("dlg").open) $("dlg").showModal();
+}
+async function dgenRun() {
+  const B = bidRounds().slice(-1)[0], sh = B.sheets[+$("dgS").value], vi = $("dgV").value, sign = $("dgD").value, have = new Set(Object.keys(OVR)), out = [];
+  sh.rows.forEach(row => row.alloc.forEach(([site, qty]) => {
+    const id = `DLV:${B.year}|${sh.name}|${itemKey(row.item)}|${site}`; if (have.has(id)) return;
+    let ven = ""; if (vi !== "") ven = (sh.vendors[+vi] || {}).name || ""; else { const ns = row.p.map(p => p && (isN(p[1]) ? p[1] : null)); const m = Math.min(...ns.filter(isN)); const i = ns.indexOf(m); ven = i >= 0 ? sh.vendors[i].name : ""; }
+    const nz = s => String(s || "").toLowerCase().replace(/\s+/g, ""), hit = ALL.find(r => nz(r.site) === nz(site)) || ALL.find(r => nz(r.site).includes(nz(site)) || nz(site).includes(nz(r.site)) && nz(r.site).length > 2) || ALL.find(r => nz(site).includes(nz(r.unit)));
+    out.push({ id, rec: { round: B.year, unit: hit ? hit.unit : "", site, item: row.item, energy: sh.name, qty: qty || 1, vendor: ven, sign, lead: leadFor(row.item), due: "", done: "", newSn: "", note: "" } }); }));
+  if (out.length) await sbSave(out); $("dlg").close(); render(); toast(out.length ? `สร้าง ${out.length} รายการแล้ว` : "ไม่มีรายการใหม่ (สร้างไว้ครบแล้ว)");
+}
+async function saveDlv(el) {
+  const f = el.dataset.dl, id = f.slice(0, f.lastIndexOf("|")), k = f.slice(f.lastIndexOf("|") + 1), x = OVR[id]; if (!x || !x.rec) return;
+  const rec = Object.assign({}, x.rec); let v = el.value.trim(); if (k === "qty" || k === "lead") v = v === "" ? null : +v;
+  if (String(rec[k] ?? "") === String(v ?? "")) return; rec[k] = v;
+  await sbSave([{ id, rec }]); toast(ONLINE ? "บันทึกแล้ว" : "บันทึกในเบราว์เซอร์นี้แล้ว");
+  if (["sign", "lead", "due", "done"].includes(k)) renderDeliv();
+}
+function exportDeliv() {
+  const L = dlvRows().sort((a, b) => (dueOf(a) || "9").localeCompare(dueOf(b) || "9"));
+  const H = ["สถานะ", "หน่วยงาน", "คลัง", "รายการ / สเปก", "แบต", "จำนวน", "ผู้ขาย", "วันเซ็นสัญญา", "Lead Time (วัน)", "กำหนดส่ง", "ส่งมอบจริง", "ช้า(+)/เร็ว(-) วัน", "Serial ใหม่", "หมายเหตุ"];
+  const ws = XLSX.utils.aoa_to_sheet([H, ...L.map(r => { const du = dueOf(r); return [DST[dstOf(r)][0], r.unit, r.site, r.item, r.energy, r.qty, r.vendor, r.sign, r.lead, du, r.done, r.done && du ? Math.round((Date.parse(r.done) - Date.parse(du)) / 864e5) : "", r.newSn, r.note]; })]);
+  H.forEach((_, j) => { const c = ws[XLSX.utils.encode_cell({ r: 0, c: j })]; if (c) c.s = { font: { bold: true, color: { rgb: "FFFFFF" } }, fill: { fgColor: { rgb: "22262C" } } }; });
+  ws["!cols"] = [16, 12, 22, 30, 10, 7, 18, 12, 8, 12, 12, 10, 16, 30].map(w => ({ wch: w }));
+  const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "ส่งมอบรถ"); XLSX.writeFile(wb, "PCG MHE ส่งมอบรถ.xlsx");
+}
+
 /* ---- เหตุการณ์ ---- */
 document.addEventListener("click", async e => {
   const t = e.target.closest("button,a[data-open],[data-unit],[data-tog],[data-s],[data-year],tr[data-gu],tr[data-sk],tr[data-id]"); if (!t) return;
   if (t.dataset.gu) { const u = t.dataset.gu; S.gc.has(u) ? S.gc.delete(u) : S.gc.add(u); render(); return; }
+  if (t.dataset.by) { S.by = +t.dataset.by; S.bsh = 0; renderBid(); return; }
+  if ("bnew" in t.dataset) { newRoundDlg(); return; }
+  if ("nrok" in t.dataset) { const y = +$("nrY").value; if (!y) return; if (bidRounds().some(r => r.year === y)) { toast("มีรอบปี " + y + " อยู่แล้ว"); return; } const last = bidRounds().slice(-1)[0], cp = $("nrC").checked && last;
+    const rec = { year: y, date: "", title: $("nrT").value.trim(), confirm: [], sheets: cp ? last.sheets.map(s => ({ name: s.name, vendors: s.vendors.map(v => Object.assign({}, v)), rows: s.rows.map(r => ({ item: r.item, energy: r.energy, qty: r.qty, alloc: r.alloc.map(a => a.slice()), p: r.p.map(() => [null, null]) })) })) : [{ name: "Lithium", vendors: [{ name: "ผู้ขาย 1", contact: "" }], rows: [] }] };
+    await sbSave([{ id: "BID:" + y, rec }]); S.by = y; $("dlg").close(); render(); toast("สร้างรอบ " + y + " แล้ว · กด ✎ แก้ไขตาราง เพื่อกรอกราคา"); return; }
+  if (t.dataset.srev) { S.srev = t.dataset.srev; S.scls = 0; S.scmp = ""; render(); return; }
+  if (t.dataset.scls) { S.scls = +t.dataset.scls; render(); return; }
+  if ("spedit" in t.dataset) { SDRAFT = JSON.parse(JSON.stringify(specRevs().find(r => r.rev === S.srev))); S.sed = true; render(); return; }
+  if ("spcancel" in t.dataset) { S.sed = false; SDRAFT = null; render(); return; }
+  if ("spsave" in t.dataset) { await sbSave([{ id: "SPEC:" + SDRAFT.rev, rec: SDRAFT }]); S.sed = false; SDRAFT = null; render(); toast("บันทึก Spec แล้ว"); return; }
+  if ("spnew" in t.dataset) { $("dlg").innerHTML = `<div class="dh"><div><h3>บันทึกเป็น Rev ใหม่</h3><div class="t2">Rev เดิมยังเก็บไว้ เทียบย้อนหลังได้</div></div><button class="x" data-close>✕</button></div><div class="db"><div class="grid"><div class="f"><span>ชื่อ Rev</span><input id="spR" value="Rev.${(parseInt(String(SDRAFT.rev).replace(/\D/g, "")) || 0) + 1}"></div><div class="f"><span>วันที่</span><input id="spD" type="date" value="${new Date().toISOString().slice(0, 10)}"></div></div></div><div class="df"><button class="btn p" data-spnewok>✓ บันทึก</button><button class="btn l" data-close>ยกเลิก</button></div>`; if (!$("dlg").open) $("dlg").showModal(); return; }
+  if ("spnewok" in t.dataset) { const rv = $("spR").value.trim(); if (!rv) return; if (specRevs().some(r => r.rev === rv)) { toast("มี " + rv + " อยู่แล้ว"); return; } const rec = Object.assign({}, SDRAFT, { rev: rv, date: $("spD").value }); await sbSave([{ id: "SPEC:" + rv, rec }]); S.srev = rv; S.sed = false; SDRAFT = null; $("dlg").close(); render(); toast("บันทึก " + rv + " แล้ว"); return; }
+  if ("spadd" in t.dataset) { SDRAFT.classes[S.scls].rows.push(["รายการใหม่", "", ""]); render(); return; }
+  if (t.dataset.spdel) { SDRAFT.classes[S.scls].rows.splice(+t.dataset.spdel, 1); render(); return; }
+  if ("spcls" in t.dataset) { SDRAFT.classes.push({ name: "ประเภทใหม่", cols: ["Old Model", "New Model"], rows: [["Model", "", ""], ["Lead Time", "", ""]] }); S.scls = SDRAFT.classes.length - 1; render(); return; }
+  if (t.dataset.dst) { S.dst = t.dataset.dst; renderDeliv(); return; }
+  if ("dgen" in t.dataset) { dgenDlg(); return; }
+  if ("dgok" in t.dataset) { t.disabled = true; await dgenRun(); return; }
+  if ("dadd" in t.dataset) { await sbSave([{ id: "DLV:m" + Date.now().toString(36), rec: { unit: "", site: "", item: "", energy: "", qty: 1, vendor: "", sign: "", lead: 150, due: "", done: "", newSn: "", note: "" } }]); S.dst = "all"; renderDeliv(); return; }
+  if (t.dataset.ddel) { if (!t.classList.contains("arm")) { t.classList.add("arm"); t.textContent = "ยืนยัน?"; return; } await sbSave([{ id: t.dataset.ddel, removed: true }]); renderDeliv(); toast("ลบแล้ว"); return; }
+  if ("dexp" in t.dataset) { exportDeliv(); return; }
   if ("sidetg" in t.dataset) { S.mini = !S.mini; try { localStorage.setItem("pcg-mhe-side", S.mini ? "mini" : ""); } catch (e) {} render(); return; }
   if (t.dataset.tu != null && t.matches("[data-tu]")) { const u = t.dataset.tu; if (!u) S.tU.clear(); else S.tU.has(u) ? S.tU.delete(u) : S.tU.add(u); renderTrend(); return; }
   if (t.dataset.tm) { S.tMode = t.dataset.tm; renderTrend(); return; }
@@ -799,13 +984,13 @@ document.addEventListener("click", async e => {
   if (t.dataset.bsh) { S.bsh = +t.dataset.bsh; renderBid(); return; }
   if ("bedit" in t.dataset) { BDRAFT = JSON.parse(JSON.stringify(bidData())); S.bed = true; renderBid(); return; }
   if ("bcancel" in t.dataset) { S.bed = false; BDRAFT = null; renderBid(); return; }
-  if ("bsave" in t.dataset) { await sbSave([{ id: "BID:main", rec: BDRAFT }]); S.bed = false; BDRAFT = null; render(); toast(ONLINE ? "บันทึกตารางราคาแล้ว" : "บันทึกในเบราว์เซอร์นี้แล้ว"); return; }
+  if ("bsave" in t.dataset) { await sbSave([{ id: "BID:" + BDRAFT.year, rec: BDRAFT }]); S.bed = false; BDRAFT = null; render(); toast(ONLINE ? "บันทึกตารางราคาแล้ว" : "บันทึกในเบราว์เซอร์นี้แล้ว"); return; }
   if ("badd" in t.dataset) { const sh = BDRAFT.sheets[S.bsh]; sh.rows.push({ item: "รายการใหม่", energy: sh.name, qty: null, alloc: [], p: sh.vendors.map(() => [null, null]) }); renderBid(); return; }
   if (t.dataset.bdel) { BDRAFT.sheets[S.bsh].rows.splice(+t.dataset.bdel, 1); renderBid(); return; }
   if ("bvadd" in t.dataset) { BDRAFT.sheets.forEach(s => { s.vendors.push({ name: "ผู้ขายใหม่", contact: "" }); s.rows.forEach(r => r.p.push([null, null])); }); renderBid(); return; }
   if ("bup" in t.dataset) { $("bfile").click(); return; }
   if ("bexp" in t.dataset) { exportBid(); return; }
-  if ("bcommit" in t.dataset && PEND_BID) { t.disabled = true; const o = PEND_BID; PEND_BID = null; await sbSave([{ id: "BID:main", rec: { title: o.title, sheets: o.sheets, confirm: o.confirm } }]); if (!OVR["CFG:confirm"] && o.confirm.length) await sbSave([{ id: "CFG:confirm", rec: { rows: o.confirm.map(c => ({ unit: c.unit, qty: c.qty, status: c.status || "", note: "" })) } }]); $("dlg").close(); S.bsh = 0; render(); toast("นำเข้าตารางราคาแล้ว"); return; }
+  if ("bcommit" in t.dataset && PEND_BID) { t.disabled = true; const o = PEND_BID; PEND_BID = null; const yy = +$("bY").value || o.year; await sbSave([{ id: "BID:" + yy, rec: { year: yy, date: o.date, title: $("bT").value.trim() || o.title, sheets: o.sheets, confirm: o.confirm } }]); S.by = yy; if (!OVR["CFG:confirm"] && o.confirm.length) await sbSave([{ id: "CFG:confirm", rec: { rows: o.confirm.map(c => ({ unit: c.unit, qty: c.qty, status: c.status || "", note: "" })) } }]); $("dlg").close(); S.bsh = 0; render(); toast("นำเข้าตารางราคาแล้ว"); return; }
   if (t.dataset.bk) { S.view = "sum"; history.replaceState(null, "", "#sum"); S.bk = S.bk === t.dataset.bk || t.dataset.bk === "all" ? "all" : t.dataset.bk; S.year = "all"; S.lim = 60; render(); document.querySelector(".vt").scrollIntoView({ behavior: "smooth", block: "start" }); return; }
   if (t.dataset.unit) { S.unit = S.unit === t.dataset.unit ? "all" : t.dataset.unit; S.site = "all"; if (S.unit !== "all") S.open.add(S.unit); S.lim = 60; render(); return; }
   if (t.dataset.tog) { const u = t.dataset.tog; S.open.has(u) ? S.open.delete(u) : S.open.add(u); render(); return; }
@@ -831,8 +1016,11 @@ $("file").addEventListener("change", e => { const f = e.target.files[0]; if (f) 
 $("bfile").addEventListener("change", e => { const f = e.target.files[0]; if (f) bidUpload(f); e.target.value = ""; });
 document.addEventListener("change", async e => { const el = e.target; if (!el.dataset) return;
   if (el.dataset.f) { await saveField(el); if (el.dataset.f.endsWith("|renew")) render(); }
-  else if (el.dataset.c) saveConf(el); });
-document.addEventListener("input", e => { if (e.target.dataset && e.target.dataset.b && BDRAFT) bidInput(e.target); });
+  else if (el.dataset.c) saveConf(el);
+  else if (el.dataset.dl) saveDlv(el);
+  else if (el.id === "scmp") { S.scmp = el.value; render(); } });
+document.addEventListener("input", e => { if (!e.target.dataset) return; if (e.target.dataset.b && BDRAFT) bidInput(e.target); if (e.target.dataset.sp && SDRAFT) specInput(e.target); });
+let SDRAFT = null;
 $("q").addEventListener("input", e => { S.q = e.target.value.trim(); S.lim = 60; render(); });
 $("sort").addEventListener("change", e => { S.sort = e.target.value; render(); });
 $("grp").addEventListener("change", e => { S.grp = e.target.value; render(); });
