@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shift Schedule แผนกโครงการ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap">
+<style>
+  /* Shift Schedule แผนกโครงการ (5 ต.ค.) · สไตล์ Portal · สีช่องตามไฟล์ Excel ต้นฉบับ (OFF แดง · Hol ฟ้า · 20 น้ำเงิน · ลา/OT เหลือง · Flex ชมพู) */
+  :root { --bg: #eef1f8; --ink: #161a33; --ink2: #545d7a; --ink3: #8a93ad; --line: #e3e7f1; --card: #fff;
+    --acc: #5b3fd6; --acc2: #3a24a8; --shadow: 0 10px 26px rgba(22,26,51,.09); --shadow-s: 0 4px 14px rgba(22,26,51,.07); }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: "IBM Plex Sans Thai", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  button, select { font: inherit; }
+  .num { font-family: Archivo, "IBM Plex Sans Thai", sans-serif; font-variant-numeric: tabular-nums; }
+
+  .hero { position: relative; overflow: hidden; padding: 20px clamp(16px,3vw,40px) 26px; color: #fff; border-radius: 0 0 34px 34px;
+    background: linear-gradient(150deg, #1a1440 0%, #241a5c 50%, #142a4a 100%); box-shadow: 0 18px 40px rgba(26,20,64,.3); }
+  .glow { position: absolute; border-radius: 999px; pointer-events: none; }
+  .wrap { position: relative; max-width: 1500px; margin: 0 auto; display: grid; gap: 18px; }
+  .top { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .back { display: inline-flex; align-items: center; gap: 8px; color: #fff; text-decoration: none; font-size: 14px; font-weight: 700; padding: 9px 16px 9px 12px; border-radius: 999px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.24); white-space: nowrap; }
+  .back:hover { background: rgba(255,255,255,.22); }
+  .logo { width: 48px; height: 48px; border-radius: 14px; background: #fff; color: var(--acc); display: grid; place-items: center; flex: none; box-shadow: 0 8px 20px rgba(0,0,0,.25); }
+  .ttl { display: grid; flex: 1 1 240px; min-width: 0; }
+  .kicker { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.7); }
+  h1 { margin: 0; font-family: Archivo, "IBM Plex Sans Thai", sans-serif; font-size: 28px; font-weight: 900; line-height: 1.2; }
+  .sub { font-size: 12.5px; color: rgba(255,255,255,.72); }
+  .mnav { display: inline-flex; align-items: center; gap: 6px; padding: 5px; border-radius: 16px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); flex-wrap: wrap; }
+  .mnav button, .mnav select { border: 0; border-radius: 11px; padding: 8px 12px; font-weight: 700; font-size: 14px; cursor: pointer; background: transparent; color: #fff; }
+  .mnav button:hover { background: rgba(255,255,255,.14); }
+  .mnav select { background: #fff; color: var(--ink); }
+  .mnav .cur { min-width: 150px; text-align: center; font-size: 16px; font-weight: 800; }
+  .mnav .now { background: #fff; color: var(--acc2); }
+
+  .today { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 12px; }
+  .tcard { border-radius: 20px; padding: 14px 16px; color: #fff; min-width: 0; display: grid; gap: 6px; align-content: start; }
+  .tcard .l { font-size: 13px; font-weight: 700; opacity: .92; display: flex; align-items: center; gap: 6px; }
+  .tcard .v { font-family: Archivo, sans-serif; font-size: 34px; font-weight: 900; line-height: 1; }
+  .tcard .v small { font-family: "IBM Plex Sans Thai", sans-serif; font-size: 14px; font-weight: 600; margin-left: 4px; }
+  .tcard .who { font-size: 12.5px; line-height: 1.5; opacity: .95; }
+  .dayhd { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; font-size: 14px; color: rgba(255,255,255,.85); }
+  .dayhd b { font-size: 18px; color: #fff; }
+
+  main { max-width: 1500px; margin: 0 auto; padding: 22px clamp(16px,3vw,40px) 48px; display: grid; gap: 18px; }
+  .panel { background: var(--card); border-radius: 22px; box-shadow: var(--shadow); padding: 16px 18px; min-width: 0; }
+  .phead { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .phead h2 { margin: 0; font-size: 18px; }
+  .legend { display: flex; gap: 8px 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink2); font-weight: 600; margin-left: auto; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { display: inline-grid; place-items: center; min-width: 30px; height: 20px; padding: 0 5px; border-radius: 6px; font-style: normal; font-size: 11px; font-weight: 800; }
+  .tw { overflow-x: auto; border-radius: 14px; border: 1px solid var(--line); }
+  table { border-collapse: separate; border-spacing: 0; width: max-content; min-width: 100%; font-size: 13px; }
+  th, td { border-bottom: 1px solid var(--line); text-align: center; padding: 0; }
+  thead th { background: #f6f7fc; font-size: 11.5px; font-weight: 800; color: var(--ink2); height: 22px; position: sticky; top: 0; }
+  thead tr:nth-child(2) th { top: 22px; font-weight: 600; color: var(--ink3); }
+  th.dy { width: 38px; min-width: 38px; cursor: pointer; }
+  th.dy:hover { background: #ece8ff; }
+  th.we, td.we { background: #f3f4f9; }
+  th.sel { background: var(--acc) !important; color: #fff !important; }
+  th.tdy { box-shadow: inset 0 -3px 0 var(--acc); color: var(--acc2); }
+  .nm { position: sticky; left: 0; z-index: 2; background: #fff; text-align: left; padding: 8px 12px; min-width: 230px; border-right: 1px solid var(--line); }
+  thead .nm { z-index: 3; background: #f6f7fc; }
+  .nm b { display: block; font-size: 14px; white-space: nowrap; }
+  .nm small { font-size: 11.5px; color: var(--ink2); white-space: nowrap; }
+  td.c { height: 44px; }
+  td.c span { display: inline-grid; place-items: center; width: 32px; height: 30px; border-radius: 8px; font-size: 11.5px; font-weight: 800; font-family: Archivo, "IBM Plex Sans Thai", sans-serif; }
+  td.cs { box-shadow: inset 0 0 0 2px var(--acc); }
+  td.sum { font-weight: 800; font-size: 13px; min-width: 50px; padding: 0 6px; background: #fafbfe; }
+  th.sum { min-width: 50px; padding: 0 6px; }
+  tr:hover td.nm { background: #f7f5ff; }
+  .note { font-size: 12px; color: var(--ink2); }
+  .empty { padding: 30px; text-align: center; color: var(--ink2); }
+
+  @media (max-width: 1100px) { .today { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+  @media (max-width: 760px) {
+    .hero { padding: 16px 14px 20px; border-radius: 0 0 24px 24px; } h1 { font-size: 22px; }
+    .mnav { width: 100%; justify-content: space-between; } .mnav .cur { min-width: 0; flex: 1; }
+    main { padding: 16px 12px 40px; } .nm { min-width: 150px; padding: 6px 8px; } .nm b { font-size: 13px; }
+    .tcard .v { font-size: 28px; } .legend { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="glow" style="top:-45%;left:-10%;width:60vw;height:60vw;background:radial-gradient(circle,rgba(124,92,255,.45),rgba(124,92,255,0) 66%)"></div>
+  <div class="glow" style="top:-50%;right:-12%;width:50vw;height:50vw;background:radial-gradient(circle,rgba(26,200,196,.3),rgba(26,200,196,0) 66%)"></div>
+  <div class="wrap">
+    <div class="top">
+      <a class="back" href="../index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>หน้าหลัก</a>
+      <span class="logo"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4 M16 2v4 M3 10h18 M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M8 14h.01 M12 14h.01 M16 14h.01 M8 18h.01 M12 18h.01"/></svg></span>
+      <div class="ttl"><span class="kicker">PCG Logistics · Project Department</span><h1>Shift Schedule แผนกโครงการ</h1><span class="sub" id="asof"></span></div>
+      <div class="mnav">
+        <select id="year" aria-label="ปี"></select>
+        <button type="button" id="mPrev" aria-label="เดือนก่อน">◀</button>
+        <span class="cur" id="mLabel"></span>
+        <button type="button" id="mNext" aria-label="เดือนถัดไป">▶</button>
+        <button type="button" class="now" id="mNow">เดือนนี้</button>
+      </div>
+    </div>
+    <div class="dayhd" id="dayhd"></div>
+    <div class="today" id="today"></div>
+  </div>
+</header>
+<main>
+  <section class="panel">
+    <div class="phead"><h2>ตารางปฏิบัติงาน <span id="pMonth" style="color:var(--acc)"></span></h2>
+      <div class="legend" id="legend"></div></div>
+    <div class="tw"><table id="tbl"></table></div>
+    <p class="note" style="margin:10px 2px 0">กดที่วันที่ด้านบนตาราง เพื่อดูว่าวันนั้นใครเข้ากะไหน · 8 / 17 / 20 / 6 = เวลาเข้างาน (08:00 / 17:00 / 20:00 / 06:00) · OFF = วันหยุดประจำสัปดาห์ · Flex = วันหยุดเพิ่มประจำสัปดาห์ · Hol = วันหยุดนักขัตฤกษ์</p>
+  </section>
+  <p class="note">ข้อมูลจากไฟล์ "ตารางปฏิบัติงาน" แผนกโครงการ · อัปเดตโดยส่งไฟล์ Excel ใหม่ให้โชยุ</p>
+</main>
+
+<script>
+const DATA = /*__SHIFT_DATA__*/{};
+const ASOF = "/*__ASOF__*/";
+const $ = id => document.getElementById(id);
+const TH_M = ["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
+const TH_D = ["อา","จ","อ","พ","พฤ","ศ","ส"];
+/* สีตามไฟล์ Excel */
+const CODE = {
+  "8":     { bg: "#e9eefb", fg: "#1d3f8f", lbl: "เข้า 08:00", grp: "day" },
+  "6":     { bg: "#fff1c9", fg: "#7a5200", lbl: "เข้า 06:00", grp: "day" },
+  "17":    { bg: "#ece6ff", fg: "#4b2fb8", lbl: "เข้า 17:00", grp: "eve" },
+  "20":    { bg: "#0070c0", fg: "#fff",    lbl: "เข้า 20:00", grp: "night" },
+  "OFF":   { bg: "#ff3b30", fg: "#fff",    lbl: "หยุดประจำสัปดาห์", grp: "off" },
+  "Flex":  { bg: "#ff6699", fg: "#fff",    lbl: "หยุดเพิ่ม (Flexible)", grp: "off" },
+  "Hol":   { bg: "#00b0f0", fg: "#fff",    lbl: "วันหยุดนักขัตฤกษ์", grp: "off" },
+  "OT":    { bg: "#ffe600", fg: "#4a3d00", lbl: "ทำ OT", grp: "ot" },
+  "ลา":    { bg: "#ffe600", fg: "#4a3d00", lbl: "ลา", grp: "leave" },
+  "ขาดงาน": { bg: "#7f1d1d", fg: "#fff",    lbl: "ขาดงาน", grp: "leave" }
+};
+const codeOf = v => CODE[v] || (v ? { bg: "#eef0f5", fg: "#333", lbl: v, grp: /^\d+$/.test(v) ? "day" : "other" } : null);
+const short = v => v === "ขาดงาน" ? "ขาด" : v;
+const now = new Date(), TODAY = { y: now.getFullYear(), m: now.getMonth() + 1, d: now.getDate() };
+const years = Object.keys(DATA).map(Number).sort();
+const S = { y: null, m: null, sel: null };
+(function init() {
+  const y = DATA[TODAY.y] ? TODAY.y : years[years.length - 1], ms = DATA[y];
+  S.y = y; S.m = (ms.find(x => x.m === TODAY.m) || ms[ms.length - 1]).m;
+  S.sel = (S.y === TODAY.y && S.m === TODAY.m) ? TODAY.d : 1;
+})();
+const monthObj = () => (DATA[S.y] || []).find(x => x.m === S.m);
+const wd = d => new Date(S.y, S.m - 1, d).getDay();
+
+function render() {
+  const M = monthObj();
+  $("year").innerHTML = years.map(y => `<option value="${y}" ${y === S.y ? "selected" : ""}>${y + 543}</option>`).join("");
+  $("mLabel").textContent = TH_M[S.m - 1] + " " + (S.y + 543);
+  $("pMonth").textContent = "· " + TH_M[S.m - 1] + " " + (S.y + 543);
+  $("asof").textContent = ASOF ? "ข้อมูลจากไฟล์ ณ " + ASOF : "";
+  $("legend").innerHTML = ["8", "17", "20", "OFF", "Flex", "Hol", "ลา", "OT", "ขาดงาน"].map(k => `<span><i style="background:${CODE[k].bg};color:${CODE[k].fg}">${short(k)}</i>${CODE[k].lbl}</span>`).join("");
+  if (!M) { $("tbl").innerHTML = `<tr><td class="empty">ไม่มีข้อมูลเดือนนี้</td></tr>`; $("today").innerHTML = ""; $("dayhd").innerHTML = ""; return; }
+  if (S.sel > M.days) S.sel = M.days;
+  const isNow = S.y === TODAY.y && S.m === TODAY.m;
+  const days = Array.from({ length: M.days }, (_, i) => i + 1);
+  const cnt = (r, f) => r.c.filter(v => f(codeOf(v))).length;
+  $("tbl").innerHTML = `<thead><tr><th class="nm" rowspan="2">พนักงาน</th>${days.map(d => `<th class="dy ${[0, 6].includes(wd(d)) ? "we" : ""} ${d === S.sel ? "sel" : ""} ${isNow && d === TODAY.d ? "tdy" : ""}" data-d="${d}">${d}</th>`).join("")}
+      <th class="sum" rowspan="2">ทำงาน</th><th class="sum" rowspan="2">หยุด</th><th class="sum" rowspan="2">ลา</th></tr>
+    <tr>${days.map(d => `<th class="dy ${[0, 6].includes(wd(d)) ? "we" : ""} ${d === S.sel ? "sel" : ""}" data-d="${d}">${TH_D[wd(d)]}</th>`).join("")}</tr></thead>
+    <tbody>${M.rows.map(r => `<tr><td class="nm"><b>${r.n}</b><small>${r.pos} · ${r.dept}</small></td>${days.map(d => { const v = r.c[d - 1] || "", k = codeOf(v);
+        return `<td class="c ${[0, 6].includes(wd(d)) ? "we" : ""} ${d === S.sel ? "cs" : ""}" title="${r.n} · ${d} ${TH_M[S.m - 1]} · ${k ? k.lbl : "ไม่ระบุ"}">${k ? `<span style="background:${k.bg};color:${k.fg}">${short(v)}</span>` : ""}</td>`; }).join("")}
+      <td class="sum" style="color:#1d3f8f">${cnt(r, k => k && ["day", "eve", "night", "ot"].includes(k.grp))}</td><td class="sum" style="color:#c1271d">${cnt(r, k => k && k.grp === "off")}</td><td class="sum" style="color:#8a6a00">${cnt(r, k => k && k.grp === "leave")}</td></tr>`).join("")}</tbody>`;
+  /* สรุปวันที่เลือก */
+  const D = S.sel, by = g => M.rows.filter(r => { const k = codeOf(r.c[D - 1] || ""); return k && g.includes(k.grp); });
+  const first = n => n.replace(/^คุณ/, "").split(" ")[0];
+  const card = (bg, l, list, extra) => `<div class="tcard" style="background:${bg}"><div class="l">${l}</div><div class="v">${list.length}<small>คน</small></div><div class="who">${list.map(r => first(r.n) + (extra ? extra(r) : "")).join(" · ") || "—"}</div></div>`;
+  const tag = r => { const v = r.c[D - 1]; return v && v !== "8" && v !== "OFF" ? ` (${short(v)})` : ""; };
+  $("dayhd").innerHTML = `<b>${isNow && D === TODAY.d ? "วันนี้ · " : ""}${["วันอาทิตย์","วันจันทร์","วันอังคาร","วันพุธ","วันพฤหัสบดี","วันศุกร์","วันเสาร์"][wd(D)]} ${D} ${TH_M[S.m - 1]} ${S.y + 543}</b><span>กดวันที่ในตารางเพื่อเปลี่ยนวัน</span>`;
+  $("today").innerHTML =
+    card("linear-gradient(150deg,#2f6bea,#1a44b8)", "☀ กะเช้า (06:00 / 08:00)", by(["day", "ot"]), tag) +
+    card("linear-gradient(150deg,#7c5cff,#4b2fb8)", "◐ กะบ่าย (17:00)", by(["eve"])) +
+    card("linear-gradient(150deg,#0b6fb8,#07457a)", "☾ กะดึก (20:00)", by(["night"])) +
+    card("linear-gradient(150deg,#f0553a,#b8260f)", "วันหยุด", by(["off"]), tag) +
+    card("linear-gradient(150deg,#e2a20b,#a86f00)", "ลา / ขาดงาน", by(["leave"]), tag);
+  /* เลื่อนตารางให้เห็นวันที่เลือก (มือถือ) */
+  const tw = document.querySelector(".tw"), th = document.querySelector("th.sel"), nm = document.querySelector("thead .nm");
+  if (tw && th && nm && th.offsetLeft + th.offsetWidth > tw.clientWidth) tw.scrollLeft = th.offsetLeft - nm.offsetWidth - 40;
+}
+const months = () => (DATA[S.y] || []).map(x => x.m);
+function shift(n) {
+  let ms = months(), i = ms.indexOf(S.m) + n;
+  if (i < 0 && DATA[S.y - 1]) { S.y--; ms = months(); i = ms.length - 1; }
+  else if (i >= ms.length && DATA[S.y + 1]) { S.y++; ms = months(); i = 0; }
+  if (i < 0 || i >= ms.length) return;
+  S.m = ms[i]; S.sel = (S.y === TODAY.y && S.m === TODAY.m) ? TODAY.d : 1; render();
+}
+$("mPrev").onclick = () => shift(-1); $("mNext").onclick = () => shift(1);
+$("mNow").onclick = () => { if (DATA[TODAY.y] && DATA[TODAY.y].some(x => x.m === TODAY.m)) { S.y = TODAY.y; S.m = TODAY.m; S.sel = TODAY.d; render(); } };
+$("year").onchange = e => { S.y = +e.target.value; S.m = months().includes(S.m) ? S.m : months()[0]; S.sel = 1; render(); };
+document.addEventListener("click", e => { const t = e.target.closest("[data-d]"); if (t) { S.sel = +t.dataset.d; render(); } });
+render();
+</script>
+</body>
+</html>
