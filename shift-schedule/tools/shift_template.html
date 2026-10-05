@@ -192,7 +192,7 @@ const CODE = {
   "ขาดงาน": { bg: "#7f1d1d", fg: "#fff",    lbl: "ขาดงาน", grp: "leave" }
 };
 /* ---- การแก้ไขบนเว็บ: Supabase ตาราง shift_edits (emp_id + work_date) · ถ้ายังไม่มีตาราง เก็บในเบราว์เซอร์นี้ก่อน ---- */
-const SB = "https://mgnshovnibcmiptoxdfe.supabase.co/rest/v1/shift_edits", SBK = "eyJhbGciOi..";
+const SB = "https://mgnshovnibcmiptoxdfe.supabase.co/rest/v1/shift_edits", SBK = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1nbnNob3ZuaWJjbWlwdG94ZGZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzNzI1NDIsImV4cCI6MjEwNDk0ODU0Mn0.UoPu-i6ODMEgyuqoO6oKHf0JIqFKpWkSpBkOKrpITwQ";
 const LSK = "pcg-shift-edits";
 let EDITS = {}, SB_OK = null;
 try { EDITS = JSON.parse(localStorage.getItem(LSK) || "{}"); } catch (e) {}

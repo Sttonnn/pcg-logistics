@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PCG Overall MHE Data</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+<style>
+  /* PCG Overall MHE Data (5 ต.ค. 2569) · ธีมกราไฟต์ + เหลืองเซฟตี้ (สีรถยก) ไม่ซ้ำ Dashboard อื่น · สีทั้งหน้าอยู่ใน :root */
+  :root { --bg: #f3f3ef; --card: #fff; --ink: #1d2127; --ink2: #5b616b; --ink3: #949aa3; --line: #e6e6e0; --head: #f6f6f2;
+    --acc: #f2b705; --acc2: #8a6a00; --tint: #fff6d6; --dark: #22262c;
+    --exp: #d93a2b; --m3: #f07a1a; --m6: #d9a106; --m12: #2f7de1; --ok: #2e9d6a; --na: #9aa0a8;
+    --shadow: 0 10px 26px rgba(29,33,39,.08); --shadow-s: 0 4px 14px rgba(29,33,39,.06); }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: "IBM Plex Sans Thai", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  button, select, input, textarea { font: inherit; color: inherit; }
+  .num { font-family: Archivo, "IBM Plex Sans Thai", sans-serif; font-variant-numeric: tabular-nums; }
+
+  .hero { position: relative; overflow: hidden; color: #fff; padding: 20px clamp(16px,3vw,40px) 24px; border-radius: 0 0 34px 34px;
+    background: linear-gradient(140deg, #1b1f24 0%, #2a2f36 55%, #39371f 100%); box-shadow: 0 18px 40px rgba(20,22,26,.28); }
+  .hero::before { content: ""; position: absolute; inset: auto -40px -60px auto; width: 420px; height: 120px; transform: rotate(-8deg); opacity: .14;
+    background: repeating-linear-gradient(135deg, var(--acc) 0 26px, transparent 26px 52px); }
+  .wrap { position: relative; max-width: 1500px; margin: 0 auto; display: grid; gap: 18px; }
+  .top { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .back { display: inline-flex; align-items: center; gap: 8px; color: #fff; text-decoration: none; font-size: 14px; font-weight: 700; padding: 9px 16px 9px 12px; border-radius: 999px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); white-space: nowrap; }
+  .back:hover { background: rgba(255,255,255,.18); }
+  .logo { width: 50px; height: 50px; border-radius: 14px; background: var(--acc); color: #1b1f24; display: grid; place-items: center; flex: none; box-shadow: 0 8px 20px rgba(242,183,5,.35); }
+  .ttl { display: grid; flex: 1 1 260px; min-width: 0; }
+  .kicker { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--acc); }
+  h1 { margin: 0; font-family: Archivo, "IBM Plex Sans Thai", sans-serif; font-size: 28px; font-weight: 900; line-height: 1.2; }
+  .sub { font-size: 12.5px; color: rgba(255,255,255,.7); }
+  .acts { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn { border: 0; border-radius: 12px; padding: 10px 14px; font-weight: 800; font-size: 13.5px; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
+  .btn.y { background: var(--acc); color: #1b1f24; box-shadow: 0 8px 18px rgba(242,183,5,.3); }
+  .btn.g { background: rgba(255,255,255,.12); color: #fff; border: 1px solid rgba(255,255,255,.22); }
+  .btn.l { background: var(--head); color: var(--ink); border: 1px solid var(--line); }
+  .btn.d { background: #fde8e6; color: #a8251a; }
+  .btn.p { background: var(--dark); color: #fff; }
+  .btn:disabled { opacity: .5; cursor: default; }
+
+  .kpis { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 12px; }
+  .kpi { border: 0; text-align: left; cursor: pointer; border-radius: 20px; padding: 14px 16px; background: #fff; color: var(--ink); display: grid; gap: 4px; align-content: start; box-shadow: var(--shadow-s); border-top: 5px solid var(--c); transition: transform .12s; }
+  .kpi:hover { transform: translateY(-2px); }
+  .kpi.on { outline: 3px solid var(--c); outline-offset: 2px; }
+  .kpi .l { font-size: 13px; font-weight: 800; color: var(--c); display: flex; align-items: center; gap: 8px; }
+  .kpi .l i { width: 24px; height: 24px; border-radius: 8px; background: var(--c); color: #fff; display: grid; place-items: center; font-style: normal; font-size: 12px; }
+  .kpi .v { font-family: Archivo, sans-serif; font-size: 34px; font-weight: 900; line-height: 1.05; color: var(--c); }
+  .kpi .v small { font-family: "IBM Plex Sans Thai", sans-serif; font-size: 14px; font-weight: 600; color: var(--ink2); margin-left: 4px; }
+  .kpi .s { font-size: 12px; color: var(--ink2); }
+
+  .fbar { position: sticky; top: 0; z-index: 20; background: rgba(243,243,239,.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+  .fin { max-width: 1500px; margin: 0 auto; padding: 10px clamp(16px,3vw,40px); display: grid; gap: 8px; }
+  .frow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .frow > b { font-size: 12px; color: var(--ink2); min-width: 78px; }
+  .chip { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 5px 11px; font-size: 12.5px; font-weight: 700; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+  .chip em { font-style: normal; font-size: 11px; color: var(--ink3); font-weight: 700; }
+  .chip.on { background: var(--dark); color: #fff; border-color: var(--dark); } .chip.on em { color: var(--acc); }
+  .chip .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .search { margin-left: auto; display: flex; align-items: center; gap: 6px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 6px 10px; min-width: 240px; }
+  .search input { border: 0; outline: 0; width: 100%; font-size: 13px; background: transparent; }
+  .now { font-size: 12.5px; color: var(--ink2); } .now b { color: var(--ink); }
+  .now button { border: 0; background: none; color: #a8251a; font-weight: 800; cursor: pointer; font-size: 12.5px; }
+
+  main { max-width: 1500px; margin: 0 auto; padding: 18px clamp(16px,3vw,40px) 48px; display: grid; gap: 18px; }
+  .panel { background: var(--card); border-radius: 22px; box-shadow: var(--shadow); padding: 16px 18px; min-width: 0; }
+  .phead { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .phead h2 { margin: 0; font-size: 18px; } .phead .note { margin-left: auto; }
+  .note { font-size: 12px; color: var(--ink2); }
+  .two { display: grid; grid-template-columns: minmax(0,1fr); gap: 18px; }
+  .ychart { grid-template-columns: repeat(auto-fill, minmax(min(100%, 520px), 1fr)); column-gap: 28px; }
+  .tw { overflow-x: auto; border-radius: 14px; border: 1px solid var(--line); }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th, td { border-bottom: 1px solid var(--line); padding: 9px 10px; text-align: left; vertical-align: middle; }
+  thead th { background: var(--head); font-size: 11.5px; font-weight: 800; color: var(--ink2); white-space: nowrap; position: sticky; top: 0; }
+  tbody tr:last-child td { border-bottom: 0; }
+  .c { text-align: center; } .r { text-align: right; }
+  .mx td.c, .mx th.c { min-width: 54px; }
+  .mx tbody tr { cursor: pointer; } .mx tbody tr:hover td { background: #fffbea; }
+  .mx tr.on td { background: var(--tint); }
+  .mx tfoot td { font-weight: 800; background: var(--head); }
+  .z { color: #c9ccd1; }
+  .bd { display: inline-grid; place-items: center; min-width: 26px; height: 22px; padding: 0 6px; border-radius: 7px; font-weight: 800; font-size: 12px; color: #fff; background: var(--c); }
+  .uname { display: flex; align-items: center; gap: 8px; font-weight: 800; white-space: nowrap; } .uname i { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+
+  .ychart { display: grid; gap: 8px; }
+  .yrow { display: grid; grid-template-columns: 74px minmax(0,1fr) 44px; align-items: center; gap: 10px; cursor: pointer; border-radius: 10px; padding: 3px 4px; }
+  .yrow:hover { background: #fffbea; } .yrow.on { background: var(--tint); }
+  .yrow .y { font-weight: 800; font-size: 13px; } .yrow .y small { display: block; font-size: 10.5px; color: var(--ink3); font-weight: 600; }
+  .ybar { height: 22px; border-radius: 7px; background: #f0f0eb; display: flex; overflow: hidden; }
+  .ybar i { height: 100%; } .yrow .n { font-weight: 900; font-family: Archivo, sans-serif; text-align: right; }
+  .leg { display: flex; gap: 6px 14px; flex-wrap: wrap; font-size: 12px; color: var(--ink2); font-weight: 600; margin-top: 10px; }
+  .leg span { display: inline-flex; align-items: center; gap: 6px; } .leg i { width: 10px; height: 10px; border-radius: 3px; }
+
+  .vt tbody tr { cursor: pointer; } .vt tbody tr:hover td { background: #fffbea; }
+  .st { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 800; white-space: nowrap; color: var(--c); background: color-mix(in srgb, var(--c) 13%, #fff); }
+  .st::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--c); }
+  .t1 { font-weight: 800; } .t2 { font-size: 11.5px; color: var(--ink2); }
+  .vt td { min-width: 0; } .vt td:nth-child(4) { max-width: 240px; } .vt td:nth-child(2) { max-width: 220px; } .vt td:last-child { white-space: nowrap; }
+  .en { display: inline-block; font-size: 10.5px; font-weight: 800; padding: 1px 6px; border-radius: 5px; margin-left: 4px; vertical-align: 1px; }
+  .en.Lithium { background: #e4f6ec; color: #18794a; } .en.Lead-Acid { background: #eef0f4; color: #4a5260; } .en.Gas { background: #fff0dc; color: #a35b00; }
+  .prog { width: 120px; height: 7px; border-radius: 99px; background: #eeeee8; overflow: hidden; margin-top: 4px; } .prog i { display: block; height: 100%; background: var(--c); border-radius: 99px; }
+  .rem { font-weight: 900; font-family: Archivo, "IBM Plex Sans Thai", sans-serif; color: var(--c); white-space: nowrap; }
+  .web { display: inline-block; font-size: 10px; font-weight: 800; color: #a35b00; background: #fff0dc; border-radius: 5px; padding: 0 5px; margin-left: 4px; }
+  .more { text-align: center; padding: 10px; }
+  .empty { padding: 30px; text-align: center; color: var(--ink2); }
+  .warn { display: none; padding: 10px 14px; border-radius: 12px; background: #fff4dd; color: #8a5200; font-size: 12.5px; font-weight: 600; }
+  .warn.show { display: block; }
+
+  dialog { border: 0; border-radius: 22px; padding: 0; width: min(860px, calc(100vw - 24px)); max-height: calc(100vh - 32px); box-shadow: 0 30px 80px rgba(0,0,0,.3); color: var(--ink); }
+  dialog::backdrop { background: rgba(20,22,26,.5); }
+  .dh { display: flex; align-items: flex-start; gap: 12px; padding: 16px 18px; background: var(--dark); color: #fff; position: sticky; top: 0; z-index: 2; }
+  .dh h3 { margin: 0; font-size: 19px; } .dh .t2 { color: rgba(255,255,255,.7); }
+  .dh .x { margin-left: auto; border: 0; background: rgba(255,255,255,.14); color: #fff; width: 34px; height: 34px; border-radius: 10px; cursor: pointer; font-size: 16px; flex: none; }
+  .db { padding: 16px 18px; display: grid; gap: 14px; }
+  .sec h4 { margin: 0 0 8px; font-size: 13px; color: var(--acc2); display: flex; align-items: center; gap: 6px; }
+  .sec h4::before { content: ""; width: 4px; height: 14px; border-radius: 2px; background: var(--acc); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
+  .f { background: var(--head); border-radius: 12px; padding: 8px 10px; min-width: 0; }
+  .f span { display: block; font-size: 11px; color: var(--ink2); font-weight: 600; }
+  .f b { display: block; font-size: 14px; word-break: break-word; }
+  .f input, .f select, .f textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; background: #fff; font-size: 13.5px; }
+  .f textarea { min-height: 56px; resize: vertical; }
+  .f.w { grid-column: 1 / -1; }
+  .df { display: flex; gap: 8px; flex-wrap: wrap; padding: 12px 18px 16px; border-top: 1px solid var(--line); position: sticky; bottom: 0; background: #fff; }
+  .df .sp { flex: 1; }
+  .big { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .sumg { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 8px; }
+  .sumg .f b { font-size: 24px; font-family: Archivo, sans-serif; }
+  .chg { font-size: 12.5px; } .chg td { padding: 6px 8px; } .chg s { color: var(--ink3); }
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px); opacity: 0; background: var(--dark); color: #fff; padding: 10px 16px; border-radius: 12px; font-weight: 700; font-size: 13.5px; transition: .2s; z-index: 99; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateX(-50%); }
+  footer { max-width: 1500px; margin: 0 auto; padding: 0 clamp(16px,3vw,40px) 30px; font-size: 12px; color: var(--ink3); }
+
+  @media (max-width: 1150px) { .two { grid-template-columns: minmax(0,1fr); } }
+  @media (max-width: 980px) { .kpis { grid-template-columns: repeat(3, minmax(0,1fr)); } }
+  @media (max-width: 760px) {
+    .hero { padding: 16px 14px 20px; border-radius: 0 0 24px 24px; } h1 { font-size: 22px; }
+    .kpis { grid-template-columns: repeat(2, minmax(0,1fr)); } .kpi .v { font-size: 28px; }
+    main { padding: 14px 12px 40px; } .fin { padding: 8px 12px; } .search { min-width: 0; width: 100%; margin-left: 0; }
+    .fbar { position: static; } .frow > b { min-width: 100%; } .sumg { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="top">
+      <a class="back" href="../index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>หน้าหลัก</a>
+      <span class="logo"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18V9h7l3 4v5"/><path d="M13 13h3V4"/><path d="M16 18h6"/><path d="M19 4v14"/><circle cx="6" cy="18.5" r="1.8"/><circle cx="12" cy="18.5" r="1.8"/></svg></span>
+      <div class="ttl"><span class="kicker">PCG Logistics · Material Handling Equipment</span><h1>PCG Overall MHE Data</h1><span class="sub" id="asof"></span></div>
+      <div class="acts">
+        <button class="btn y" id="upBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg>อัปโหลด Excel</button>
+        <button class="btn g" id="addBtn">＋ เพิ่มรถ</button>
+        <button class="btn g" id="xlsBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"/></svg>Export</button>
+        <input type="file" id="file" accept=".xlsx,.xls" hidden>
+      </div>
+    </div>
+    <div class="kpis" id="kpis"></div>
+  </div>
+</header>
+<div class="fbar"><div class="fin">
+  <div class="frow"><b>หน่วยงาน</b><span id="fUnit" style="display:contents"></span>
+    <label class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" placeholder="ค้นหา Serial / รุ่น / คลัง / UL / เบอร์รถ"></label></div>
+  <div class="frow"><b>ประเภทรถ</b><span id="fType" style="display:contents"></span></div>
+  <div class="now" id="now"></div>
+</div></div>
+<main>
+  <div class="warn" id="warn"></div>
+  <div class="two">
+    <section class="panel">
+      <div class="phead"><h2>แยกหน่วยงาน × ประเภทรถ</h2><span class="note">กดแถวเพื่อกรองหน่วยงาน · ตัวเลขสี = ใกล้หมดสัญญา</span></div>
+      <div class="tw"><table class="mx" id="mx"></table></div>
+    </section>
+    <section class="panel">
+      <div class="phead"><h2>รถหมดสัญญาแต่ละปี</h2><span class="note">กดปีเพื่อดูรายการ</span></div>
+      <div class="ychart" id="yc"></div>
+      <div class="leg" id="yleg"></div>
+    </section>
+  </div>
+  <section class="panel">
+    <div class="phead"><h2>รายการรถ <span id="cnt" class="note" style="margin:0"></span></h2>
+      <span class="note">เรียงตาม
+        <select id="sort" style="border:1px solid var(--line);border-radius:8px;padding:4px 6px;margin-left:4px">
+          <option value="rem">ใกล้หมดสัญญาก่อน</option><option value="unit">หน่วยงาน / คลัง</option><option value="type">ประเภทรถ</option><option value="price">ค่าเช่ามาก → น้อย</option><option value="start">เริ่มสัญญาล่าสุด</option>
+        </select></span></div>
+    <div class="tw"><table class="vt" id="vt"></table></div>
+    <div class="more" id="more"></div>
+  </section>
+</main>
+<footer>ข้อมูลจากไฟล์ Excel "ข้อมูล MHE" ชีต BI Logistics + BI หน่วยงาน · คงเหลือคำนวณจากวันที่หมดสัญญาเทียบกับวันนี้ · กดรถเพื่อดู Spec / แก้ไข · อัปโหลดไฟล์ใหม่ = รวมกับข้อมูลเดิม (รถที่ไม่อยู่ในไฟล์ยังเก็บไว้)</footer>
+
+<dialog id="dlg"></dialog>
+<div class="toast" id="toast"></div>
+
+<script>
+/*__MHE_PARSE__*/
+const BASE = /*__MHE_DATA__*/[];
+const ASOF = "/*__ASOF__*/";
+const SB = "https://mgnshovnibcmiptoxdfe.supabase.co/rest/v1/mhe_vehicles";
+const SBK = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1nbnNob3ZuaWJjbWlwdG94ZGZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzNzI1NDIsImV4cCI6MjEwNDk0ODU0Mn0.UoPu-i6ODMEgyuqoO6oKHf0JIqFKpWkSpBkOKrpITwQ";
+const LS = "pcg-mhe-db";
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const TH_M = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+const thd = iso => { if (!iso) return "–"; const [y, m, d] = iso.split("-").map(Number); return d + " " + TH_M[m - 1] + " " + (y + 543); };
+const money = n => n == null || n === "" ? "–" : Number(n).toLocaleString("th-TH");
+const T0 = (() => { const t = new Date(); return Date.UTC(t.getFullYear(), t.getMonth(), t.getDate()); })();
+const dOf = iso => { if (!iso) return null; const [y, m, d] = iso.split("-").map(Number); return Math.round((Date.UTC(y, m - 1, d) - T0) / 864e5); };
+const BK = {
+  exp: ["หมดสัญญาแล้ว", "var(--exp)", "!"], m3: ["ภายใน 3 เดือน", "var(--m3)", "3"], m6: ["ภายใน 6 เดือน", "var(--m6)", "6"],
+  m12: ["ภายใน 12 เดือน", "var(--m12)", "12"], ok: ["เกิน 12 เดือน", "var(--ok)", "✓"], na: ["ไม่มีวันหมดสัญญา", "var(--na)", "?"]
+};
+const bOf = r => { const d = dOf(r.end); return d == null ? "na" : d < 0 ? "exp" : d <= 91 ? "m3" : d <= 183 ? "m6" : d <= 365 ? "m12" : "ok"; };
+const remTxt = d => {
+  if (d == null) return "–";
+  const a = Math.abs(d); let s;
+  if (a < 31) s = a + " วัน"; else { const mo = Math.floor(a / 30.44), y = Math.floor(mo / 12), m = mo % 12; s = (y ? y + " ปี " : "") + (m ? m + " เดือน" : "").trim(); }
+  return d < 0 ? "หมดมาแล้ว " + s : "เหลือ " + s;
+};
+const UCOL = ["#2f7de1", "#16a3a0", "#8a5cd6", "#e0567a", "#a0712f", "#e98b16", "#5b8c2a", "#6b7280"];
+const TYPES = ["Reach Truck", "Order Pick", "Counter Balance", "Stacker", "Power Pallet", "Forklift Gas"];
+const FIELDS = [
+  ["ข้อมูลทั่วไป", [["unit", "หน่วยงาน"], ["site", "คลัง / พื้นที่"], ["ul", "UL"], ["sup", "Supplier"], ["type", "ประเภทรถ"], ["energy", "พลังงาน / แบต"]]],
+  ["Specification", [["model", "รุ่นรถ"], ["size", "ขนาด / เสา"], ["cap", "รับน้ำหนัก (กก.)", "n"], ["h", "ความสูงยก (มม.)", "n"], ["serial", "Serial No. รถ"], ["no", "เบอร์รถ"]]],
+  ["แบตเตอรี่ / ชาร์จเจอร์", [["bat", "รุ่นแบต"], ["batSn", "Serial แบต"], ["spareSn", "Serial แบตสำรอง"], ["chg", "Serial ชาร์จเจอร์"]]],
+  ["สัญญาเช่า", [["yrs", "อายุสัญญา (ปี)", "n"], ["start", "วันที่สัญญา", "d"], ["end", "วันที่หมดสัญญา", "d"], ["price", "ค่าเช่า/เดือน (บาท)", "n"], ["carBat", "ค่ารถ+แบต", "n"], ["spare", "ค่า Spare แบต", "n"], ["repl", "ทดแทน / เช่าเพิ่ม", "w"], ["memo", "MEMO", "w"]]],
+  ["หมายเหตุ", [["note", "หมายเหตุ", "t"], ["note2", "หมายเหตุจากมิ้ง", "t"]]]
+];
+const CMP = FIELDS.flatMap(g => g[1].map(f => f[0]));
+
+/* ---- ข้อมูล: ไฟล์ที่ฝังไว้ + ที่บันทึกบนเว็บ (Supabase mhe_vehicles, ไม่มีตาราง → localStorage) ---- */
+let OVR = {}, ONLINE = false, LAST = "";
+const S = { unit: "all", type: "all", bk: "all", year: "all", q: "", sort: "rem", lim: 60 };
+function warn(msg) { $("warn").innerHTML = msg || ""; $("warn").classList.toggle("show", !!msg); }
+function toast(m) { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 2200); }
+function lsGet() { try { return JSON.parse(localStorage.getItem(LS) || "{}"); } catch (e) { return {}; } }
+function lsSet(o) { try { localStorage.setItem(LS, JSON.stringify(o)); } catch (e) {} }
+async function sbLoad() {
+  try {
+    const r = await fetch(SB + "?select=id,rec,removed,updated_at", { headers: { apikey: SBK, Authorization: "Bearer " + SBK } });
+    if (!r.ok) throw new Error(r.status);
+    const rows = await r.json(); OVR = {}; rows.forEach(x => OVR[x.id] = x); ONLINE = true;
+    const loc = lsGet(); if (Object.keys(loc).length) { await sbSave(Object.values(loc)); localStorage.removeItem(LS); }
+    warn("");
+  } catch (e) {
+    ONLINE = false; OVR = lsGet();
+    warn("ยังบันทึกลงระบบกลางไม่ได้ (ยังไม่มีตาราง <code>mhe_vehicles</code> ใน Supabase) · ตอนนี้การแก้ไข/อัปโหลดเก็บในเบราว์เซอร์นี้เท่านั้น เครื่องอื่นจะไม่เห็น · ให้โชยุส่ง SQL สร้างตาราง");
+  }
+  LAST = Object.values(OVR).map(x => x.updated_at || "").sort().pop() || "";
+}
+async function sbSave(rows) {
+  rows = rows.map(x => ({ id: x.id, rec: x.rec || null, removed: !!x.removed, updated_at: new Date().toISOString() }));
+  if (ONLINE) {
+    for (let i = 0; i < rows.length; i += 200) {
+      const r = await fetch(SB + "?on_conflict=id", { method: "POST", headers: { apikey: SBK, Authorization: "Bearer " + SBK, "Content-Type": "application/json", Prefer: "resolution=merge-duplicates,return=minimal" }, body: JSON.stringify(rows.slice(i, i + 200)) });
+      if (!r.ok) { ONLINE = false; warn("บันทึกลง Supabase ไม่สำเร็จ (" + r.status + ") · เก็บในเบราว์เซอร์นี้ไว้ก่อน"); break; }
+    }
+  }
+  rows.forEach(x => OVR[x.id] = x);
+  if (!ONLINE) { const o = lsGet(); rows.forEach(x => o[x.id] = x); lsSet(o); }
+  LAST = new Date().toISOString();
+}
+function db() {
+  const m = new Map(BASE.map(r => [r.id, r]));
+  Object.values(OVR).forEach(x => { if (x.removed) m.delete(x.id); else if (x.rec) m.set(x.id, Object.assign({}, x.rec, { id: x.id, _web: x.updated_at })); });
+  return [...m.values()];
+}
+let ALL = [];
+const units = () => { const c = {}; ALL.forEach(r => c[r.unit || "ไม่ระบุ"] = (c[r.unit || "ไม่ระบุ"] || 0) + 1); return Object.keys(c).sort((a, b) => c[b] - c[a]); };
+const ucol = u => UCOL[Math.max(0, units().indexOf(u)) % UCOL.length];
+const typesAll = () => { const s = new Set(ALL.map(r => r.type)); return [...TYPES.filter(t => s.has(t)), ...[...s].filter(t => !TYPES.includes(t)).sort()]; };
+const match = (r, skip) => (skip === "unit" || S.unit === "all" || (r.unit || "ไม่ระบุ") === S.unit) && (skip === "type" || S.type === "all" || r.type === S.type)
+  && (!S.q || [r.serial, r.model, r.site, r.ul, r.no, r.unit, r.type, r.sup, r.repl, r.memo, r.batSn].join(" ").toLowerCase().includes(S.q.toLowerCase()));
+const yearOf = r => { const b = bOf(r); return b === "exp" ? "exp" : r.end ? r.end.slice(0, 4) : "na"; };
+
+function render() {
+  ALL = db();
+  $("asof").textContent = "ข้อมูลจากไฟล์ ณ " + ASOF + (LAST ? " · แก้ไข/อัปโหลดบนเว็บล่าสุด " + new Date(LAST).toLocaleString("th-TH", { dateStyle: "medium", timeStyle: "short" }) : "") + (ONLINE ? "" : "");
+  const base = ALL.filter(r => match(r));
+  /* การ์ดแจ้งเตือน */
+  const cnt = k => base.filter(r => bOf(r) === k).length, rent = a => a.reduce((s, r) => s + (+r.price || 0), 0);
+  const kp = (k, c, ic, l, v, s) => `<button class="kpi ${S.bk === k ? "on" : ""}" style="--c:${c}" data-bk="${k}"><span class="l"><i>${ic}</i>${l}</span><span class="v">${v}<small>คัน</small></span><span class="s">${s}</span></button>`;
+  const inB = k => base.filter(r => bOf(r) === k);
+  $("kpis").innerHTML =
+    kp("all", "var(--dark)", "Σ", "รถทั้งหมด", base.length, "ค่าเช่ารวม " + money(rent(base)) + " บาท/เดือน") +
+    ["exp", "m3", "m6", "m12"].map(k => kp(k, BK[k][1], BK[k][2], BK[k][0], cnt(k), cnt(k) ? "ค่าเช่า " + money(rent(inB(k))) + " บาท/เดือน" : "—")).join("");
+  /* ตัวกรอง */
+  const pool = t => ALL.filter(r => match(r, t));
+  const uc = {}; pool("unit").forEach(r => uc[r.unit || "ไม่ระบุ"] = (uc[r.unit || "ไม่ระบุ"] || 0) + 1);
+  $("fUnit").innerHTML = `<button class="chip ${S.unit === "all" ? "on" : ""}" data-unit="all">ทั้งหมด <em>${pool("unit").length}</em></button>` +
+    units().map(u => `<button class="chip ${S.unit === u ? "on" : ""}" data-unit="${esc(u)}"><span class="dot" style="background:${ucol(u)}"></span>${esc(u)} <em>${uc[u] || 0}</em></button>`).join("");
+  const tc = {}; pool("type").forEach(r => tc[r.type] = (tc[r.type] || 0) + 1);
+  $("fType").innerHTML = `<button class="chip ${S.type === "all" ? "on" : ""}" data-type="all">ทั้งหมด <em>${pool("type").length}</em></button>` +
+    typesAll().map(t => `<button class="chip ${S.type === t ? "on" : ""}" data-type="${esc(t)}">${esc(t)} <em>${tc[t] || 0}</em></button>`).join("");
+  const parts = [S.unit !== "all" && "หน่วยงาน " + S.unit, S.type !== "all" && S.type, S.bk !== "all" && BK[S.bk][0], S.year !== "all" && (S.year === "exp" ? "หมดสัญญาแล้ว" : S.year === "na" ? "ไม่มีวันหมดสัญญา" : "หมดสัญญาปี " + (+S.year + 543)), S.q && "ค้นหา \"" + S.q + "\""].filter(Boolean);
+  $("now").innerHTML = parts.length ? `กำลังดู: <b>${esc(parts.join(" · "))}</b> <button id="clr">✕ ล้างตัวกรอง</button>` : "กำลังดู: <b>รถทุกคัน ทุกหน่วยงาน</b>";
+  /* ตาราง หน่วยงาน × ประเภท */
+  const mxRows = ALL.filter(r => match(r, "unit")), ts = typesAll(), us = units().filter(u => mxRows.some(r => (r.unit || "ไม่ระบุ") === u));
+  const cell = (a, k) => { const n = a.filter(r => bOf(r) === k).length; return n ? `<span class="bd" style="--c:${BK[k][1]}">${n}</span>` : '<span class="z">·</span>'; };
+  const line = (a, lbl, attr, cls) => `<tr ${attr} class="${cls || ""}"><td>${lbl}</td>${ts.map(t => { const n = a.filter(r => r.type === t).length; return `<td class="c num">${n || '<span class="z">·</span>'}</td>`; }).join("")}<td class="c num"><b>${a.length}</b></td>${["exp", "m3", "m6", "m12"].map(k => `<td class="c">${cell(a, k)}</td>`).join("")}<td class="r num">${money(rent(a))}</td></tr>`;
+  $("mx").innerHTML = `<thead><tr><th>หน่วยงาน</th>${ts.map(t => `<th class="c">${esc(t).replace(" ", "<br>")}</th>`).join("")}<th class="c">รวม</th><th class="c" style="color:var(--exp)">หมด<br>แล้ว</th><th class="c" style="color:var(--m3)">≤3<br>เดือน</th><th class="c" style="color:var(--m6)">≤6<br>เดือน</th><th class="c" style="color:var(--m12)">≤12<br>เดือน</th><th class="r">ค่าเช่า/เดือน</th></tr></thead><tbody>` +
+    us.map(u => line(mxRows.filter(r => (r.unit || "ไม่ระบุ") === u), `<span class="uname"><i style="background:${ucol(u)}"></i>${esc(u)}</span>`, `data-unit="${esc(u)}"`, S.unit === u ? "on" : "")).join("") + "</tbody>" +
+    `<tfoot>${line(mxRows, "รวม", "")}</tfoot>`;
+  /* กราฟรายปี (ซ้อนสีตามหน่วยงาน) */
+  const yk = {}; base.forEach(r => { const y = yearOf(r); (yk[y] = yk[y] || []).push(r); });
+  const ys = Object.keys(yk).sort((a, b) => (a === "exp" ? -1 : b === "exp" ? 1 : a === "na" ? 1 : b === "na" ? -1 : a - b));
+  const ymax = Math.max(1, ...ys.map(y => yk[y].length)), uu = units();
+  $("yc").innerHTML = ys.map(y => { const a = yk[y];
+    const lbl = y === "exp" ? `<span style="color:var(--exp)">หมดแล้ว</span><small>ยังอยู่ในไฟล์</small>` : y === "na" ? "ไม่ระบุ" : `${+y + 543}<small>ค.ศ. ${y}</small>`;
+    return `<div class="yrow ${S.year === y ? "on" : ""}" data-year="${y}"><span class="y">${lbl}</span><span class="ybar">${uu.map(u => { const n = a.filter(r => (r.unit || "ไม่ระบุ") === u).length; return n ? `<i style="width:${n / ymax * 100}%;background:${ucol(u)}" title="${esc(u)} ${n} คัน"></i>` : ""; }).join("")}</span><span class="n">${a.length}</span></div>`; }).join("") || '<div class="empty">ไม่มีข้อมูล</div>';
+  $("yleg").innerHTML = uu.filter(u => base.some(r => (r.unit || "ไม่ระบุ") === u)).map(u => `<span><i style="background:${ucol(u)}"></i>${esc(u)}</span>`).join("");
+  /* รายการรถ */
+  let list = base.filter(r => (S.bk === "all" || bOf(r) === S.bk) && (S.year === "all" || yearOf(r) === S.year));
+  const so = { rem: (a, b) => (dOf(a.end) ?? 1e9) - (dOf(b.end) ?? 1e9), unit: (a, b) => (a.unit + a.site).localeCompare(b.unit + b.site, "th"), type: (a, b) => a.type.localeCompare(b.type) || (dOf(a.end) ?? 1e9) - (dOf(b.end) ?? 1e9), price: (a, b) => (+b.price || 0) - (+a.price || 0), start: (a, b) => (b.start || "").localeCompare(a.start || "") }[S.sort];
+  list.sort(so);
+  $("cnt").textContent = "· " + list.length + " คัน";
+  const prog = r => { if (!r.start || !r.end) return ""; const a = dOf(r.start), b = dOf(r.end), p = Math.min(100, Math.max(0, (0 - a) / (b - a) * 100)); return `<div class="prog" title="ผ่านไปแล้ว ${Math.round(p)}% ของสัญญา"><i style="width:${p}%;--c:${BK[bOf(r)][1]};background:var(--c)"></i></div>`; };
+  $("vt").innerHTML = `<thead><tr><th>คงเหลือ</th><th>หน่วยงาน / คลัง</th><th>ประเภท</th><th>รุ่น / ขนาด</th><th>Serial / เบอร์</th><th>สัญญา</th><th class="r">ค่าเช่า/เดือน</th></tr></thead><tbody>` +
+    (list.slice(0, S.lim).map(r => { const b = bOf(r), c = BK[b][1];
+      return `<tr data-id="${esc(r.id)}"><td><span class="st" style="--c:${c}">${BK[b][0]}</span><div class="rem" style="--c:${c};margin-top:4px;font-size:13px">${remTxt(dOf(r.end))}</div></td>
+        <td><div class="t1"><span class="uname" style="display:inline-flex"><i style="background:${ucol(r.unit || "ไม่ระบุ")}"></i>${esc(r.unit)}</span></div><div class="t2">${esc(r.site)}${r.ul ? " · UL " + esc(r.ul) : ""}</div></td>
+        <td><div class="t1">${esc(r.type)}${r.energy ? `<span class="en ${r.energy}">${r.energy}</span>` : ""}</div><div class="t2">${esc(r.sup)}</div></td>
+        <td><div class="t1">${esc(r.model)}</div><div class="t2">${esc([r.size, r.cap ? money(r.cap) + " กก." : ""].filter(Boolean).join(" · "))}</div></td>
+        <td><div class="t1 num">${esc(r.serial) || "–"}${r._web ? '<span class="web">แก้บนเว็บ</span>' : ""}</div><div class="t2">${r.no ? "เบอร์ " + esc(r.no) : ""}</div></td>
+        <td><div class="t2">${thd(r.start)} → <b style="color:var(--ink)">${thd(r.end)}</b></div>${prog(r)}</td>
+        <td class="r num">${money(r.price)}</td></tr>`; }).join("") || `<tr><td colspan="7" class="empty">ไม่มีรถตามตัวกรองนี้</td></tr>`) + "</tbody>";
+  $("more").innerHTML = list.length > S.lim ? `<button class="btn l" id="moreBtn">แสดงเพิ่ม (อีก ${list.length - S.lim} คัน)</button>` : "";
+}
+
+/* ---- รายละเอียด / แก้ไข ---- */
+let EDIT = null;
+function openCar(id, edit) {
+  const r = id ? ALL.find(x => x.id === id) : { id: "", unit: S.unit !== "all" ? S.unit : "", type: S.type !== "all" ? S.type : "" };
+  if (!r) return;
+  EDIT = edit ? JSON.parse(JSON.stringify(r)) : null;
+  const b = bOf(r), d = dOf(r.end), dl = $("dlg");
+  const val = (f, v) => f[2] === "n" ? (v == null ? "–" : money(v)) : f[2] === "d" ? thd(v) : (v ? esc(v) : "–");
+  const inp = (f, v) => {
+    if (f[0] === "unit") return `<input list="dlU" data-k="unit" value="${esc(v)}"><datalist id="dlU">${units().map(u => `<option value="${esc(u)}">`).join("")}</datalist>`;
+    if (f[0] === "type") return `<input list="dlT" data-k="type" value="${esc(v)}"><datalist id="dlT">${typesAll().map(u => `<option value="${esc(u)}">`).join("")}</datalist>`;
+    if (f[0] === "energy") return `<select data-k="energy">${["", "Lithium", "Lead-Acid", "Gas"].map(o => `<option ${o === (v || "") ? "selected" : ""} value="${o}">${o || "ไม่ระบุ"}</option>`).join("")}</select>`;
+    if (f[2] === "t") return `<textarea data-k="${f[0]}">${esc(v)}</textarea>`;
+    return `<input data-k="${f[0]}" type="${f[2] === "n" ? "number" : f[2] === "d" ? "date" : "text"}" value="${esc(v == null ? "" : v)}">`;
+  };
+  dl.innerHTML = `<div class="dh"><div><h3>${id ? esc(r.type) + " · " + esc(r.model || "") : "เพิ่มรถใหม่"}</h3><div class="t2">${id ? esc(r.unit) + " · " + esc(r.site) + (r.serial ? " · Serial " + esc(r.serial) : "") : "กรอกข้อมูลแล้วกดบันทึก"}</div></div><button class="x" data-close>✕</button></div>
+    <div class="db">${id && !edit ? `<div class="big"><span class="st" style="--c:${BK[b][1]};font-size:13px">${BK[b][0]}</span><span class="rem" style="--c:${BK[b][1]};font-size:18px">${remTxt(d)}</span><span class="note">หมดสัญญา ${thd(r.end)}</span>${r._web ? '<span class="web">แก้บนเว็บ ' + new Date(r._web).toLocaleDateString("th-TH") + "</span>" : ""}</div>` : ""}
+    ${FIELDS.map(g => `<div class="sec"><h4>${g[0]}</h4><div class="grid">${g[1].map(f => `<div class="f ${f[2] === "t" || f[2] === "w" ? "w" : ""}"><span>${f[1]}</span>${edit ? inp(f, r[f[0]]) : `<b>${val(f, r[f[0]])}</b>`}</div>`).join("")}</div></div>`).join("")}</div>
+    <div class="df">${edit ? `<button class="btn p" data-save>✓ บันทึก</button><button class="btn l" data-close>ยกเลิก</button>` : `<button class="btn p" data-edit="${esc(id)}">✎ แก้ไข</button>${r._web && BASE.some(x => x.id === id) ? `<button class="btn l" data-revert="${esc(id)}">คืนค่าตามไฟล์</button>` : ""}<span class="sp"></span><button class="btn d" data-del="${esc(id)}">ลบรถคันนี้</button><button class="btn l" data-close>ปิด</button>`}</div>`;
+  if (!dl.open) dl.showModal();
+}
+async function saveCar() {
+  const dl = $("dlg"), rec = Object.assign({}, EDIT);
+  dl.querySelectorAll("[data-k]").forEach(el => { const k = el.dataset.k, f = FIELDS.flatMap(g => g[1]).find(x => x[0] === k); let v = el.value.trim(); rec[k] = f && f[2] === "n" ? (v === "" ? null : +v) : v; });
+  if (!rec.unit || !rec.type) { toast("กรอกหน่วยงานและประเภทรถก่อน"); return; }
+  delete rec._web; delete rec.id;
+  const id = EDIT.id || (rec.serial ? "SN:" + rec.serial.toUpperCase() : "WEB:" + Date.now().toString(36));
+  if (!EDIT.id && ALL.some(x => x.id === id)) { toast("มีรถ Serial นี้อยู่แล้ว"); return; }
+  await sbSave([{ id, rec }]); dl.close(); render(); toast(ONLINE ? "บันทึกแล้ว" : "บันทึกในเบราว์เซอร์นี้แล้ว");
+}
+
+/* ---- อัปโหลด Excel (รวมกับของเดิม ไม่แทนที่) ---- */
+let PEND = null;
+async function upload(file) {
+  let rows;
+  try { const wb = XLSX.read(await file.arrayBuffer(), { type: "array" }); rows = mheParse(XLSX, wb); }
+  catch (e) { toast("อ่านไฟล์ไม่ได้: " + e.message); return; }
+  if (!rows.length) { toast("ไม่พบชีตที่มีหัว หน่วยงาน + วันที่หมดสัญญา"); return; }
+  const cur = new Map(ALL.map(r => [r.id, r])), add = [], upd = [], same = [];
+  rows.forEach(r => { const o = cur.get(r.id); if (!o) add.push(r); else { const diff = CMP.filter(k => String(o[k] ?? "") !== String(r[k] ?? "")); diff.length ? upd.push([r, o, diff]) : same.push(r); } });
+  const ids = new Set(rows.map(r => r.id)), kept = ALL.filter(r => !ids.has(r.id));
+  PEND = [...add, ...upd.map(x => x[0])];
+  const lbl = k => (FIELDS.flatMap(g => g[1]).find(f => f[0] === k) || [k, k])[1];
+  $("dlg").innerHTML = `<div class="dh"><div><h3>ตรวจก่อนบันทึก · ${esc(file.name)}</h3><div class="t2">อ่านได้ ${rows.length} คัน · รวมกับข้อมูลเดิม (รถที่ไม่อยู่ในไฟล์ยังเก็บไว้)</div></div><button class="x" data-close>✕</button></div>
+    <div class="db"><div class="sumg"><div class="f"><span>รถใหม่</span><b style="color:var(--ok)">${add.length}</b></div><div class="f"><span>มีการเปลี่ยนแปลง</span><b style="color:var(--m12)">${upd.length}</b></div><div class="f"><span>เหมือนเดิม</span><b>${same.length}</b></div><div class="f"><span>ไม่อยู่ในไฟล์ (เก็บไว้)</span><b style="color:var(--ink2)">${kept.length}</b></div></div>
+    ${upd.length ? `<div class="sec"><h4>รายการที่เปลี่ยน</h4><div class="tw"><table class="chg"><thead><tr><th>รถ</th><th>ช่องที่เปลี่ยน</th></tr></thead><tbody>${upd.slice(0, 60).map(([r, o, d]) => `<tr><td><b>${esc(r.type)}</b> ${esc(r.model)}<div class="t2">${esc(r.unit)} · ${esc(r.site)} · ${esc(r.serial || "ไม่มี Serial")}</div></td><td>${d.map(k => `${lbl(k)}: <s>${esc(o[k] ?? "–")}</s> → <b>${esc(r[k] ?? "–")}</b>`).join("<br>")}</td></tr>`).join("")}</tbody></table></div>${upd.length > 60 ? `<div class="note">… และอีก ${upd.length - 60} คัน</div>` : ""}</div>` : ""}
+    ${add.length ? `<div class="sec"><h4>รถใหม่</h4><div class="note">${add.slice(0, 40).map(r => esc(r.unit + " · " + r.type + " " + r.model + (r.serial ? " (" + r.serial + ")" : ""))).join("<br>")}${add.length > 40 ? "<br>… และอีก " + (add.length - 40) + " คัน" : ""}</div></div>` : ""}
+    ${kept.length ? `<div class="note">รถที่ไม่อยู่ในไฟล์ ${kept.length} คัน ยังแสดงอยู่ ถ้าคันไหนเลิกเช่าแล้ว เปิดรถคันนั้นแล้วกด "ลบรถคันนี้"</div>` : ""}</div>
+    <div class="df"><button class="btn p" data-commit ${PEND.length ? "" : "disabled"}>✓ บันทึก ${PEND.length} คัน</button><button class="btn l" data-close>ยกเลิก</button></div>`;
+  if (!$("dlg").open) $("dlg").showModal();
+}
+
+/* ---- Export Excel (ตามตัวกรองปัจจุบัน) ---- */
+function exportXlsx() {
+  if (!window.XLSX) { toast("โหลดตัวสร้าง Excel ไม่สำเร็จ ลองใหม่อีกครั้ง"); return; }
+  const list = ALL.filter(r => match(r) && (S.bk === "all" || bOf(r) === S.bk) && (S.year === "all" || yearOf(r) === S.year)).sort((a, b) => (dOf(a.end) ?? 1e9) - (dOf(b.end) ?? 1e9));
+  const H = ["Supplier", "UL", "หน่วยงาน", "คลัง", "ประเภทรถ", "Type Battery", "รุ่นรถ", "ขนาด", "น้ำหนัก(KG)", "ความสูง (MM.)", "Serial No.", "เบอร์รถ", "รุ่นแบต", "Serial No. Battery", "Serial No. Spare Battery", "Serial Charger", "อายุสัญญา(ปี)", "วันที่สัญญา", "วันที่หมดสัญญา", "เดือนคงเหลือ", "สถานะ", "ราคาค่าเช่า/เดือน", "ค่ารถ+แบต", "ค่า Spare แบต", "ทดแทน/เช่าเพิ่ม", "MEMO", "หมายเหตุ", "หมายเหตุจากมิ้ง"];
+  const dt = iso => { if (!iso) return ""; const [y, m, d] = iso.split("-").map(Number); return new Date(y, m - 1, d); };
+  const aoa = [H, ...list.map(r => [r.sup, r.ul, r.unit, r.site, r.type, r.energy, r.model, r.size, r.cap, r.h, r.serial, r.no, r.bat, r.batSn, r.spareSn, r.chg, r.yrs, dt(r.start), dt(r.end), r.end ? +(dOf(r.end) / 30.44).toFixed(1) : "", BK[bOf(r)][0], r.price, r.carBat, r.spare, r.repl, r.memo, r.note, r.note2])];
+  const ws = XLSX.utils.aoa_to_sheet(aoa, { cellDates: true, dateNF: "dd/mm/yyyy" });
+  const hs = { font: { bold: true, color: { rgb: "FFFFFF" } }, fill: { fgColor: { rgb: "22262C" } }, alignment: { vertical: "center", wrapText: true } };
+  H.forEach((_, j) => { const c = ws[XLSX.utils.encode_cell({ r: 0, c: j })]; if (c) c.s = hs; });
+  const FILL = { exp: "F8D7D3", m3: "FCE3CF", m6: "FBEFC4", m12: "D9E7FA" };
+  list.forEach((r, i) => { const f = FILL[bOf(r)]; if (f) [19, 20].forEach(j => { const c = ws[XLSX.utils.encode_cell({ r: i + 1, c: j })]; if (c) c.s = { fill: { fgColor: { rgb: f } }, font: { bold: true } }; }); [17, 18].forEach(j => { const c = ws[XLSX.utils.encode_cell({ r: i + 1, c: j })]; if (c) c.z = "dd/mm/yyyy"; }); });
+  ws["!cols"] = H.map((h, j) => ({ wch: [3, 10, 11, 18, 15, 11, 22, 22, 8, 8, 16, 6, 12, 14, 14, 16, 6, 11, 11, 8, 14, 10, 10, 8, 20, 18, 30, 30][j] || 12 }));
+  ws["!freeze"] = { xSplit: 0, ySplit: 1 };
+  const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "MHE");
+  const t = new Date(); XLSX.writeFile(wb, `PCG MHE Data (Export ${String(t.getDate()).padStart(2, "0")}-${String(t.getMonth() + 1).padStart(2, "0")}-${t.getFullYear() + 543}).xlsx`);
+}
+
+/* ---- เหตุการณ์ ---- */
+document.addEventListener("click", async e => {
+  const t = e.target.closest("button,[data-unit],[data-year],tr[data-id]"); if (!t) return;
+  if (t.dataset.bk) { S.bk = S.bk === t.dataset.bk || t.dataset.bk === "all" ? "all" : t.dataset.bk; S.year = "all"; S.lim = 60; render(); document.querySelector(".vt").scrollIntoView({ behavior: "smooth", block: "start" }); return; }
+  if (t.dataset.unit) { S.unit = S.unit === t.dataset.unit ? "all" : t.dataset.unit; S.lim = 60; render(); return; }
+  if (t.dataset.type) { S.type = S.type === t.dataset.type ? "all" : t.dataset.type; S.lim = 60; render(); return; }
+  if (t.dataset.year) { S.year = S.year === t.dataset.year ? "all" : t.dataset.year; S.bk = "all"; S.lim = 60; render(); document.querySelector(".vt").scrollIntoView({ behavior: "smooth", block: "start" }); return; }
+  if (t.id === "clr") { Object.assign(S, { unit: "all", type: "all", bk: "all", year: "all", q: "", lim: 60 }); $("q").value = ""; render(); return; }
+  if (t.id === "moreBtn") { S.lim += 100; render(); return; }
+  if (t.id === "upBtn") { $("file").click(); return; }
+  if (t.id === "addBtn") { openCar("", true); return; }
+  if (t.id === "xlsBtn") { exportXlsx(); return; }
+  if (t.matches("tr[data-id]")) { openCar(t.dataset.id); return; }
+  if ("close" in t.dataset) { $("dlg").close(); return; }
+  if (t.dataset.edit) { openCar(t.dataset.edit, true); return; }
+  if ("save" in t.dataset) { saveCar(); return; }
+  if (t.dataset.revert) { await sbSave([{ id: t.dataset.revert, rec: null, removed: false }]); delete OVR[t.dataset.revert]; $("dlg").close(); render(); toast("คืนค่าตามไฟล์แล้ว"); return; }
+  if (t.dataset.del) { if (!t.classList.contains("arm")) { t.classList.add("arm"); t.textContent = "กดอีกครั้งเพื่อยืนยันลบ"; return; } await sbSave([{ id: t.dataset.del, removed: true }]); $("dlg").close(); render(); toast("ลบแล้ว"); return; }
+  if ("commit" in t.dataset && PEND) { t.disabled = true; t.textContent = "กำลังบันทึก…"; await sbSave(PEND.map(r => { const rec = Object.assign({}, r); delete rec.id; return { id: r.id, rec }; })); PEND = null; $("dlg").close(); render(); toast(ONLINE ? "บันทึกแล้ว" : "บันทึกในเบราว์เซอร์นี้แล้ว"); return; }
+});
+$("file").addEventListener("change", e => { const f = e.target.files[0]; if (f) upload(f); e.target.value = ""; });
+$("q").addEventListener("input", e => { S.q = e.target.value.trim(); S.lim = 60; render(); });
+$("sort").addEventListener("change", e => { S.sort = e.target.value; render(); });
+render();
+sbLoad().then(render);
+</script>
+</body>
+</html>
