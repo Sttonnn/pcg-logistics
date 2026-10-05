@@ -210,6 +210,9 @@
   .ptot b { font-family: Archivo, sans-serif; font-size: 64px; line-height: 1; color: var(--acc2); } .ptot span { font-weight: 800; } .ptot small { color: var(--ink2); font-size: 12px; }
   #p-price .bt th, #p-price .bt td { padding: 6px 5px; font-size: 12.5px; } #p-price .bt .pc { min-width: 52px; } #p-price .bt td:first-child { min-width: 170px; }
   .lowc { background: #fffbea; } .tsub { font-size: 10.5px; color: var(--acc2); font-weight: 700; white-space: nowrap; } .pm td, .pm th { padding: 6px 7px; font-size: 12.5px; }
+  td.cf { min-width: 200px; } .cfi { display: inline-flex; align-items: center; gap: 2px; background: var(--tint); border-radius: 8px; padding: 3px 4px 3px 8px; margin: 2px 4px 2px 0; font-size: 12px; font-weight: 700; }
+  .cfi a { color: var(--ink); text-decoration: none; } .cfi a:hover { text-decoration: underline; } .cfi .x { border: 0; background: none; color: #a8251a; cursor: pointer; font-size: 11px; padding: 0 4px; } .cfi .x.arm { font-weight: 800; }
+  .cfa { padding: 4px 9px !important; font-size: 12px !important; }
   .ppt td.rmk { min-width: 200px; } .ppt td.rmk input { width: 100%; border: 1px dashed var(--line); border-radius: 8px; padding: 5px 8px; font: inherit; font-size: 12px; background: #fffdf3; } .ppt td.rmk input.ok { border-color: #18794a; }
   .ppt th.un { color: var(--m3); } .ppt td:first-child { white-space: nowrap; position: sticky; left: 0; background: #fff; z-index: 1; } .ppt tfoot td:first-child { background: var(--head); } .ppt th.pmh b { color: var(--acc); font-size: 17px; } .ppt tbody tr { cursor: default; }
   .pm th.pmh { background: var(--dark); color: #fff; text-align: left; font-size: 13px; }
@@ -238,7 +241,7 @@
         <button class="btn y" id="upBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg>อัปโหลด Excel</button>
         <button class="btn g" id="addBtn">＋ เพิ่มรถ</button>
         <button class="btn g" id="xlsBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"/></svg>Export</button>
-        <input type="file" id="file" accept=".xlsx,.xls" hidden><input type="file" id="bfile" accept=".xlsx,.xls" hidden>
+        <input type="file" id="file" accept=".xlsx,.xls" hidden><input type="file" id="bfile" accept=".xlsx,.xls" hidden><input type="file" id="cfile" accept=".pdf,image/*,.doc,.docx,.xlsx,.xls" multiple hidden>
       </div>
     </div>
     <div class="kpis" id="kpis"></div>
@@ -462,7 +465,7 @@ function lsGet() { try { return JSON.parse(localStorage.getItem(LS) || "{}"); } 
 function lsSet(o) { try { localStorage.setItem(LS, JSON.stringify(o)); } catch (e) {} }
 async function sbLoad() {
   try {
-    const r = await fetch(SB + "?select=id,rec,removed,updated_at", { headers: { apikey: SBK, Authorization: "Bearer " + SBK } });
+    const r = await fetch(SB + "?select=id,rec,removed,updated_at&id=not.like.FILE%3A*", { headers: { apikey: SBK, Authorization: "Bearer " + SBK } });
     if (!r.ok) throw new Error(r.status);
     const rows = await r.json(); OVR = {}; rows.forEach(x => OVR[x.id] = x); ONLINE = true;
     const loc = lsGet(); if (Object.keys(loc).length) { await sbSave(Object.values(loc)); localStorage.removeItem(LS); }
@@ -487,7 +490,7 @@ async function sbSave(rows) {
 }
 function db() {
   const m = new Map(BASE.map(r => [r.id, r]));
-  Object.values(OVR).forEach(x => { if (/^(BID|CFG|SPEC|DLV):/.test(x.id)) return; if (x.removed) m.delete(x.id); else if (x.rec) m.set(x.id, Object.assign({}, x.rec, { id: x.id, _web: x.updated_at })); });
+  Object.values(OVR).forEach(x => { if (/^(BID|CFG|SPEC|DLV|FILE):/.test(x.id)) return; if (x.removed) m.delete(x.id); else if (x.rec) m.set(x.id, Object.assign({}, x.rec, { id: x.id, _web: x.updated_at })); });
   return [...m.values()];
 }
 let ALL = [];
@@ -732,10 +735,11 @@ function renderRenew(base) {
   ${ppSpecPanel(L)}
   <div class="two">
     <section class="panel"><div class="phead"><h2>ยืนยันกับหน่วยงาน</h2><button class="btn l" data-cadd style="margin-left:auto;padding:6px 11px">＋ เพิ่มหน่วยงาน</button></div>
-      <div class="tw"><table><thead><tr><th>หน่วยงาน</th><th class="c" title="นับอัตโนมัติจากรถในรอบนี้ (ชื่อหน่วยงาน/คลังตรงกัน)">รถในรอบ</th><th>ยืนยันจำนวน</th><th>สถานะ</th><th>หมายเหตุ</th></tr></thead><tbody>
+      <div class="tw"><table><thead><tr><th>หน่วยงาน</th><th class="c" title="นับอัตโนมัติจากรถในรอบนี้ (ชื่อหน่วยงาน/คลังตรงกัน)">รถในรอบ</th><th>ยืนยันจำนวน</th><th>สถานะ</th><th>หมายเหตุ</th><th>ไฟล์ที่หน่วยงานเซ็น</th></tr></thead><tbody>
       ${CR.map((c, i) => `<tr><td><input data-c="${i}|unit" value="${esc(c.unit)}" class="w1"></td><td class="c num">${autoN(c.unit) || '<span class="z">·</span>'}</td><td><input data-c="${i}|qty" type="number" value="${c.qty ?? ""}" class="w0"></td>
         <td><select data-c="${i}|status" class="w1">${["", "รอข้อมูล", "ยืนยันแล้ว", "ไม่ต่อสัญญา"].map(o => `<option ${o === (c.status || "") ? "selected" : ""} value="${o}">${o || "ยังไม่ยืนยัน"}</option>`).join("")}</select></td>
-        <td><input data-c="${i}|note" value="${esc(c.note || "")}" class="w1"></td></tr>`).join("")}</tbody></table></div></section>
+        <td><input data-c="${i}|note" value="${esc(c.note || "")}" class="w1"></td>
+        <td class="cf">${(c.files || []).map((f, j) => `<span class="cfi"><a href="#" data-cfget="${esc(f.id)}" title="${esc(f.name)} · ${(f.size / 1024 / 1024).toFixed(2)} MB · แนบ ${thd(f.at)}">${/pdf$/i.test(f.name) ? "📄" : /\.(png|jpe?g|heic|webp|gif)$/i.test(f.name) ? "🖼" : "📎"} ${esc(f.name.length > 22 ? f.name.slice(0, 20) + "…" : f.name)}</a><button class="x" data-cfdel="${i}|${j}" title="ลบไฟล์ (กดสองครั้ง)">✕</button></span>`).join("")}<button class="btn l cfa" data-cfadd="${i}">📎 แนบไฟล์</button></td></tr>`).join("")}</tbody></table></div></section>
   </div>
   <section class="panel"><div class="phead"><h2>รายการรถในรอบนี้ <span class="note" style="margin:0">· ${L.length} คัน</span></h2><span class="note">เลือก "การตัดสินใจ" ได้ทุกคัน · บันทึกทันที</span>
     <button class="btn l" data-rexp style="padding:6px 11px">⬇ Export รอบนี้</button></div>
@@ -747,6 +751,31 @@ function renderRenew(base) {
       <td style="min-width:150px"><select data-f="${esc(r.id)}|renew" class="dec-${r.renew || "none"}">${Object.entries(DEC).map(([k, l]) => `<option ${k === (r.renew || "") ? "selected" : ""} value="${k}">${l}</option>`).join("")}</select></td>
       <td><select data-f="${esc(r.id)}|renewTerm">${[["", "ยังไม่ระบุ"], ["3", "3 ปี"], ["5", "5 ปี"]].map(([k, l]) => `<option ${k === String(r.renewTerm || "") ? "selected" : ""} value="${k}">${l}</option>`).join("")}</select></td>
       <td style="min-width:150px"><input data-f="${esc(r.id)}|renewNote" value="${esc(r.renewNote || "")}"></td></tr>`; }).join("") || '<tr><td colspan="9" class="empty">ไม่มีรถในรอบนี้</td></tr>'}</tbody></table></div></section>`;
+}
+/* ไฟล์ที่หน่วยงานเซ็น (ผู้ใช้ขอ 5 ต.ค.): เก็บไฟล์เป็นแถว id FILE:<สุ่ม> ในตาราง mhe_vehicles (rec = name/type/size/data base64) · ไม่โหลดตอนเปิดหน้า โหลดเมื่อกดเปิด · รายการไฟล์อยู่ใน CFG:confirm rows[i].files */
+const CF_MAX = 8 * 1024 * 1024; let CF_ROW = null;
+async function cfUpload(files) {
+  const i = CF_ROW; if (i == null) return; const rows = JSON.parse(JSON.stringify(confRows())); rows[i].files = rows[i].files || [];
+  for (const f of files) {
+    if (f.size > CF_MAX) { toast(`${f.name} ใหญ่เกิน 8 MB · ลองสแกนเป็น PDF ขาวดำ หรือลดความละเอียด`); continue; }
+    const data = await new Promise((ok, no) => { const fr = new FileReader(); fr.onload = () => ok(fr.result); fr.onerror = no; fr.readAsDataURL(f); });
+    const id = "FILE:" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+    toast("กำลังอัปโหลด " + f.name + " …"); await sbSave([{ id, rec: { name: f.name, type: f.type, size: f.size, data, unit: rows[i].unit } }]);
+    rows[i].files.push({ id, name: f.name, size: f.size, at: new Date().toISOString().slice(0, 10) });
+  }
+  await sbSave([{ id: "CFG:confirm", rec: { rows } }]); CF_ROW = null; render(); toast(ONLINE ? "แนบไฟล์แล้ว" : "แนบไฟล์ในเบราว์เซอร์นี้แล้ว (ยังไม่ขึ้นระบบกลาง)");
+}
+async function cfGet(id) {
+  let rec = OVR[id] && OVR[id].rec;
+  if (!rec && ONLINE) { toast("กำลังโหลดไฟล์ …"); const r = await fetch(SB + "?select=rec&id=eq." + encodeURIComponent(id), { headers: { apikey: SBK, Authorization: "Bearer " + SBK } }); const j = r.ok ? await r.json() : []; rec = j[0] && j[0].rec; }
+  if (!rec || !rec.data) { toast("ไม่พบไฟล์"); return; }
+  const b = await (await fetch(rec.data)).blob(), u = URL.createObjectURL(b), a = document.createElement("a");
+  a.href = u; a.download = rec.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 60000);
+}
+async function cfDel(t) {
+  if (!t.classList.contains("arm")) { t.classList.add("arm"); t.textContent = "ลบ?"; return; }
+  const [i, j] = t.dataset.cfdel.split("|").map(Number), rows = JSON.parse(JSON.stringify(confRows())), f = rows[i].files.splice(j, 1)[0];
+  await sbSave([{ id: f.id, removed: true }, { id: "CFG:confirm", rec: { rows } }]); render(); toast("ลบไฟล์แล้ว");
 }
 async function saveConf(el) {
   const rows = JSON.parse(JSON.stringify(confRows())), [i, k] = el.dataset.c.split("|");
@@ -1254,7 +1283,7 @@ function exportProp() {
 
 /* ---- เหตุการณ์ ---- */
 document.addEventListener("click", async e => {
-  const t = e.target.closest("button,a[data-open],a[data-jump],[data-unit],[data-tog],[data-s],[data-year],tr[data-gu],tr[data-sk],tr[data-id]"); if (!t) return;
+  const t = e.target.closest("button,a[data-open],a[data-cfget],a[data-jump],[data-unit],[data-tog],[data-s],[data-year],tr[data-gu],tr[data-sk],tr[data-id]"); if (!t) return;
   if (t.dataset.gu) { const u = t.dataset.gu; S.gc.has(u) ? S.gc.delete(u) : S.gc.add(u); render(); return; }
   if (t.dataset.pper) { [S.pf, S.pt] = t.dataset.pper.split("|"); render(); return; }
   if (t.dataset.pq) { S.pq = t.dataset.pq; render(); return; }
@@ -1296,6 +1325,9 @@ document.addEventListener("click", async e => {
   if (t.id === "edBtn") { S.ed = !S.ed; render(); return; }
   if (t.dataset.rpre) { const [a, b, x] = t.dataset.rpre.split("|"); S.rf = a; S.rt = b; S.rx = !!x; render(); return; }
   if (t.dataset.sk) { const k = t.dataset.sk; S.sopen.has(k) ? S.sopen.delete(k) : S.sopen.add(k); renderSpec(ALL.filter(r => match(r))); return; }
+  if (t.dataset.cfadd) { CF_ROW = +t.dataset.cfadd; $("cfile").click(); return; }
+  if (t.dataset.cfget) { e.preventDefault(); cfGet(t.dataset.cfget); return; }
+  if (t.dataset.cfdel) { cfDel(t); return; }
   if ("cadd" in t.dataset) { const rows = JSON.parse(JSON.stringify(confRows())); rows.push({ unit: "หน่วยงานใหม่", qty: null, status: "", note: "" }); await sbSave([{ id: "CFG:confirm", rec: { rows } }]); render(); return; }
   if ("rexp" in t.dataset) { exportRenew(); return; }
   if (t.dataset.rtab) { S.rtab = t.dataset.rtab; render(); return; }
@@ -1331,6 +1363,7 @@ document.addEventListener("click", async e => {
   if ("commit" in t.dataset && PEND) { t.disabled = true; t.textContent = "กำลังบันทึก…"; await sbSave(PEND.map(r => { const rec = Object.assign({}, r), o = ALL.find(x => x.id === r.id); delete rec.id; if (o) RENEWK.forEach(k => rec[k] = o[k] || ""); return { id: r.id, rec }; })); PEND = null; $("dlg").close(); render(); toast(ONLINE ? "บันทึกแล้ว" : "บันทึกในเบราว์เซอร์นี้แล้ว"); return; }
 });
 $("file").addEventListener("change", e => { const f = e.target.files[0]; if (f) upload(f); e.target.value = ""; });
+$("cfile").addEventListener("change", e => { const f = [...e.target.files]; if (f.length) cfUpload(f); e.target.value = ""; });
 $("bfile").addEventListener("change", e => { const f = e.target.files[0]; if (f) bidUpload(f); e.target.value = ""; });
 document.addEventListener("change", async e => { const el = e.target; if (!el.dataset) return;
   if (el.dataset.f) { await saveField(el); if (/\|renew(Item|Term|Energy)?$/.test(el.dataset.f)) render(); }
