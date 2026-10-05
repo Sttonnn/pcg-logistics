@@ -76,6 +76,7 @@
   /* โหมดแก้ไข (ผู้ใช้ขอ 5 ต.ค.) */
   .phead .legend { order: 3; flex-basis: 100%; margin-left: 0; }
   .ebtn { margin-left: auto; border: 0; border-radius: 12px; padding: 9px 14px; font-weight: 800; font-size: 13.5px; cursor: pointer; background: #efeaff; color: var(--acc2); display: inline-flex; align-items: center; gap: 6px; }
+  .xbtn { background: #e3f6ec; color: #0a6b45; } .xbtn + .ebtn { margin-left: 0; }
   .ebtn.on { background: var(--acc); color: #fff; box-shadow: 0 8px 18px rgba(91,63,214,.35); }
   .editing td.c { cursor: pointer; } .editing td.c:hover { background: #f1edff; }
   td.c { position: relative; } td.c .ed { position: absolute; top: 4px; right: 3px; width: 6px; height: 6px; border-radius: 50%; background: #ff8a00; }
@@ -141,6 +142,7 @@
   <section class="panel">
     <div class="phead"><h2>ตารางปฏิบัติงาน <span id="pMonth" style="color:var(--acc)"></span></h2>
       <div class="legend" id="legend"></div>
+      <button type="button" class="ebtn xbtn" id="xlsBtn" title="ดาวน์โหลดเป็นไฟล์ Excel รูปแบบเดียวกับต้นฉบับ (รวมที่แก้บนเว็บ)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 M7 10l5 5 5-5 M12 15V3"/></svg><span>Export Excel</span></button>
       <button type="button" class="ebtn" id="editBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9 M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>แก้ไขตาราง</span></button></div>
     <div class="warn" id="warn"></div>
     <div class="ebar">กดช่องในตารางเพื่อเปลี่ยนกะ · บันทึกทันที ทุกคนเห็นตรงกัน · จุดส้ม = ช่องที่แก้บนเว็บ (ต่างจากไฟล์ Excel) <span id="ecount" style="margin-left:auto"></span></div>
@@ -158,6 +160,7 @@
   <p class="note">ข้อมูลจากไฟล์ "ตารางปฏิบัติงาน" แผนกโครงการ · อัปเดตโดยส่งไฟล์ Excel ใหม่ให้โชยุ</p>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 <div class="pop" id="pop"></div><div class="toast" id="toast"></div>
 <script>
 const DATA = /*__SHIFT_DATA__*/{};
@@ -289,6 +292,56 @@ function renderSum(M, days) {
   $("ps").innerHTML = `<thead><tr><th class="nm">พนักงาน</th>${COLS.map(([l]) => `<th>${l}</th>`).join("")}</tr></thead><tbody>${M.rows.map(r => `<tr><td class="nm"><b>${r.n}</b><small>${r.pos}</small></td>${COLS.map(([l, f], i) => { const n = f(r);
       return `<td class="${n ? "" : "z"}" style="${n && i === 4 ? "color:#1d3f8f" : n && (l === "ลา" || l === "ขาดงาน") ? "color:#a8250f" : ""}">${n || "–"}</td>`; }).join("")}</tr>`).join("")}</tbody>`;
 }
+/* ---- Export Excel รูปแบบเดียวกับไฟล์ต้นฉบับ "ตารางปฏิบัติงาน" (รวมที่แก้บนเว็บ) ---- */
+const XFILL = { "OFF": "FF0000", "Hol": "00B0F0", "20": "0070C0", "ลา": "FFFF00", "OT": "FFFF00", "Flex": "FF6699", "ขาดงาน": "FF0000" };
+const XFONT = { "20": "FFFFFF", "OFF": "FFFFFF", "Hol": "000000" };
+function exportXlsx() {
+  if (!window.XLSX) { toast("โหลดตัวสร้าง Excel ไม่สำเร็จ ลองรีเฟรชหน้า"); return; }
+  const y = S.y, ms = DATA[y] || [], ws = {}, merges = [];
+  const thin = { style: "thin", color: { rgb: "000000" } }, med = { style: "medium", color: { rgb: "000000" } };
+  const bd = { top: thin, bottom: thin, left: thin, right: thin };
+  const col = n => { let s = ""; n++; while (n) { const m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = Math.floor((n - 1) / 26); } return s; };
+  const put = (r, c, v, st) => { const ref = col(c) + (r + 1);
+    ws[ref] = { v: v == null ? "" : v, t: typeof v === "number" ? "n" : "s", s: Object.assign({ font: { name: "Calibri", sz: 8 }, alignment: { vertical: "center" } }, st || {}) }; };
+  let r = 1;
+  put(r, 1, "โครงการบันทึกความเข้าใจปี " + y + "(พิจารณาวันหยุดเพิ่มสัปดาห์ละ 1 วัน)", { font: { name: "Calibri", sz: 10, bold: true } }); r++;
+  [[1, "รหัส"], [2, "ชื่อสกุล"], [5, "แผนก"], [6, "ตำแหน่ง  "]].forEach(([c, t]) => put(r, c, t, { font: { name: "Calibri", sz: 10, bold: true }, alignment: { horizontal: "center", vertical: "center" } }));
+  r++;
+  ms.forEach(M => {
+    const days = Array.from({ length: M.days }, (_, i) => i + 1), wdx = d => new Date(y, M.m - 1, d).getDay();
+    put(r, 7, TH_M[M.m - 1], { font: { name: "Calibri", sz: 8, bold: true }, alignment: { horizontal: "center" }, border: { top: med, bottom: thin, left: med, right: thin } });
+    days.forEach(d => put(r, 7 + d, d, { font: { name: "Calibri", sz: 10, bold: true }, alignment: { horizontal: "center" }, border: bd }));
+    r++;
+    put(r, 7, "", { border: { left: med, right: thin, bottom: thin } });
+    days.forEach(d => { const we = [0, 6].includes(wdx(d));
+      put(r, 7 + d, TH_D[wdx(d)], Object.assign({ font: { name: "Calibri", sz: 8, bold: true, color: { rgb: we ? "FFFFFF" : "000000" } }, alignment: { horizontal: "center" }, border: bd }, we ? { fill: { patternType: "solid", fgColor: { rgb: "FF0000" } } } : {})); });
+    r++;
+    M.rows.forEach(e => {
+      put(r, 1, e.id, { alignment: { horizontal: "right" }, border: { left: med, top: thin, bottom: thin, right: thin } });
+      put(r, 2, e.n, { alignment: { horizontal: "left" }, border: bd }); put(r, 3, "", { border: bd }); put(r, 4, "", { border: bd });
+      merges.push({ s: { r, c: 2 }, e: { r, c: 4 } });
+      put(r, 5, e.dept, { border: bd }); put(r, 6, e.pos, { border: bd }); put(r, 7, "", { border: bd });
+      days.forEach(d => { const k = ekey(e.id, y, M.m, d), v = k in EDITS ? EDITS[k] : (e.c[d - 1] || ""), num = /^\d+$/.test(v);
+        const st = { font: { name: "Calibri", sz: 8, bold: true, color: { rgb: XFONT[v] || "000000" } }, alignment: { horizontal: "center", vertical: "center" }, border: bd };
+        if (XFILL[v]) st.fill = { patternType: "solid", fgColor: { rgb: XFILL[v] } };
+        put(r, 7 + d, num ? +v : v, st); });
+      r++;
+    });
+  });
+  r += 2; put(r, 2, "หมายเหตุ", { font: { name: "Calibri", sz: 10, bold: true } }); r += 2;
+  [["OFF", "วันหยุดประจำสัปดาห์", "FF0000"], ["Flexible", "วันหยุดเพิ่มประจำสัปดาห์", "FF6699"], ["Hol", "วันหยุดนักขัตฤกษ์", "00B0F0"], ["ลา", "ลา", "FFFF00"], ["8 / 17 / 20", "เวลาเข้างาน 08:00 / 17:00 / 20:00", null]].forEach(([a, b, c]) => {
+    put(r, 2, a, Object.assign({ font: { name: "Calibri", sz: 10, bold: true }, alignment: { horizontal: "center" }, border: bd }, c ? { fill: { patternType: "solid", fgColor: { rgb: c } } } : {}));
+    put(r, 3, b, { font: { name: "Calibri", sz: 10 } }); r++; });
+  r++; put(r, 3, "Export จาก Shift Schedule แผนกโครงการ เมื่อ " + new Date().toLocaleString("th-TH"), { font: { name: "Calibri", sz: 9, italic: true, color: { rgb: "666666" } } });
+  ws["!ref"] = "A1:" + col(7 + 31) + (r + 1);
+  ws["!merges"] = merges;
+  ws["!cols"] = [1.66, 8.66, 9.1, 12, 9.1, 17.44, 20.9, 9.1].map(w => ({ wch: w })).concat(Array.from({ length: 31 }, () => ({ wch: 4.1 })));
+  const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "ตารางปฏิบัติงาน " + y);
+  const t = new Date(), stamp = String(t.getDate()).padStart(2, "0") + "-" + String(t.getMonth() + 1).padStart(2, "0") + "-" + (t.getFullYear() + 543);
+  XLSX.writeFile(wb, "ตารางปฏิบัติงาน แผนกโครงการ " + (y + 543) + " (Export " + stamp + ").xlsx");
+  toast("ดาวน์โหลด Excel แล้ว");
+}
+document.getElementById("xlsBtn").onclick = exportXlsx;
 const months = () => (DATA[S.y] || []).map(x => x.m);
 function shift(n) {
   let ms = months(), i = ms.indexOf(S.m) + n;
