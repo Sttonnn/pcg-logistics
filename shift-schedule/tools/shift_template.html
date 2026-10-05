@@ -34,7 +34,7 @@
   .mnav .cur { min-width: 150px; text-align: center; font-size: 16px; font-weight: 800; }
   .mnav .now { background: #fff; color: var(--acc2); }
 
-  .today { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 12px; }
+  .today { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; }
   .tcard { border-radius: 20px; padding: 14px 16px; color: #fff; min-width: 0; display: grid; gap: 6px; align-content: start; }
   .tcard .l { font-size: 13px; font-weight: 700; opacity: .92; display: flex; align-items: center; gap: 6px; }
   .tcard .v { font-family: Archivo, sans-serif; font-size: 34px; font-weight: 900; line-height: 1; }
@@ -162,7 +162,7 @@
     <div class="warn" id="warn"></div>
     <div class="ebar">กดช่องในตารางเพื่อเปลี่ยนกะ · บันทึกทันที ทุกคนเห็นตรงกัน · จุดส้ม = ช่องที่แก้บนเว็บ (ต่างจากไฟล์ Excel) <span id="ecount" style="margin-left:auto"></span></div>
     <div class="tw"><table id="tbl"></table></div>
-    <p class="note" style="margin:10px 2px 0">กดที่วันที่ด้านบนตาราง เพื่อดูว่าวันนั้นใครเข้ากะไหน · กด "แก้ไขตาราง" เพื่อเปลี่ยนกะรายช่อง · 8 / 17 / 20 / 6 = เวลาเข้างาน (08:00 / 17:00 / 20:00 / 06:00) · OFF = วันหยุดประจำสัปดาห์ · Flex = วันหยุดเพิ่มประจำสัปดาห์ · Hol = วันหยุดนักขัตฤกษ์</p>
+    <p class="note" style="margin:10px 2px 0">กดที่วันที่ด้านบนตาราง เพื่อดูว่าวันนั้นใครเข้ากะไหน · กด "แก้ไขตาราง" เพื่อเปลี่ยนกะรายช่อง · 8 / 17 / 20 / 6 = เวลาเข้างาน (08:00 / 17:00 / 20:00 / 06:00) · กะเช้า = 8 · กะดึก = 17 หรือ 20 (ขึ้นกับว่ากะเช้าทำ OT ต่อไหม) · OFF = วันหยุดประจำสัปดาห์ · Flex = วันหยุดเพิ่มประจำสัปดาห์ · Hol = วันหยุดนักขัตฤกษ์</p>
   </section>
   <p class="note">ข้อมูลจากไฟล์ "ตารางปฏิบัติงาน" แผนกโครงการ · อัปเดตโดยส่งไฟล์ Excel ใหม่ให้โชยุ</p>
 </main>
@@ -179,7 +179,7 @@ const TH_D = ["อา","จ","อ","พ","พฤ","ศ","ส"];
 const CODE = {
   "8":     { bg: "#e9eefb", fg: "#1d3f8f", lbl: "เข้า 08:00", grp: "day" },
   "6":     { bg: "#fff1c9", fg: "#7a5200", lbl: "เข้า 06:00", grp: "day" },
-  "17":    { bg: "#ece6ff", fg: "#4b2fb8", lbl: "เข้า 17:00", grp: "eve" },
+  "17":    { bg: "#ece6ff", fg: "#4b2fb8", lbl: "เข้า 17:00", grp: "night" },
   "20":    { bg: "#0070c0", fg: "#fff",    lbl: "เข้า 20:00", grp: "night" },
   "OFF":   { bg: "#ff3b30", fg: "#fff",    lbl: "หยุดประจำสัปดาห์", grp: "off" },
   "Flex":  { bg: "#ff6699", fg: "#fff",    lbl: "หยุดเพิ่ม (Flexible)", grp: "off" },
@@ -245,7 +245,7 @@ function render() {
     <tr>${days.map(d => `<th class="dy ${[0, 6].includes(wd(d)) ? "we" : ""} ${d === S.sel ? "sel" : ""} th2" data-d="${d}">${TH_D[wd(d)]}</th>`).join("")}</tr></thead>
     <tbody>${M.rows.map(r => `<tr><td class="nm"><b>${r.n}</b><small>${r.pos} · ${r.dept}</small></td>${days.map(d => { const v = cellVal(r, d), k = codeOf(v), ed = isEdited(r, d);
         return `<td class="c ${[0, 6].includes(wd(d)) ? "we" : ""} ${d === S.sel ? "cs" : ""}" data-e="${r.id}|${d}" title="${r.n} · ${d} ${TH_M[S.m - 1]} · ${k ? k.lbl : "ไม่ระบุ"}${ed ? " · แก้บนเว็บ (ไฟล์: " + (r.c[d - 1] || "ว่าง") + ")" : ""}">${k ? `<span style="background:${k.bg};color:${k.fg}">${short(v)}</span>` : ""}${ed ? '<i class="ed"></i>' : ""}</td>`; }).join("")}
-      <td class="sum" style="color:#1d3f8f">${cnt(r, k => k && ["day", "eve", "night", "ot"].includes(k.grp))}</td><td class="sum" style="color:#c1271d">${cnt(r, k => k && k.grp === "off")}</td><td class="sum" style="color:#8a6a00">${cnt(r, k => k && k.grp === "leave")}</td></tr>`).join("")}</tbody>`;
+      <td class="sum" style="color:#1d3f8f">${cnt(r, k => k && ["day", "night", "ot"].includes(k.grp))}</td><td class="sum" style="color:#c1271d">${cnt(r, k => k && k.grp === "off")}</td><td class="sum" style="color:#8a6a00">${cnt(r, k => k && k.grp === "leave")}</td></tr>`).join("")}</tbody>`;
   /* สรุปวันที่เลือก */
   const D = S.sel, by = g => M.rows.filter(r => { const k = codeOf(cellVal(r, D)); return k && g.includes(k.grp); });
   const first = n => n.replace(/^คุณ/, "").split(" ")[0];
@@ -253,9 +253,8 @@ function render() {
   const tag = r => { const v = cellVal(r, D); return v && v !== "8" && v !== "OFF" ? ` (${short(v)})` : ""; };
   $("dayhd").innerHTML = `<b>${isNow && D === TODAY.d ? "วันนี้ · " : ""}${["วันอาทิตย์","วันจันทร์","วันอังคาร","วันพุธ","วันพฤหัสบดี","วันศุกร์","วันเสาร์"][wd(D)]} ${D} ${TH_M[S.m - 1]} ${S.y + 543}</b><span>กดวันที่ในตารางเพื่อเปลี่ยนวัน</span>`;
   $("today").innerHTML =
-    card("linear-gradient(150deg,#2f6bea,#1a44b8)", "☀ กะเช้า (06:00 / 08:00)", by(["day", "ot"]), tag) +
-    card("linear-gradient(150deg,#7c5cff,#4b2fb8)", "◐ กะบ่าย (17:00)", by(["eve"])) +
-    card("linear-gradient(150deg,#0b6fb8,#07457a)", "☾ กะดึก (20:00)", by(["night"])) +
+    card("linear-gradient(150deg,#2f6bea,#1a44b8)", "☀ กะเช้า (08:00)", by(["day", "ot"]), tag) +
+    card("linear-gradient(150deg,#0b6fb8,#07457a)", "☾ กะดึก (17:00 / 20:00)", by(["night"]), r => ` (${cellVal(r, D)}:00)`) +
     card("linear-gradient(150deg,#f0553a,#b8260f)", "วันหยุด", by(["off"]), tag) +
     card("linear-gradient(150deg,#e2a20b,#a86f00)", "ลา / ขาดงาน", by(["leave"]), tag);
   renderSum(M, days);
@@ -269,31 +268,31 @@ function render() {
   if (tw && th && nm && th.offsetLeft + th.offsetWidth > tw.clientWidth) tw.scrollLeft = th.offsetLeft - nm.offsetWidth - 40;
 }
 /* ---- สรุปประจำเดือน ---- */
-const GRP = { day: ["กะเช้า", "#2f6bea"], eve: ["กะบ่าย", "#7c5cff"], night: ["กะดึก", "#0b6fb8"], ot: ["OT", "#c99a00"] };
+const GRP = { day: ["กะเช้า", "#2f6bea"], night: ["กะดึก", "#0b6fb8"], ot: ["OT", "#c99a00"] };
 function renderSum(M, days) {
   $("sMonth").textContent = "· " + TH_M[S.m - 1] + " " + (S.y + 543);
   const g = (r, d) => { const k = codeOf(cellVal(r, d)); return k ? k.grp : ""; };
   const v = (r, d) => cellVal(r, d);
   let work = 0, off = 0, hol = 0, leave = 0, ot = 0, absent = 0, flex = 0;
   M.rows.forEach(r => days.forEach(d => { const x = g(r, d), c = v(r, d);
-    if (["day", "eve", "night", "ot"].includes(x)) work++; if (c === "OFF") off++; if (c === "Flex") flex++; if (c === "Hol") hol++;
+    if (["day", "night", "ot"].includes(x)) work++; if (c === "OFF") off++; if (c === "Flex") flex++; if (c === "Hol") hol++;
     if (c === "ลา") leave++; if (c === "ขาดงาน") absent++; if (c === "OT") ot++; }));
   const kc = (l, val, c, sub) => `<div class="kc" style="--c:${c}"><span class="l">${l}</span><span class="v">${val}</span><span class="s">${sub}</span></div>`;
   $("kp").innerHTML = kc("พนักงาน", M.rows.length, "#5b3fd6", "คนในตารางเดือนนี้") + kc("วันทำงานรวม", work, "#2f6bea", "คน-วัน (รวม OT)") +
     kc("วันหยุดประจำสัปดาห์", off + flex, "#ff3b30", "OFF " + off + " · Flex " + flex) + kc("วันหยุดนักขัตฤกษ์", hol, "#00a3dd", "คน-วัน") +
     kc("ลา / ขาดงาน", leave + absent, "#c99a00", "ลา " + leave + " · ขาดงาน " + absent) + kc("ทำ OT", ot, "#a86f00", "คน-วัน");
   /* จำนวนคนทำงานรายวัน */
-  const per = days.map(d => { const c = { day: 0, eve: 0, night: 0, ot: 0 }; M.rows.forEach(r => { const x = g(r, d); if (x in c) c[x]++; }); c.t = c.day + c.eve + c.night + c.ot; return c; });
+  const per = days.map(d => { const c = { day: 0, night: 0, ot: 0 }; M.rows.forEach(r => { const x = g(r, d); if (x in c) c[x]++; }); c.t = c.day + c.night + c.ot; return c; });
   const tot = per.map(c => c.t), mx = Math.max(1, M.rows.length), workDays = tot.filter(t => t > 0);
   const minN = Math.max(1, Math.ceil(M.rows.length / 2));
   $("minLbl").textContent = minN;
   $("cov").innerHTML = `<div class="cgrid" style="grid-template-columns:repeat(${days.length},30px)">${days.map((d, i) => { const c = per[i];
-      return `<div class="ccol ${[0, 6].includes(wd(d)) ? "we" : ""} ${d === S.sel ? "sel" : ""}" data-d="${d}" title="${d} ${TH_M[S.m - 1]} · ทำงาน ${c.t} คน (เช้า ${c.day} · บ่าย ${c.eve} · ดึก ${c.night}${c.ot ? " · OT " + c.ot : ""})">
-        <span class="n ${c.t > 0 && c.t < minN && ![0, 6].includes(wd(d)) && !M.rows.some(r => cellVal(r, d) === "Hol") ? "low" : ""}">${c.t}</span><span class="cbar">${["day", "eve", "night", "ot"].map(k => c[k] ? `<i style="height:${c[k] / mx * 100}%;background:${GRP[k][1]}"></i>` : "").join("")}</span><span class="d">${d}</span></div>`; }).join("")}</div>
+      return `<div class="ccol ${[0, 6].includes(wd(d)) ? "we" : ""} ${d === S.sel ? "sel" : ""}" data-d="${d}" title="${d} ${TH_M[S.m - 1]} · ทำงาน ${c.t} คน (เช้า ${c.day} · ดึก ${c.night}${c.ot ? " · OT " + c.ot : ""})">
+        <span class="n ${c.t > 0 && c.t < minN && ![0, 6].includes(wd(d)) && !M.rows.some(r => cellVal(r, d) === "Hol") ? "low" : ""}">${c.t}</span><span class="cbar">${["day", "night", "ot"].map(k => c[k] ? `<i style="height:${c[k] / mx * 100}%;background:${GRP[k][1]}"></i>` : "").join("")}</span><span class="d">${d}</span></div>`; }).join("")}</div>
     <div class="legend" style="margin:8px 2px 0">${Object.values(GRP).map(([l, c]) => `<span><i style="background:${c};min-width:14px;height:12px"></i>${l}</span>`).join("")}<span>เฉลี่ย ${(workDays.reduce((a, b) => a + b, 0) / (workDays.length || 1)).toFixed(1)} คน/วัน</span></div>`;
   /* รายคน */
-  const COLS = [["เช้า", r => days.filter(d => g(r, d) === "day").length], ["บ่าย", r => days.filter(d => g(r, d) === "eve").length], ["ดึก", r => days.filter(d => g(r, d) === "night").length],
-    ["OT", r => days.filter(d => v(r, d) === "OT").length], ["รวมทำงาน", r => days.filter(d => ["day", "eve", "night", "ot"].includes(g(r, d))).length],
+  const COLS = [["เช้า", r => days.filter(d => g(r, d) === "day").length], ["ดึก", r => days.filter(d => g(r, d) === "night").length],
+    ["OT", r => days.filter(d => v(r, d) === "OT").length], ["รวมทำงาน", r => days.filter(d => ["day", "night", "ot"].includes(g(r, d))).length],
     ["OFF", r => days.filter(d => v(r, d) === "OFF").length], ["Flex", r => days.filter(d => v(r, d) === "Flex").length], ["Hol", r => days.filter(d => v(r, d) === "Hol").length],
     ["ลา", r => days.filter(d => v(r, d) === "ลา").length], ["ขาดงาน", r => days.filter(d => v(r, d) === "ขาดงาน").length], ["ไม่ระบุ", r => days.filter(d => !v(r, d)).length]];
   $("ps").innerHTML = `<thead><tr><th class="nm">พนักงาน</th>${COLS.map(([l]) => `<th>${l}</th>`).join("")}</tr></thead><tbody>${M.rows.map(r => `<tr><td class="nm"><b>${r.n}</b><small>${r.pos}</small></td>${COLS.map(([l, f], i) => { const n = f(r);
