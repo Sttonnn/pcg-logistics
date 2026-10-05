@@ -532,7 +532,7 @@ function renderSide() {
     ${nav("sum", "Summary MHE", "ภาพรวมรถทุกคัน", ALL.length)}
     ${nav("renew", "เตรียมต่อสัญญา", "รอบถัดไป · " + (S.round + 543), nR)}
     ${nav("spec", "Specification รถ MHE", models + " รุ่น", null)}
-    ${nav("trend", "แนวโน้มค่าเช่ารายปี", "ย้อนหลัง · แยก/รวมหน่วยงาน", null)}
+    ${nav("trend", "แนวโน้มค่าเช่ารายปี", "ตั้งแต่ 2024 · แยก/รวมหน่วยงาน", null)}
     ${nav("bid", "ตารางราคาประมูล", esc(B.title || "ยังไม่มีข้อมูล"), (B.sheets[0] || { rows: [] }).rows.length || null)}</div>
     <div class="sbox sinfo"><div><span class="sdot" style="background:${ONLINE ? "var(--ok)" : "var(--m3)"}"></span><b>${ONLINE ? "บันทึกขึ้นระบบกลาง" : "เก็บในเครื่องนี้เท่านั้น"}</b></div>
     <div>ข้อมูลจากไฟล์ ${esc(ASOF)}</div>${LAST ? `<div>แก้บนเว็บล่าสุด ${new Date(LAST).toLocaleString("th-TH", { dateStyle: "medium", timeStyle: "short" })}</div>` : ""}
@@ -724,12 +724,13 @@ function exportBid() {
 /* ---- แนวโน้มค่าเช่ารายปี (ผู้ใช้ขอ 5 ต.ค.) · ค่าเช่าในปี = Σ ค่าเช่า/เดือน × จำนวนเดือนที่สัญญาครอบปีนั้น ---- */
 const monthsIn = (r, y) => { if (!r.start || !r.end || !(+r.price)) return 0; const a = Math.max(Date.parse(r.start), Date.UTC(y, 0, 1)), b = Math.min(Date.parse(r.end) + 864e5, Date.UTC(y + 1, 0, 1)); return b > a ? (b - a) / 864e5 / 365.25 * 12 : 0; };
 const mb = n => (n / 1e6).toLocaleString("th-TH", { maximumFractionDigits: n >= 1e7 ? 1 : 2 });
+const TREND_FROM = 2024; /* ผู้ใช้สั่ง 5 ต.ค.: แสดงตั้งแต่ปี 2024 (พ.ศ. 2567) · ปีเป็น ค.ศ. */
 function renderTrend() {
   const pool = ALL.filter(r => match(r, "unit")), us = units().filter(u => pool.some(r => (r.unit || "ไม่ระบุ") === u));
   const sel = S.tU.size ? us.filter(u => S.tU.has(u)) : us, L = pool.filter(r => sel.includes(r.unit || "ไม่ระบุ"));
   const ys0 = L.flatMap(r => [r.start, r.end].filter(Boolean).map(d => +d.slice(0, 4)));
   if (!ys0.length) { $("vTrend").innerHTML = '<section class="panel"><div class="empty">ไม่มีข้อมูลสัญญา</div></section>'; return; }
-  const Y = []; for (let y = Math.min(...ys0); y <= Math.max(...ys0); y++) Y.push(y);
+  const Y = []; for (let y = Math.max(TREND_FROM, Math.min(...ys0)); y <= Math.max(...ys0); y++) Y.push(y);
   const cell = {}, veh = {}; Y.forEach(y => { cell[y] = {}; veh[y] = 0; sel.forEach(u => cell[y][u] = 0); });
   L.forEach(r => Y.forEach(y => { const m = monthsIn(r, y); if (m) { cell[y][r.unit || "ไม่ระบุ"] += m * r.price; veh[y] += m / 12; } }));
   const tot = y => sel.reduce((s, u) => s + cell[y][u], 0), mx = Math.max(1, ...Y.map(tot));
@@ -738,19 +739,19 @@ function renderTrend() {
   $("vTrend").innerHTML = `<section class="panel"><div class="phead"><h2>แนวโน้มค่าเช่ารายปี</h2><span class="note">ตามตัวกรองประเภทรถ / แบต ด้านบน</span></div>
     <div class="frow" style="margin-bottom:8px"><b style="font-size:12px;color:var(--ink2);min-width:78px">หน่วยงาน</b><button class="chip ${S.tU.size ? "" : "on"}" data-tu="">ทุกหน่วยงาน</button>${us.map(chipU).join("")}<span class="note" style="margin-left:4px">เลือกได้หลายหน่วยงาน</span></div>
     <div class="frow" style="margin-bottom:14px"><b style="font-size:12px;color:var(--ink2);min-width:78px">แสดงแบบ</b><span class="tabs"><button class="${split ? "" : "on"}" data-tm="sum">รวมเป็นยอดเดียว</button><button class="${split ? "on" : ""}" data-tm="split">แยกสีตามหน่วยงาน</button></span></div>
-    <div class="mini"><div class="f"><span>ค่าเช่าปี ${THIS_Y + 543} (ตามสัญญา)</span><b>${mb(cur)}</b><small>ล้านบาท · เฉลี่ย ${money(Math.round(cur / 12))} บาท/เดือน</small></div>
-      <div class="f"><span>ปี ${THIS_Y - 1 + 543}</span><b>${mb(prev)}</b><small>ล้านบาท</small></div>
+    <div class="mini"><div class="f"><span>ค่าเช่าปี ${THIS_Y} (ตามสัญญา)</span><b>${mb(cur)}</b><small>ล้านบาท · เฉลี่ย ${money(Math.round(cur / 12))} บาท/เดือน</small></div>
+      <div class="f"><span>ปี ${THIS_Y - 1}</span><b>${mb(prev)}</b><small>ล้านบาท</small></div>
       <div class="f"><span>เปลี่ยนแปลงจากปีก่อน</span><b style="color:${ch == null ? "var(--ink)" : ch > 0 ? "var(--exp)" : "var(--ok)"}">${ch == null ? "–" : (ch > 0 ? "▲ " : "▼ ") + Math.abs(ch).toFixed(1) + "%"}</b><small>${ch == null ? "" : ch > 0 ? "ค่าเช่าเพิ่มขึ้น" : "ค่าเช่าลดลง"}</small></div>
-      <div class="f"><span>ค่าเช่าเฉลี่ยต่อคัน ปี ${THIS_Y + 543}</span><b>${veh[THIS_Y] ? money(Math.round(cur / veh[THIS_Y] / 12)) : "–"}</b><small>บาท/คัน/เดือน · เฉลี่ย ${veh[THIS_Y].toFixed(0)} คัน</small></div></div></section>
+      <div class="f"><span>ค่าเช่าเฉลี่ยต่อคัน ปี ${THIS_Y}</span><b>${veh[THIS_Y] ? money(Math.round(cur / veh[THIS_Y] / 12)) : "–"}</b><small>บาท/คัน/เดือน · เฉลี่ย ${veh[THIS_Y].toFixed(0)} คัน</small></div></div></section>
   <section class="panel"><div class="phead"><h2>ค่าเช่าต่อปี <span class="note" style="margin:0">(ล้านบาท)</span></h2><span class="note">แท่งจาง = ปีถัดไปตามสัญญาปัจจุบัน (ยังไม่รวมการต่อสัญญาใหม่)</span></div>
     <div class="tchart">${Y.map(y => { const t = tot(y), fut = y > THIS_Y;
-      return `<div class="tcol ${fut ? "fut" : ""} ${y === THIS_Y ? "now" : ""}" title="ปี ${y + 543}: ${money(Math.round(t))} บาท${sel.map(u => "\n" + u + " " + money(Math.round(cell[y][u]))).join("")}"><span class="tv">${t ? mb(t) : ""}</span>
-        <span class="tbar" style="height:${t / mx * 100}%">${split ? sel.map(u => cell[y][u] ? `<i style="height:${cell[y][u] / t * 100}%;background:${ucol(u)}"></i>` : "").join("") : `<i style="height:100%;background:var(--acc)"></i>`}</span><span class="ty">${y + 543}${y === THIS_Y ? "<small>ปีนี้</small>" : ""}</span></div>`; }).join("")}</div>
+      return `<div class="tcol ${fut ? "fut" : ""} ${y === THIS_Y ? "now" : ""}" title="ปี ${y}: ${money(Math.round(t))} บาท${sel.map(u => "\n" + u + " " + money(Math.round(cell[y][u]))).join("")}"><span class="tv">${t ? mb(t) : ""}</span>
+        <span class="tbar" style="height:${t / mx * 100}%">${split ? sel.map(u => cell[y][u] ? `<i style="height:${cell[y][u] / t * 100}%;background:${ucol(u)}"></i>` : "").join("") : `<i style="height:100%;background:var(--acc)"></i>`}</span><span class="ty">${y}${y === THIS_Y ? "<small>ปีนี้</small>" : ""}</span></div>`; }).join("")}</div>
     ${split ? `<div class="leg">${sel.map(u => `<span><i style="background:${ucol(u)}"></i>${esc(u)}</span>`).join("")}</div>` : ""}</section>
   <section class="panel"><div class="phead"><h2>ตารางค่าเช่ารายปี แยกหน่วยงาน <span class="note" style="margin:0">(บาท)</span></h2></div>
     <div class="tw"><table class="mx"><thead><tr><th>ปี</th>${sel.map(u => `<th class="r"><span class="uname" style="justify-content:flex-end"><i style="background:${ucol(u)}"></i>${esc(u)}</span></th>`).join("")}<th class="r gl">รวม</th><th class="r">เปลี่ยนแปลง</th><th class="r">รถเฉลี่ย (คัน)</th><th class="r">เฉลี่ย/คัน/เดือน</th></tr></thead><tbody>
     ${Y.map((y, i) => { const t = tot(y), p = i ? tot(Y[i - 1]) : 0, c = p ? (t - p) / p * 100 : null;
-      return `<tr class="${y === THIS_Y ? "on" : ""}" style="${y > THIS_Y ? "color:var(--ink3)" : ""}"><td><b>${y + 543}</b>${y === THIS_Y ? ' <span class="web" style="background:var(--tint);color:var(--acc2)">ปีนี้</span>' : y > THIS_Y ? ' <span class="t2">ตามสัญญา</span>' : ""}</td>${sel.map(u => `<td class="r num">${cell[y][u] ? money(Math.round(cell[y][u])) : '<span class="z">·</span>'}</td>`).join("")}
+      return `<tr class="${y === THIS_Y ? "on" : ""}" style="${y > THIS_Y ? "color:var(--ink3)" : ""}"><td><b>${y}</b>${y === THIS_Y ? ' <span class="web" style="background:var(--tint);color:var(--acc2)">ปีนี้</span>' : y > THIS_Y ? ' <span class="t2">ตามสัญญา</span>' : ""}</td>${sel.map(u => `<td class="r num">${cell[y][u] ? money(Math.round(cell[y][u])) : '<span class="z">·</span>'}</td>`).join("")}
         <td class="r num gl"><b>${money(Math.round(t))}</b></td><td class="r num" style="color:${c == null ? "" : c > 0 ? "var(--exp)" : "var(--ok)"}">${c == null || !isFinite(c) ? "–" : (c > 0 ? "▲ " : "▼ ") + Math.abs(c).toFixed(1) + "%"}</td><td class="r num">${veh[y].toFixed(1)}</td><td class="r num">${veh[y] ? money(Math.round(t / veh[y] / 12)) : "–"}</td></tr>`; }).join("")}</tbody></table></div>
     <div class="note" style="margin-top:8px">คำนวณจากรถที่อยู่ในข้อมูลตอนนี้ (${L.length} คัน) × ค่าเช่า/เดือนปัจจุบัน × จำนวนเดือนที่สัญญาครอบแต่ละปี · ปีเก่ามีเฉพาะรถที่ยังอยู่ในไฟล์ (รถที่คืนไปแล้วไม่ได้นับ) และใช้ค่าเช่าปัจจุบัน จึงอาจต่ำกว่ายอดที่จ่ายจริง · ปีถัดไปลดลงเพราะสัญญาที่หมดยังไม่ได้ต่อ</div></section>`;
 }
