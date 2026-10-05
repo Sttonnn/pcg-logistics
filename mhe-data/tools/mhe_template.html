@@ -188,6 +188,15 @@
   .mini-side .nav { justify-content: center; padding: 9px 0; position: relative; } .mini-side .sidetg { justify-self: center; margin: 2px 0 6px; }
   .mini-side .nav::after { content: attr(data-tip); position: absolute; left: 64px; top: 50%; transform: translateY(-50%); background: var(--dark); color: #fff; padding: 5px 9px; border-radius: 8px; font-size: 12px; white-space: nowrap; opacity: 0; pointer-events: none; transition: .15s; z-index: 30; }
   .mini-side .nav:hover::after { opacity: 1; }
+  .grow td { background: #f6f6f1; font-weight: 800; cursor: pointer; padding-top: 8px; padding-bottom: 8px; border-top: 2px solid var(--line); } .grow:hover td { background: #fffbea; }
+  .grow .gm { font-size: 12px; color: var(--ink2); font-weight: 600; margin-left: 10px; }
+  .wgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 12px; }
+  .wcard { border: 1px solid var(--line); border-radius: 16px; padding: 10px; display: grid; gap: 2px; align-content: start; }
+  .wh { display: flex; align-items: center; justify-content: space-between; padding: 2px 4px 8px; border-bottom: 1px solid var(--line); margin-bottom: 4px; }
+  .wrow { display: grid; grid-template-columns: minmax(0,1.3fr) minmax(0,1fr) 28px; grid-template-areas: "n b c" "e e e"; gap: 2px 8px; align-items: center; border: 0; background: none; text-align: left; padding: 6px 4px; border-radius: 10px; cursor: pointer; }
+  .wrow:hover { background: #fffbea; } .wn { grid-area: n; font-weight: 700; font-size: 13px; } .wc { grid-area: c; text-align: right; font-weight: 900; font-family: Archivo, sans-serif; }
+  .wb { grid-area: b; height: 8px; background: #f0f0eb; border-radius: 99px; overflow: hidden; } .wb i { display: block; height: 100%; border-radius: 99px; }
+  .we { grid-area: e; font-size: 11px; color: var(--ink3); font-weight: 700; }
   @media (max-width: 1150px) { .two { grid-template-columns: minmax(0,1fr); } }
   @media (max-width: 1000px) { .lay, .lay.mini-side { grid-template-columns: minmax(0,1fr); } .sidetg { display: none; } #side { position: static; margin-top: 12px; } #side .navs { display: flex; overflow-x: auto; } #side .nav { width: auto; flex: none; } .nav small, .sinfo { display: none; } .mini { grid-template-columns: repeat(2, minmax(0,1fr)); } }
   @media (max-width: 980px) { .kpis { grid-template-columns: repeat(3, minmax(0,1fr)); } }
@@ -239,12 +248,14 @@
       <div class="leg" id="yleg"></div>
     </section>
   </div>
+  <section class="panel" id="whereSec"></section>
   <section class="panel">
     <div class="phead"><h2>รายการรถ <span id="cnt" class="note" style="margin:0"></span></h2>
       <span class="note"><button class="btn l" id="edBtn" style="padding:6px 11px;margin-right:8px">✎ แก้ไขในตาราง</button>เรียงตาม
         <select id="sort" style="border:1px solid var(--line);border-radius:8px;padding:4px 6px;margin-left:4px">
           <option value="rem">ใกล้หมดสัญญาก่อน</option><option value="unit">หน่วยงาน / คลัง</option><option value="type">ประเภทรถ</option><option value="price">ค่าเช่ามาก → น้อย</option><option value="start">เริ่มสัญญาล่าสุด</option>
-        </select></span></div>
+        </select>
+        <span style="margin-left:10px">จัดกลุ่ม</span><select id="grp" style="border:1px solid var(--line);border-radius:8px;padding:4px 6px;margin-left:4px"><option value="unit">แยกตามหน่วยงาน</option><option value="">ไม่จัดกลุ่ม</option></select></span></div>
     <div class="tw"><table class="vt" id="vt"></table></div>
     <div class="more" id="more"></div>
   </section>
@@ -302,7 +313,7 @@ const CMP = FIELDS.flatMap(g => g[1].map(f => f[0])).filter(k => k !== "renew" &
 
 /* ---- ข้อมูล: ไฟล์ที่ฝังไว้ + ที่บันทึกบนเว็บ (Supabase mhe_vehicles, ไม่มีตาราง → localStorage) ---- */
 let OVR = {}, ONLINE = false, LAST = "";
-const S = { mini: (() => { try { return localStorage.getItem("pcg-mhe-side") === "mini"; } catch (e) { return false; } })(), tU: new Set(), tMode: "sum", view: (location.hash.slice(1) || "sum"), round: null, ed: false, bsh: 0, bed: false, sopen: new Set(), unit: "all", site: "all", type: "all", en: "all", bk: "all", year: "all", q: "", sort: "rem", lim: 60, open: new Set(["Logistics"]) };
+const S = { grp: "unit", gc: new Set(), mini: (() => { try { return localStorage.getItem("pcg-mhe-side") === "mini"; } catch (e) { return false; } })(), tU: new Set(), tMode: "sum", view: (location.hash.slice(1) || "sum"), round: null, ed: false, bsh: 0, bed: false, sopen: new Set(), unit: "all", site: "all", type: "all", en: "all", bk: "all", year: "all", q: "", sort: "rem", lim: 60, open: new Set(["Logistics"]) };
 function warn(msg) { $("warn").innerHTML = msg || ""; $("warn").classList.toggle("show", !!msg); }
 function toast(m) { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 2200); }
 function lsGet() { try { return JSON.parse(localStorage.getItem(LS) || "{}"); } catch (e) { return {}; } }
@@ -402,16 +413,17 @@ function render() {
   const prog = r => { if (!r.start || !r.end) return ""; const a = dOf(r.start), b = dOf(r.end), p = Math.min(100, Math.max(0, (0 - a) / (b - a) * 100)); return `<div class="prog" title="ผ่านไปแล้ว ${Math.round(p)}% ของสัญญา"><i style="width:${p}%;--c:${BK[bOf(r)][1]};background:var(--c)"></i></div>`; };
   $("vt").className = "vt";
   $("vt").innerHTML = `<thead><tr><th>คงเหลือ</th><th>หน่วยงาน / คลัง</th><th>ประเภท</th><th>รุ่น / ขนาด</th><th>Serial / เบอร์</th><th>สัญญา</th><th class="r">ค่าเช่า/เดือน</th></tr></thead><tbody>` +
-    (list.slice(0, S.lim).map(r => { const b = bOf(r), c = BK[b][1];
+    (LROWS(list).map(x => x.g ? x.g : (r => { const b = bOf(r), c = BK[b][1];
       return `<tr data-id="${esc(r.id)}"><td><span class="st" style="--c:${c}">${BK[b][0]}</span><div class="rem" style="--c:${c};margin-top:4px;font-size:13px">${remTxt(dOf(r.end))}</div></td>
         <td><div class="t1"><span class="uname" style="display:inline-flex"><i style="background:${ucol(r.unit || "ไม่ระบุ")}"></i>${esc(r.unit)}</span></div><div class="t2">${esc(r.site)}${r.ul ? " · UL " + esc(r.ul) : ""}</div></td>
         <td><div class="t1">${esc(r.type)}${r.energy ? `<span class="en ${r.energy}">${r.energy}</span>` : ""}</div><div class="t2">${esc(r.sup)}</div></td>
         <td><div class="t1">${esc(r.model)}</div><div class="t2">${esc([r.size, r.cap ? money(r.cap) + " กก." : ""].filter(Boolean).join(" · "))}</div></td>
         <td><div class="t1 num">${esc(r.serial) || "–"}${r._web ? '<span class="web">แก้บนเว็บ</span>' : ""}</div><div class="t2">${r.no ? "เบอร์ " + esc(r.no) : ""}</div></td>
         <td><div class="t2">${thd(r.start)} → <b style="color:var(--ink)">${thd(r.end)}</b></div>${prog(r)}</td>
-        <td class="r num">${money(r.price)}</td></tr>`; }).join("") || `<tr><td colspan="7" class="empty">ไม่มีรถตามตัวกรองนี้</td></tr>`) + "</tbody>";
-  $("more").innerHTML = list.length > S.lim ? `<button class="btn l" id="moreBtn">แสดงเพิ่ม (อีก ${list.length - S.lim} คัน)</button>` : "";
+        <td class="r num">${money(r.price)}</td></tr>`; })(x)).join("") || `<tr><td colspan="7" class="empty">ไม่มีรถตามตัวกรองนี้</td></tr>`) + "</tbody>";
+  $("more").innerHTML = S.grp === "unit" ? "" : list.length > S.lim ? `<button class="btn l" id="moreBtn">แสดงเพิ่ม (อีก ${list.length - S.lim} คัน)</button>` : "";
   if (S.ed) renderEdList(list);
+  renderWhere();
   $("edBtn").textContent = S.ed ? "✓ เสร็จ" : "✎ แก้ไขในตาราง"; $("edBtn").className = "btn " + (S.ed ? "p" : "l");
   if (!["sum", "renew", "spec", "bid", "trend"].includes(S.view)) S.view = "sum";
   document.querySelectorAll(".view").forEach(v => v.classList.toggle("on", v.dataset.v === S.view));
@@ -743,9 +755,36 @@ function renderTrend() {
     <div class="note" style="margin-top:8px">คำนวณจากรถที่อยู่ในข้อมูลตอนนี้ (${L.length} คัน) × ค่าเช่า/เดือนปัจจุบัน × จำนวนเดือนที่สัญญาครอบแต่ละปี · ปีเก่ามีเฉพาะรถที่ยังอยู่ในไฟล์ (รถที่คืนไปแล้วไม่ได้นับ) และใช้ค่าเช่าปัจจุบัน จึงอาจต่ำกว่ายอดที่จ่ายจริง · ปีถัดไปลดลงเพราะสัญญาที่หมดยังไม่ได้ต่อ</div></section>`;
 }
 
+/* ---- รายการรถแยกกลุ่มตามหน่วยงาน (ผู้ใช้ขอ 5 ต.ค.) ---- */
+function LROWS(list) {
+  if (S.grp !== "unit" || S.ed) return list.slice(0, S.lim);
+  const out = [];
+  units().forEach(u => { const a = list.filter(r => (r.unit || "ไม่ระบุ") === u); if (!a.length) return; const op = !S.gc.has(u);
+    const bk = k => a.filter(r => bOf(r) === k).length, warn = ["exp", "m3", "m6"].filter(bk).map(k => `<span class="bd" style="--c:${BK[k][1]};margin-left:6px" title="${BK[k][0]}">${bk(k)}</span>`).join("");
+    out.push({ g: `<tr class="grow" data-gu="${esc(u)}"><td colspan="7"><span class="tg">${op ? "▾" : "▸"}</span><span class="uname" style="display:inline-flex"><i style="background:${ucol(u)}"></i>${esc(u)}</span>
+      <span class="gm">${a.length} คัน · ${new Set(a.map(siteOf)).size} คลัง · ค่าเช่า ${money(a.reduce((s, r) => s + (+r.price || 0), 0))} บาท/เดือน</span>${warn}</td></tr>` });
+    if (op) out.push(...a); });
+  return out;
+}
+/* ---- ประเภทรถนี้อยู่ที่ไหนบ้าง (ผู้ใช้ขอ 5 ต.ค.) ---- */
+function renderWhere() {
+  const pool = ALL.filter(r => match(r, "unit")), ts = typesAll();
+  const head = `<div class="phead"><h2>รถแต่ละประเภทอยู่ที่ไหนบ้าง</h2><span class="note">เลือกประเภทรถ · ตามตัวกรองแบตด้านบน · กดคลังเพื่อดูรายการรถ</span></div>
+    <div class="rchips" style="margin-bottom:12px">${ts.map(t => { const n = ALL.filter(r => r.type === t && match(r, "type") && match(r, "unit")).length; return `<button class="chip ${S.type === t ? "on" : ""}" data-type="${esc(t)}">${esc(t)} <em>${n}</em></button>`; }).join("")}</div>`;
+  if (S.type === "all") { $("whereSec").innerHTML = head + `<div class="empty" style="padding:14px">เลือกประเภทรถด้านบน เพื่อดูว่ามีอยู่ที่หน่วยงาน / คลังไหนบ้าง</div>`; return; }
+  const a = pool.filter(r => r.type === S.type), us = units().filter(u => a.some(r => (r.unit || "ไม่ระบุ") === u));
+  const mx = Math.max(1, ...us.flatMap(u => sitesOf(u, a).map(s => a.filter(r => (r.unit || "ไม่ระบุ") === u && siteOf(r) === s).length)));
+  const enTxt = b => EN.map(e => { const n = b.filter(r => enOf(r) === e).length; return n ? `<em style="font-style:normal;color:${ECOL[e]}">${e === "Lead-Acid" ? "LA" : e === "Lithium" ? "Li" : e === "ไม่ระบุ" ? "?" : e} ${n}</em>` : ""; }).filter(Boolean).join(" · ");
+  $("whereSec").innerHTML = head + `<div class="mini" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:12px"><div class="f"><span>${esc(S.type)} ทั้งหมด</span><b>${a.length}</b><small>คัน</small></div><div class="f"><span>อยู่ใน</span><b>${us.length}<small style="font-size:14px"> หน่วยงาน · ${new Set(a.map(r => r.unit + "|" + siteOf(r))).size} คลัง</small></b><small>${enTxt(a)}</small></div><div class="f"><span>หมดสัญญาภายใน 6 เดือน</span><b style="color:var(--m3)">${a.filter(r => ["exp", "m3", "m6"].includes(bOf(r))).length}</b><small>คัน (รวมที่หมดแล้ว)</small></div></div>
+    <div class="wgrid">${us.map(u => { const b = a.filter(r => (r.unit || "ไม่ระบุ") === u);
+      return `<div class="wcard"><div class="wh"><span class="uname"><i style="background:${ucol(u)}"></i>${esc(u)}</span><b>${b.length} คัน</b></div>
+        ${sitesOf(u, b).map(s => { const c = b.filter(r => siteOf(r) === s), soon = c.filter(r => ["exp", "m3", "m6"].includes(bOf(r))).length;
+          return `<button class="wrow" data-u="${esc(u)}" data-s="${esc(s)}"><span class="wn">${esc(s)}</span><span class="wb"><i style="width:${c.length / mx * 100}%;background:${ucol(u)}"></i></span><span class="wc">${c.length}</span><span class="we">${enTxt(c)}${soon ? ` · <span style="color:var(--m3)">ใกล้หมด ${soon}</span>` : ""}</span></button>`; }).join("")}</div>`; }).join("")}</div>`;
+}
 /* ---- เหตุการณ์ ---- */
 document.addEventListener("click", async e => {
-  const t = e.target.closest("button,a[data-open],[data-unit],[data-tog],[data-s],[data-year],tr[data-sk],tr[data-id]"); if (!t) return;
+  const t = e.target.closest("button,a[data-open],[data-unit],[data-tog],[data-s],[data-year],tr[data-gu],tr[data-sk],tr[data-id]"); if (!t) return;
+  if (t.dataset.gu) { const u = t.dataset.gu; S.gc.has(u) ? S.gc.delete(u) : S.gc.add(u); render(); return; }
   if ("sidetg" in t.dataset) { S.mini = !S.mini; try { localStorage.setItem("pcg-mhe-side", S.mini ? "mini" : ""); } catch (e) {} render(); return; }
   if (t.dataset.tu != null && t.matches("[data-tu]")) { const u = t.dataset.tu; if (!u) S.tU.clear(); else S.tU.has(u) ? S.tU.delete(u) : S.tU.add(u); renderTrend(); return; }
   if (t.dataset.tm) { S.tMode = t.dataset.tm; renderTrend(); return; }
@@ -795,6 +834,7 @@ document.addEventListener("change", async e => { const el = e.target; if (!el.da
 document.addEventListener("input", e => { if (e.target.dataset && e.target.dataset.b && BDRAFT) bidInput(e.target); });
 $("q").addEventListener("input", e => { S.q = e.target.value.trim(); S.lim = 60; render(); });
 $("sort").addEventListener("change", e => { S.sort = e.target.value; render(); });
+$("grp").addEventListener("change", e => { S.grp = e.target.value; render(); });
 render();
 sbLoad().then(render);
 </script>
