@@ -7,41 +7,42 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap">
 <style>
-  /* Shift Schedule แผนกโครงการ (5 ต.ค.) · สไตล์ Portal · สีช่องตามไฟล์ Excel ต้นฉบับ (OFF แดง · Hol ฟ้า · 20 น้ำเงิน · ลา/OT เหลือง · Flex ชมพู) */
-  :root { --bg: #eef1f8; --ink: #161a33; --ink2: #545d7a; --ink3: #8a93ad; --line: #e3e7f1; --card: #fff;
-    --acc: #5b3fd6; --acc2: #3a24a8; --shadow: 0 10px 26px rgba(22,26,51,.09); --shadow-s: 0 4px 14px rgba(22,26,51,.07); }
+  /* Shift Schedule แผนกโครงการ (5 ต.ค.) · ธีมชมพูกุหลาบตามการ์ดใน Portal (ไม่ซ้ำ Dashboard อื่นที่เป็นกรม/ม่วง/teal) · หัวสว่าง การ์ดขาว · สีช่องตามไฟล์ Excel ต้นฉบับ (OFF แดง · Hol ฟ้า · 20 น้ำเงิน · ลา/OT เหลือง · Flex ชมพู) */
+  :root { --bg: #fbf4f7; --ink: #2a1621; --ink2: #6e5764; --ink3: #a48f9b; --line: #f1e3ea; --card: #fff;
+    --acc: #d6337f; --acc2: #861650; --tint: #ffe9f2; --shadow: 0 10px 26px rgba(134,22,80,.08); --shadow-s: 0 4px 14px rgba(134,22,80,.06); }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--ink); font-family: "IBM Plex Sans Thai", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
   button, select { font: inherit; }
   .num { font-family: Archivo, "IBM Plex Sans Thai", sans-serif; font-variant-numeric: tabular-nums; }
 
-  .hero { position: relative; overflow: hidden; padding: 20px clamp(16px,3vw,40px) 26px; color: #fff; border-radius: 0 0 34px 34px;
-    background: linear-gradient(150deg, #1a1440 0%, #241a5c 50%, #142a4a 100%); box-shadow: 0 18px 40px rgba(26,20,64,.3); }
+  .hero { position: relative; overflow: hidden; padding: 20px clamp(16px,3vw,40px) 26px; color: var(--ink); border-radius: 0 0 34px 34px;
+    background: linear-gradient(120deg, #ffe1ed 0%, #fff0f5 45%, #fff3e8 100%); border-bottom: 1px solid #f6d3e2; }
   .glow { position: absolute; border-radius: 999px; pointer-events: none; }
   .wrap { position: relative; max-width: 1500px; margin: 0 auto; display: grid; gap: 18px; }
   .top { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-  .back { display: inline-flex; align-items: center; gap: 8px; color: #fff; text-decoration: none; font-size: 14px; font-weight: 700; padding: 9px 16px 9px 12px; border-radius: 999px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.24); white-space: nowrap; }
-  .back:hover { background: rgba(255,255,255,.22); }
-  .logo { width: 48px; height: 48px; border-radius: 14px; background: #fff; color: var(--acc); display: grid; place-items: center; flex: none; box-shadow: 0 8px 20px rgba(0,0,0,.25); }
+  .back { display: inline-flex; align-items: center; gap: 8px; color: var(--acc2); text-decoration: none; font-size: 14px; font-weight: 700; padding: 9px 16px 9px 12px; border-radius: 999px; background: #fff; border: 1px solid #f3cfe0; white-space: nowrap; box-shadow: var(--shadow-s); }
+  .back:hover { background: var(--tint); }
+  .logo { width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(150deg, #d6337f, #861650); color: #fff; display: grid; place-items: center; flex: none; box-shadow: 0 8px 20px rgba(214,51,127,.35); }
   .ttl { display: grid; flex: 1 1 240px; min-width: 0; }
-  .kicker { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.7); }
-  h1 { margin: 0; font-family: Archivo, "IBM Plex Sans Thai", sans-serif; font-size: 28px; font-weight: 900; line-height: 1.2; }
-  .sub { font-size: 12.5px; color: rgba(255,255,255,.72); }
-  .mnav { display: inline-flex; align-items: center; gap: 6px; padding: 5px; border-radius: 16px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); flex-wrap: wrap; }
-  .mnav button, .mnav select { border: 0; border-radius: 11px; padding: 8px 12px; font-weight: 700; font-size: 14px; cursor: pointer; background: transparent; color: #fff; }
-  .mnav button:hover { background: rgba(255,255,255,.14); }
-  .mnav select { background: #fff; color: var(--ink); }
+  .kicker { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--acc); }
+  h1 { margin: 0; font-family: Archivo, "IBM Plex Sans Thai", sans-serif; font-size: 28px; font-weight: 900; line-height: 1.2; color: var(--acc2); }
+  .sub { font-size: 12.5px; color: var(--ink2); }
+  .mnav { display: inline-flex; align-items: center; gap: 6px; padding: 5px; border-radius: 16px; background: #fff; border: 1px solid #f3cfe0; flex-wrap: wrap; box-shadow: var(--shadow-s); }
+  .mnav button, .mnav select { border: 0; border-radius: 11px; padding: 8px 12px; font-weight: 700; font-size: 14px; cursor: pointer; background: transparent; color: var(--acc2); }
+  .mnav button:hover { background: var(--tint); }
+  .mnav select { background: var(--tint); color: var(--acc2); }
   .mnav .cur { min-width: 150px; text-align: center; font-size: 16px; font-weight: 800; }
-  .mnav .now { background: #fff; color: var(--acc2); }
+  .mnav .now { background: var(--acc); color: #fff; }
 
   .today { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; }
-  .tcard { border-radius: 20px; padding: 14px 16px; color: #fff; min-width: 0; display: grid; gap: 6px; align-content: start; }
-  .tcard .l { font-size: 13px; font-weight: 700; opacity: .92; display: flex; align-items: center; gap: 6px; }
-  .tcard .v { font-family: Archivo, sans-serif; font-size: 34px; font-weight: 900; line-height: 1; }
-  .tcard .v small { font-family: "IBM Plex Sans Thai", sans-serif; font-size: 14px; font-weight: 600; margin-left: 4px; }
-  .tcard .who { font-size: 12.5px; line-height: 1.5; opacity: .95; }
-  .dayhd { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; font-size: 14px; color: rgba(255,255,255,.85); }
-  .dayhd b { font-size: 18px; color: #fff; }
+  .tcard { border-radius: 20px; padding: 14px 16px; background: #fff; color: var(--ink); min-width: 0; display: grid; gap: 6px; align-content: start; box-shadow: var(--shadow-s); border-top: 5px solid var(--c); }
+  .tcard .l { font-size: 13px; font-weight: 800; color: var(--c); display: flex; align-items: center; gap: 8px; }
+  .tcard .l i { width: 26px; height: 26px; border-radius: 9px; background: var(--c); color: #fff; display: grid; place-items: center; font-style: normal; font-size: 13px; }
+  .tcard .v { font-family: Archivo, sans-serif; font-size: 34px; font-weight: 900; line-height: 1; color: var(--c); }
+  .tcard .v small { color: var(--ink2); font-family: "IBM Plex Sans Thai", sans-serif; font-size: 14px; font-weight: 600; margin-left: 4px; }
+  .tcard .who { font-size: 12.5px; line-height: 1.5; color: var(--ink2); }
+  .dayhd { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; font-size: 14px; color: var(--ink2); }
+  .dayhd b { font-size: 18px; color: var(--ink); }
 
   main { max-width: 1500px; margin: 0 auto; padding: 22px clamp(16px,3vw,40px) 48px; display: grid; gap: 18px; }
   .panel { background: var(--card); border-radius: 22px; box-shadow: var(--shadow); padding: 16px 18px; min-width: 0; }
@@ -53,41 +54,41 @@
   .tw { overflow-x: auto; border-radius: 14px; border: 1px solid var(--line); }
   table { border-collapse: separate; border-spacing: 0; width: max-content; min-width: 100%; font-size: 13px; }
   th, td { border-bottom: 1px solid var(--line); text-align: center; padding: 0; }
-  thead th { background: #f6f7fc; font-size: 11.5px; font-weight: 800; color: var(--ink2); height: 22px; position: sticky; top: 0; }
+  thead th { background: #fdf2f6; font-size: 11.5px; font-weight: 800; color: var(--ink2); height: 22px; position: sticky; top: 0; }
   thead tr:nth-child(2) th { top: 22px; font-weight: 600; color: var(--ink3); }
   th.dy { width: 38px; min-width: 38px; cursor: pointer; }
-  th.dy:hover { background: #ece8ff; }
-  th.we, td.we { background: #f3f4f9; }
+  th.dy:hover { background: var(--tint); }
+  th.we, td.we { background: #f7f1f4; }
   /* วันที่เลือก (ออกแบบใหม่ 5 ต.ค. — ไม่ใช้กรอบ): ทั้งคอลัมน์พื้นม่วงอ่อน + วันที่บนหัวเป็นวงกลมม่วง · วันนี้ = จุดเล็กใต้เลข */
   th.dy .dn { display: inline-grid; place-items: center; min-width: 22px; height: 22px; border-radius: 999px; }
   thead tr:first-child th.dy { height: 30px; }
   thead tr:nth-child(2) th { top: 30px; }
-  th.sel, td.cs { background: #f1edff !important; }
-  th.sel .dn { background: linear-gradient(135deg, #7c5cff, var(--acc)); color: #fff; box-shadow: 0 3px 8px rgba(91,63,214,.35); }
+  th.sel, td.cs { background: var(--tint) !important; }
+  th.sel .dn { background: linear-gradient(135deg, #ef5a9b, var(--acc)); color: #fff; box-shadow: 0 3px 8px rgba(214,51,127,.35); }
   th.sel.th2 { color: var(--acc2) !important; font-weight: 800; }
   th.tdy .dn { position: relative; color: var(--acc2); }
   th.tdy .dn::after { content: ""; position: absolute; bottom: -4px; left: 50%; width: 5px; height: 5px; margin-left: -2.5px; border-radius: 50%; background: #ff7a45; }
   .nm { position: sticky; left: 0; z-index: 2; background: #fff; text-align: left; padding: 8px 12px; min-width: 230px; border-right: 1px solid var(--line); }
-  thead .nm { z-index: 3; background: #f6f7fc; }
+  thead .nm { z-index: 3; background: #fdf2f6; }
   .nm b { display: block; font-size: 14px; white-space: nowrap; }
   .nm small { font-size: 11.5px; color: var(--ink2); white-space: nowrap; }
   td.c { height: 44px; }
   td.c span { display: inline-grid; place-items: center; width: 32px; height: 30px; border-radius: 8px; font-size: 11.5px; font-weight: 800; font-family: Archivo, "IBM Plex Sans Thai", sans-serif; }
 
-  td.sum { font-weight: 800; font-size: 13px; min-width: 50px; padding: 0 6px; background: #fafbfe; }
+  td.sum { font-weight: 800; font-size: 13px; min-width: 50px; padding: 0 6px; background: #fdf8fa; }
   th.sum { min-width: 50px; padding: 0 6px; }
-  tr:hover td.nm { background: #f7f5ff; }
+  tr:hover td.nm { background: #fff6fa; }
   .note { font-size: 12px; color: var(--ink2); }
   .empty { padding: 30px; text-align: center; color: var(--ink2); }
 
   /* โหมดแก้ไข (ผู้ใช้ขอ 5 ต.ค.) */
   .phead .legend { order: 3; flex-basis: 100%; margin-left: 0; }
-  .ebtn { margin-left: auto; border: 0; border-radius: 12px; padding: 9px 14px; font-weight: 800; font-size: 13.5px; cursor: pointer; background: #efeaff; color: var(--acc2); display: inline-flex; align-items: center; gap: 6px; }
+  .ebtn { margin-left: auto; border: 0; border-radius: 12px; padding: 9px 14px; font-weight: 800; font-size: 13.5px; cursor: pointer; background: var(--tint); color: var(--acc2); display: inline-flex; align-items: center; gap: 6px; }
   .xbtn { background: #e3f6ec; color: #0a6b45; } .xbtn + .ebtn { margin-left: 0; }
-  .ebtn.on { background: var(--acc); color: #fff; box-shadow: 0 8px 18px rgba(91,63,214,.35); }
-  .editing td.c { cursor: pointer; } .editing td.c:hover { background: #f1edff; }
+  .ebtn.on { background: var(--acc); color: #fff; box-shadow: 0 8px 18px rgba(214,51,127,.35); }
+  .editing td.c { cursor: pointer; } .editing td.c:hover { background: var(--tint); }
   td.c { position: relative; } td.c .ed { position: absolute; top: 4px; right: 3px; width: 6px; height: 6px; border-radius: 50%; background: #ff8a00; }
-  .ebar { display: none; align-items: center; gap: 10px; flex-wrap: wrap; margin: -2px 0 12px; padding: 10px 12px; border-radius: 12px; background: #f4f0ff; color: #3a24a8; font-size: 13px; font-weight: 600; }
+  .ebar { display: none; align-items: center; gap: 10px; flex-wrap: wrap; margin: -2px 0 12px; padding: 10px 12px; border-radius: 12px; background: var(--tint); color: var(--acc2); font-size: 13px; font-weight: 600; }
   .editing .ebar { display: flex; }
   .pop { position: fixed; z-index: 50; background: #fff; border-radius: 16px; box-shadow: 0 18px 44px rgba(22,26,51,.28); padding: 12px; width: 268px; display: none; gap: 10px; }
   .pop.show { display: grid; }
@@ -101,7 +102,7 @@
   .toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); background: #161a33; color: #fff; padding: 10px 16px; border-radius: 12px; font-size: 13.5px; font-weight: 600; display: none; z-index: 60; }
   /* สรุปประจำเดือน */
   .kp { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 10px; margin-bottom: 6px; }
-  .kc { border-radius: 16px; padding: 12px 14px; background: #f6f7fc; border-left: 5px solid var(--c); display: grid; gap: 2px; }
+  .kc { border-radius: 16px; padding: 12px 14px; background: #fdf6f9; border-left: 5px solid var(--c); display: grid; gap: 2px; }
   .kc .l { font-size: 12.5px; font-weight: 700; color: var(--ink2); } .kc .v { font-family: Archivo, sans-serif; font-size: 26px; font-weight: 900; color: var(--c); }
   .kc .s { font-size: 11.5px; color: var(--ink3); font-weight: 600; }
   .sh3 { margin: 18px 0 8px; font-size: 15px; } .sh3 small { font-size: 12px; color: var(--ink2); font-weight: 600; margin-left: 6px; }
@@ -126,8 +127,8 @@
 </head>
 <body>
 <header class="hero">
-  <div class="glow" style="top:-45%;left:-10%;width:60vw;height:60vw;background:radial-gradient(circle,rgba(124,92,255,.45),rgba(124,92,255,0) 66%)"></div>
-  <div class="glow" style="top:-50%;right:-12%;width:50vw;height:50vw;background:radial-gradient(circle,rgba(26,200,196,.3),rgba(26,200,196,0) 66%)"></div>
+  <div class="glow" style="top:-45%;left:-10%;width:60vw;height:60vw;background:radial-gradient(circle,rgba(214,51,127,.16),rgba(214,51,127,0) 66%)"></div>
+  <div class="glow" style="top:-50%;right:-12%;width:50vw;height:50vw;background:radial-gradient(circle,rgba(255,160,90,.18),rgba(255,160,90,0) 66%)"></div>
   <div class="wrap">
     <div class="top">
       <a class="back" href="../index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>หน้าหลัก</a>
@@ -249,14 +250,14 @@ function render() {
   /* สรุปวันที่เลือก */
   const D = S.sel, by = g => M.rows.filter(r => { const k = codeOf(cellVal(r, D)); return k && g.includes(k.grp); });
   const first = n => n.replace(/^คุณ/, "").split(" ")[0];
-  const card = (bg, l, list, extra) => `<div class="tcard" style="background:${bg}"><div class="l">${l}</div><div class="v">${list.length}<small>คน</small></div><div class="who">${list.map(r => first(r.n) + (extra ? extra(r) : "")).join(" · ") || "—"}</div></div>`;
+  const card = (c, ic, l, list, extra) => `<div class="tcard" style="--c:${c}"><div class="l"><i>${ic}</i>${l}</div><div class="v">${list.length}<small>คน</small></div><div class="who">${list.map(r => first(r.n) + (extra ? extra(r) : "")).join(" · ") || "—"}</div></div>`;
   const tag = r => { const v = cellVal(r, D); return v && v !== "8" && v !== "OFF" ? ` (${short(v)})` : ""; };
   $("dayhd").innerHTML = `<b>${isNow && D === TODAY.d ? "วันนี้ · " : ""}${["วันอาทิตย์","วันจันทร์","วันอังคาร","วันพุธ","วันพฤหัสบดี","วันศุกร์","วันเสาร์"][wd(D)]} ${D} ${TH_M[S.m - 1]} ${S.y + 543}</b><span>กดวันที่ในตารางเพื่อเปลี่ยนวัน</span>`;
   $("today").innerHTML =
-    card("linear-gradient(150deg,#2f6bea,#1a44b8)", "☀ กะเช้า (08:00)", by(["day", "ot"]), tag) +
-    card("linear-gradient(150deg,#0b6fb8,#07457a)", "☾ กะดึก (17:00 / 20:00)", by(["night"]), r => ` (${cellVal(r, D)}:00)`) +
-    card("linear-gradient(150deg,#f0553a,#b8260f)", "วันหยุด", by(["off"]), tag) +
-    card("linear-gradient(150deg,#e2a20b,#a86f00)", "ลา / ขาดงาน", by(["leave"]), tag);
+    card("#2f6bea", "☀", "กะเช้า (08:00)", by(["day", "ot"]), tag) +
+    card("#0b5f9e", "☾", "กะดึก (17:00 / 20:00)", by(["night"]), r => ` (${cellVal(r, D)}:00)`) +
+    card("#e0402a", "●", "วันหยุด", by(["off"]), tag) +
+    card("#b07900", "✎", "ลา / ขาดงาน", by(["leave"]), tag);
   renderSum(M, days);
   document.body.classList.toggle("editing", S.edit);
   document.querySelector("#editBtn span").textContent = S.edit ? "✓ เสร็จ" : "แก้ไขตาราง";
@@ -278,7 +279,7 @@ function renderSum(M, days) {
     if (["day", "night", "ot"].includes(x)) work++; if (c === "OFF") off++; if (c === "Flex") flex++; if (c === "Hol") hol++;
     if (c === "ลา") leave++; if (c === "ขาดงาน") absent++; if (c === "OT") ot++; }));
   const kc = (l, val, c, sub) => `<div class="kc" style="--c:${c}"><span class="l">${l}</span><span class="v">${val}</span><span class="s">${sub}</span></div>`;
-  $("kp").innerHTML = kc("พนักงาน", M.rows.length, "#5b3fd6", "คนในตารางเดือนนี้") + kc("วันทำงานรวม", work, "#2f6bea", "คน-วัน (รวม OT)") +
+  $("kp").innerHTML = kc("พนักงาน", M.rows.length, "#d6337f", "คนในตารางเดือนนี้") + kc("วันทำงานรวม", work, "#2f6bea", "คน-วัน (รวม OT)") +
     kc("วันหยุดประจำสัปดาห์", off + flex, "#ff3b30", "OFF " + off + " · Flex " + flex) + kc("วันหยุดนักขัตฤกษ์", hol, "#00a3dd", "คน-วัน") +
     kc("ลา / ขาดงาน", leave + absent, "#c99a00", "ลา " + leave + " · ขาดงาน " + absent) + kc("ทำ OT", ot, "#a86f00", "คน-วัน");
   /* จำนวนคนทำงานรายวัน */
