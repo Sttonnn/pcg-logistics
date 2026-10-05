@@ -22,4 +22,8 @@ for ws in wb.worksheets:
             cur["rows"].append({"id": str(code).strip(), "n": re.sub(r"\s+", " ", str(ws.cell(r, 3).value or "")).strip(),
                 "dept": str(ws.cell(r, 6).value or "").strip(), "pos": str(ws.cell(r, 7).value or "").strip(), "c": cells})
     out[year] = months
+# แสดงเฉพาะตั้งแต่ มี.ค. 2569 (2026-03) เป็นต้นไป (ผู้ใช้สั่ง 5 ต.ค.)
+START = (2026, 3)
+out = {y: [m for m in ms if (y, m["m"]) >= START] for y, ms in out.items()}
+out = {y: ms for y, ms in out.items() if ms}
 print(json.dumps(out, ensure_ascii=False, separators=(",", ":")))
