@@ -7,27 +7,29 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap">
 <style>
-  /* Shift Schedule แผนกโครงการ (5 ต.ค.) · ธีมชมพูกุหลาบตามการ์ดใน Portal (ไม่ซ้ำ Dashboard อื่นที่เป็นกรม/ม่วง/teal) · หัวสว่าง การ์ดขาว · สีช่องตามไฟล์ Excel ต้นฉบับ (OFF แดง · Hol ฟ้า · 20 น้ำเงิน · ลา/OT เหลือง · Flex ชมพู) */
-  :root { --bg: #fbf4f7; --ink: #2a1621; --ink2: #6e5764; --ink3: #a48f9b; --line: #f1e3ea; --card: #fff;
-    --acc: #d6337f; --acc2: #861650; --tint: #ffe9f2; --shadow: 0 10px 26px rgba(134,22,80,.08); --shadow-s: 0 4px 14px rgba(134,22,80,.06); }
+  /* Shift Schedule แผนกโครงการ (5 ต.ค.) · ธีมน้ำตาลกาแฟ (ไม่ซ้ำ Dashboard อื่น) · หัวสว่าง การ์ดขาว · สีช่องตามไฟล์ Excel ต้นฉบับ (OFF แดง · Hol ฟ้า · 20 น้ำเงิน · ลา/OT เหลือง · Flex ชมพู) */
+  /* ธีม: เปลี่ยนสีทั้งหน้าที่นี่ · น้ำตาลกาแฟ + ทราย (ผู้ใช้เลือก 5 ต.ค. แทนชมพู) */
+  :root { --ink: #2b1d12; --ink2: #6b5a4b; --ink3: #a39282; --card: #fff; --shadow: 0 10px 26px var(--sh1); --shadow-s: 0 4px 14px var(--sh2);
+    --bg: #f7f2ec; --line: #ece2d6; --acc: #9a5b2e; --acc2: #5c3417; --acc3: #c07a43; --tint: #f6e9db; --bd: #e8d6c2; --head: #f8f0e7; --soft: #fbf7f2; --we: #f2ebe2;
+    --h1: #f4e3cf; --h2: #faf3ea; --h3: #f3ece0; --g1: rgba(154,91,46,.14); --g2: rgba(220,170,90,.16); --accsh: rgba(154,91,46,.35); --sh1: rgba(92,52,23,.08); --sh2: rgba(92,52,23,.06); }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--ink); font-family: "IBM Plex Sans Thai", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
   button, select { font: inherit; }
   .num { font-family: Archivo, "IBM Plex Sans Thai", sans-serif; font-variant-numeric: tabular-nums; }
 
   .hero { position: relative; overflow: hidden; padding: 20px clamp(16px,3vw,40px) 26px; color: var(--ink); border-radius: 0 0 34px 34px;
-    background: linear-gradient(120deg, #ffe1ed 0%, #fff0f5 45%, #fff3e8 100%); border-bottom: 1px solid #f6d3e2; }
+    background: linear-gradient(120deg, var(--h1) 0%, var(--h2) 45%, var(--h3) 100%); border-bottom: 1px solid var(--bd); }
   .glow { position: absolute; border-radius: 999px; pointer-events: none; }
   .wrap { position: relative; max-width: 1500px; margin: 0 auto; display: grid; gap: 18px; }
   .top { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-  .back { display: inline-flex; align-items: center; gap: 8px; color: var(--acc2); text-decoration: none; font-size: 14px; font-weight: 700; padding: 9px 16px 9px 12px; border-radius: 999px; background: #fff; border: 1px solid #f3cfe0; white-space: nowrap; box-shadow: var(--shadow-s); }
+  .back { display: inline-flex; align-items: center; gap: 8px; color: var(--acc2); text-decoration: none; font-size: 14px; font-weight: 700; padding: 9px 16px 9px 12px; border-radius: 999px; background: #fff; border: 1px solid var(--bd); white-space: nowrap; box-shadow: var(--shadow-s); }
   .back:hover { background: var(--tint); }
-  .logo { width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(150deg, #d6337f, #861650); color: #fff; display: grid; place-items: center; flex: none; box-shadow: 0 8px 20px rgba(214,51,127,.35); }
+  .logo { width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(150deg, var(--acc), var(--acc2)); color: #fff; display: grid; place-items: center; flex: none; box-shadow: 0 8px 20px var(--accsh); }
   .ttl { display: grid; flex: 1 1 240px; min-width: 0; }
   .kicker { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--acc); }
   h1 { margin: 0; font-family: Archivo, "IBM Plex Sans Thai", sans-serif; font-size: 28px; font-weight: 900; line-height: 1.2; color: var(--acc2); }
   .sub { font-size: 12.5px; color: var(--ink2); }
-  .mnav { display: inline-flex; align-items: center; gap: 6px; padding: 5px; border-radius: 16px; background: #fff; border: 1px solid #f3cfe0; flex-wrap: wrap; box-shadow: var(--shadow-s); }
+  .mnav { display: inline-flex; align-items: center; gap: 6px; padding: 5px; border-radius: 16px; background: #fff; border: 1px solid var(--bd); flex-wrap: wrap; box-shadow: var(--shadow-s); }
   .mnav button, .mnav select { border: 0; border-radius: 11px; padding: 8px 12px; font-weight: 700; font-size: 14px; cursor: pointer; background: transparent; color: var(--acc2); }
   .mnav button:hover { background: var(--tint); }
   .mnav select { background: var(--tint); color: var(--acc2); }
@@ -54,30 +56,30 @@
   .tw { overflow-x: auto; border-radius: 14px; border: 1px solid var(--line); }
   table { border-collapse: separate; border-spacing: 0; width: max-content; min-width: 100%; font-size: 13px; }
   th, td { border-bottom: 1px solid var(--line); text-align: center; padding: 0; }
-  thead th { background: #fdf2f6; font-size: 11.5px; font-weight: 800; color: var(--ink2); height: 22px; position: sticky; top: 0; }
+  thead th { background: var(--head); font-size: 11.5px; font-weight: 800; color: var(--ink2); height: 22px; position: sticky; top: 0; }
   thead tr:nth-child(2) th { top: 22px; font-weight: 600; color: var(--ink3); }
   th.dy { width: 38px; min-width: 38px; cursor: pointer; }
   th.dy:hover { background: var(--tint); }
-  th.we, td.we { background: #f7f1f4; }
+  th.we, td.we { background: var(--we); }
   /* วันที่เลือก (ออกแบบใหม่ 5 ต.ค. — ไม่ใช้กรอบ): ทั้งคอลัมน์พื้นม่วงอ่อน + วันที่บนหัวเป็นวงกลมม่วง · วันนี้ = จุดเล็กใต้เลข */
   th.dy .dn { display: inline-grid; place-items: center; min-width: 22px; height: 22px; border-radius: 999px; }
   thead tr:first-child th.dy { height: 30px; }
   thead tr:nth-child(2) th { top: 30px; }
   th.sel, td.cs { background: var(--tint) !important; }
-  th.sel .dn { background: linear-gradient(135deg, #ef5a9b, var(--acc)); color: #fff; box-shadow: 0 3px 8px rgba(214,51,127,.35); }
+  th.sel .dn { background: linear-gradient(135deg, var(--acc3), var(--acc)); color: #fff; box-shadow: 0 3px 8px var(--accsh); }
   th.sel.th2 { color: var(--acc2) !important; font-weight: 800; }
   th.tdy .dn { position: relative; color: var(--acc2); }
   th.tdy .dn::after { content: ""; position: absolute; bottom: -4px; left: 50%; width: 5px; height: 5px; margin-left: -2.5px; border-radius: 50%; background: #ff7a45; }
   .nm { position: sticky; left: 0; z-index: 2; background: #fff; text-align: left; padding: 8px 12px; min-width: 230px; border-right: 1px solid var(--line); }
-  thead .nm { z-index: 3; background: #fdf2f6; }
+  thead .nm { z-index: 3; background: var(--head); }
   .nm b { display: block; font-size: 14px; white-space: nowrap; }
   .nm small { font-size: 11.5px; color: var(--ink2); white-space: nowrap; }
   td.c { height: 44px; }
   td.c span { display: inline-grid; place-items: center; width: 32px; height: 30px; border-radius: 8px; font-size: 11.5px; font-weight: 800; font-family: Archivo, "IBM Plex Sans Thai", sans-serif; }
 
-  td.sum { font-weight: 800; font-size: 13px; min-width: 50px; padding: 0 6px; background: #fdf8fa; }
+  td.sum { font-weight: 800; font-size: 13px; min-width: 50px; padding: 0 6px; background: var(--soft); }
   th.sum { min-width: 50px; padding: 0 6px; }
-  tr:hover td.nm { background: #fff6fa; }
+  tr:hover td.nm { background: var(--soft); }
   .note { font-size: 12px; color: var(--ink2); }
   .empty { padding: 30px; text-align: center; color: var(--ink2); }
 
@@ -85,7 +87,7 @@
   .phead .legend { order: 3; flex-basis: 100%; margin-left: 0; }
   .ebtn { margin-left: auto; border: 0; border-radius: 12px; padding: 9px 14px; font-weight: 800; font-size: 13.5px; cursor: pointer; background: var(--tint); color: var(--acc2); display: inline-flex; align-items: center; gap: 6px; }
   .xbtn { background: #e3f6ec; color: #0a6b45; } .xbtn + .ebtn { margin-left: 0; }
-  .ebtn.on { background: var(--acc); color: #fff; box-shadow: 0 8px 18px rgba(214,51,127,.35); }
+  .ebtn.on { background: var(--acc); color: #fff; box-shadow: 0 8px 18px var(--accsh); }
   .editing td.c { cursor: pointer; } .editing td.c:hover { background: var(--tint); }
   td.c { position: relative; } td.c .ed { position: absolute; top: 4px; right: 3px; width: 6px; height: 6px; border-radius: 50%; background: #ff8a00; }
   .ebar { display: none; align-items: center; gap: 10px; flex-wrap: wrap; margin: -2px 0 12px; padding: 10px 12px; border-radius: 12px; background: var(--tint); color: var(--acc2); font-size: 13px; font-weight: 600; }
@@ -102,7 +104,7 @@
   .toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); background: #161a33; color: #fff; padding: 10px 16px; border-radius: 12px; font-size: 13.5px; font-weight: 600; display: none; z-index: 60; }
   /* สรุปประจำเดือน */
   .kp { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 10px; margin-bottom: 6px; }
-  .kc { border-radius: 16px; padding: 12px 14px; background: #fdf6f9; border-left: 5px solid var(--c); display: grid; gap: 2px; }
+  .kc { border-radius: 16px; padding: 12px 14px; background: var(--soft); border-left: 5px solid var(--c); display: grid; gap: 2px; }
   .kc .l { font-size: 12.5px; font-weight: 700; color: var(--ink2); } .kc .v { font-family: Archivo, sans-serif; font-size: 26px; font-weight: 900; color: var(--c); }
   .kc .s { font-size: 11.5px; color: var(--ink3); font-weight: 600; }
   .sh3 { margin: 18px 0 8px; font-size: 15px; } .sh3 small { font-size: 12px; color: var(--ink2); font-weight: 600; margin-left: 6px; }
@@ -127,8 +129,8 @@
 </head>
 <body>
 <header class="hero">
-  <div class="glow" style="top:-45%;left:-10%;width:60vw;height:60vw;background:radial-gradient(circle,rgba(214,51,127,.16),rgba(214,51,127,0) 66%)"></div>
-  <div class="glow" style="top:-50%;right:-12%;width:50vw;height:50vw;background:radial-gradient(circle,rgba(255,160,90,.18),rgba(255,160,90,0) 66%)"></div>
+  <div class="glow" style="top:-45%;left:-10%;width:60vw;height:60vw;background:radial-gradient(circle,var(--g1),transparent 66%)"></div>
+  <div class="glow" style="top:-50%;right:-12%;width:50vw;height:50vw;background:radial-gradient(circle,var(--g2),transparent 66%)"></div>
   <div class="wrap">
     <div class="top">
       <a class="back" href="../index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>หน้าหลัก</a>
@@ -279,7 +281,7 @@ function renderSum(M, days) {
     if (["day", "night", "ot"].includes(x)) work++; if (c === "OFF") off++; if (c === "Flex") flex++; if (c === "Hol") hol++;
     if (c === "ลา") leave++; if (c === "ขาดงาน") absent++; if (c === "OT") ot++; }));
   const kc = (l, val, c, sub) => `<div class="kc" style="--c:${c}"><span class="l">${l}</span><span class="v">${val}</span><span class="s">${sub}</span></div>`;
-  $("kp").innerHTML = kc("พนักงาน", M.rows.length, "#d6337f", "คนในตารางเดือนนี้") + kc("วันทำงานรวม", work, "#2f6bea", "คน-วัน (รวม OT)") +
+  $("kp").innerHTML = kc("พนักงาน", M.rows.length, "var(--acc)", "คนในตารางเดือนนี้") + kc("วันทำงานรวม", work, "#2f6bea", "คน-วัน (รวม OT)") +
     kc("วันหยุดประจำสัปดาห์", off + flex, "#ff3b30", "OFF " + off + " · Flex " + flex) + kc("วันหยุดนักขัตฤกษ์", hol, "#00a3dd", "คน-วัน") +
     kc("ลา / ขาดงาน", leave + absent, "#c99a00", "ลา " + leave + " · ขาดงาน " + absent) + kc("ทำ OT", ot, "#a86f00", "คน-วัน");
   /* จำนวนคนทำงานรายวัน */
