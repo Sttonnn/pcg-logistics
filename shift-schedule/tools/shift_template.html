@@ -91,6 +91,22 @@
   .warn { display: none; padding: 10px 12px; border-radius: 12px; background: #fff4dd; color: #8a5200; font-size: 12.5px; line-height: 1.6; margin-bottom: 12px; }
   .warn code { background: #fff; padding: 1px 5px; border-radius: 5px; font-size: 11.5px; }
   .toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); background: #161a33; color: #fff; padding: 10px 16px; border-radius: 12px; font-size: 13.5px; font-weight: 600; display: none; z-index: 60; }
+  /* สรุปประจำเดือน */
+  .kp { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 10px; margin-bottom: 6px; }
+  .kc { border-radius: 16px; padding: 12px 14px; background: #f6f7fc; border-left: 5px solid var(--c); display: grid; gap: 2px; }
+  .kc .l { font-size: 12.5px; font-weight: 700; color: var(--ink2); } .kc .v { font-family: Archivo, sans-serif; font-size: 26px; font-weight: 900; color: var(--c); }
+  .kc .s { font-size: 11.5px; color: var(--ink3); font-weight: 600; }
+  .sh3 { margin: 18px 0 8px; font-size: 15px; } .sh3 small { font-size: 12px; color: var(--ink2); font-weight: 600; margin-left: 6px; }
+  .cov { padding: 12px 10px 6px; }
+  .cgrid { display: grid; gap: 4px; align-items: end; width: max-content; min-width: 100%; }
+  .ccol { display: grid; justify-items: center; gap: 4px; cursor: pointer; }
+  .ccol .n { font-size: 11px; font-weight: 800; color: var(--ink2); } .ccol .n.low { color: #fff; background: #e5482b; border-radius: 6px; padding: 0 4px; }
+  .cbar { width: 22px; height: 96px; border-radius: 6px; background: #eef0f6; display: flex; flex-direction: column-reverse; overflow: hidden; }
+  .cbar i { display: block; width: 100%; }
+  .ccol .d { font-size: 10.5px; font-weight: 700; color: var(--ink3); } .ccol.we .d { color: #c1271d; } .ccol.sel .d { color: #fff; background: var(--acc); border-radius: 5px; padding: 0 3px; }
+  table.ps { font-size: 13px; } table.ps th { padding: 8px 10px; height: auto; } table.ps td { padding: 8px 10px; font-weight: 700; } table.ps td.nm { font-weight: 400; }
+  table.ps .z { color: #c3c8d6; font-weight: 600; }
+  @media (max-width: 1100px) { .kp { grid-template-columns: repeat(3, minmax(0,1fr)); } }
   @media (max-width: 1100px) { .today { grid-template-columns: repeat(2, minmax(0,1fr)); } }
   @media (max-width: 760px) {
     .hero { padding: 16px 14px 20px; border-radius: 0 0 24px 24px; } h1 { font-size: 22px; }
@@ -130,6 +146,14 @@
     <div class="ebar">กดช่องในตารางเพื่อเปลี่ยนกะ · บันทึกทันที ทุกคนเห็นตรงกัน · จุดส้ม = ช่องที่แก้บนเว็บ (ต่างจากไฟล์ Excel) <span id="ecount" style="margin-left:auto"></span></div>
     <div class="tw"><table id="tbl"></table></div>
     <p class="note" style="margin:10px 2px 0">กดที่วันที่ด้านบนตาราง เพื่อดูว่าวันนั้นใครเข้ากะไหน · กด "แก้ไขตาราง" เพื่อเปลี่ยนกะรายช่อง · 8 / 17 / 20 / 6 = เวลาเข้างาน (08:00 / 17:00 / 20:00 / 06:00) · OFF = วันหยุดประจำสัปดาห์ · Flex = วันหยุดเพิ่มประจำสัปดาห์ · Hol = วันหยุดนักขัตฤกษ์</p>
+  </section>
+  <section class="panel" id="sumSec">
+    <div class="phead"><h2>สรุปประจำเดือน <span id="sMonth" style="color:var(--acc)"></span></h2><span class="note" style="margin-left:auto">นับจากรหัสในตาราง (รวมที่แก้บนเว็บ)</span></div>
+    <div class="kp" id="kp"></div>
+    <h3 class="sh3">จำนวนคนเข้างานรายวัน <small>แท่ง = คนที่ทำงานวันนั้น แยกกะ · ตัวเลขแดง = วันธรรมดาที่คนทำงานน้อยกว่า <span id="minLbl"></span> คน (ไม่นับเสาร์-อาทิตย์และวันหยุดนักขัตฤกษ์)</small></h3>
+    <div class="cov tw" id="cov"></div>
+    <h3 class="sh3">สรุปรายคน</h3>
+    <div class="tw"><table class="ps" id="ps"></table></div>
   </section>
   <p class="note">ข้อมูลจากไฟล์ "ตารางปฏิบัติงาน" แผนกโครงการ · อัปเดตโดยส่งไฟล์ Excel ใหม่ให้โชยุ</p>
 </main>
@@ -224,6 +248,7 @@ function render() {
     card("linear-gradient(150deg,#0b6fb8,#07457a)", "☾ กะดึก (20:00)", by(["night"])) +
     card("linear-gradient(150deg,#f0553a,#b8260f)", "วันหยุด", by(["off"]), tag) +
     card("linear-gradient(150deg,#e2a20b,#a86f00)", "ลา / ขาดงาน", by(["leave"]), tag);
+  renderSum(M, days);
   document.body.classList.toggle("editing", S.edit);
   document.querySelector("#editBtn span").textContent = S.edit ? "✓ เสร็จ" : "แก้ไขตาราง";
   document.getElementById("editBtn").classList.toggle("on", S.edit);
@@ -232,6 +257,37 @@ function render() {
   /* เลื่อนตารางให้เห็นวันที่เลือก (มือถือ) */
   const tw = document.querySelector(".tw"), th = document.querySelector("th.sel"), nm = document.querySelector("thead .nm");
   if (tw && th && nm && th.offsetLeft + th.offsetWidth > tw.clientWidth) tw.scrollLeft = th.offsetLeft - nm.offsetWidth - 40;
+}
+/* ---- สรุปประจำเดือน ---- */
+const GRP = { day: ["กะเช้า", "#2f6bea"], eve: ["กะบ่าย", "#7c5cff"], night: ["กะดึก", "#0b6fb8"], ot: ["OT", "#c99a00"] };
+function renderSum(M, days) {
+  $("sMonth").textContent = "· " + TH_M[S.m - 1] + " " + (S.y + 543);
+  const g = (r, d) => { const k = codeOf(cellVal(r, d)); return k ? k.grp : ""; };
+  const v = (r, d) => cellVal(r, d);
+  let work = 0, off = 0, hol = 0, leave = 0, ot = 0, absent = 0, flex = 0;
+  M.rows.forEach(r => days.forEach(d => { const x = g(r, d), c = v(r, d);
+    if (["day", "eve", "night", "ot"].includes(x)) work++; if (c === "OFF") off++; if (c === "Flex") flex++; if (c === "Hol") hol++;
+    if (c === "ลา") leave++; if (c === "ขาดงาน") absent++; if (c === "OT") ot++; }));
+  const kc = (l, val, c, sub) => `<div class="kc" style="--c:${c}"><span class="l">${l}</span><span class="v">${val}</span><span class="s">${sub}</span></div>`;
+  $("kp").innerHTML = kc("พนักงาน", M.rows.length, "#5b3fd6", "คนในตารางเดือนนี้") + kc("วันทำงานรวม", work, "#2f6bea", "คน-วัน (รวม OT)") +
+    kc("วันหยุดประจำสัปดาห์", off + flex, "#ff3b30", "OFF " + off + " · Flex " + flex) + kc("วันหยุดนักขัตฤกษ์", hol, "#00a3dd", "คน-วัน") +
+    kc("ลา / ขาดงาน", leave + absent, "#c99a00", "ลา " + leave + " · ขาดงาน " + absent) + kc("ทำ OT", ot, "#a86f00", "คน-วัน");
+  /* จำนวนคนทำงานรายวัน */
+  const per = days.map(d => { const c = { day: 0, eve: 0, night: 0, ot: 0 }; M.rows.forEach(r => { const x = g(r, d); if (x in c) c[x]++; }); c.t = c.day + c.eve + c.night + c.ot; return c; });
+  const tot = per.map(c => c.t), mx = Math.max(1, M.rows.length), workDays = tot.filter(t => t > 0);
+  const minN = Math.max(1, Math.ceil(M.rows.length / 2));
+  $("minLbl").textContent = minN;
+  $("cov").innerHTML = `<div class="cgrid" style="grid-template-columns:repeat(${days.length},30px)">${days.map((d, i) => { const c = per[i];
+      return `<div class="ccol ${[0, 6].includes(wd(d)) ? "we" : ""} ${d === S.sel ? "sel" : ""}" data-d="${d}" title="${d} ${TH_M[S.m - 1]} · ทำงาน ${c.t} คน (เช้า ${c.day} · บ่าย ${c.eve} · ดึก ${c.night}${c.ot ? " · OT " + c.ot : ""})">
+        <span class="n ${c.t > 0 && c.t < minN && ![0, 6].includes(wd(d)) && !M.rows.some(r => cellVal(r, d) === "Hol") ? "low" : ""}">${c.t}</span><span class="cbar">${["day", "eve", "night", "ot"].map(k => c[k] ? `<i style="height:${c[k] / mx * 100}%;background:${GRP[k][1]}"></i>` : "").join("")}</span><span class="d">${d}</span></div>`; }).join("")}</div>
+    <div class="legend" style="margin:8px 2px 0">${Object.values(GRP).map(([l, c]) => `<span><i style="background:${c};min-width:14px;height:12px"></i>${l}</span>`).join("")}<span>เฉลี่ย ${(workDays.reduce((a, b) => a + b, 0) / (workDays.length || 1)).toFixed(1)} คน/วัน</span></div>`;
+  /* รายคน */
+  const COLS = [["เช้า", r => days.filter(d => g(r, d) === "day").length], ["บ่าย", r => days.filter(d => g(r, d) === "eve").length], ["ดึก", r => days.filter(d => g(r, d) === "night").length],
+    ["OT", r => days.filter(d => v(r, d) === "OT").length], ["รวมทำงาน", r => days.filter(d => ["day", "eve", "night", "ot"].includes(g(r, d))).length],
+    ["OFF", r => days.filter(d => v(r, d) === "OFF").length], ["Flex", r => days.filter(d => v(r, d) === "Flex").length], ["Hol", r => days.filter(d => v(r, d) === "Hol").length],
+    ["ลา", r => days.filter(d => v(r, d) === "ลา").length], ["ขาดงาน", r => days.filter(d => v(r, d) === "ขาดงาน").length], ["ไม่ระบุ", r => days.filter(d => !v(r, d)).length]];
+  $("ps").innerHTML = `<thead><tr><th class="nm">พนักงาน</th>${COLS.map(([l]) => `<th>${l}</th>`).join("")}</tr></thead><tbody>${M.rows.map(r => `<tr><td class="nm"><b>${r.n}</b><small>${r.pos}</small></td>${COLS.map(([l, f], i) => { const n = f(r);
+      return `<td class="${n ? "" : "z"}" style="${n && i === 4 ? "color:#1d3f8f" : n && (l === "ลา" || l === "ขาดงาน") ? "color:#a8250f" : ""}">${n || "–"}</td>`; }).join("")}</tr>`).join("")}</tbody>`;
 }
 const months = () => (DATA[S.y] || []).map(x => x.m);
 function shift(n) {
