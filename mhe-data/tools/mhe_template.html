@@ -80,6 +80,13 @@
   .mx tbody tr { cursor: pointer; } .mx tbody tr:hover td { background: #fffbea; }
   .mx tr.on td { background: var(--tint); }
   .mx tfoot td { font-weight: 800; background: var(--head); }
+  .mx th.grp { font-size: 11px; color: var(--acc2); background: #fbf6e3; border-bottom: 0; }
+  .mx .gl { border-left: 2px solid var(--line); }
+  .mx thead tr:nth-child(2) th { top: 30px; }
+  .mx tr.srow td { background: #fcfcf9; font-size: 12.5px; padding-top: 6px; padding-bottom: 6px; } .mx tr.srow:hover td { background: #fffbea; } .mx tr.srow.on td { background: var(--tint); }
+  .sname { display: block; padding-left: 38px; font-weight: 600; color: var(--ink2); white-space: nowrap; }
+  .tg { display: inline-block; width: 12px; color: var(--ink3); font-size: 12px; }
+  .ns { font-style: normal; font-size: 11px; font-weight: 700; color: var(--ink3); margin-left: 4px; }
   .z { color: #c9ccd1; }
   .bd { display: inline-grid; place-items: center; min-width: 26px; height: 22px; padding: 0 6px; border-radius: 7px; font-weight: 800; font-size: 12px; color: #fff; background: var(--c); }
   .uname { display: flex; align-items: center; gap: 8px; font-weight: 800; white-space: nowrap; } .uname i { width: 10px; height: 10px; border-radius: 3px; flex: none; }
@@ -163,14 +170,16 @@
 <div class="fbar"><div class="fin">
   <div class="frow"><b>หน่วยงาน</b><span id="fUnit" style="display:contents"></span>
     <label class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" placeholder="ค้นหา Serial / รุ่น / คลัง / UL / เบอร์รถ"></label></div>
+  <div class="frow" id="rowSite"><b>คลัง</b><span id="fSite" style="display:contents"></span></div>
   <div class="frow"><b>ประเภทรถ</b><span id="fType" style="display:contents"></span></div>
+  <div class="frow"><b>แบตเตอรี่</b><span id="fEn" style="display:contents"></span></div>
   <div class="now" id="now"></div>
 </div></div>
 <main>
   <div class="warn" id="warn"></div>
   <div class="two">
     <section class="panel">
-      <div class="phead"><h2>แยกหน่วยงาน × ประเภทรถ</h2><span class="note">กดแถวเพื่อกรองหน่วยงาน · ตัวเลขสี = ใกล้หมดสัญญา</span></div>
+      <div class="phead"><h2>แยกหน่วยงาน / คลัง × ประเภทรถ × แบตเตอรี่</h2><span class="note">กด ▸ หน่วยงานเพื่อดูแยกคลัง · กดคลังเพื่อกรอง · ตัวเลขสี = ใกล้หมดสัญญา</span></div>
       <div class="tw"><table class="mx" id="mx"></table></div>
     </section>
     <section class="panel">
@@ -232,7 +241,7 @@ const CMP = FIELDS.flatMap(g => g[1].map(f => f[0]));
 
 /* ---- ข้อมูล: ไฟล์ที่ฝังไว้ + ที่บันทึกบนเว็บ (Supabase mhe_vehicles, ไม่มีตาราง → localStorage) ---- */
 let OVR = {}, ONLINE = false, LAST = "";
-const S = { unit: "all", type: "all", bk: "all", year: "all", q: "", sort: "rem", lim: 60 };
+const S = { unit: "all", site: "all", type: "all", en: "all", bk: "all", year: "all", q: "", sort: "rem", lim: 60, open: new Set(["Logistics"]) };
 function warn(msg) { $("warn").innerHTML = msg || ""; $("warn").classList.toggle("show", !!msg); }
 function toast(m) { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 2200); }
 function lsGet() { try { return JSON.parse(localStorage.getItem(LS) || "{}"); } catch (e) { return {}; } }
@@ -271,7 +280,11 @@ let ALL = [];
 const units = () => { const c = {}; ALL.forEach(r => c[r.unit || "ไม่ระบุ"] = (c[r.unit || "ไม่ระบุ"] || 0) + 1); return Object.keys(c).sort((a, b) => c[b] - c[a]); };
 const ucol = u => UCOL[Math.max(0, units().indexOf(u)) % UCOL.length];
 const typesAll = () => { const s = new Set(ALL.map(r => r.type)); return [...TYPES.filter(t => s.has(t)), ...[...s].filter(t => !TYPES.includes(t)).sort()]; };
-const match = (r, skip) => (skip === "unit" || S.unit === "all" || (r.unit || "ไม่ระบุ") === S.unit) && (skip === "type" || S.type === "all" || r.type === S.type)
+const EN = ["Lithium", "Lead-Acid", "Gas", "ไม่ระบุ"], ECOL = { Lithium: "#18a058", "Lead-Acid": "#5b6472", Gas: "#e08a00", "ไม่ระบุ": "#b9bec6" };
+const enOf = r => r.energy || "ไม่ระบุ", siteOf = r => r.site || "ไม่ระบุ";
+const sitesOf = (u, a) => { const c = {}; a.filter(r => (r.unit || "ไม่ระบุ") === u).forEach(r => c[siteOf(r)] = (c[siteOf(r)] || 0) + 1); return Object.keys(c).sort((x, y) => c[y] - c[x] || x.localeCompare(y, "th")); };
+const match = (r, skip) => (skip === "unit" || S.unit === "all" || (r.unit || "ไม่ระบุ") === S.unit) && (skip === "unit" || skip === "site" || S.site === "all" || siteOf(r) === S.site)
+  && (skip === "type" || S.type === "all" || r.type === S.type) && (skip === "en" || S.en === "all" || enOf(r) === S.en)
   && (!S.q || [r.serial, r.model, r.site, r.ul, r.no, r.unit, r.type, r.sup, r.repl, r.memo, r.batSn].join(" ").toLowerCase().includes(S.q.toLowerCase()));
 const yearOf = r => { const b = bOf(r); return b === "exp" ? "exp" : r.end ? r.end.slice(0, 4) : "na"; };
 
@@ -294,14 +307,23 @@ function render() {
   const tc = {}; pool("type").forEach(r => tc[r.type] = (tc[r.type] || 0) + 1);
   $("fType").innerHTML = `<button class="chip ${S.type === "all" ? "on" : ""}" data-type="all">ทั้งหมด <em>${pool("type").length}</em></button>` +
     typesAll().map(t => `<button class="chip ${S.type === t ? "on" : ""}" data-type="${esc(t)}">${esc(t)} <em>${tc[t] || 0}</em></button>`).join("");
-  const parts = [S.unit !== "all" && "หน่วยงาน " + S.unit, S.type !== "all" && S.type, S.bk !== "all" && BK[S.bk][0], S.year !== "all" && (S.year === "exp" ? "หมดสัญญาแล้ว" : S.year === "na" ? "ไม่มีวันหมดสัญญา" : "หมดสัญญาปี " + (+S.year + 543)), S.q && "ค้นหา \"" + S.q + "\""].filter(Boolean);
+  const sc = {}; pool("site").forEach(r => sc[siteOf(r)] = (sc[siteOf(r)] || 0) + 1);
+  $("rowSite").style.display = S.unit === "all" ? "none" : "";
+  $("fSite").innerHTML = S.unit === "all" ? "" : `<button class="chip ${S.site === "all" ? "on" : ""}" data-site="all">ทุกคลังของ ${esc(S.unit)} <em>${pool("site").length}</em></button>` +
+    sitesOf(S.unit, ALL).map(s => `<button class="chip ${S.site === s ? "on" : ""}" data-site="${esc(s)}">${esc(s)} <em>${sc[s] || 0}</em></button>`).join("");
+  const ec = {}; pool("en").forEach(r => ec[enOf(r)] = (ec[enOf(r)] || 0) + 1);
+  $("fEn").innerHTML = `<button class="chip ${S.en === "all" ? "on" : ""}" data-en="all">ทั้งหมด <em>${pool("en").length}</em></button>` +
+    EN.filter(e => ALL.some(r => enOf(r) === e)).map(e => `<button class="chip ${S.en === e ? "on" : ""}" data-en="${e}"><span class="dot" style="background:${ECOL[e]}"></span>${e} <em>${ec[e] || 0}</em></button>`).join("");
+  const parts = [S.unit !== "all" && "หน่วยงาน " + S.unit, S.site !== "all" && "คลัง " + S.site, S.type !== "all" && S.type, S.en !== "all" && "แบต " + S.en, S.bk !== "all" && BK[S.bk][0], S.year !== "all" && (S.year === "exp" ? "หมดสัญญาแล้ว" : S.year === "na" ? "ไม่มีวันหมดสัญญา" : "หมดสัญญาปี " + (+S.year + 543)), S.q && "ค้นหา \"" + S.q + "\""].filter(Boolean);
   $("now").innerHTML = parts.length ? `กำลังดู: <b>${esc(parts.join(" · "))}</b> <button id="clr">✕ ล้างตัวกรอง</button>` : "กำลังดู: <b>รถทุกคัน ทุกหน่วยงาน</b>";
   /* ตาราง หน่วยงาน × ประเภท */
-  const mxRows = ALL.filter(r => match(r, "unit")), ts = typesAll(), us = units().filter(u => mxRows.some(r => (r.unit || "ไม่ระบุ") === u));
+  const mxRows = ALL.filter(r => match(r, "unit")), ts = typesAll(), us = units().filter(u => mxRows.some(r => (r.unit || "ไม่ระบุ") === u)), es = EN.filter(e => ALL.some(r => enOf(r) === e));
   const cell = (a, k) => { const n = a.filter(r => bOf(r) === k).length; return n ? `<span class="bd" style="--c:${BK[k][1]}">${n}</span>` : '<span class="z">·</span>'; };
-  const line = (a, lbl, attr, cls) => `<tr ${attr} class="${cls || ""}"><td>${lbl}</td>${ts.map(t => { const n = a.filter(r => r.type === t).length; return `<td class="c num">${n || '<span class="z">·</span>'}</td>`; }).join("")}<td class="c num"><b>${a.length}</b></td>${["exp", "m3", "m6", "m12"].map(k => `<td class="c">${cell(a, k)}</td>`).join("")}<td class="r num">${money(rent(a))}</td></tr>`;
-  $("mx").innerHTML = `<thead><tr><th>หน่วยงาน</th>${ts.map(t => `<th class="c">${esc(t).replace(" ", "<br>")}</th>`).join("")}<th class="c">รวม</th><th class="c" style="color:var(--exp)">หมด<br>แล้ว</th><th class="c" style="color:var(--m3)">≤3<br>เดือน</th><th class="c" style="color:var(--m6)">≤6<br>เดือน</th><th class="c" style="color:var(--m12)">≤12<br>เดือน</th><th class="r">ค่าเช่า/เดือน</th></tr></thead><tbody>` +
-    us.map(u => line(mxRows.filter(r => (r.unit || "ไม่ระบุ") === u), `<span class="uname"><i style="background:${ucol(u)}"></i>${esc(u)}</span>`, `data-unit="${esc(u)}"`, S.unit === u ? "on" : "")).join("") + "</tbody>" +
+  const line = (a, lbl, attr, cls) => `<tr ${attr} class="${cls || ""}"><td>${lbl}</td>${ts.map(t => { const n = a.filter(r => r.type === t).length; return `<td class="c num">${n || '<span class="z">·</span>'}</td>`; }).join("")}${es.map((e, i) => { const n = a.filter(r => enOf(r) === e).length; return `<td class="c num ${i ? "" : "gl"}" style="color:${ECOL[e]}">${n ? "<b>" + n + "</b>" : '<span class="z">·</span>'}</td>`; }).join("")}<td class="c num gl"><b>${a.length}</b></td>${["exp", "m3", "m6", "m12"].map(k => `<td class="c">${cell(a, k)}</td>`).join("")}<td class="r num">${money(rent(a))}</td></tr>`;
+  $("mx").innerHTML = `<thead><tr><th rowspan="2">หน่วยงาน / คลัง</th><th class="c grp" colspan="${ts.length}">ประเภทรถ</th><th class="c grp gl" colspan="${es.length}">แบตเตอรี่</th><th class="c gl" rowspan="2">รวม</th><th class="c grp gl" colspan="4">หมดสัญญา</th><th class="r gl" rowspan="2">ค่าเช่า/เดือน</th></tr><tr>${ts.map(t => `<th class="c">${esc(t).replace(" ", "<br>")}</th>`).join("")}${es.map((e, i) => `<th class="c ${i ? "" : "gl"}" style="color:${ECOL[e]}">${e.replace("-", "-<br>")}</th>`).join("")}<th class="c gl" style="color:var(--exp)">หมด<br>แล้ว</th><th class="c" style="color:var(--m3)">≤3<br>เดือน</th><th class="c" style="color:var(--m6)">≤6<br>เดือน</th><th class="c" style="color:var(--m12)">≤12<br>เดือน</th></tr></thead><tbody>` +
+    us.map(u => { const a = mxRows.filter(r => (r.unit || "ไม่ระบุ") === u), ss = sitesOf(u, a), op = S.open.has(u) && ss.length > 1;
+      return line(a, `<span class="uname"><span class="tg">${ss.length > 1 ? (op ? "▾" : "▸") : ""}</span><i style="background:${ucol(u)}"></i>${esc(u)}${ss.length > 1 ? `<em class="ns">${ss.length} คลัง</em>` : ""}</span>`, `data-tog="${esc(u)}"`, S.unit === u && S.site === "all" ? "on" : "") +
+        (op ? ss.map(s => line(a.filter(r => siteOf(r) === s), `<span class="sname">${esc(s)}</span>`, `data-u="${esc(u)}" data-s="${esc(s)}"`, "srow" + (S.unit === u && S.site === s ? " on" : ""))).join("") : ""); }).join("") + "</tbody>" +
     `<tfoot>${line(mxRows, "รวม", "")}</tfoot>`;
   /* กราฟรายปี (ซ้อนสีตามหน่วยงาน) */
   const yk = {}; base.forEach(r => { const y = yearOf(r); (yk[y] = yk[y] || []).push(r); });
@@ -401,12 +423,16 @@ function exportXlsx() {
 
 /* ---- เหตุการณ์ ---- */
 document.addEventListener("click", async e => {
-  const t = e.target.closest("button,[data-unit],[data-year],tr[data-id]"); if (!t) return;
+  const t = e.target.closest("button,[data-unit],[data-tog],[data-s],[data-year],tr[data-id]"); if (!t) return;
   if (t.dataset.bk) { S.bk = S.bk === t.dataset.bk || t.dataset.bk === "all" ? "all" : t.dataset.bk; S.year = "all"; S.lim = 60; render(); document.querySelector(".vt").scrollIntoView({ behavior: "smooth", block: "start" }); return; }
-  if (t.dataset.unit) { S.unit = S.unit === t.dataset.unit ? "all" : t.dataset.unit; S.lim = 60; render(); return; }
+  if (t.dataset.unit) { S.unit = S.unit === t.dataset.unit ? "all" : t.dataset.unit; S.site = "all"; if (S.unit !== "all") S.open.add(S.unit); S.lim = 60; render(); return; }
+  if (t.dataset.tog) { const u = t.dataset.tog; S.open.has(u) ? S.open.delete(u) : S.open.add(u); render(); return; }
+  if (t.dataset.s) { const same = S.unit === t.dataset.u && S.site === t.dataset.s; S.unit = same ? "all" : t.dataset.u; S.site = same ? "all" : t.dataset.s; S.lim = 60; render(); document.querySelector(".vt").scrollIntoView({ behavior: "smooth", block: "start" }); return; }
+  if (t.dataset.site) { S.site = t.dataset.site; S.lim = 60; render(); return; }
+  if (t.dataset.en) { S.en = S.en === t.dataset.en ? "all" : t.dataset.en; S.lim = 60; render(); return; }
   if (t.dataset.type) { S.type = S.type === t.dataset.type ? "all" : t.dataset.type; S.lim = 60; render(); return; }
   if (t.dataset.year) { S.year = S.year === t.dataset.year ? "all" : t.dataset.year; S.bk = "all"; S.lim = 60; render(); document.querySelector(".vt").scrollIntoView({ behavior: "smooth", block: "start" }); return; }
-  if (t.id === "clr") { Object.assign(S, { unit: "all", type: "all", bk: "all", year: "all", q: "", lim: 60 }); $("q").value = ""; render(); return; }
+  if (t.id === "clr") { Object.assign(S, { unit: "all", site: "all", type: "all", en: "all", bk: "all", year: "all", q: "", lim: 60 }); $("q").value = ""; render(); return; }
   if (t.id === "moreBtn") { S.lim += 100; render(); return; }
   if (t.id === "upBtn") { $("file").click(); return; }
   if (t.id === "addBtn") { openCar("", true); return; }
