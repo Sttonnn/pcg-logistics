@@ -210,6 +210,7 @@
   .ptot b { font-family: Archivo, sans-serif; font-size: 64px; line-height: 1; color: var(--acc2); } .ptot span { font-weight: 800; } .ptot small { color: var(--ink2); font-size: 12px; }
   #p-price .bt th, #p-price .bt td { padding: 6px 5px; font-size: 12.5px; } #p-price .bt .pc { min-width: 52px; } #p-price .bt td:first-child { min-width: 170px; }
   .lowc { background: #fffbea; } .tsub { font-size: 10.5px; color: var(--acc2); font-weight: 700; white-space: nowrap; } .pm td, .pm th { padding: 6px 7px; font-size: 12.5px; }
+  .ppt th.un { color: var(--m3); } .ppt td:first-child { white-space: nowrap; position: sticky; left: 0; background: #fff; z-index: 1; } .ppt tfoot td:first-child { background: var(--head); } .ppt th.pmh b { color: var(--acc); font-size: 17px; } .ppt tbody tr { cursor: default; }
   .pm th.pmh { background: var(--dark); color: #fff; text-align: left; font-size: 13px; }
   .sup .ok { color: #18794a; font-weight: 900; font-size: 15px; } .sup .ng { color: var(--exp); font-weight: 800; } .sup td { font-size: 12.5px; } .sup input { min-width: 90px; } .sup input.it { min-width: 240px; }
   .stdg { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 6px; padding: 12px; } .stdg span { background: var(--head); border-radius: 9px; padding: 6px 9px; font-size: 12.5px; font-weight: 700; } .stdg span::first-letter { color: #18794a; }
@@ -594,10 +595,6 @@ function renderRenew(base) {
   const L = base.filter(r => inRound(r, S.round)).sort((a, b) => (a.end || "").localeCompare(b.end || "") || (a.unit + a.site).localeCompare(b.unit + b.site, "th"));
   const rent = L.reduce((s, r) => s + (+r.price || 0), 0), dc = k => L.filter(r => (r.renew || "") === k).length;
   const CR = confRows(), cOk = CR.filter(c => c.status === "ยืนยันแล้ว").length;
-  const specKey = r => [r.type, r.cap ? (r.cap / 1000).toFixed(1).replace(".0", "") + " ตัน" : "", r.h && r.h > 1000 ? (r.h / 1000).toFixed(1).replace(".0", "") + " ม." : ""].filter(Boolean).join(" · ");
-  const G = {}; L.forEach(r => { const k = specKey(r) + "|" + enOf(r); (G[k] = G[k] || []).push(r); });
-  const gk = Object.keys(G).sort((a, b) => G[b].length - G[a].length);
-  const cnt = a => { const c = {}; a.forEach(r => { const k = (r.unit === "Logistics" ? "" : r.unit + " · ") + siteOf(r); c[k] = (c[k] || 0) + 1; }); return Object.entries(c).sort((x, y) => y[1] - x[1]); };
   const nm = s => String(s || "").toLowerCase().replace(/\s+/g, ""), ALIAS = { "ระยอง": "rayong", "อุบล": "อุบลราชธานี" };
   const autoN = u => { const n = nm(ALIAS[u.trim()] || u); return L.filter(r => nm(r.unit) === n || nm(r.site).includes(n)).length; };
   $("vRenew").innerHTML = `<section class="panel"><div class="phead"><h2>เตรียมต่อสัญญารถ รอบถัดไป</h2><span class="note">ตามตัวกรองด้านบน · กดปีเพื่อเปลี่ยนรอบ</span></div>
@@ -606,10 +603,8 @@ function renderRenew(base) {
       <div class="f"><span>ค่าเช่าปัจจุบันรวม</span><b>${money(rent)}</b><small>บาท/เดือน</small></div>
       <div class="f"><span>ตัดสินใจแล้ว</span><b>${L.length - dc("")}<small style="font-size:14px"> / ${L.length}</small></b><small><span class="dec-renew">ต่อ ${dc("renew")}</span> · <span class="dec-bid">ประมูล ${dc("bid")}</span> · <span class="dec-return">คืน ${dc("return")}</span></small></div>
       <div class="f"><span>หน่วยงานยืนยันแล้ว</span><b>${cOk}<small style="font-size:14px"> / ${CR.length}</small></b><small>จากตาราง "ยืนยันกับหน่วยงาน"</small></div></div></section>
+  ${ppSpecPanel(L)}
   <div class="two">
-    <section class="panel"><div class="phead"><h2>สรุปตามสเปก</h2><span class="note">ใช้เทียบกับรายการในตารางราคาประมูล</span></div>
-      <div class="tw"><table><thead><tr><th>ประเภท · รับน้ำหนัก · ยกสูง</th><th>แบต</th><th class="c">คัน</th><th>คลัง × จำนวน</th><th class="r">ค่าเช่าเดิมรวม/เดือน</th></tr></thead><tbody>
-      ${gk.map(k => { const a = G[k], [sp, en] = k.split("|"); return `<tr><td class="t1">${esc(sp)}</td><td><span class="en ${en}">${en}</span></td><td class="c num"><b>${a.length}</b></td><td>${cnt(a).map(([s, n]) => `<span class="sc">${esc(s)} <b>×${n}</b></span>`).join("")}</td><td class="r num">${money(a.reduce((s, r) => s + (+r.price || 0), 0))}</td></tr>`; }).join("") || '<tr><td colspan="5" class="empty">ไม่มีรถในรอบนี้</td></tr>'}</tbody></table></div></section>
     <section class="panel"><div class="phead"><h2>ยืนยันกับหน่วยงาน</h2><button class="btn l" data-cadd style="margin-left:auto;padding:6px 11px">＋ เพิ่มหน่วยงาน</button></div>
       <div class="tw"><table><thead><tr><th>หน่วยงาน</th><th class="c" title="นับอัตโนมัติจากรถในรอบนี้ (ชื่อหน่วยงาน/คลังตรงกัน)">รถในรอบ</th><th>ยืนยันจำนวน</th><th>สถานะ</th><th>หมายเหตุ</th></tr></thead><tbody>
       ${CR.map((c, i) => `<tr><td><input data-c="${i}|unit" value="${esc(c.unit)}" class="w1"></td><td class="c num">${autoN(c.unit) || '<span class="z">·</span>'}</td><td><input data-c="${i}|qty" type="number" value="${c.qty ?? ""}" class="w0"></td>
@@ -618,13 +613,14 @@ function renderRenew(base) {
   </div>
   <section class="panel"><div class="phead"><h2>รายการรถในรอบนี้ <span class="note" style="margin:0">· ${L.length} คัน</span></h2><span class="note">เลือก "การตัดสินใจ" ได้ทุกคัน · บันทึกทันที</span>
     <button class="btn l" data-rexp style="padding:6px 11px">⬇ Export รอบนี้</button></div>
-    <div class="tw"><table class="vt"><thead><tr><th>หมดสัญญา</th><th>หน่วยงาน / คลัง</th><th>ประเภท</th><th>รุ่น</th><th>Serial / เบอร์</th><th class="r">ค่าเช่า/เดือน</th><th>การตัดสินใจ</th><th>หมายเหตุ</th></tr></thead><tbody>
+    <div class="tw"><table class="vt"><thead><tr><th>หมดสัญญา</th><th>หน่วยงาน / คลัง</th><th>ประเภท</th><th>รุ่น</th><th>Serial / เบอร์</th><th class="r">ค่าเช่า/เดือน</th><th>การตัดสินใจ</th><th>สัญญาใหม่</th><th>หมายเหตุ</th></tr></thead><tbody>
     ${L.map(r => { const c = BK[bOf(r)][1]; return `<tr><td><b>${thd(r.end)}</b><div class="rem" style="--c:${c};font-size:12px">${remTxt(dOf(r.end))}</div></td>
       <td><div class="t1">${esc(r.unit)}</div><div class="t2">${esc(r.site)}</div></td><td><div class="t1">${esc(r.type)}${r.energy ? `<span class="en ${r.energy}">${r.energy}</span>` : ""}</div></td>
       <td><div class="t1">${esc(r.model)}</div><div class="t2">${esc(r.size)}</div></td><td><a href="#" data-open="${esc(r.id)}" class="t1 num" style="color:var(--ink)">${esc(r.serial) || "–"}</a><div class="t2">${r.no ? "เบอร์ " + esc(r.no) : ""}</div></td>
       <td class="r num">${money(r.price)}</td>
       <td style="min-width:150px"><select data-f="${esc(r.id)}|renew" class="dec-${r.renew || "none"}">${Object.entries(DEC).map(([k, l]) => `<option ${k === (r.renew || "") ? "selected" : ""} value="${k}">${l}</option>`).join("")}</select></td>
-      <td style="min-width:150px"><input data-f="${esc(r.id)}|renewNote" value="${esc(r.renewNote || "")}"></td></tr>`; }).join("") || '<tr><td colspan="8" class="empty">ไม่มีรถในรอบนี้</td></tr>'}</tbody></table></div></section>`;
+      <td><select data-f="${esc(r.id)}|renewTerm">${[["", "ยังไม่ระบุ"], ["3", "3 ปี"], ["5", "5 ปี"]].map(([k, l]) => `<option ${k === String(r.renewTerm || "") ? "selected" : ""} value="${k}">${l}</option>`).join("")}</select></td>
+      <td style="min-width:150px"><input data-f="${esc(r.id)}|renewNote" value="${esc(r.renewNote || "")}"></td></tr>`; }).join("") || '<tr><td colspan="9" class="empty">ไม่มีรถในรอบนี้</td></tr>'}</tbody></table></div></section>`;
 }
 async function saveConf(el) {
   const rows = JSON.parse(JSON.stringify(confRows())), [i, k] = el.dataset.c.split("|");
@@ -632,13 +628,59 @@ async function saveConf(el) {
   await sbSave([{ id: "CFG:confirm", rec: { rows } }]); el.classList.add("ok"); setTimeout(() => el.classList.remove("ok"), 900);
   toast(ONLINE ? "บันทึกแล้ว" : "บันทึกในเบราว์เซอร์นี้แล้ว"); if (k === "status") renderRenew(ALL.filter(r => match(r)));
 }
+/* ตารางสรุปตามสเปกแบบ PPT (ผู้ใช้ขอ 5 ต.ค.): แถว = รายการ/สเปก · คอลัมน์ = คลัง (Logistics) / หน่วยงาน (อื่นๆ) แยก 3 ปี / 5 ปี · Logistics กับหน่วยงานอื่นคนละแท็บ (Excel คนละชีต) */
+const PPT_T = [["3", "3 ปี"], ["5", "5 ปี"], ["", "ยังไม่ระบุ"]];
+function ppData(a, colOf) {
+  const rowsB = (propRound() || { sheets: [{ rows: [] }] }).sheets[0].rows, it = r => itemOf(r, rowsB);
+  const by = (f, x) => { const c = {}; x.forEach(r => { const k = f(r); c[k] = (c[k] || 0) + 1; }); return Object.entries(c).sort((p, q) => q[1] - p[1]).map(e => e[0]); };
+  const cols = by(colOf, a), items = by(it, a), T = PPT_T.filter(([k]) => a.some(r => String(r.renewTerm || "") === k));
+  const n = (i, c, k) => a.filter(r => (i == null || it(r) === i) && (c == null || colOf(r) === c) && (k == null || String(r.renewTerm || "") === k)).length;
+  return { cols, items, T, n };
+}
+function ppMatrix(a, colOf, title, colLbl) {
+  if (!a.length) return `<div class="empty">ไม่มีรถ${title}ในรอบนี้</div>`;
+  const { cols, items, T, n } = ppData(a, colOf), z = v => v || '<span class="z">·</span>';
+  return `<div class="tw"><table class="mx pm ppt"><thead><tr><th colspan="${cols.length * T.length + 2}" class="pmh">${title} <b>${a.length}</b> คัน</th></tr>
+    <tr><th rowspan="2">รายการ / สเปก</th>${cols.map(c => `<th colspan="${T.length}" class="c gl">${esc(c)}</th>`).join("")}<th rowspan="2" class="c gl">รวม</th></tr>
+    <tr>${cols.map(() => T.map(([k, l], j) => `<th class="c ${j ? "" : "gl"} ${k ? "" : "un"}">${l}</th>`).join("")).join("")}</tr></thead><tbody>
+    ${items.map(i => `<tr><td class="t1">${esc(i)}</td>${cols.map(c => T.map(([k], j) => `<td class="c num ${j ? "" : "gl"}">${z(n(i, c, k))}</td>`).join("")).join("")}<td class="c num gl"><b>${n(i)}</b></td></tr>`).join("")}</tbody>
+    <tfoot><tr><td>รวม</td>${cols.map(c => `<td colspan="${T.length}" class="c num gl">${n(null, c)}</td>`).join("")}<td class="c num gl">${a.length}</td></tr></tfoot></table></div>`;
+}
+function ppSpecPanel(L) {
+  const LG = L.filter(r => r.unit === "Logistics"), OT = L.filter(r => r.unit !== "Logistics"), tab = S.rtab || "lg";
+  const la = L.filter(r => r.energy === "Lead-Acid").length, un = L.filter(r => !r.renewTerm).length;
+  return `<section class="panel"><div class="phead"><h2>สรุปตามสเปก</h2><span class="tabs"><button class="${tab === "lg" ? "on" : ""}" data-rtab="lg">Logistics · ${LG.length} คัน</button><button class="${tab === "ot" ? "on" : ""}" data-rtab="ot">หน่วยงานอื่นๆ · ${OT.length} คัน</button></span>
+    <span class="note">รายการ = ตามตารางราคาประมูล (จับคู่อัตโนมัติ) · Export รอบนี้ = แยกชีต Logistics / หน่วยงานอื่นๆ</span></div>
+    ${tab === "lg" ? ppMatrix(LG, siteOf, "Logistics") : ppMatrix(OT, r => r.unit, "หน่วยงานอื่นๆ")}
+    <div class="note" style="margin-top:8px">${la ? `*** รถประเภทเดิมเป็นแบตน้ำ (${la} คัน) เปลี่ยนเป็นแบต Lithium ทั้งหมด` : ""}${un ? `${la ? " · " : ""}ยังไม่ระบุสัญญาใหม่ ${un} คัน — เลือก "สัญญาใหม่" 3 ปี / 5 ปี ในรายการรถด้านล่าง แล้วตารางจะแยกคอลัมน์ 3 ปี / 5 ปี ให้` : ""}</div></section>`;
+}
+function ppAoa(a, colOf, title) {
+  if (!a.length) return [[title + " 0 คัน"]];
+  const { cols, items, T, n } = ppData(a, colOf);
+  return [[`${title} ${a.length} คัน`], ["รายการ / สเปก", ...cols.flatMap(c => T.map((_, j) => j ? "" : c)), "รวม"], ["", ...cols.flatMap(() => T.map(t => t[1])), ""],
+    ...items.map(i => [i, ...cols.flatMap(c => T.map(([k]) => n(i, c, k) || "")), n(i)]), ["รวม", ...cols.flatMap(c => T.map((_, j) => j ? "" : n(null, c))), a.length]];
+}
+function ppSheet(aoa, nT) {
+  const ws = XLSX.utils.aoa_to_sheet(aoa), W = aoa[1] ? aoa[1].length : 1, M = [{ s: { r: 0, c: 0 }, e: { r: 0, c: W - 1 } }];
+  if (aoa.length > 2) { M.push({ s: { r: 1, c: 0 }, e: { r: 2, c: 0 } }, { s: { r: 1, c: W - 1 }, e: { r: 2, c: W - 1 } }); for (let c = 1; c < W - 1; c += nT) { M.push({ s: { r: 1, c }, e: { r: 1, c: c + nT - 1 } }); M.push({ s: { r: aoa.length - 1, c }, e: { r: aoa.length - 1, c: c + nT - 1 } }); } }
+  ws["!merges"] = M.filter(m => m.e.c > m.s.c || m.e.r > m.s.r);
+  const bd = { style: "thin", color: { rgb: "BBBBBB" } }, B = { top: bd, bottom: bd, left: bd, right: bd };
+  aoa.forEach((row, r) => { for (let c = 0; c < W; c++) { const ref = XLSX.utils.encode_cell({ r, c }); ws[ref] = ws[ref] || { t: "s", v: "" };
+    ws[ref].s = { border: B, alignment: { horizontal: c ? "center" : "left", vertical: "center", wrapText: true },
+      font: { bold: r < 3 || r === aoa.length - 1, color: { rgb: r === 0 ? "FFFFFF" : "000000" } }, fill: { fgColor: { rgb: r === 0 ? "22262C" : r < 3 ? "FFE699" : r === aoa.length - 1 ? "F2F2F2" : "FFFFFF" } } }; } });
+  ws["!cols"] = [{ wch: 26 }, ...Array(Math.max(0, W - 1)).fill({ wch: 9 })];
+  return ws;
+}
 function exportRenew() {
   const L = ALL.filter(r => match(r) && inRound(r, S.round)).sort((a, b) => (a.end || "").localeCompare(b.end || ""));
   const H = ["หน่วยงาน", "คลัง", "UL", "ประเภทรถ", "Type Battery", "รุ่นรถ", "ขนาด", "Serial No.", "เบอร์รถ", "วันที่สัญญา", "วันที่หมดสัญญา", "ค่าเช่า/เดือน", "การตัดสินใจ", "หมายเหตุรอบต่อสัญญา"];
   const ws = XLSX.utils.aoa_to_sheet([H, ...L.map(r => [r.unit, r.site, r.ul, r.type, r.energy, r.model, r.size, r.serial, r.no, r.start, r.end, r.price, DEC[r.renew || ""], r.renewNote || ""])]);
   H.forEach((_, j) => { const c = ws[XLSX.utils.encode_cell({ r: 0, c: j })]; if (c) c.s = { font: { bold: true, color: { rgb: "FFFFFF" } }, fill: { fgColor: { rgb: "22262C" } } }; });
   ws["!cols"] = [12, 20, 7, 15, 11, 20, 22, 14, 6, 11, 11, 10, 18, 30].map(w => ({ wch: w }));
-  const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "ต่อสัญญา " + (S.round + 543));
+  const wb = XLSX.utils.book_new(), LG = L.filter(r => r.unit === "Logistics"), OT = L.filter(r => r.unit !== "Logistics"), nT = a => Math.max(1, PPT_T.filter(([k]) => a.some(r => String(r.renewTerm || "") === k)).length);
+  XLSX.utils.book_append_sheet(wb, ppSheet(ppAoa(LG, siteOf, "Logistics"), nT(LG)), "Logistics");
+  XLSX.utils.book_append_sheet(wb, ppSheet(ppAoa(OT, r => r.unit, "หน่วยงานอื่นๆ"), nT(OT)), "หน่วยงานอื่นๆ");
+  XLSX.utils.book_append_sheet(wb, ws, "รายการรถ " + (S.round + 543));
   XLSX.writeFile(wb, `PCG MHE ต่อสัญญา ${S.round + 543}.xlsx`);
 }
 
@@ -1123,6 +1165,7 @@ document.addEventListener("click", async e => {
   if (t.dataset.sk) { const k = t.dataset.sk; S.sopen.has(k) ? S.sopen.delete(k) : S.sopen.add(k); renderSpec(ALL.filter(r => match(r))); return; }
   if ("cadd" in t.dataset) { const rows = JSON.parse(JSON.stringify(confRows())); rows.push({ unit: "หน่วยงานใหม่", qty: null, status: "", note: "" }); await sbSave([{ id: "CFG:confirm", rec: { rows } }]); render(); return; }
   if ("rexp" in t.dataset) { exportRenew(); return; }
+  if (t.dataset.rtab) { S.rtab = t.dataset.rtab; render(); return; }
   if (t.dataset.bsh) { S.bsh = +t.dataset.bsh; renderBid(); return; }
   if ("bedit" in t.dataset) { BDRAFT = JSON.parse(JSON.stringify(bidData())); S.bed = true; renderBid(); return; }
   if ("bcancel" in t.dataset) { S.bed = false; BDRAFT = null; renderBid(); return; }
