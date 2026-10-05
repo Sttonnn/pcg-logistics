@@ -140,7 +140,42 @@
   .toast.show { opacity: 1; transform: translateX(-50%); }
   footer { max-width: 1500px; margin: 0 auto; padding: 0 clamp(16px,3vw,40px) 30px; font-size: 12px; color: var(--ink3); }
 
+  /* แถบซ้าย + มุมมอง (ผู้ใช้ขอ 5 ต.ค.) */
+  .lay { max-width: 1560px; margin: 0 auto; display: grid; grid-template-columns: 248px minmax(0,1fr); gap: 0 20px; padding: 0 clamp(12px,2vw,28px); }
+  #side { position: sticky; top: 12px; align-self: start; margin-top: 18px; display: grid; gap: 12px; }
+  .sbox { background: #fff; border-radius: 20px; box-shadow: var(--shadow-s); padding: 10px; display: grid; gap: 4px; }
+  .sbox h5 { margin: 4px 8px 6px; font-size: 11px; letter-spacing: .06em; color: var(--ink3); text-transform: uppercase; }
+  .nav { display: flex; align-items: center; gap: 10px; border: 0; background: none; text-align: left; padding: 9px 10px; border-radius: 14px; cursor: pointer; font-weight: 800; font-size: 14px; width: 100%; color: var(--ink); }
+  .nav i { width: 34px; height: 34px; border-radius: 11px; display: grid; place-items: center; background: var(--head); color: var(--ink2); font-style: normal; flex: none; }
+  .nav > span { flex: 1; line-height: 1.25; min-width: 0; } .nav small { display: block; font-size: 11px; color: var(--ink3); font-weight: 600; }
+  .nav em { font-style: normal; font-size: 11.5px; font-weight: 800; background: var(--head); border-radius: 99px; padding: 2px 8px; color: var(--ink2); }
+  .nav:hover { background: #fffbea; } .nav.on { background: var(--dark); color: #fff; } .nav.on i { background: var(--acc); color: #1b1f24; } .nav.on small { color: rgba(255,255,255,.6); } .nav.on em { background: var(--acc); color: #1b1f24; }
+  .sinfo { font-size: 12px; color: var(--ink2); padding: 6px 8px; line-height: 1.6; } .sinfo b { color: var(--ink); }
+  .sdot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
+  .content { min-width: 0; } .content main { padding: 18px 0 48px; max-width: none; } .content .fin { padding: 10px 0; max-width: none; }
+  .view { display: none; gap: 18px; min-width: 0; } .view.on { display: grid; }
+  .mini { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; }
+  .mini .f b { font-size: 26px; font-family: Archivo, "IBM Plex Sans Thai", sans-serif; line-height: 1.15; } .mini .f small { font-size: 11.5px; color: var(--ink2); }
+  .rchips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .sc { display: inline-flex; gap: 4px; align-items: center; background: var(--head); border-radius: 8px; padding: 2px 7px; font-size: 11.5px; font-weight: 700; margin: 2px 4px 2px 0; white-space: nowrap; } .sc b { color: var(--acc2); }
+  .tw input, .tw select { border: 1px solid var(--line); border-radius: 8px; padding: 5px 7px; font-size: 12.5px; background: #fff; width: 100%; min-width: 70px; }
+  .tw input:focus, .tw select:focus { outline: 2px solid var(--acc); border-color: transparent; }
+  .tw input.ok, .tw select.ok { background: #e6f7ee; transition: background .6s; }
+  .ve td { padding: 6px 5px; } .ve .w1 { min-width: 120px; } .ve .w2 { min-width: 160px; } .ve .w0 { min-width: 64px; width: 70px; }
+  .dec-renew { color: #18794a; } .dec-bid { color: #8a6a00; } .dec-return { color: #a8251a; }
+  .bt th, .bt td { padding: 7px 8px; } .bt .pc { text-align: right; font-family: Archivo, sans-serif; font-variant-numeric: tabular-nums; white-space: nowrap; min-width: 66px; }
+  .bt .pc.min { background: #e3f6ec; color: #18794a; font-weight: 900; } .bt .pc.tx { color: var(--ink3); font-family: inherit; font-size: 11.5px; }
+  .bt th.vn { text-align: center; border-left: 2px solid var(--line); } .bt td.vl { border-left: 2px solid var(--line); }
+  .bt th.vn small { display: block; font-weight: 600; color: var(--ink3); font-size: 10.5px; } .bt th.dim { opacity: .45; }
+  .bt input { min-width: 64px; } .bt input.it { min-width: 200px; } .bt td:first-child { min-width: 230px; max-width: 340px; }
+  .tabs { display: inline-flex; background: var(--head); border-radius: 12px; padding: 4px; gap: 4px; }
+  .tabs button { border: 0; background: none; border-radius: 9px; padding: 7px 12px; font-weight: 800; cursor: pointer; font-size: 13px; }
+  .tabs button.on { background: var(--dark); color: #fff; }
+  .win { color: #18794a; font-weight: 900; }
+  .sp-t td { background: #fbf6e3; font-weight: 800; font-size: 12px; color: var(--acc2); }
+  .spx td { background: #fcfcf9; }
   @media (max-width: 1150px) { .two { grid-template-columns: minmax(0,1fr); } }
+  @media (max-width: 1000px) { .lay { grid-template-columns: minmax(0,1fr); } #side { position: static; margin-top: 12px; } #side .navs { display: flex; overflow-x: auto; } #side .nav { width: auto; flex: none; } .nav small, .sinfo { display: none; } .mini { grid-template-columns: repeat(2, minmax(0,1fr)); } }
   @media (max-width: 980px) { .kpis { grid-template-columns: repeat(3, minmax(0,1fr)); } }
   @media (max-width: 760px) {
     .hero { padding: 16px 14px 20px; border-radius: 0 0 24px 24px; } h1 { font-size: 22px; }
@@ -161,13 +196,14 @@
         <button class="btn y" id="upBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg>อัปโหลด Excel</button>
         <button class="btn g" id="addBtn">＋ เพิ่มรถ</button>
         <button class="btn g" id="xlsBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"/></svg>Export</button>
-        <input type="file" id="file" accept=".xlsx,.xls" hidden>
+        <input type="file" id="file" accept=".xlsx,.xls" hidden><input type="file" id="bfile" accept=".xlsx,.xls" hidden>
       </div>
     </div>
     <div class="kpis" id="kpis"></div>
   </div>
 </header>
-<div class="fbar"><div class="fin">
+<div class="lay"><aside id="side"></aside><div class="content">
+<div class="fbar" id="fbar"><div class="fin">
   <div class="frow"><b>หน่วยงาน</b><span id="fUnit" style="display:contents"></span>
     <label class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" placeholder="ค้นหา Serial / รุ่น / คลัง / UL / เบอร์รถ"></label></div>
   <div class="frow" id="rowSite"><b>คลัง</b><span id="fSite" style="display:contents"></span></div>
@@ -177,6 +213,7 @@
 </div></div>
 <main>
   <div class="warn" id="warn"></div>
+  <div class="view" data-v="sum">
   <div class="two">
     <section class="panel">
       <div class="phead"><h2>แยกหน่วยงาน / คลัง × ประเภทรถ × แบตเตอรี่</h2><span class="note">กด ▸ หน่วยงานเพื่อดูแยกคลัง · กดคลังเพื่อกรอง · ตัวเลขสี = ใกล้หมดสัญญา</span></div>
@@ -190,21 +227,28 @@
   </div>
   <section class="panel">
     <div class="phead"><h2>รายการรถ <span id="cnt" class="note" style="margin:0"></span></h2>
-      <span class="note">เรียงตาม
+      <span class="note"><button class="btn l" id="edBtn" style="padding:6px 11px;margin-right:8px">✎ แก้ไขในตาราง</button>เรียงตาม
         <select id="sort" style="border:1px solid var(--line);border-radius:8px;padding:4px 6px;margin-left:4px">
           <option value="rem">ใกล้หมดสัญญาก่อน</option><option value="unit">หน่วยงาน / คลัง</option><option value="type">ประเภทรถ</option><option value="price">ค่าเช่ามาก → น้อย</option><option value="start">เริ่มสัญญาล่าสุด</option>
         </select></span></div>
     <div class="tw"><table class="vt" id="vt"></table></div>
     <div class="more" id="more"></div>
   </section>
+  </div>
+  <div class="view" data-v="renew" id="vRenew"></div>
+  <div class="view" data-v="spec" id="vSpec"></div>
+  <div class="view" data-v="bid" id="vBid"></div>
 </main>
-<footer>ข้อมูลจากไฟล์ Excel "ข้อมูล MHE" ชีต BI Logistics + BI หน่วยงาน · คงเหลือคำนวณจากวันที่หมดสัญญาเทียบกับวันนี้ · กดรถเพื่อดู Spec / แก้ไข · อัปโหลดไฟล์ใหม่ = รวมกับข้อมูลเดิม (รถที่ไม่อยู่ในไฟล์ยังเก็บไว้)</footer>
+</div></div>
+<footer>ข้อมูลรถจากไฟล์ Excel "ข้อมูล MHE" ชีต BI Logistics + BI หน่วยงาน · ตารางราคาจากไฟล์ราคาประมูล · คงเหลือคำนวณจากวันที่หมดสัญญาเทียบกับวันนี้ · อัปโหลดไฟล์รถใหม่ = รวมกับข้อมูลเดิม · ทุกการแก้ไขบันทึกขึ้นระบบกลาง</footer>
 
 <dialog id="dlg"></dialog>
 <div class="toast" id="toast"></div>
 
 <script>
 /*__MHE_PARSE__*/
+/*__BID_PARSE__*/
+const BIDBASE = /*__BID_DATA__*/null;
 const BASE = /*__MHE_DATA__*/[];
 const ASOF = "/*__ASOF__*/";
 const SB = "https://mgnshovnibcmiptoxdfe.supabase.co/rest/v1/mhe_vehicles";
@@ -235,13 +279,15 @@ const FIELDS = [
   ["Specification", [["model", "รุ่นรถ"], ["size", "ขนาด / เสา"], ["cap", "รับน้ำหนัก (กก.)", "n"], ["h", "ความสูงยก (มม.)", "n"], ["serial", "Serial No. รถ"], ["no", "เบอร์รถ"]]],
   ["แบตเตอรี่ / ชาร์จเจอร์", [["bat", "รุ่นแบต"], ["batSn", "Serial แบต"], ["spareSn", "Serial แบตสำรอง"], ["chg", "Serial ชาร์จเจอร์"]]],
   ["สัญญาเช่า", [["yrs", "อายุสัญญา (ปี)", "n"], ["start", "วันที่สัญญา", "d"], ["end", "วันที่หมดสัญญา", "d"], ["price", "ค่าเช่า/เดือน (บาท)", "n"], ["carBat", "ค่ารถ+แบต", "n"], ["spare", "ค่า Spare แบต", "n"], ["repl", "ทดแทน / เช่าเพิ่ม", "w"], ["memo", "MEMO", "w"]]],
-  ["หมายเหตุ", [["note", "หมายเหตุ", "t"], ["note2", "หมายเหตุจากมิ้ง", "t"]]]
+  ["หมายเหตุ", [["note", "หมายเหตุ", "t"], ["note2", "หมายเหตุจากมิ้ง", "t"]]],
+  ["เตรียมต่อสัญญารอบถัดไป", [["renew", "การตัดสินใจ", "r"], ["renewNote", "หมายเหตุรอบต่อสัญญา", "w"]]]
 ];
-const CMP = FIELDS.flatMap(g => g[1].map(f => f[0]));
+const DEC = { "": "ยังไม่ตัดสินใจ", renew: "ต่อสัญญาเดิม", bid: "ประมูล / เปลี่ยนรุ่น", return: "คืนรถ ไม่ต่อ" };
+const CMP = FIELDS.flatMap(g => g[1].map(f => f[0])).filter(k => k !== "renew" && k !== "renewNote");
 
 /* ---- ข้อมูล: ไฟล์ที่ฝังไว้ + ที่บันทึกบนเว็บ (Supabase mhe_vehicles, ไม่มีตาราง → localStorage) ---- */
 let OVR = {}, ONLINE = false, LAST = "";
-const S = { unit: "all", site: "all", type: "all", en: "all", bk: "all", year: "all", q: "", sort: "rem", lim: 60, open: new Set(["Logistics"]) };
+const S = { view: (location.hash.slice(1) || "sum"), round: null, ed: false, bsh: 0, bed: false, sopen: new Set(), unit: "all", site: "all", type: "all", en: "all", bk: "all", year: "all", q: "", sort: "rem", lim: 60, open: new Set(["Logistics"]) };
 function warn(msg) { $("warn").innerHTML = msg || ""; $("warn").classList.toggle("show", !!msg); }
 function toast(m) { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 2200); }
 function lsGet() { try { return JSON.parse(localStorage.getItem(LS) || "{}"); } catch (e) { return {}; } }
@@ -273,7 +319,7 @@ async function sbSave(rows) {
 }
 function db() {
   const m = new Map(BASE.map(r => [r.id, r]));
-  Object.values(OVR).forEach(x => { if (x.removed) m.delete(x.id); else if (x.rec) m.set(x.id, Object.assign({}, x.rec, { id: x.id, _web: x.updated_at })); });
+  Object.values(OVR).forEach(x => { if (/^(BID|CFG):/.test(x.id)) return; if (x.removed) m.delete(x.id); else if (x.rec) m.set(x.id, Object.assign({}, x.rec, { id: x.id, _web: x.updated_at })); });
   return [...m.values()];
 }
 let ALL = [];
@@ -339,6 +385,7 @@ function render() {
   list.sort(so);
   $("cnt").textContent = "· " + list.length + " คัน";
   const prog = r => { if (!r.start || !r.end) return ""; const a = dOf(r.start), b = dOf(r.end), p = Math.min(100, Math.max(0, (0 - a) / (b - a) * 100)); return `<div class="prog" title="ผ่านไปแล้ว ${Math.round(p)}% ของสัญญา"><i style="width:${p}%;--c:${BK[bOf(r)][1]};background:var(--c)"></i></div>`; };
+  $("vt").className = "vt";
   $("vt").innerHTML = `<thead><tr><th>คงเหลือ</th><th>หน่วยงาน / คลัง</th><th>ประเภท</th><th>รุ่น / ขนาด</th><th>Serial / เบอร์</th><th>สัญญา</th><th class="r">ค่าเช่า/เดือน</th></tr></thead><tbody>` +
     (list.slice(0, S.lim).map(r => { const b = bOf(r), c = BK[b][1];
       return `<tr data-id="${esc(r.id)}"><td><span class="st" style="--c:${c}">${BK[b][0]}</span><div class="rem" style="--c:${c};margin-top:4px;font-size:13px">${remTxt(dOf(r.end))}</div></td>
@@ -349,6 +396,15 @@ function render() {
         <td><div class="t2">${thd(r.start)} → <b style="color:var(--ink)">${thd(r.end)}</b></div>${prog(r)}</td>
         <td class="r num">${money(r.price)}</td></tr>`; }).join("") || `<tr><td colspan="7" class="empty">ไม่มีรถตามตัวกรองนี้</td></tr>`) + "</tbody>";
   $("more").innerHTML = list.length > S.lim ? `<button class="btn l" id="moreBtn">แสดงเพิ่ม (อีก ${list.length - S.lim} คัน)</button>` : "";
+  if (S.ed) renderEdList(list);
+  $("edBtn").textContent = S.ed ? "✓ เสร็จ" : "✎ แก้ไขในตาราง"; $("edBtn").className = "btn " + (S.ed ? "p" : "l");
+  if (!["sum", "renew", "spec", "bid"].includes(S.view)) S.view = "sum";
+  document.querySelectorAll(".view").forEach(v => v.classList.toggle("on", v.dataset.v === S.view));
+  $("fbar").style.display = S.view === "bid" ? "none" : "";
+  renderSide();
+  if (S.view === "renew") renderRenew(base);
+  if (S.view === "spec") renderSpec(base);
+  if (S.view === "bid") renderBid();
 }
 
 /* ---- รายละเอียด / แก้ไข ---- */
@@ -358,11 +414,12 @@ function openCar(id, edit) {
   if (!r) return;
   EDIT = edit ? JSON.parse(JSON.stringify(r)) : null;
   const b = bOf(r), d = dOf(r.end), dl = $("dlg");
-  const val = (f, v) => f[2] === "n" ? (v == null ? "–" : money(v)) : f[2] === "d" ? thd(v) : (v ? esc(v) : "–");
+  const val = (f, v) => f[2] === "n" ? (v == null ? "–" : money(v)) : f[2] === "d" ? thd(v) : f[2] === "r" ? DEC[v || ""] : (v ? esc(v) : "–");
   const inp = (f, v) => {
     if (f[0] === "unit") return `<input list="dlU" data-k="unit" value="${esc(v)}"><datalist id="dlU">${units().map(u => `<option value="${esc(u)}">`).join("")}</datalist>`;
     if (f[0] === "type") return `<input list="dlT" data-k="type" value="${esc(v)}"><datalist id="dlT">${typesAll().map(u => `<option value="${esc(u)}">`).join("")}</datalist>`;
     if (f[0] === "energy") return `<select data-k="energy">${["", "Lithium", "Lead-Acid", "Gas"].map(o => `<option ${o === (v || "") ? "selected" : ""} value="${o}">${o || "ไม่ระบุ"}</option>`).join("")}</select>`;
+    if (f[2] === "r") return `<select data-k="${f[0]}">${Object.entries(DEC).map(([k, l]) => `<option ${k === (v || "") ? "selected" : ""} value="${k}">${l}</option>`).join("")}</select>`;
     if (f[2] === "t") return `<textarea data-k="${f[0]}">${esc(v)}</textarea>`;
     return `<input data-k="${f[0]}" type="${f[2] === "n" ? "number" : f[2] === "d" ? "date" : "text"}" value="${esc(v == null ? "" : v)}">`;
   };
@@ -421,10 +478,238 @@ function exportXlsx() {
   const t = new Date(); XLSX.writeFile(wb, `PCG MHE Data (Export ${String(t.getDate()).padStart(2, "0")}-${String(t.getMonth() + 1).padStart(2, "0")}-${t.getFullYear() + 543}).xlsx`);
 }
 
+/* ---- แถบซ้าย (ผู้ใช้ขอ 5 ต.ค.): Summary · เตรียมต่อสัญญา · Specification · ตารางราคาประมูล ---- */
+const IC = {
+  sum: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>',
+  renew: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M12 7v5l3 2"/></svg>',
+  spec: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18V9h7l3 4v5"/><path d="M13 13h3V4"/><path d="M16 18h5"/><circle cx="6" cy="18.5" r="1.8"/><circle cx="12" cy="18.5" r="1.8"/></svg>',
+  bid: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 10h16M10 4v16"/><path d="M14 14h3M14 17h3"/></svg>'
+};
+const THIS_Y = new Date().getFullYear();
+const endY = r => r.end ? +r.end.slice(0, 4) : null;
+const rounds = () => { const ys = [...new Set(ALL.map(endY).filter(y => y && y >= THIS_Y))].sort(); if (!ys.includes(THIS_Y)) ys.unshift(THIS_Y); return ys; };
+const inRound = (r, y) => { const e = endY(r); return e != null && (y === THIS_Y ? e <= y : e === y); };
+const roundLbl = y => y === THIS_Y ? `หมดถึงสิ้นปี ${y + 543} (รวมที่หมดแล้ว)` : `หมดในปี ${y + 543}`;
+const bidData = () => (OVR["BID:main"] && OVR["BID:main"].rec) || BIDBASE || { title: "", sheets: [], confirm: [] };
+const confRows = () => (OVR["CFG:confirm"] && OVR["CFG:confirm"].rec && OVR["CFG:confirm"].rec.rows) || (bidData().confirm || []).map(c => ({ unit: c.unit, qty: c.qty, status: c.status || "", note: "" }));
+
+function renderSide() {
+  if (S.round == null) S.round = rounds()[0];
+  const nR = ALL.filter(r => inRound(r, S.round)).length, models = new Set(ALL.map(r => (r.model || "").toUpperCase()).filter(Boolean)).size, B = bidData();
+  const nav = (v, t, s, n) => `<button class="nav ${S.view === v ? "on" : ""}" data-view="${v}"><i>${IC[v]}</i><span>${t}<small>${s}</small></span>${n != null ? `<em>${n}</em>` : ""}</button>`;
+  $("side").innerHTML = `<div class="sbox navs"><h5>เมนู</h5>
+    ${nav("sum", "Summary MHE", "ภาพรวมรถทุกคัน", ALL.length)}
+    ${nav("renew", "เตรียมต่อสัญญา", "รอบถัดไป · " + (S.round + 543), nR)}
+    ${nav("spec", "Specification รถ MHE", models + " รุ่น", null)}
+    ${nav("bid", "ตารางราคาประมูล", esc(B.title || "ยังไม่มีข้อมูล"), (B.sheets[0] || { rows: [] }).rows.length || null)}</div>
+    <div class="sbox sinfo"><div><span class="sdot" style="background:${ONLINE ? "var(--ok)" : "var(--m3)"}"></span><b>${ONLINE ? "บันทึกขึ้นระบบกลาง" : "เก็บในเครื่องนี้เท่านั้น"}</b></div>
+    <div>ข้อมูลจากไฟล์ ${esc(ASOF)}</div>${LAST ? `<div>แก้บนเว็บล่าสุด ${new Date(LAST).toLocaleString("th-TH", { dateStyle: "medium", timeStyle: "short" })}</div>` : ""}
+    <div style="margin-top:4px">ทุกคนที่มีลิงก์แก้ไขได้ · ทุกเครื่องเห็นตรงกัน</div></div>`;
+}
+
+/* ---- รายการรถ: โหมดแก้ไขในตาราง (ทุกคัน) ---- */
+const EDCOL = [["unit", "หน่วยงาน", "w1", "dlU"], ["site", "คลัง", "w2", "dlS"], ["type", "ประเภท", "w1", "dlT"], ["energy", "แบต", "w1", "en"], ["model", "รุ่นรถ", "w2"], ["size", "ขนาด / เสา", "w2"], ["serial", "Serial", "w1"], ["no", "เบอร์", "w0"], ["start", "เริ่มสัญญา", "w1", "date"], ["end", "หมดสัญญา", "w1", "date"], ["price", "ค่าเช่า/เดือน", "w1", "num"]];
+function renderEdList(list) {
+  const dl = (id, a) => `<datalist id="${id}">${[...new Set(a)].filter(Boolean).sort().map(v => `<option value="${esc(v)}">`).join("")}</datalist>`;
+  $("vt").className = "vt ve";
+  $("vt").innerHTML = dl("dlU", ALL.map(r => r.unit)) + dl("dlS", ALL.map(r => r.site)) + dl("dlT", ALL.map(r => r.type)) +
+    `<thead><tr><th></th>${EDCOL.map(c => `<th>${c[1]}</th>`).join("")}<th></th></tr></thead><tbody>` +
+    list.slice(0, S.lim).map(r => `<tr><td><span class="st" style="--c:${BK[bOf(r)][1]};padding:2px 6px" title="${BK[bOf(r)][0]}">${remTxt(dOf(r.end)).replace("เหลือ ", "")}</span></td>${EDCOL.map(c => {
+      const v = r[c[0]] == null ? "" : r[c[0]], a = `data-f="${esc(r.id)}|${c[0]}" class="${c[2]}"`;
+      if (c[3] === "en") return `<td><select ${a}>${["", "Lithium", "Lead-Acid", "Gas"].map(o => `<option ${o === v ? "selected" : ""} value="${o}">${o || "ไม่ระบุ"}</option>`).join("")}</select></td>`;
+      return `<td><input ${a} ${c[3] && c[3].startsWith("dl") ? `list="${c[3]}"` : ""} type="${c[3] === "date" ? "date" : c[3] === "num" ? "number" : "text"}" value="${esc(v)}"></td>`; }).join("")}
+      <td><button class="btn l" data-open="${esc(r.id)}" style="padding:5px 9px" title="ดู / แก้ทุกช่อง">⋯</button></td></tr>`).join("") + "</tbody>";
+}
+async function saveField(el) {
+  const [id, k] = el.dataset.f.split("|"), r = ALL.find(x => x.id === id); if (!r) return;
+  let v = el.value.trim(); if (k === "price") v = v === "" ? null : +v;
+  if (String(r[k] ?? "") === String(v ?? "")) return;
+  r[k] = v; const rec = Object.assign({}, r); delete rec.id; delete rec._web;
+  await sbSave([{ id, rec }]); r._web = new Date().toISOString();
+  el.classList.add("ok"); setTimeout(() => el.classList.remove("ok"), 900); toast(ONLINE ? "บันทึกแล้ว" : "บันทึกในเบราว์เซอร์นี้แล้ว");
+}
+
+/* ---- เตรียมต่อสัญญารอบถัดไป ---- */
+function renderRenew(base) {
+  if (S.round == null) S.round = rounds()[0];
+  const L = base.filter(r => inRound(r, S.round)).sort((a, b) => (a.end || "").localeCompare(b.end || "") || (a.unit + a.site).localeCompare(b.unit + b.site, "th"));
+  const rent = L.reduce((s, r) => s + (+r.price || 0), 0), dc = k => L.filter(r => (r.renew || "") === k).length;
+  const CR = confRows(), cOk = CR.filter(c => c.status === "ยืนยันแล้ว").length;
+  const specKey = r => [r.type, r.cap ? (r.cap / 1000).toFixed(1).replace(".0", "") + " ตัน" : "", r.h && r.h > 1000 ? (r.h / 1000).toFixed(1).replace(".0", "") + " ม." : ""].filter(Boolean).join(" · ");
+  const G = {}; L.forEach(r => { const k = specKey(r) + "|" + enOf(r); (G[k] = G[k] || []).push(r); });
+  const gk = Object.keys(G).sort((a, b) => G[b].length - G[a].length);
+  const cnt = a => { const c = {}; a.forEach(r => { const k = (r.unit === "Logistics" ? "" : r.unit + " · ") + siteOf(r); c[k] = (c[k] || 0) + 1; }); return Object.entries(c).sort((x, y) => y[1] - x[1]); };
+  const nm = s => String(s || "").toLowerCase().replace(/\s+/g, ""), ALIAS = { "ระยอง": "rayong", "อุบล": "อุบลราชธานี" };
+  const autoN = u => { const n = nm(ALIAS[u.trim()] || u); return L.filter(r => nm(r.unit) === n || nm(r.site).includes(n)).length; };
+  $("vRenew").innerHTML = `<section class="panel"><div class="phead"><h2>เตรียมต่อสัญญารถ รอบถัดไป</h2><span class="note">ตามตัวกรองด้านบน · กดปีเพื่อเปลี่ยนรอบ</span></div>
+    <div class="rchips" style="margin-bottom:12px">${rounds().map(y => `<button class="chip ${S.round === y ? "on" : ""}" data-round="${y}">${roundLbl(y)} <em>${ALL.filter(r => match(r) && inRound(r, y)).length}</em></button>`).join("")}</div>
+    <div class="mini"><div class="f"><span>รถที่ต้องต่อสัญญารอบนี้</span><b>${L.length}</b><small>คัน · ${roundLbl(S.round)}</small></div>
+      <div class="f"><span>ค่าเช่าปัจจุบันรวม</span><b>${money(rent)}</b><small>บาท/เดือน</small></div>
+      <div class="f"><span>ตัดสินใจแล้ว</span><b>${L.length - dc("")}<small style="font-size:14px"> / ${L.length}</small></b><small><span class="dec-renew">ต่อ ${dc("renew")}</span> · <span class="dec-bid">ประมูล ${dc("bid")}</span> · <span class="dec-return">คืน ${dc("return")}</span></small></div>
+      <div class="f"><span>หน่วยงานยืนยันแล้ว</span><b>${cOk}<small style="font-size:14px"> / ${CR.length}</small></b><small>จากตาราง "ยืนยันกับหน่วยงาน"</small></div></div></section>
+  <div class="two">
+    <section class="panel"><div class="phead"><h2>สรุปตามสเปก</h2><span class="note">ใช้เทียบกับรายการในตารางราคาประมูล</span></div>
+      <div class="tw"><table><thead><tr><th>ประเภท · รับน้ำหนัก · ยกสูง</th><th>แบต</th><th class="c">คัน</th><th>คลัง × จำนวน</th><th class="r">ค่าเช่าเดิมรวม/เดือน</th></tr></thead><tbody>
+      ${gk.map(k => { const a = G[k], [sp, en] = k.split("|"); return `<tr><td class="t1">${esc(sp)}</td><td><span class="en ${en}">${en}</span></td><td class="c num"><b>${a.length}</b></td><td>${cnt(a).map(([s, n]) => `<span class="sc">${esc(s)} <b>×${n}</b></span>`).join("")}</td><td class="r num">${money(a.reduce((s, r) => s + (+r.price || 0), 0))}</td></tr>`; }).join("") || '<tr><td colspan="5" class="empty">ไม่มีรถในรอบนี้</td></tr>'}</tbody></table></div></section>
+    <section class="panel"><div class="phead"><h2>ยืนยันกับหน่วยงาน</h2><button class="btn l" data-cadd style="margin-left:auto;padding:6px 11px">＋ เพิ่มหน่วยงาน</button></div>
+      <div class="tw"><table><thead><tr><th>หน่วยงาน</th><th class="c" title="นับอัตโนมัติจากรถในรอบนี้ (ชื่อหน่วยงาน/คลังตรงกัน)">รถในรอบ</th><th>ยืนยันจำนวน</th><th>สถานะ</th><th>หมายเหตุ</th></tr></thead><tbody>
+      ${CR.map((c, i) => `<tr><td><input data-c="${i}|unit" value="${esc(c.unit)}" class="w1"></td><td class="c num">${autoN(c.unit) || '<span class="z">·</span>'}</td><td><input data-c="${i}|qty" type="number" value="${c.qty ?? ""}" class="w0"></td>
+        <td><select data-c="${i}|status" class="w1">${["", "รอข้อมูล", "ยืนยันแล้ว", "ไม่ต่อสัญญา"].map(o => `<option ${o === (c.status || "") ? "selected" : ""} value="${o}">${o || "ยังไม่ยืนยัน"}</option>`).join("")}</select></td>
+        <td><input data-c="${i}|note" value="${esc(c.note || "")}" class="w1"></td></tr>`).join("")}</tbody></table></div></section>
+  </div>
+  <section class="panel"><div class="phead"><h2>รายการรถในรอบนี้ <span class="note" style="margin:0">· ${L.length} คัน</span></h2><span class="note">เลือก "การตัดสินใจ" ได้ทุกคัน · บันทึกทันที</span>
+    <button class="btn l" data-rexp style="padding:6px 11px">⬇ Export รอบนี้</button></div>
+    <div class="tw"><table class="vt"><thead><tr><th>หมดสัญญา</th><th>หน่วยงาน / คลัง</th><th>ประเภท</th><th>รุ่น</th><th>Serial / เบอร์</th><th class="r">ค่าเช่า/เดือน</th><th>การตัดสินใจ</th><th>หมายเหตุ</th></tr></thead><tbody>
+    ${L.map(r => { const c = BK[bOf(r)][1]; return `<tr><td><b>${thd(r.end)}</b><div class="rem" style="--c:${c};font-size:12px">${remTxt(dOf(r.end))}</div></td>
+      <td><div class="t1">${esc(r.unit)}</div><div class="t2">${esc(r.site)}</div></td><td><div class="t1">${esc(r.type)}${r.energy ? `<span class="en ${r.energy}">${r.energy}</span>` : ""}</div></td>
+      <td><div class="t1">${esc(r.model)}</div><div class="t2">${esc(r.size)}</div></td><td><a href="#" data-open="${esc(r.id)}" class="t1 num" style="color:var(--ink)">${esc(r.serial) || "–"}</a><div class="t2">${r.no ? "เบอร์ " + esc(r.no) : ""}</div></td>
+      <td class="r num">${money(r.price)}</td>
+      <td style="min-width:150px"><select data-f="${esc(r.id)}|renew" class="dec-${r.renew || "none"}">${Object.entries(DEC).map(([k, l]) => `<option ${k === (r.renew || "") ? "selected" : ""} value="${k}">${l}</option>`).join("")}</select></td>
+      <td style="min-width:150px"><input data-f="${esc(r.id)}|renewNote" value="${esc(r.renewNote || "")}"></td></tr>`; }).join("") || '<tr><td colspan="8" class="empty">ไม่มีรถในรอบนี้</td></tr>'}</tbody></table></div></section>`;
+}
+async function saveConf(el) {
+  const rows = JSON.parse(JSON.stringify(confRows())), [i, k] = el.dataset.c.split("|");
+  rows[+i][k] = k === "qty" ? (el.value === "" ? null : +el.value) : el.value.trim();
+  await sbSave([{ id: "CFG:confirm", rec: { rows } }]); el.classList.add("ok"); setTimeout(() => el.classList.remove("ok"), 900);
+  toast(ONLINE ? "บันทึกแล้ว" : "บันทึกในเบราว์เซอร์นี้แล้ว"); if (k === "status") renderRenew(ALL.filter(r => match(r)));
+}
+function exportRenew() {
+  const L = ALL.filter(r => match(r) && inRound(r, S.round)).sort((a, b) => (a.end || "").localeCompare(b.end || ""));
+  const H = ["หน่วยงาน", "คลัง", "UL", "ประเภทรถ", "Type Battery", "รุ่นรถ", "ขนาด", "Serial No.", "เบอร์รถ", "วันที่สัญญา", "วันที่หมดสัญญา", "ค่าเช่า/เดือน", "การตัดสินใจ", "หมายเหตุรอบต่อสัญญา"];
+  const ws = XLSX.utils.aoa_to_sheet([H, ...L.map(r => [r.unit, r.site, r.ul, r.type, r.energy, r.model, r.size, r.serial, r.no, r.start, r.end, r.price, DEC[r.renew || ""], r.renewNote || ""])]);
+  H.forEach((_, j) => { const c = ws[XLSX.utils.encode_cell({ r: 0, c: j })]; if (c) c.s = { font: { bold: true, color: { rgb: "FFFFFF" } }, fill: { fgColor: { rgb: "22262C" } } }; });
+  ws["!cols"] = [12, 20, 7, 15, 11, 20, 22, 14, 6, 11, 11, 10, 18, 30].map(w => ({ wch: w }));
+  const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "ต่อสัญญา " + (S.round + 543));
+  XLSX.writeFile(wb, `PCG MHE ต่อสัญญา ${S.round + 543}.xlsx`);
+}
+
+/* ---- Specification รถ MHE (จัดกลุ่มตามรุ่น) ---- */
+function renderSpec(base) {
+  const G = {}; base.forEach(r => { const k = (r.model || "ไม่ระบุรุ่น").toUpperCase().replace(/\s+/g, " ").trim(); (G[k] = G[k] || []).push(r); });
+  const uq = (a, f) => [...new Set(a.map(f).filter(v => v != null && v !== ""))];
+  const show = (vals, fmt) => vals.length ? vals.slice(0, 2).map(fmt || (v => esc(v))).join(" / ") + (vals.length > 2 ? ` <span class="z">+${vals.length - 2}</span>` : "") : '<span class="z">–</span>';
+  const keys = Object.keys(G).sort((a, b) => { const ta = TYPES.indexOf(G[a][0].type), tb = TYPES.indexOf(G[b][0].type); return (ta < 0 ? 99 : ta) - (tb < 0 ? 99 : tb) || G[b].length - G[a].length; });
+  let lastT = "";
+  $("vSpec").innerHTML = `<section class="panel"><div class="phead"><h2>Specification รถ MHE</h2><span class="note">${keys.length} รุ่น · ${base.length} คัน · ตามตัวกรองด้านบน · กดแถวเพื่อดูรถแต่ละคัน</span></div>
+    <div class="tw"><table class="mx"><thead><tr><th>รุ่นรถ</th><th>แบต</th><th class="r">รับน้ำหนัก (กก.)</th><th class="r">ยกสูง (มม.)</th><th>ขนาด / เสา</th><th>รุ่นแบต</th><th>Supplier</th><th class="c">คัน</th><th>หน่วยงาน</th><th>หมดสัญญาเร็วสุด</th></tr></thead><tbody>
+    ${keys.map(k => { const a = G[k], ty = a[0].type, op = S.sopen.has(k), first = a.slice().sort((x, y) => (x.end || "9").localeCompare(y.end || "9"))[0];
+      const uc = {}; a.forEach(r => uc[r.unit] = (uc[r.unit] || 0) + 1);
+      const head = ty !== lastT ? `<tr class="sp-t"><td colspan="10">${esc(ty)}</td></tr>` : ""; lastT = ty;
+      return head + `<tr data-sk="${esc(k)}" class="${op ? "on" : ""}"><td><span class="tg">${op ? "▾" : "▸"}</span><b>${esc(a[0].model || "ไม่ระบุรุ่น")}</b></td>
+        <td>${uq(a, enOf).map(e => `<span class="en ${e}">${e}</span>`).join("")}</td><td class="r num">${show(uq(a, r => r.cap), money)}</td><td class="r num">${show(uq(a, r => r.h), money)}</td>
+        <td class="t2">${show(uq(a, r => r.size))}</td><td class="t2">${show(uq(a, r => r.bat))}</td><td class="t2">${show(uq(a, r => r.sup))}</td><td class="c num"><b>${a.length}</b></td>
+        <td>${Object.entries(uc).map(([u, n]) => `<span class="sc"><i class="sdot" style="background:${ucol(u)};margin:0"></i>${esc(u)} <b>×${n}</b></span>`).join("")}</td>
+        <td class="t2"><span class="rem" style="--c:${BK[bOf(first)][1]}">${thd(first.end)}</span></td></tr>` +
+        (op ? a.map(r => `<tr class="spx"><td colspan="2" style="padding-left:30px"><a href="#" data-open="${esc(r.id)}" class="num" style="color:var(--ink);font-weight:800">${esc(r.serial) || "ไม่มี Serial"}</a>${r.no ? ` · เบอร์ ${esc(r.no)}` : ""}</td><td colspan="2" class="t2">${esc(r.unit)} · ${esc(r.site)}</td><td class="t2">${esc(r.size)}</td><td class="t2">${esc(r.bat || "")}${r.batSn ? " · " + esc(r.batSn) : ""}</td><td class="t2">${r.chg ? "ชาร์จเจอร์ " + esc(r.chg) : ""}</td><td></td><td class="t2">${thd(r.start)} → ${thd(r.end)}</td><td><span class="rem" style="--c:${BK[bOf(r)][1]};font-size:12px">${remTxt(dOf(r.end))}</span></td></tr>`).join("") : ""); }).join("") || '<tr><td colspan="10" class="empty">ไม่มีข้อมูล</td></tr>'}
+    </tbody></table></div></section>`;
+}
+
+/* ---- ตารางราคาประมูล ---- */
+let BDRAFT = null;
+const isN = v => typeof v === "number" && isFinite(v);
+const qtyOf = row => row.qty || row.alloc.reduce((s, a) => s + (+a[1] || 0), 0);
+function renderBid() {
+  const B = S.bed ? BDRAFT : bidData();
+  if (!B.sheets.length) { $("vBid").innerHTML = `<section class="panel"><div class="empty">ยังไม่มีตารางราคา · กด "อัปโหลดตารางราคา" เพื่อนำเข้าไฟล์ Excel</div><div class="more"><button class="btn p" data-bup>⬆ อัปโหลดตารางราคา</button></div></section>`; return; }
+  if (S.bsh >= B.sheets.length) S.bsh = 0;
+  const sh = B.sheets[S.bsh], V = sh.vendors, rows = sh.rows;
+  const has = V.map((_, v) => rows.some(r => r.p[v] && (r.p[v][0] != null || r.p[v][1] != null)));
+  const VI = V.map((_, i) => i).filter(i => S.bed || has[i]);
+  const minOf = (r, term) => { const ns = r.p.map(p => p && p[term]).filter(isN); return ns.length ? Math.min(...ns) : null; };
+  const vs = V.map((v, i) => { const q = rows.filter(r => isN(r.p[i] && r.p[i][1]) || isN(r.p[i] && r.p[i][0]));
+    const tot = term => rows.reduce((s, r) => s + (isN(r.p[i] && r.p[i][term]) ? r.p[i][term] * qtyOf(r) : 0), 0);
+    const wins = term => rows.filter(r => { const m = minOf(r, term); return m != null && r.p[i] && r.p[i][term] === m; }).length;
+    return { i, n: q.length, t3: tot(0), t5: tot(1), w3: wins(0), w5: wins(1), full3: rows.every(r => isN(r.p[i] && r.p[i][0])), full5: rows.every(r => isN(r.p[i] && r.p[i][1])) }; });
+  const best = term => { const f = vs.filter(x => term ? x.full5 : x.full3); return f.length ? f.reduce((a, b) => ((term ? a.t5 : a.t3) <= (term ? b.t5 : b.t3) ? a : b)).i : -1; };
+  const b3 = best(0), b5 = best(1), qAll = rows.reduce((s, r) => s + qtyOf(r), 0);
+  const lowTot = term => rows.reduce((s, r) => s + (minOf(r, term) || 0) * qtyOf(r), 0);
+  const pc = (v, mn) => v == null ? '<td class="pc vl0"><span class="z">·</span></td>' : isN(v) ? `<td class="pc ${v === mn ? "min" : ""}">${money(v)}</td>` : `<td class="pc tx">${esc(v)}</td>`;
+  const E = S.bed, inp = (path, v, cls, ph) => `<input data-b="${path}" value="${esc(v ?? "")}" class="${cls || ""}" placeholder="${ph || ""}">`;
+  $("vBid").innerHTML = `<section class="panel"><div class="phead"><h2>ตารางราคาประมูล ${E ? inp("title", B.title, "it") : `<span style="color:var(--acc2)">· ${esc(B.title)}</span>`}</h2>
+      <span class="tabs">${B.sheets.map((s, i) => `<button class="${i === S.bsh ? "on" : ""}" data-bsh="${i}">${esc(s.name)}</button>`).join("")}</span>
+      <span style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">${E ? `<button class="btn p" data-bsave>✓ บันทึก</button><button class="btn l" data-bcancel>ยกเลิก</button>` : `<button class="btn l" data-bedit>✎ แก้ไขตาราง</button><button class="btn l" data-bup>⬆ อัปโหลดตารางราคา</button><button class="btn l" data-bexp>⬇ Export Excel</button>`}</span></div>
+    <div class="mini"><div class="f"><span>รายการ (${esc(sh.name)})</span><b>${rows.length}</b><small>สเปก</small></div><div class="f"><span>จำนวนรถรวม</span><b>${qAll}</b><small>คัน</small></div>
+      <div class="f"><span>ถ้าเลือกราคาต่ำสุดทุกรายการ · 3 ปี</span><b>${money(lowTot(0))}</b><small>บาท/เดือน</small></div><div class="f"><span>ถ้าเลือกราคาต่ำสุดทุกรายการ · 5 ปี</span><b>${money(lowTot(1))}</b><small>บาท/เดือน</small></div></div></section>
+  <section class="panel"><div class="phead"><h2>เทียบผู้เสนอราคา</h2><span class="note">รวม/เดือน = Σ ราคา × จำนวนคัน (เฉพาะรายการที่เสนอ) · ★ = ถูกสุดในกลุ่มที่เสนอครบทุกรายการ</span></div>
+    <div class="tw"><table><thead><tr><th>ผู้ขาย</th><th>ผู้ติดต่อ</th><th class="c">เสนอ</th><th class="c">ถูกสุด (3 ปี / 5 ปี)</th><th class="r">รวม/เดือน · 3 ปี</th><th class="r">รวม/เดือน · 5 ปี</th></tr></thead><tbody>
+    ${vs.map(x => `<tr><td class="t1">${esc(V[x.i].name)}</td><td class="t2">${esc(V[x.i].contact)}</td><td class="c">${x.n ? `${x.n}/${rows.length}` : '<span class="z">ยังไม่เสนอ</span>'}</td><td class="c num">${x.n ? `${x.w3} / ${x.w5}` : ""}</td>
+      <td class="r num ${x.i === b3 ? "win" : ""}">${x.t3 ? money(x.t3) + (x.full3 ? "" : " *") : "–"}${x.i === b3 ? " ★" : ""}</td><td class="r num ${x.i === b5 ? "win" : ""}">${x.t5 ? money(x.t5) + (x.full5 ? "" : " *") : "–"}${x.i === b5 ? " ★" : ""}</td></tr>`).join("")}</tbody></table></div>
+    <div class="note" style="margin-top:6px">* เสนอไม่ครบทุกรายการ ยอดรวมจึงต่ำกว่าจริง ใช้เทียบโดยตรงไม่ได้${VI.length < V.length ? " · ผู้ขายที่ยังไม่เสนอราคาซ่อนไว้ในตาราง (กด ✎ แก้ไขตาราง เพื่อกรอก)" : ""}</div></section>
+  <section class="panel"><div class="phead"><h2>ราคาค่าเช่าต่อคันต่อเดือน · ${esc(sh.name)}</h2><span class="note">ช่องเขียว = ถูกสุดของแถวนั้น · ${E ? "แก้ช่องคลังเป็น \"คลัง ×จำนวน\" คั่นด้วย ," : "กด ✎ แก้ไขตาราง เพื่อแก้ราคา/เพิ่มรายการ"}</span></div>
+    <div class="tw"><table class="bt"><thead><tr><th rowspan="2">รุ่น / สเปก · คลัง × จำนวน</th><th rowspan="2">แบต</th><th rowspan="2" class="c">คัน</th>
+      ${VI.map(i => V[i]).map((v, k) => { const i = VI[k]; return `<th colspan="2" class="vn ${has[i] || E ? "" : "dim"}">${E ? inp(`v|${i}|name`, v.name) + inp(`v|${i}|contact`, v.contact, "", "ผู้ติดต่อ") : esc(v.name) + `<small>${esc(v.contact)}</small>`}</th>`; }).join("")}
+      <th colspan="2" class="vn">ต่ำสุด</th>${E ? "<th rowspan=\"2\"></th>" : ""}</tr>
+      <tr>${VI.map(() => '<th class="c" style="border-left:2px solid var(--line)">3 ปี</th><th class="c">5 ปี</th>').join("")}<th class="c" style="border-left:2px solid var(--line)">3 ปี</th><th class="c">5 ปี</th></tr></thead><tbody>
+    ${rows.map((r, ri) => { const m3 = minOf(r, 0), m5 = minOf(r, 1), who = (m, t) => m == null ? "" : V.filter((_, i) => r.p[i] && r.p[i][t] === m).map(v => v.name.split(" ")[0]).join(", ");
+      return `<tr><td>${E ? inp(`r|${ri}|item`, r.item, "it") + `<div style="margin-top:4px">${inp(`r|${ri}|alloc`, r.alloc.map(a => a[0] + (a[1] != null ? " ×" + a[1] : "")).join(", "), "it", "คลัง ×จำนวน, …")}</div>` : `<b>${esc(r.item)}</b><div style="margin-top:3px">${r.alloc.map(a => `<span class="sc">${esc(a[0])} <b>×${a[1] ?? "?"}</b></span>`).join("")}</div>`}</td><td>${E ? inp(`r|${ri}|energy`, r.energy, "w0") : esc(r.energy)}</td>
+        <td class="c num"><b>${qtyOf(r) || "–"}</b></td>
+        ${VI.map(i => E ? `<td class="vl">${inp(`p|${ri}|${i}|0`, (r.p[i] || [])[0])}</td><td>${inp(`p|${ri}|${i}|1`, (r.p[i] || [])[1])}</td>` : pc((r.p[i] || [])[0], m3).replace('class="pc', 'class="pc vl') + pc((r.p[i] || [])[1], m5)).join("")}
+        <td class="pc vl"><b>${m3 != null ? money(m3) : "–"}</b><div class="t2">${esc(who(m3, 0))}</div></td><td class="pc"><b>${m5 != null ? money(m5) : "–"}</b><div class="t2">${esc(who(m5, 1))}</div></td>
+        ${E ? `<td><button class="btn d" data-bdel="${ri}" style="padding:5px 9px">✕</button></td>` : ""}</tr>`; }).join("")}</tbody>
+    <tfoot><tr><td colspan="2"><b>รวม</b></td><td class="c num"><b>${qAll}</b></td>${VI.map(i => `<td class="pc vl">${vs[i].t3 ? money(vs[i].t3) : ""}</td><td class="pc">${vs[i].t5 ? money(vs[i].t5) : ""}</td>`).join("")}<td class="pc vl"><b>${money(lowTot(0))}</b></td><td class="pc"><b>${money(lowTot(1))}</b></td>${E ? "<td></td>" : ""}</tr></tfoot></table></div>
+    ${E ? `<div class="more" style="display:flex;gap:8px;justify-content:center"><button class="btn l" data-badd>＋ เพิ่มรายการ</button><button class="btn l" data-bvadd>＋ เพิ่มผู้ขาย</button></div>` : ""}</section>`;
+}
+function bidInput(el) {
+  const sh = BDRAFT.sheets[S.bsh], k = el.dataset.b.split("|"), raw = el.value.trim();
+  const val = s => { if (s === "") return null; const n = parseFloat(s.replace(/,/g, "")); return /^[\d,.]+$/.test(s) && isFinite(n) ? n : s; };
+  if (k[0] === "title") BDRAFT.title = raw;
+  else if (k[0] === "v") BDRAFT.sheets.forEach(s => { if (s.vendors[+k[1]]) s.vendors[+k[1]][k[2]] = raw; });
+  else if (k[0] === "r" && k[2] === "alloc") sh.rows[+k[1]].alloc = raw.split(",").map(x => x.trim()).filter(Boolean).map(x => { const m = x.match(/^(.*?)[\s]*[×x*:]\s*(\d+)$/); return m ? [m[1].trim(), +m[2]] : [x, null]; });
+  else if (k[0] === "r") sh.rows[+k[1]][k[2]] = raw;
+  else if (k[0] === "p") { const r = sh.rows[+k[1]]; while (r.p.length <= +k[2]) r.p.push([null, null]); r.p[+k[2]][+k[3]] = val(raw); }
+}
+async function bidUpload(file) {
+  let o; try { o = bidParse(XLSX, XLSX.read(await file.arrayBuffer(), { type: "array" })); } catch (e) { toast("อ่านไฟล์ไม่ได้: " + e.message); return; }
+  if (!o.sheets.length) { toast("ไม่พบชีตราคา (ต้องมีแถวหัวคอลัมน์ A = MHE)"); return; }
+  PEND_BID = o;
+  $("dlg").innerHTML = `<div class="dh"><div><h3>นำเข้าตารางราคา · ${esc(file.name)}</h3><div class="t2">${esc(o.title)} · แทนที่ตารางราคาเดิมทั้งหมด (สถานะยืนยันกับหน่วยงานไม่หาย)</div></div><button class="x" data-close>✕</button></div>
+    <div class="db"><div class="sumg">${o.sheets.map(s => `<div class="f"><span>ชีต ${esc(s.name)}</span><b>${s.rows.length}</b><small>รายการ · ${s.vendors.length} ผู้ขาย</small></div>`).join("")}<div class="f"><span>หน่วยงาน (Confirm)</span><b>${o.confirm.length}</b></div></div>
+    <div class="note">ผู้ขาย: ${esc(o.sheets[0].vendors.map(v => v.name).join(", "))}</div></div>
+    <div class="df"><button class="btn p" data-bcommit>✓ นำเข้า</button><button class="btn l" data-close>ยกเลิก</button></div>`;
+  if (!$("dlg").open) $("dlg").showModal();
+}
+let PEND_BID = null;
+function exportBid() {
+  const B = bidData(), wb = XLSX.utils.book_new(), thin = { style: "thin", color: { rgb: "999999" } }, bd = { top: thin, bottom: thin, left: thin, right: thin };
+  B.sheets.forEach(sh => {
+    const V = sh.vendors, nA = Math.max(5, ...sh.rows.map(r => r.alloc.length)), vc = 3 + nA * 2;
+    const r0 = [B.title, ...Array(vc - 1).fill(""), ...V.flatMap(v => [v.contact, ""])], r1 = ["MHE", "Type Battery", "จำนวน", ...Array(nA * 2).fill(""), ...V.flatMap(v => [v.name, ""])],
+      r2 = ["", "", "", ...Array(nA).fill(0).flatMap(() => ["คลัง", "จำนวน"]), ...V.flatMap(() => ["3 ปี", "5 ปี"])];
+    const data = sh.rows.map(r => [r.item, r.energy, qtyOf(r), ...Array(nA).fill(0).flatMap((_, k) => r.alloc[k] ? [r.alloc[k][0], r.alloc[k][1]] : ["", ""]), ...V.flatMap((_, i) => [(r.p[i] || [])[0] ?? "", (r.p[i] || [])[1] ?? ""])]);
+    const ws = XLSX.utils.aoa_to_sheet([r0, r1, r2, ...data]);
+    ws["!merges"] = V.map((_, i) => ({ s: { r: 1, c: vc + 2 * i }, e: { r: 1, c: vc + 2 * i + 1 } })).concat(V.map((_, i) => ({ s: { r: 0, c: vc + 2 * i }, e: { r: 0, c: vc + 2 * i + 1 } })));
+    const R = XLSX.utils.decode_range(ws["!ref"]);
+    for (let r = 0; r <= R.e.r; r++) for (let c = 0; c <= R.e.c; c++) { const a = XLSX.utils.encode_cell({ r, c }); if (!ws[a]) ws[a] = { t: "s", v: "" }; ws[a].s = { border: r ? bd : {}, font: { bold: r < 3, sz: r ? 10 : 12 }, alignment: { horizontal: r < 3 || c >= vc ? "center" : "left", vertical: "center" }, fill: r === 1 || r === 2 ? { fgColor: { rgb: "FFE699" } } : undefined }; if (c >= vc && r > 2 && typeof ws[a].v === "number") ws[a].z = "#,##0"; }
+    sh.rows.forEach((row, i) => [0, 1].forEach(t => { const ns = row.p.map(p => p && p[t]).filter(isN); if (!ns.length) return; const m = Math.min(...ns); V.forEach((_, v) => { if ((row.p[v] || [])[t] === m) { const a = XLSX.utils.encode_cell({ r: i + 3, c: vc + 2 * v + t }); ws[a].s = Object.assign({}, ws[a].s, { fill: { fgColor: { rgb: "C6EFCE" } }, font: { bold: true, color: { rgb: "006100" }, sz: 10 } }); } }); }));
+    ws["!cols"] = [{ wch: 34 }, { wch: 11 }, { wch: 7 }, ...Array(nA).fill(0).flatMap(() => [{ wch: 18 }, { wch: 6 }]), ...V.flatMap(() => [{ wch: 11 }, { wch: 11 }])];
+    XLSX.utils.book_append_sheet(wb, ws, sh.name.slice(0, 30));
+  });
+  const CR = confRows(); const wc = XLSX.utils.aoa_to_sheet([["NO.", "หน่วยงาน", "จำนวน", "สถานะ", "หมายเหตุ"], ...CR.map((c, i) => [i + 1, c.unit, c.qty ?? "", c.status || "ยังไม่ยืนยัน", c.note || ""])]);
+  wc["!cols"] = [{ wch: 5 }, { wch: 24 }, { wch: 8 }, { wch: 14 }, { wch: 30 }]; XLSX.utils.book_append_sheet(wb, wc, "Confirm หน่วยงาน");
+  const t = new Date(); XLSX.writeFile(wb, `ตารางราคาประมูล MHE (Export ${String(t.getDate()).padStart(2, "0")}-${String(t.getMonth() + 1).padStart(2, "0")}-${t.getFullYear() + 543}).xlsx`);
+}
+
 /* ---- เหตุการณ์ ---- */
 document.addEventListener("click", async e => {
-  const t = e.target.closest("button,[data-unit],[data-tog],[data-s],[data-year],tr[data-id]"); if (!t) return;
-  if (t.dataset.bk) { S.bk = S.bk === t.dataset.bk || t.dataset.bk === "all" ? "all" : t.dataset.bk; S.year = "all"; S.lim = 60; render(); document.querySelector(".vt").scrollIntoView({ behavior: "smooth", block: "start" }); return; }
+  const t = e.target.closest("button,a[data-open],[data-unit],[data-tog],[data-s],[data-year],tr[data-sk],tr[data-id]"); if (!t) return;
+  if (t.dataset.view) { S.view = t.dataset.view; history.replaceState(null, "", "#" + S.view); render(); window.scrollTo({ top: document.querySelector(".lay").offsetTop - 8, behavior: "smooth" }); return; }
+  if (t.dataset.open) { e.preventDefault(); openCar(t.dataset.open); return; }
+  if (t.id === "edBtn") { S.ed = !S.ed; render(); return; }
+  if (t.dataset.round) { S.round = +t.dataset.round; render(); return; }
+  if (t.dataset.sk) { const k = t.dataset.sk; S.sopen.has(k) ? S.sopen.delete(k) : S.sopen.add(k); renderSpec(ALL.filter(r => match(r))); return; }
+  if ("cadd" in t.dataset) { const rows = JSON.parse(JSON.stringify(confRows())); rows.push({ unit: "หน่วยงานใหม่", qty: null, status: "", note: "" }); await sbSave([{ id: "CFG:confirm", rec: { rows } }]); render(); return; }
+  if ("rexp" in t.dataset) { exportRenew(); return; }
+  if (t.dataset.bsh) { S.bsh = +t.dataset.bsh; renderBid(); return; }
+  if ("bedit" in t.dataset) { BDRAFT = JSON.parse(JSON.stringify(bidData())); S.bed = true; renderBid(); return; }
+  if ("bcancel" in t.dataset) { S.bed = false; BDRAFT = null; renderBid(); return; }
+  if ("bsave" in t.dataset) { await sbSave([{ id: "BID:main", rec: BDRAFT }]); S.bed = false; BDRAFT = null; render(); toast(ONLINE ? "บันทึกตารางราคาแล้ว" : "บันทึกในเบราว์เซอร์นี้แล้ว"); return; }
+  if ("badd" in t.dataset) { const sh = BDRAFT.sheets[S.bsh]; sh.rows.push({ item: "รายการใหม่", energy: sh.name, qty: null, alloc: [], p: sh.vendors.map(() => [null, null]) }); renderBid(); return; }
+  if (t.dataset.bdel) { BDRAFT.sheets[S.bsh].rows.splice(+t.dataset.bdel, 1); renderBid(); return; }
+  if ("bvadd" in t.dataset) { BDRAFT.sheets.forEach(s => { s.vendors.push({ name: "ผู้ขายใหม่", contact: "" }); s.rows.forEach(r => r.p.push([null, null])); }); renderBid(); return; }
+  if ("bup" in t.dataset) { $("bfile").click(); return; }
+  if ("bexp" in t.dataset) { exportBid(); return; }
+  if ("bcommit" in t.dataset && PEND_BID) { t.disabled = true; const o = PEND_BID; PEND_BID = null; await sbSave([{ id: "BID:main", rec: { title: o.title, sheets: o.sheets, confirm: o.confirm } }]); if (!OVR["CFG:confirm"] && o.confirm.length) await sbSave([{ id: "CFG:confirm", rec: { rows: o.confirm.map(c => ({ unit: c.unit, qty: c.qty, status: c.status || "", note: "" })) } }]); $("dlg").close(); S.bsh = 0; render(); toast("นำเข้าตารางราคาแล้ว"); return; }
+  if (t.dataset.bk) { S.view = "sum"; history.replaceState(null, "", "#sum"); S.bk = S.bk === t.dataset.bk || t.dataset.bk === "all" ? "all" : t.dataset.bk; S.year = "all"; S.lim = 60; render(); document.querySelector(".vt").scrollIntoView({ behavior: "smooth", block: "start" }); return; }
   if (t.dataset.unit) { S.unit = S.unit === t.dataset.unit ? "all" : t.dataset.unit; S.site = "all"; if (S.unit !== "all") S.open.add(S.unit); S.lim = 60; render(); return; }
   if (t.dataset.tog) { const u = t.dataset.tog; S.open.has(u) ? S.open.delete(u) : S.open.add(u); render(); return; }
   if (t.dataset.s) { const same = S.unit === t.dataset.u && S.site === t.dataset.s; S.unit = same ? "all" : t.dataset.u; S.site = same ? "all" : t.dataset.s; S.lim = 60; render(); document.querySelector(".vt").scrollIntoView({ behavior: "smooth", block: "start" }); return; }
@@ -443,9 +728,14 @@ document.addEventListener("click", async e => {
   if ("save" in t.dataset) { saveCar(); return; }
   if (t.dataset.revert) { await sbSave([{ id: t.dataset.revert, rec: null, removed: false }]); delete OVR[t.dataset.revert]; $("dlg").close(); render(); toast("คืนค่าตามไฟล์แล้ว"); return; }
   if (t.dataset.del) { if (!t.classList.contains("arm")) { t.classList.add("arm"); t.textContent = "กดอีกครั้งเพื่อยืนยันลบ"; return; } await sbSave([{ id: t.dataset.del, removed: true }]); $("dlg").close(); render(); toast("ลบแล้ว"); return; }
-  if ("commit" in t.dataset && PEND) { t.disabled = true; t.textContent = "กำลังบันทึก…"; await sbSave(PEND.map(r => { const rec = Object.assign({}, r); delete rec.id; return { id: r.id, rec }; })); PEND = null; $("dlg").close(); render(); toast(ONLINE ? "บันทึกแล้ว" : "บันทึกในเบราว์เซอร์นี้แล้ว"); return; }
+  if ("commit" in t.dataset && PEND) { t.disabled = true; t.textContent = "กำลังบันทึก…"; await sbSave(PEND.map(r => { const rec = Object.assign({}, r), o = ALL.find(x => x.id === r.id); delete rec.id; if (o) { rec.renew = o.renew || ""; rec.renewNote = o.renewNote || ""; } return { id: r.id, rec }; })); PEND = null; $("dlg").close(); render(); toast(ONLINE ? "บันทึกแล้ว" : "บันทึกในเบราว์เซอร์นี้แล้ว"); return; }
 });
 $("file").addEventListener("change", e => { const f = e.target.files[0]; if (f) upload(f); e.target.value = ""; });
+$("bfile").addEventListener("change", e => { const f = e.target.files[0]; if (f) bidUpload(f); e.target.value = ""; });
+document.addEventListener("change", async e => { const el = e.target; if (!el.dataset) return;
+  if (el.dataset.f) { await saveField(el); if (el.dataset.f.endsWith("|renew")) render(); }
+  else if (el.dataset.c) saveConf(el); });
+document.addEventListener("input", e => { if (e.target.dataset && e.target.dataset.b && BDRAFT) bidInput(e.target); });
 $("q").addEventListener("input", e => { S.q = e.target.value.trim(); S.lim = 60; render(); });
 $("sort").addEventListener("change", e => { S.sort = e.target.value; render(); });
 render();
