@@ -232,12 +232,15 @@
 <script>window.PCG_GATE = true;</script>
 <script>/* PCG · ระบบเข้าสู่ระบบ (ผู้ใช้ขอ 6 ต.ค. 2569)
    - หน้า MHE / Shift Schedule / Warehouse: ต้อง Login ก่อนเข้า (ตั้ง window.PCG_GATE = true ก่อนโหลดไฟล์นี้)
-   - รหัสผ่านกลางตัวเดียว = ผู้ใช้ Supabase Auth 1 คน (EMAIL ด้านล่าง) · ล็อกจริงที่ Supabase ด้วย RLS (shared/login.sql)
+   - เข้าด้วย ชื่อผู้ใช้ + PIN 4 หลัก (ผู้ใช้เลือก 6 ต.ค.) · 1 คน = ผู้ใช้ Supabase Auth 1 บัญชี
+     อีเมลใน Supabase = <ชื่อผู้ใช้>@pcg.example.com · รหัสผ่านใน Supabase = pcg-<PIN>-<ชื่อผู้ใช้> (Supabase บังคับ ≥6 ตัว จึงแปลงให้ในโค้ด)
+   - ล็อกจริงที่ Supabase ด้วย RLS (shared/login.sql)
    - Session เก็บ localStorage "pcg-auth" ใช้ร่วมกันทุกหน้าใน sttonnn.github.io · ต่ออายุ token อัตโนมัติ
    API: PCGAuth.isIn() · PCGAuth.whenIn() → Promise (รอจน Login) · PCGAuth.ensure(why) · PCGAuth.headers(anonKey) · PCGAuth.logout() */
 (function () {
   if (window.PCGAuth) return;
-  var URL_ = "https://mgnshovnibcmiptoxdfe.supabase.co", EMAIL = "pcg-editor@example.com", LS = "pcg-auth";
+  var URL_ = "https://mgnshovnibcmiptoxdfe.supabase.co", DOMAIN = "@pcg.example.com", LS = "pcg-auth";
+  var normU = function (u) { return String(u || "").trim().toLowerCase(); };
   var ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1nbnNob3ZuaWJjbWlwdG94ZGZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzNzI1NDIsImV4cCI6MjEwNDk0ODU0Mn0.UoPu-i6ODMEgyuqoO6oKHf0JIqFKpWkSpBkOKrpITwQ";
   var ses = null; try { ses = JSON.parse(localStorage.getItem(LS) || "null"); } catch (e) {}
   var chip, resolveIn, waitIn = new Promise(function (r) { resolveIn = r; });
@@ -246,7 +249,7 @@
   function token(kind, body) {
     return fetch(URL_ + "/auth/v1/token?grant_type=" + kind, { method: "POST", headers: { apikey: ANON, "Content-Type": "application/json" }, body: JSON.stringify(body) })
       .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error_description || j.msg || j.error || r.status); return j; }); })
-      .then(function (j) { save({ at: j.access_token, rt: j.refresh_token, exp: now() + (j.expires_in || 3600) - 60 }); return true; });
+      .then(function (j) { var u = (j.user && j.user.email ? j.user.email : (ses && ses.u) || "").split("@")[0]; save({ at: j.access_token, rt: j.refresh_token, exp: now() + (j.expires_in || 3600) - 60, u: u }); return true; });
   }
   function refresh() {
     if (!ses) return Promise.resolve(false);
@@ -257,6 +260,7 @@
 
   var A = window.PCGAuth = {
     isIn: function () { return !!ses; },
+    user: function () { return ses ? ses.u || "" : ""; },
     headers: function (anon) { var k = anon || ANON; return { apikey: k, Authorization: "Bearer " + (ses ? ses.at : k) }; },
     ensure: function (why) { return refresh().then(function (ok) { return ok || open(why, false); }); },
     whenIn: function () { return refresh().then(function (ok) { return ok || waitIn; }); },
@@ -274,26 +278,32 @@
     + ".pcga-ok{background:#1d5fd0;color:#fff}.pcga-no{background:#eef0f3;color:#33373d}.pcga-err{color:#c03a1c;font-size:12.5px;font-weight:700;min-height:1em}"
     + ".pcga-home{margin-right:auto;color:#1d5fd0;font-weight:700;font-size:13px;text-decoration:none}";
 
-  function paint() { if (!chip) return; chip.className = "pcga-chip" + (ses ? " in" : ""); chip.textContent = ses ? "✓ เข้าสู่ระบบแล้ว · ออก" : "🔒 เข้าสู่ระบบ"; }
+  function paint() { if (!chip) return; chip.className = "pcga-chip" + (ses ? " in" : ""); chip.textContent = ses ? "✓ " + (ses.u || "เข้าสู่ระบบแล้ว") + " · ออก" : "🔒 เข้าสู่ระบบ"; }
   function homeHref() { var p = location.pathname.replace(/[^/]*$/, ""); return /\/(mhe-data|shift-schedule|preventive-maintenance|daily-machine-check)\/$/.test(p) ? "../index.html" : "index.html"; }
   function open(why, gate) {
     return new Promise(function (done) {
       var bg = document.createElement("div"); bg.className = "pcga-bg";
       var left = gate ? '<a class="pcga-home" href="' + homeHref() + '">← หน้าหลัก<\/a>' : '<button type="button" class="pcga-no">ยกเลิก<\/button>';
-      bg.innerHTML = '<form class="pcga-box"><h3>🔒 เข้าสู่ระบบ<\/h3><p>' + (why || "ใส่รหัสผ่านกลางของแผนก") + '<\/p>'
-        + '<input type="password" autocomplete="current-password" placeholder="รหัสผ่าน"><div class="pcga-err"><\/div>'
+      bg.innerHTML = '<form class="pcga-box"><h3>🔒 เข้าสู่ระบบ<\/h3><p>' + (why || "ใส่ชื่อผู้ใช้และ PIN 4 หลัก") + '<\/p>'
+        + '<input name="u" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="ชื่อผู้ใช้">'
+        + '<input name="p" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="current-password" placeholder="PIN 4 หลัก" style="letter-spacing:.5em;text-align:center"><div class="pcga-err"><\/div>'
         + '<div class="row">' + left + '<button type="submit" class="pcga-ok">เข้าสู่ระบบ<\/button><\/div><\/form>';
       document.body.appendChild(bg);
-      var f = bg.querySelector("form"), inp = bg.querySelector("input"), err = bg.querySelector(".pcga-err"), ok = bg.querySelector(".pcga-ok");
+      var f = bg.querySelector("form"), usr = bg.querySelector("input[name=u]"), inp = bg.querySelector("input[name=p]"), err = bg.querySelector(".pcga-err"), ok = bg.querySelector(".pcga-ok");
       var end = function (v) { bg.remove(); if (v) { document.documentElement.classList.remove("pcga-lock"); resolveIn(true); } done(v); };
       if (!gate) { bg.querySelector(".pcga-no").onclick = function () { end(false); }; bg.addEventListener("click", function (e) { if (e.target === bg) end(false); }); }
       f.onsubmit = function (e) {
-        e.preventDefault(); if (!inp.value) return; ok.disabled = true; ok.textContent = "กำลังตรวจ…"; err.textContent = "";
-        token("password", { email: EMAIL, password: inp.value }).then(function () { end(true); }).catch(function (x) {
+        e.preventDefault(); var u = normU(usr.value), pin = inp.value.trim();
+        if (!/^[a-z0-9._-]{2,30}$/.test(u)) { err.textContent = "ชื่อผู้ใช้ใช้ได้เฉพาะ a-z 0-9 . _ -"; usr.focus(); return; }
+        if (!/^\d{4}$/.test(pin)) { err.textContent = "PIN ต้องเป็นตัวเลข 4 หลัก"; inp.select(); return; }
+        try { localStorage.setItem("pcg-auth-last", u); } catch (x) {}
+        ok.disabled = true; ok.textContent = "กำลังตรวจ…"; err.textContent = "";
+        token("password", { email: u + DOMAIN, password: "pcg-" + pin + "-" + u }).then(function () { end(true); }).catch(function (x) {
           ok.disabled = false; ok.textContent = "เข้าสู่ระบบ";
-          err.textContent = /invalid/i.test(String(x.message)) ? "รหัสผ่านไม่ถูกต้อง" : "เข้าสู่ระบบไม่ได้: " + x.message; inp.select(); });
+          err.textContent = /invalid/i.test(String(x.message)) ? "ชื่อผู้ใช้หรือ PIN ไม่ถูกต้อง" : /rate|too many/i.test(String(x.message)) ? "ลองผิดหลายครั้ง รอสักครู่แล้วลองใหม่" : "เข้าสู่ระบบไม่ได้: " + x.message; inp.select(); });
       };
-      setTimeout(function () { inp.focus(); }, 30);
+      try { usr.value = localStorage.getItem("pcg-auth-last") || ""; } catch (x) {}
+      setTimeout(function () { (usr.value ? inp : usr).focus(); }, 30);
     });
   }
   function mount() {
@@ -306,7 +316,7 @@
     };
     refresh().then(function (ok) {
       if (ok) { document.documentElement.classList.remove("pcga-lock"); resolveIn(true); }
-      else if (window.PCG_GATE) { document.documentElement.classList.add("pcga-lock"); open("หน้านี้ต้องเข้าสู่ระบบก่อนดูข้อมูล · ใส่รหัสผ่านกลางของแผนก", true); }
+      else if (window.PCG_GATE) { document.documentElement.classList.add("pcga-lock"); open("หน้านี้ต้องเข้าสู่ระบบก่อนดูข้อมูล · ใส่ชื่อผู้ใช้และ PIN 4 หลัก", true); }
     });
   }
   if (window.PCG_GATE) document.documentElement.classList.add("pcga-lock");
