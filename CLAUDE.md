@@ -80,6 +80,15 @@ repo `sttonnn/robot-report` คือที่รวมทุก Dashboard (ต�
 - **5 ต.ค. แก้บั๊ก Shift Schedule**: anon key ใน shift_template.html เป็นค่าถูกตัด ("eyJhbGciOi..") ตั้งแต่ทำโหมดแก้ไข → บันทึก Supabase ไม่เคยสำเร็จ (ตกไป localStorage) · ใส่ key จริง (ตัวเดียวกับ robot-dashboard) แล้ว
 - PCG Project Portal (index.html) — การ์ด Daily Machine Check ถูกเอาออกจาก Portal แล้ว (ผู้ใช้สั่ง 5 ต.ค.) · ตอนทำเสร็จต้องเพิ่มเป็นการ์ด LIVE ใหม่
 
+## 6 ต.ค. ตรวจทุก Dashboard (ยกเว้น Robot) + Auto ที่ผู้ใช้เลือก (C D E F G)
+- พบ: MHE คลัง 5/32/วัตถุดิบ (52 คัน) + ปากเกร็ด/วังน้อย ไม่มีใบ PM รถยก (PM WH05/WH32 มีแค่ Robot Cleaning) · พิษณุโลก PM 3 คัน vs MHE 2 · Warehouse ช่วงสัญญาไม่ตรงวันหมด (โคราช, WH29, Phnom Penh) · ไม่มีวันหมด (ราชบุรี พิษณุโลก สุราษฎร์ Siem Reap) · รหัสซ้ำ (ศรีราชา A2/A3/บางละมุง WH25, ลาดพร้าว/ปากเกร็ด WH21, คลัง 32/8.1 WH08, Kolkata/Indore KOL02, Laguna/Pagasinan A-4-5) · คลัง 32 = WH08 ใน Warehouse แต่ WH32 ใน PM · Shift ต.ค. ไม่มีวันที่ 31 · ไม่มี login — ข้อ A (PM ดึงเอง + Supabase) และ B (MHE↔PM) ผู้ใช้ยังไม่เลือก
+- **C Warehouse**: สัญญาหมดอายุ (ไม่ใช่คลัง PCG) ออกจากรายการ/ยอดรวมอัตโนมัติ (`isExp`) + แถบแดง "ดูสัญญาที่หมดแล้ว" (end=OVER) · แถบเหลือง "ข้อมูลที่ควรตรวจ" (`perEnd` ช่วงสัญญาจบห่างวันหมด >31 วัน · ไม่มีวันหมด · รหัสซ้ำ) หน้ารายละเอียด
+- **D MHE**: เตรียมต่อสัญญา + รายละเอียดต่อสัญญาใช้ช่วงเดียวกัน `S.pf/S.pt/S.rx` (ค่าเริ่ม ก.ค. ปีนี้–มิ.ย. ปีหน้า + รวมที่หมดแล้ว = 94 คัน)
+- **E MHE**: รถที่ตัดสินใจ "ประมูล" → `dlvAutoSync` สร้าง/อัปเดต `DLV:auto|<itemKey>|<unit>|<site>` (จำนวน = จำนวนรถ, oldSn) · ไม่ทับวันเซ็น/ผู้ขาย/ส่งมอบ · เหลือ 0 คันและยังไม่เซ็น = ลบ · รันตอนเปิดหน้า + ตอนเปลี่ยนการตัดสินใจ
+- **F Portal**: `loadStatus()` จำนวนระบบ = นับการ์ด · Warehouse สัญญาที่ยังไม่หมด + ≤6 เดือน (warehouse-data.js) · MHE `mhe-data/summary.json` (build.js เขียน) · PM `preventive-maintenance/summary.json` หรือ localStorage pcg-pm-db เก่า >2 วัน = ⚠ · Shift `shift-schedule/summary.json` (**อัปเดตข้อมูล PM/Shift ต้องแก้ asof ใน summary.json ด้วย**)
+- **G**: `shared/pcg-sites.js` รายชื่อคลังกลาง (`pcgSite`, `pcgSiteKey`) · MHE build ฝัง + parse/`db()` แปลงชื่อคลัง (id คิดจากชื่อเดิม) · ตารางยืนยันหน่วยงานนับด้วยชื่อมาตรฐาน
+- **ผู้ใช้ขอระบบ Login (6 ต.ค.)** — รอคำตอบรายละเอียด
+
 ## งานค้าง
 **Daily Machine Check: พักไว้ก่อน (29 ก.ย.)** — ผู้ใช้สั่งให้ไปทำ Preventive Maintenance Data ก่อน
 - **3 ต.ค. กลับมาทำต่อ** · ผู้ใช้ขอออกแบบหัวใหม่ไม่ให้เหมือน PM + มีแถบซ้าย → หน้าใหม่ `daily-machine-check/dmc-dashboard.html` (HTML/JS ล้วน, ข้อมูลตัวอย่างเดียวกับ design/) โทน teal ต่างจาก PM · แถบซ้าย: คลัง Domestic / Export (ป้าย เสีย N / ปกติ) · มุมมอง ภาพรวมวันนี้ / ประวัติย้อนหลัง · การ์ดเหลือง "คู่มือการอ่าน" · หัว = topbar ขาว sticky (หน้าหลัก · ชื่อคลัง · "ตอนนี้: พลัดเข้า/ดึก" · เลือกวัน ◀ ▶ วันนี้) · แผงสถานะ = การ์ดความพร้อมใหญ่ (เขียว/ส้มถ้ามีเสีย) + 3 ตัวเลข + แถบตรวจแล้วรายพลัด · มือถือ: ปุ่ม ☰ เปิดเมนู · คัดลอกไว้ที่ pcg-logistics/daily-machine-check/ ด้วย (ยังไม่ลิงก์จาก Portal) · ลิงก์ดูก่อน merge (private artifact): https://claude.ai/artifact/6KPue15344RzhwJr3gpSCR (publish ไฟล์ที่ตัด <html>/<head>/<body> ออก)

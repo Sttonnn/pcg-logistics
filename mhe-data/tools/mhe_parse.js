@@ -70,6 +70,7 @@ function mheParse(XLSX, wb) {
       let id = rec.serial ? "SN:" + rec.serial.toUpperCase() : ["X", rec.unit, rec.ul, rec.site, rec.model, rec.start].join("|");
       seen[id] = (seen[id] || 0) + 1; if (seen[id] > 1) id += "#" + seen[id];
       rec.id = id;
+      if (typeof pcgSite === "function") rec.site = pcgSite(rec.site);   /* ชื่อคลังมาตรฐาน (shared/pcg-sites.js) · id คิดจากชื่อเดิมก่อน ไม่ให้ id เปลี่ยน */
       out.push(rec);
     }
   });
