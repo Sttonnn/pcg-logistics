@@ -79,6 +79,7 @@ repo `sttonnn/robot-report` คือที่รวมทุก Dashboard (ต�
     - ข้อมูลจริง (Rev.01) ช่วง 07/69–06/70 = 93 คัน (PPT เดิม 26) เพราะ Rev.01 ตั้งหมดสัญญา 67 คันเป็น 31 ธ.ค. 2569
   - ธีม กราไฟต์ + เหลืองเซฟตี้ (`--acc #f2b705`) · สีกลุ่ม `--exp/--m3/--m6/--m12/--ok`
 - **5 ต.ค. แก้บั๊ก Shift Schedule**: anon key ใน shift_template.html เป็นค่าถูกตัด ("eyJhbGciOi..") ตั้งแต่ทำโหมดแก้ไข → บันทึก Supabase ไม่เคยสำเร็จ (ตกไป localStorage) · ใส่ key จริง (ตัวเดียวกับ robot-dashboard) แล้ว
+- **IOT Dashboard (เริ่ม 6 ต.ค.)** · เซนเซอร์: อุณหภูมิ/ความชื้น · ไฟฟ้า/พลังงาน · สถานะเครื่องจักร · แหล่ง = แอป Tuya → Tuya Cloud API · ผู้ใช้สร้าง Cloud Project `PCG IOT` (**Singapore Data Center** → region `sg`) · Link App Account แล้ว (6 ต.ค.: 29/29 อุปกรณ์ · รวม 34) · ตอนแรกขึ้นแค่ 5 เพราะบัญชีที่สแกนไม่ใช่เจ้าของ (แก้แล้ว) · Trial: ดึงข้อมูลได้ 50 เครื่อง สั่งงานได้ 5–10 · IoT Core Trial ต้องต่ออายุทุก 1–6 เดือน · secrets (ผู้ใช้ใส่เอง): TUYA_ACCESS_ID / TUYA_ACCESS_SECRET / TUYA_REGION=sg ใน pcg-logistics · แผน: GitHub Actions ดึง API → Supabase (ต้องขอผู้ใช้ก่อนสร้างตาราง) → หน้า Dashboard · รอ: ผู้ใช้ใส่ secrets + ส่งรูป All Devices
 - PCG Project Portal (index.html) — การ์ด Daily Machine Check ถูกเอาออกจาก Portal แล้ว (ผู้ใช้สั่ง 5 ต.ค.) · ตอนทำเสร็จต้องเพิ่มเป็นการ์ด LIVE ใหม่
 
 ## 6 ต.ค. ตรวจทุก Dashboard (ยกเว้น Robot) + Auto ที่ผู้ใช้เลือก (C D E F G)
