@@ -1,0 +1,18 @@
+name: Robot history backup
+# ทุกวัน 23:41 เวลาไทย: เปิดหน้า Robot Dashboard แบบไม่มีจอ ให้หน้าเว็บบันทึกข้อมูลรายวันเข้า Supabase robot_days
+# (robot.csv เก็บแค่ 30 วัน · ตัวนี้กันข้อมูลหายถ้าไม่มีใครเปิดหน้าเว็บ) · กด Run workflow เองได้
+on:
+  schedule:
+    - cron: "41 16 * * *"
+  workflow_dispatch:
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm i --no-save playwright@1.47.2 && npx playwright install --with-deps chromium
+      - run: node scripts/robot-history.mjs
