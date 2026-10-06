@@ -575,12 +575,22 @@ const REP = {
   fixing: { label: "กำลังซ่อม",   color: "#ffb13d", bg: "#fff1d6", fg: "#8a5200" },
   fixed:  { label: "แก้ไขแล้ว",   color: "#13a878", bg: "#e3f6ee", fg: "#0a6b4d" }
 };
-const repSt = r => (FIX[fkey(r)] || {}).st || "open";
+const repSt = r => fixOf(r).st || "open";
 const failDate = r => r.done || r.due;
 const dayDiff = (a, b) => Math.max(0, Math.round((new Date(b + "T00:00:00") - new Date(a + "T00:00:00")) / 864e5));
-const downDays = r => { const f = FIX[fkey(r)] || {}; return dayDiff(failDate(r), f.st === "fixed" && f.date ? f.date : ASOF); };
-/* รอบถัดไปของแผนเดียวกันผ่านแล้ว = น่าจะแก้ไขแล้ว (แนะนำ ไม่เปลี่ยนเอง) */
-const nextPass = r => DATA.filter(x => x.p === r.p && x.e === r.e && x.n === r.n && x.r === "pass" && failDate(x) > failDate(r)).sort((a, b) => failDate(a).localeCompare(failDate(b)))[0];
+const downDays = r => { const f = fixOf(r); return dayDiff(failDate(r), f.st === "fixed" && f.date ? f.date : ASOF); };
+/* ปิดอัตโนมัติ (ผู้ใช้ขอ 6 ต.ค.): ใบที่ไม่ผ่าน + เครื่องเดียวกัน (รหัสโรงงาน + รหัสอุปกรณ์) มีใบที่ตรวจผ่านหลังจากนั้น = แก้ไขแล้ว
+   วันที่แก้ = วันที่ของใบที่ผ่านใบแรก · ถ้าผู้ใช้บันทึกสถานะเองในหน้าอัปเดตการซ่อม ค่าที่บันทึกเองชนะเสมอ (ตั้ง "ยังไม่แก้ไข" เพื่อยกเลิกอัตโนมัติได้) */
+const eqOf = r => r.p + "|" + (r.id.split("|")[3] || r.e);
+let NP_DATA = null, NP = {};
+const nextPass = r => {
+  if (NP_DATA !== DATA) { NP_DATA = DATA; NP = {};
+    const pass = {}; DATA.forEach(x => { if (x.r === "pass" && failDate(x)) (pass[eqOf(x)] = pass[eqOf(x)] || []).push(x); });
+    Object.values(pass).forEach(a => a.sort((a1, b1) => failDate(a1).localeCompare(failDate(b1)))); NP.pass = pass; }
+  const fd = failDate(r); return fd ? (NP.pass[eqOf(r)] || []).find(x => failDate(x) > fd) : null; };
+const fixOf = r => { const f = FIX[fkey(r)]; if (f) return f; if (!isFail(r)) return {};
+  const np = nextPass(r); return np ? { st: "fixed", date: failDate(np), note: "ตรวจผ่านในใบ " + np.w + " (" + fmtD(failDate(np)) + ")", auto: true, by: np.w } : {}; };
+const autoTag = r => fixOf(r).auto ? " · อัตโนมัติ" : "";
 const daysPill = r => { const d = downDays(r), st = repSt(r);
   return st === "fixed" ? `<span class="pill" style="background:#e3f6ee;color:#0a6b4d">ใช้เวลาแก้ <span class="days">${d}</span> วัน</span>`
     : `<span class="pill" style="background:${d > 7 ? "#c9301a" : "#ffe3dc"};color:${d > 7 ? "#fff" : "#a8250f"}">เสียมาแล้ว <span class="days">${d}</span> วัน</span>`; };
@@ -691,9 +701,9 @@ function renderResult() {
 }
 
 function failCard(r) {
-  const st = repSt(r), f = FIX[fkey(r)] || {}, np = st !== "fixed" && nextPass(r), R = REP[st];
+  const st = repSt(r), f = fixOf(r), np = null, R = REP[st];
   return `<div class="fail ${st === "fixed" ? "fixed" : ""}"><div style="min-width:0">
-      <div class="e">${r.e} <span class="pill" style="background:${R.bg};color:${R.fg};padding:2px 9px;font-size:11.5px">${R.label}</span></div>
+      <div class="e">${r.e} <span class="pill" style="background:${R.bg};color:${R.fg};padding:2px 9px;font-size:11.5px">${R.label}${autoTag(r)}</span></div>
       <div class="m">${r.w} · ${r.b} · ${r.z} · พบ ${fmtD(failDate(r))} · ไม่ผ่าน ${r.r.split(":")[1]} ข้อ${st === "fixed" ? " · แก้เสร็จ " + fmtD(f.date) : ""}</div>
       ${f.note ? `<div class="m" style="color:#2a3b5f">📝 ${f.note}</div>` : ""}
       ${np ? `<div class="hintx">✓ รอบถัดไปตรวจผ่านแล้ว ${fmtD(failDate(np))} · <a href="#" data-quickfix="${fkey(r)}" data-date="${failDate(np)}">ปิดเป็นแก้ไขแล้ว</a></div>` : ""}
@@ -734,11 +744,11 @@ function renderFail() {
   $("fFilter").innerHTML = fk.map(([k, l, n]) => `<button type="button" class="${S.fst === k ? "on" : ""}" data-fst="${k}">${l} ${n}</button>`).join("");
   const L = F.filter(r => S.fst === "all" || repSt(r) === S.fst).sort((a, b) => failDate(b).localeCompare(failDate(a)));
   $("fTag").textContent = L.length + " ใบงาน";
-  $("fBody").innerHTML = L.map(r => { const st = repSt(r), R = REP[st], f = FIX[fkey(r)] || {};
+  $("fBody").innerHTML = L.map(r => { const st = repSt(r), R = REP[st], f = fixOf(r);
     return `<tr class="${st === "fixed" ? "" : "bad"}"><td class="num" style="font-weight:700;white-space:nowrap">${r.w}</td>
       <td><div style="font-weight:700">${r.e}</div><div style="font-size:12px;color:#5a6784">ไม่ผ่าน ${r.r.split(":")[1]} ข้อ${f.note ? " · 📝 " + f.note : ""}</div></td><td>${kindTag(r)} <span style="font-size:12.5px;color:#5a6784">${r.t === "-" ? "" : r.t}</span></td>
       <td style="white-space:nowrap">${r.p}<div style="font-size:12px;color:#5a6784">${r.b}</div></td><td style="white-space:nowrap">${fmtD(failDate(r))}${st === "fixed" ? `<div style="font-size:12px;color:#0a6b4d">แก้เสร็จ ${fmtD(f.date)}</div>` : ""}</td>
-      <td><button type="button" class="pill" data-edit="${fkey(r)}" style="cursor:pointer;border:0;background:${R.bg};color:${R.fg}">${R.label} ✎</button></td><td>${daysPill(r)}</td></tr>`; }).join("") || `<tr><td colspan="7" style="text-align:center;color:#5a6784;padding:22px">ไม่มีใบงานที่ไม่ผ่าน</td></tr>`;
+      <td><button type="button" class="pill" data-edit="${fkey(r)}" style="cursor:pointer;border:0;background:${R.bg};color:${R.fg}">${R.label}${autoTag(r)} ✎</button></td><td>${daysPill(r)}</td></tr>`; }).join("") || `<tr><td colspan="7" style="text-align:center;color:#5a6784;padding:22px">ไม่มีใบงานที่ไม่ผ่าน</td></tr>`;
 }
 
 function renderTypes() {
@@ -817,7 +827,7 @@ function renderTable() {
   $("rowTag").textContent = R.length.toLocaleString() + " ใบงาน";
   $("tbody").innerHTML = R.slice(0, S.limit).map(r => {
     const g = ST[grp(r)], od = overdue(r);
-    const res = r.r === "pass" ? `<span class="pill" style="background:#e3f6ee;color:#0a6b4d">✓ ผ่าน</span>` : isFail(r) ? `<span class="pill" style="background:#ffe3dc;color:#a8250f">✕ ไม่ผ่าน ${r.r.split(":")[1]}</span><div style="margin-top:6px;display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="pill" style="padding:3px 9px;font-size:11.5px;background:${REP[repSt(r)].bg};color:${REP[repSt(r)].fg}">${REP[repSt(r)].label}</span><button type="button" class="btn ${repSt(r) === "fixed" ? "ghost" : "fix"}" data-edit="${fkey(r)}" style="padding:4px 10px;font-size:11.5px">อัปเดตการซ่อม</button></div>` : `<span style="color:#9aa6bd">ยังไม่ตรวจ</span>`;
+    const res = r.r === "pass" ? `<span class="pill" style="background:#e3f6ee;color:#0a6b4d">✓ ผ่าน</span>` : isFail(r) ? `<span class="pill" style="background:#ffe3dc;color:#a8250f">✕ ไม่ผ่าน ${r.r.split(":")[1]}</span><div style="margin-top:6px;display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="pill" style="padding:3px 9px;font-size:11.5px;background:${REP[repSt(r)].bg};color:${REP[repSt(r)].fg}">${REP[repSt(r)].label}${autoTag(r)}</span><button type="button" class="btn ${repSt(r) === "fixed" ? "ghost" : "fix"}" data-edit="${fkey(r)}" style="padding:4px 10px;font-size:11.5px">อัปเดตการซ่อม</button></div>` : `<span style="color:#9aa6bd">ยังไม่ตรวจ</span>`;
     return `<tr class="${isFail(r) ? "bad" : ""}"><td class="num" style="font-weight:700;white-space:nowrap">${r.w === "-" ? "<span style='color:#9aa6bd'>ยังไม่มีเลข</span>" : r.w}</td>
       <td><div style="font-weight:700">${r.e}</div><div style="font-size:12px;color:#5a6784">${r.n}</div></td><td>${kindTag(r)} ${freqTag(r)} <span style="font-size:12.5px;color:#5a6784">${r.t === "-" ? "" : r.t}</span></td>
       <td style="white-space:nowrap">${fmtD(r.due)}${od ? `<div style="font-size:12px;color:#a8250f;font-weight:700">เลยกำหนด</div>` : ""}</td>
@@ -1162,16 +1172,17 @@ document.addEventListener("mousemove", e => {
 let DK = null, DST = "open";
 function paintDlgSt() { $("dlgSt").innerHTML = Object.entries(REP).map(([k, R]) => `<button type="button" class="${DST === k ? "on" : ""}" data-dst="${k}" style="${DST === k ? "background:" + R.color : ""}">${R.label}</button>`).join(""); $("dlgDate").parentElement.style.display = DST === "fixed" ? "" : "none"; }
 function openDlg(k) {
-  const r = DATA.find(x => fkey(x) === k); if (!r) return; const f = FIX[k] || {};
+  const r = DATA.find(x => fkey(x) === k); if (!r) return; const f = fixOf(r);
   DK = k; DST = f.st || "open";
-  $("dlgSub").textContent = r.w + " · " + r.e + " · " + r.b + " · พบ " + fmtD(failDate(r)) + " · ไม่ผ่าน " + r.r.split(":")[1] + " ข้อ";
+  $("dlgSub").textContent = r.w + " · " + r.e + " · " + r.b + " · พบ " + fmtD(failDate(r)) + " · ไม่ผ่าน " + r.r.split(":")[1] + " ข้อ" + (f.auto ? " · ✓ ปิดอัตโนมัติ: " + f.note + " (เปลี่ยนเป็นยังไม่แก้ไขได้ถ้ายังไม่ได้ซ่อมจริง)" : "");
   $("dlgDate").value = f.date || ASOF; $("dlgDate").min = failDate(r); $("dlgNote").value = f.note || "";
   paintDlgSt(); $("dlg").showModal();
 }
 $("dlgSt").onclick = e => { const b = e.target.closest("[data-dst]"); if (b) { DST = b.dataset.dst; paintDlgSt(); } };
 $("dlg").addEventListener("close", () => {
   if ($("dlg").returnValue !== "ok" || !DK) return;
-  if (DST === "open" && !$("dlgNote").value.trim()) delete FIX[DK];
+  const r0 = DATA.find(x => fkey(x) === DK);
+  if (DST === "open" && !$("dlgNote").value.trim() && !(r0 && nextPass(r0))) delete FIX[DK];
   else FIX[DK] = { st: DST, date: DST === "fixed" ? $("dlgDate").value : "", note: $("dlgNote").value.trim(), at: new Date().toISOString() };
   saveFix(); render(); toast("บันทึกสถานะการซ่อมแล้ว");
 });
