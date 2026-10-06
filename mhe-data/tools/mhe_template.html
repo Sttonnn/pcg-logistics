@@ -229,6 +229,8 @@
     .fbar { position: static; } .frow > b { min-width: 100%; } .sumg { grid-template-columns: repeat(2, minmax(0,1fr)); }
   }
 </style>
+<script>window.PCG_GATE = true;</script>
+<script>/*__AUTH__*/</script>
 </head>
 <body>
 <header class="hero">
@@ -345,9 +347,11 @@ function warn(msg) { $("warn").innerHTML = msg || ""; $("warn").classList.toggle
 function toast(m) { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 2200); }
 function lsGet() { try { return JSON.parse(localStorage.getItem(LS) || "{}"); } catch (e) { return {}; } }
 function lsSet(o) { try { localStorage.setItem(LS, JSON.stringify(o)); } catch (e) {} }
+const authH = () => window.PCGAuth ? PCGAuth.headers(SBK) : { apikey: SBK, Authorization: "Bearer " + SBK };
 async function sbLoad() {
+  if (window.PCGAuth) await PCGAuth.whenIn();   /* ต้อง Login ก่อนโหลดข้อมูล (6 ต.ค.) */
   try {
-    const r = await fetch(SB + "?select=id,rec,removed,updated_at&id=not.like.FILE%3A*", { headers: { apikey: SBK, Authorization: "Bearer " + SBK } });
+    const r = await fetch(SB + "?select=id,rec,removed,updated_at&id=not.like.FILE%3A*", { headers: authH() });
     if (!r.ok) throw new Error(r.status);
     const rows = await r.json(); OVR = {}; rows.forEach(x => OVR[x.id] = x); ONLINE = true;
     const loc = lsGet(); if (Object.keys(loc).length) { await sbSave(Object.values(loc)); localStorage.removeItem(LS); }
@@ -362,7 +366,7 @@ async function sbSave(rows) {
   rows = rows.map(x => ({ id: x.id, rec: x.rec || null, removed: !!x.removed, updated_at: new Date().toISOString() }));
   if (ONLINE) {
     for (let i = 0; i < rows.length; i += 200) {
-      const r = await fetch(SB + "?on_conflict=id", { method: "POST", headers: { apikey: SBK, Authorization: "Bearer " + SBK, "Content-Type": "application/json", Prefer: "resolution=merge-duplicates,return=minimal" }, body: JSON.stringify(rows.slice(i, i + 200)) });
+      const r = await fetch(SB + "?on_conflict=id", { method: "POST", headers: { ...authH(), "Content-Type": "application/json", Prefer: "resolution=merge-duplicates,return=minimal" }, body: JSON.stringify(rows.slice(i, i + 200)) });
       if (!r.ok) { ONLINE = false; warn("บันทึกลง Supabase ไม่สำเร็จ (" + r.status + ") · เก็บในเบราว์เซอร์นี้ไว้ก่อน"); break; }
     }
   }
@@ -650,7 +654,7 @@ async function cfUpload(files) {
 }
 async function cfGet(id) {
   let rec = OVR[id] && OVR[id].rec;
-  if (!rec && ONLINE) { toast("กำลังโหลดไฟล์ …"); const r = await fetch(SB + "?select=rec&id=eq." + encodeURIComponent(id), { headers: { apikey: SBK, Authorization: "Bearer " + SBK } }); const j = r.ok ? await r.json() : []; rec = j[0] && j[0].rec; }
+  if (!rec && ONLINE) { toast("กำลังโหลดไฟล์ …"); const r = await fetch(SB + "?select=rec&id=eq." + encodeURIComponent(id), { headers: authH() }); const j = r.ok ? await r.json() : []; rec = j[0] && j[0].rec; }
   if (!rec || !rec.data) { toast("ไม่พบไฟล์"); return; }
   const b = await (await fetch(rec.data)).blob(), u = URL.createObjectURL(b), a = document.createElement("a");
   a.href = u; a.download = rec.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 60000);

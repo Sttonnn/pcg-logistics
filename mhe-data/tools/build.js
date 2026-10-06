@@ -17,6 +17,8 @@ if (bid) { bid.year = bm ? +bm[1] : new Date().getFullYear(); bid.date = bm ? `$
 const prop = fs.existsSync(path.join(dir, "proposal_base.json")) ? JSON.parse(fs.readFileSync(path.join(dir, "proposal_base.json"), "utf8")) : null;
 const spec = fs.existsSync(path.join(dir, "spec_rev4.json")) ? JSON.parse(fs.readFileSync(path.join(dir, "spec_rev4.json"), "utf8")) : null;
 const sites = fs.readFileSync(path.join(dir, "..", "..", "shared", "pcg-sites.js"), "utf8");
+const auth = fs.readFileSync(path.join(dir, "..", "..", "shared", "pcg-auth.js"), "utf8");
+t = t.replace("/*__AUTH__*/", () => auth.replace(/<\//g, "<\\/"));
 t = t.replace("/*__MHE_PARSE__*/", () => sites + "\n" + parse).replace("/*__BID_PARSE__*/", () => bparse)
      .replace("/*__BID_DATA__*/null", () => JSON.stringify(bid).replace(/</g, "\\u003c"))
      .replace("/*__PROP_DATA__*/null", () => JSON.stringify(prop).replace(/</g, "\\u003c"))

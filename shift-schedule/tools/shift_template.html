@@ -126,6 +126,8 @@
     .tcard .v { font-size: 28px; } .legend { margin-left: 0; }
   }
 </style>
+<script>window.PCG_GATE = true;</script>
+<script src="../shared/pcg-auth.js"></script>
 </head>
 <body>
 <header class="hero">
@@ -197,9 +199,10 @@ const LSK = "pcg-shift-edits";
 let EDITS = {}, SB_OK = null;
 try { EDITS = JSON.parse(localStorage.getItem(LSK) || "{}"); } catch (e) {}
 const ekey = (id, y, m, d) => id + "|" + y + "-" + String(m).padStart(2, "0") + "-" + String(d).padStart(2, "0");
-const hdr = { apikey: SBK, Authorization: "Bearer " + SBK, "Content-Type": "application/json" };
+const hdrs = () => Object.assign({ "Content-Type": "application/json" }, window.PCGAuth ? PCGAuth.headers(SBK) : { apikey: SBK, Authorization: "Bearer " + SBK });
 async function sbLoad() {
-  try { const r = await fetch(SB + "?select=emp_id,work_date,code", { headers: hdr });
+  if (window.PCGAuth) await PCGAuth.whenIn();   /* ต้อง Login ก่อน (6 ต.ค.) */
+  try { const r = await fetch(SB + "?select=emp_id,work_date,code", { headers: hdrs() });
     if (!r.ok) throw new Error(r.status);
     const rows = await r.json(); EDITS = {}; rows.forEach(x => { EDITS[x.emp_id + "|" + x.work_date] = x.code == null ? "" : x.code; }); SB_OK = true;
   } catch (e) { SB_OK = false; }
@@ -207,12 +210,12 @@ async function sbLoad() {
 }
 async function sbSave(k, code) {
   const [id, dt] = k.split("|");
-  try { const r = await fetch(SB + "?on_conflict=emp_id,work_date", { method: "POST", headers: Object.assign({ Prefer: "resolution=merge-duplicates" }, hdr),
+  try { const r = await fetch(SB + "?on_conflict=emp_id,work_date", { method: "POST", headers: Object.assign({ Prefer: "resolution=merge-duplicates" }, hdrs()),
       body: JSON.stringify([{ emp_id: id, work_date: dt, code: code, updated_at: new Date().toISOString() }]) });
     if (!r.ok) throw new Error(r.status); SB_OK = true; return true; } catch (e) { SB_OK = false; warn(); return false; }
 }
 async function sbDel(k) { const [id, dt] = k.split("|");
-  try { const r = await fetch(SB + "?emp_id=eq." + id + "&work_date=eq." + dt, { method: "DELETE", headers: hdr }); return r.ok; } catch (e) { return false; } }
+  try { const r = await fetch(SB + "?emp_id=eq." + id + "&work_date=eq." + dt, { method: "DELETE", headers: hdrs() }); return r.ok; } catch (e) { return false; } }
 function warn() { const w = document.getElementById("warn"); if (!w) return;
   w.style.display = SB_OK === false ? "block" : "none";
   w.innerHTML = 'ยังบันทึกลงระบบกลางไม่ได้ (ยังไม่มีตาราง <code>shift_edits</code> ใน Supabase) · ตอนนี้การแก้ไขเก็บในเบราว์เซอร์นี้เท่านั้น เครื่องอื่นจะไม่เห็น · ให้โชยุส่ง SQL สร้างตาราง'; }
