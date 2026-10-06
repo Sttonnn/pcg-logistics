@@ -1,11 +1,12 @@
 /* PCG · หน้า Login แบบง่าย (ผู้ใช้ขอ 6 ต.ค. 2569: "กรอก 1 ค่าใช้ร่วมกัน ก่อนเข้า · เบื้องต้น")
-   - กรอกรหัสร่วมกันช่องเดียว ถูก = เข้าได้ · จำไว้ในเครื่อง 30 วัน (localStorage "pcg-gate")
+   - กรอกรหัสร่วมกันช่องเดียว ถูก = เข้าได้ · **ใส่วันละครั้ง** (ผู้ใช้ขอ 6 ต.ค.) · จำถึงเที่ยงคืนของวันนั้นตามเวลาเครื่อง (localStorage "pcg-gate")
    - ตรวจในเบราว์เซอร์ (เก็บแค่ SHA-256 ของรหัส ไม่เก็บรหัสจริง) · ไม่ผูก Supabase
    - เป็นการกันคนทั่วไปเบื้องต้นเท่านั้น คนที่เปิดไฟล์ HTML ตรงๆ ยังเห็นข้อมูลที่ฝังได้
    เปลี่ยนรหัส: แก้ HASH = sha256("รหัสใหม่") (node -e 'console.log(require("crypto").createHash("sha256").update("รหัส").digest("hex"))') */
 (function () {
-  var HASH = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918", LS = "pcg-gate", DAYS = 30;
-  var ok = false; try { var g = JSON.parse(localStorage.getItem(LS) || "null"); ok = !!(g && g.h === HASH && g.exp > Date.now()); } catch (e) {}
+  var HASH = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918";
+  var LS = "pcg-gate", d = new Date(), TODAY = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+  var ok = false; try { var g = JSON.parse(localStorage.getItem(LS) || "null"); ok = !!(g && g.h === HASH && g.day === TODAY); } catch (e) {}
   if (ok) return;
   var css = "html.pcgg-lock body>*:not(.pcgg-bg){filter:blur(12px);pointer-events:none;user-select:none}"
     + ".pcgg-bg{position:fixed;inset:0;z-index:99999;background:rgba(20,22,26,.6);display:flex;align-items:center;justify-content:center;padding:16px}"
@@ -31,7 +32,7 @@
       e.preventDefault(); var v = inp.value.trim(); if (!v) return;
       sha(v).then(function (h) {
         if (h !== HASH) { err.textContent = "รหัสไม่ถูกต้อง"; inp.select(); return; }
-        try { localStorage.setItem(LS, JSON.stringify({ h: HASH, exp: Date.now() + DAYS * 864e5 })); } catch (x) {}
+        try { localStorage.setItem(LS, JSON.stringify({ h: HASH, day: TODAY })); } catch (x) {}
         bg.remove(); document.documentElement.classList.remove("pcgg-lock");
       });
     };
