@@ -332,6 +332,11 @@
   .rdy .chips { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 2px; }
   .rdy .bad, .rdy .late { display: inline-block; font-size: 11.5px; font-weight: 800; padding: 2px 8px; border-radius: 999px; }
   .rdy .bad { color: #fff; background: #d8351a; } .rdy .late { color: #8a4a00; background: #ffe2b8; }
+  .rdy .ln { display: grid; grid-template-columns: auto auto 1fr; align-items: baseline; gap: 2px 8px; padding-top: 6px; border-top: 1px dashed rgba(16,27,45,.12); }
+  .rdy .ln .lb { font-size: 12px; font-weight: 800; color: #3c4a68; }
+  .rdy .ln b { font-family: Archivo, sans-serif; font-size: 20px; font-weight: 900; }
+  .rdy .ln .lt { grid-column: 1 / -1; font-size: 11.5px; font-weight: 600; color: #5a6784; }
+  .rdy-tot { flex-wrap: wrap; } .rdy-tot .tt { display: inline-flex; align-items: baseline; gap: 6px; padding-left: 12px; border-left: 1px solid #d9e0ec; }
   .rdy .zone { display: inline-block; font-size: 11.5px; font-weight: 800; padding: 1px 8px; border-radius: 999px; color: #c9301a; background: #fff; border: 1.5px solid #e0523a; }
   @media (max-width: 760px) { .rdy-tot { margin-left: 0; width: 100%; } .rdy-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .rdy .p { font-size: 20px; } }
   #tip { position: fixed; pointer-events: none; z-index: 50; background: #16213a; color: #fff; font-size: 12.5px; line-height: 1.5; padding: 8px 11px; border-radius: 10px; box-shadow: 0 8px 20px rgba(0,0,0,.25); opacity: 0; transition: opacity .12s; max-width: 260px; }
@@ -440,85 +445,90 @@
     <span><b class="q1">① งานทำครบไหม?</b> <i class="sw" style="background:#1a5fe4"></i>เสร็จแล้ว <i class="sw" style="background:#7b61ff"></i>ตรวจแล้ว รอปิดงาน <i class="sw" style="background:#9cc0ff"></i>กำลังทำ <i class="sw" style="background:#ff8a3d"></i>เลยกำหนด</span>
     <span><b class="q2">② เครื่องปกติไหม?</b> <span style="color:#0a6b4d;font-weight:700">✓ ผ่าน</span> · <span style="color:#a8250f;font-weight:700">✕ ไม่ผ่าน</span> (นับเฉพาะงานที่ตรวจแล้ว)</span>  </div>
   <section class="panel" id="readySec"><div class="rdy-h"><span style="width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:#fff;background:linear-gradient(150deg,#13a878,#0a7353);box-shadow:0 8px 18px rgba(10,115,83,.35)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14 M22 4 12 14.01l-3-3"></path></svg></span>
-      <div style="display:grid"><h2>ความพร้อมใช้งาน รายคลัง</h2><span style="font-size:12.5px;color:#5a6784">เครื่องจักร + รถ MHE · เครื่องที่ตรวจไม่ผ่านและยังไม่ได้กด "แก้ไขแล้ว" = รอซ่อม · กดการ์ดเพื่อดูใบงาน</span></div>
-      <span class="rdy-tot">รวมทุกคลัง <b style="color:#d9770f">89%</b><span>พร้อมใช้ 41/46 เครื่อง · <span style="color:#a8250f">รอซ่อม 5</span> · <span style="color:#c9301a">ตรวจโซนไม่ผ่าน 10 ใบ</span> · <span style="color:#b85d00">เลยกำหนดตรวจ 50</span></span></span></div>
-    <div class="rdy-lg"><span><i style="background:#bfe9d6"></i>พร้อมทุกเครื่อง</span><span><i style="background:#f6c98a"></i>มีรอซ่อม (≥85%)</span><span><i style="background:#f3a897"></i>มีรอซ่อม (&lt;85%)</span><span><i style="background:#e1e6ef"></i>ยังไม่มีผลตรวจ</span><span><i style="background:#ffe2b8"></i>เลยกำหนดตรวจ = เตือน ไม่หัก %</span><span><i style="background:#fff;border:1.5px solid #e0523a"></i>ตรวจโซนไม่ผ่าน (ภายใน/นอกคลัง ออฟฟิศ Safety พื้นที่ MHE) = เตือน ไม่หัก %</span>
+      <div style="display:grid"><h2>ความพร้อมใช้งาน รายคลัง</h2><span style="font-size:12.5px;color:#5a6784">เครื่องจักร + รถ MHE · แยก อุปกรณ์ / พื้นที่คลัง · ไม่ผ่านและยังไม่ได้กด "แก้ไขแล้ว" = ยังไม่พร้อม · กดการ์ดเพื่อดูใบงาน</span></div>
+      <span class="rdy-tot"><span>รวมทุกคลัง</span><span class="tt">อุปกรณ์ <b style="color:#d9770f">89%</b><span>พร้อมใช้ 41/46 เครื่อง · <span style="color:#a8250f">รอซ่อม 5</span> · <span style="color:#b85d00">เลยกำหนดตรวจ 50</span></span></span><span class="tt">พื้นที่คลัง <b style="color:#d9770f">95%</b><span>ผ่าน 180/190 ใบ · <span style="color:#c9301a">ไม่ผ่านยังไม่แก้ 10</span></span></span></span></div>
+    <div class="rdy-lg"><span><i style="background:#bfe9d6"></i>พร้อมทุกเครื่อง</span><span><i style="background:#f6c98a"></i>มีรอซ่อม (≥85%)</span><span><i style="background:#f3a897"></i>มีรอซ่อม (&lt;85%)</span><span><i style="background:#e1e6ef"></i>ยังไม่มีผลตรวจ</span><span><i style="background:#ffe2b8"></i>เลยกำหนดตรวจ = เตือน ไม่หัก %</span><span>อุปกรณ์ = เครื่องจักร + รถ MHE · พื้นที่คลัง = ใบตรวจโซน (ภายใน/นอกคลัง ออฟฟิศ Safety พื้นที่ MHE) · สีการ์ดตามส่วนที่แย่กว่า</span>
       <span style="margin-left:auto"><b style="color:#16325c">● คลังในประเทศ</b> <b style="color:#1a5fe4">● กรุงเทพฯ</b> <b style="color:#0b8f84">● ภาคกลาง</b> <b style="color:#7a3fd0">● ภาคเหนือ</b> <b style="color:#d9770f">● ภาคอีสาน</b> <b style="color:#c2337a">● ภาคใต้</b></span></div>
     <div class="rdy-grid"><button type="button" class="rdy" style="--c:#d8351a;--bg:#fff0ec;--bd:#f3a897;--rc:#16325c" data-pick="WHA05|WH05|">
       <span class="rg">คลังในประเทศ</span>
-      <span class="n">WH05<span class="p">83%</span></span>
-      <span class="bar"><i style="width:83.33333333333334%;background:#16a06c"></i><i style="width:16.666666666666664%;background:#d8351a"></i></span>
-      <span class="s">พร้อมใช้ 15/18 เครื่อง</span>
+      <span class="n">WH05</span>
+      <span class="ln"><span class="lb">อุปกรณ์</span><b style="color:#d8351a">83%</b><span class="lt">พร้อมใช้ 15/18 เครื่อง</span></span>
+      <span class="ln"><span class="lb">พื้นที่คลัง</span><b style="color:#0f9a68">100%</b><span class="lt">ผ่าน 2/2 ใบ</span></span>
       <span class="chips"><span class="bad">รอซ่อม 3 · นานสุด 26 วัน</span><span class="late">เลยกำหนดตรวจ 17 เครื่อง</span></span></button><button type="button" class="rdy" style="--c:#0f9a68;--bg:#f1fbf6;--bd:#bfe9d6;--rc:#16325c" data-pick="WHA05|WH32|">
       <span class="rg">คลังในประเทศ</span>
-      <span class="n">WH32<span class="p">100%</span></span>
-      <span class="bar"><i style="width:100%;background:#0f9a68"></i><i style="width:0%;background:#d8351a"></i></span>
-      <span class="s">พร้อมใช้ 13/13 เครื่อง</span>
+      <span class="n">WH32</span>
+      <span class="ln"><span class="lb">อุปกรณ์</span><b style="color:#0f9a68">100%</b><span class="lt">พร้อมใช้ 13/13 เครื่อง</span></span>
+      
       <span class="chips"><span class="late">เลยกำหนดตรวจ 9 เครื่อง</span></span></button><button type="button" class="rdy" style="--c:#0f9a68;--bg:#f1fbf6;--bd:#bfe9d6;--rc:#1a5fe4" data-pick="RDC01|สายไหม|กรุงเทพฯ">
       <span class="rg">กรุงเทพฯ</span>
-      <span class="n">สายไหม<span class="p">100%</span></span>
-      <span class="bar"><i style="width:100%;background:#0f9a68"></i><i style="width:0%;background:#d8351a"></i></span>
-      <span class="s">พร้อมใช้ 2/2 เครื่อง</span>
+      <span class="n">สายไหม</span>
+      <span class="ln"><span class="lb">อุปกรณ์</span><b style="color:#0f9a68">100%</b><span class="lt">พร้อมใช้ 2/2 เครื่อง</span></span>
+      <span class="ln"><span class="lb">พื้นที่คลัง</span><b style="color:#0f9a68">100%</b><span class="lt">ผ่าน 15/15 ใบ</span></span>
       <span class="chips"><span class="late">เลยกำหนดตรวจ 2 เครื่อง</span></span></button><button type="button" class="rdy" style="--c:#0f9a68;--bg:#f1fbf6;--bd:#bfe9d6;--rc:#1a5fe4" data-pick="RDC01|หนองแขม|กรุงเทพฯ">
       <span class="rg">กรุงเทพฯ</span>
-      <span class="n">หนองแขม<span class="p">100%</span></span>
-      <span class="bar"><i style="width:100%;background:#0f9a68"></i><i style="width:0%;background:#d8351a"></i></span>
-      <span class="s">พร้อมใช้ 2/2 เครื่อง</span>
-      </button><button type="button" class="rdy" style="--c:#9aa6bd;--bg:#f6f8fb;--bd:#e1e6ef;--rc:#1a5fe4" data-pick="RDC01|ลาดพร้าว|กรุงเทพฯ">
+      <span class="n">หนองแขม</span>
+      <span class="ln"><span class="lb">อุปกรณ์</span><b style="color:#0f9a68">100%</b><span class="lt">พร้อมใช้ 2/2 เครื่อง</span></span>
+      <span class="ln"><span class="lb">พื้นที่คลัง</span><b style="color:#0f9a68">100%</b><span class="lt">ผ่าน 15/15 ใบ</span></span>
+      </button><button type="button" class="rdy" style="--c:#d9770f;--bg:#fff6e8;--bd:#f6c98a;--rc:#1a5fe4" data-pick="RDC01|ลาดพร้าว|กรุงเทพฯ">
       <span class="rg">กรุงเทพฯ</span>
-      <span class="n">ลาดพร้าว<span class="p">–</span></span>
-      <span class="bar"><i style="width:0%;background:#9aa6bd"></i><i style="width:0%;background:#d8351a"></i></span>
-      <span class="s">พร้อมใช้ 0/0 เครื่อง</span>
-      <span class="chips"><span class="zone">ตรวจโซนไม่ผ่าน 1 ใบ</span></span></button><button type="button" class="rdy" style="--c:#9aa6bd;--bg:#f6f8fb;--bd:#e1e6ef;--rc:#0b8f84" data-pick="RDC01|ศรีราชา|ภาคกลาง">
+      <span class="n">ลาดพร้าว</span>
+      
+      <span class="ln"><span class="lb">พื้นที่คลัง</span><b style="color:#d9770f">93%</b><span class="lt">ผ่าน 14/15 ใบ · <span style="color:#c9301a">ไม่ผ่านยังไม่แก้ 1</span></span></span>
+      </button><button type="button" class="rdy" style="--c:#0f9a68;--bg:#f1fbf6;--bd:#bfe9d6;--rc:#1a5fe4" data-pick="RDC01|ปากเกร็ด|กรุงเทพฯ">
+      <span class="rg">กรุงเทพฯ</span>
+      <span class="n">ปากเกร็ด</span>
+      
+      <span class="ln"><span class="lb">พื้นที่คลัง</span><b style="color:#0f9a68">100%</b><span class="lt">ผ่าน 15/15 ใบ</span></span>
+      </button><button type="button" class="rdy" style="--c:#d8351a;--bg:#fff0ec;--bd:#f3a897;--rc:#0b8f84" data-pick="RDC01|ศรีราชา|ภาคกลาง">
       <span class="rg">ภาคกลาง</span>
-      <span class="n">ศรีราชา<span class="p">–</span></span>
-      <span class="bar"><i style="width:0%;background:#9aa6bd"></i><i style="width:0%;background:#d8351a"></i></span>
-      <span class="s">พร้อมใช้ 0/0 เครื่อง · ยังไม่มีผลตรวจ 10</span>
-      <span class="chips"><span class="zone">ตรวจโซนไม่ผ่าน 1 ใบ</span><span class="late">เลยกำหนดตรวจ 10 เครื่อง</span></span></button><button type="button" class="rdy" style="--c:#9aa6bd;--bg:#f6f8fb;--bd:#e1e6ef;--rc:#0b8f84" data-pick="RDC01|ราชบุรี|ภาคกลาง">
+      <span class="n">ศรีราชา</span>
+      <span class="ln"><span class="lb">อุปกรณ์</span><b style="color:#9aa6bd">–</b><span class="lt">พร้อมใช้ 0/0 เครื่อง · ยังไม่มีผล 10</span></span>
+      <span class="ln"><span class="lb">พื้นที่คลัง</span><b style="color:#d8351a">80%</b><span class="lt">ผ่าน 4/5 ใบ · <span style="color:#c9301a">ไม่ผ่านยังไม่แก้ 1</span></span></span>
+      <span class="chips"><span class="late">เลยกำหนดตรวจ 10 เครื่อง</span></span></button><button type="button" class="rdy" style="--c:#0f9a68;--bg:#f1fbf6;--bd:#bfe9d6;--rc:#0b8f84" data-pick="RDC01|ราชบุรี|ภาคกลาง">
       <span class="rg">ภาคกลาง</span>
-      <span class="n">ราชบุรี<span class="p">–</span></span>
-      <span class="bar"><i style="width:0%;background:#9aa6bd"></i><i style="width:0%;background:#d8351a"></i></span>
-      <span class="s">พร้อมใช้ 0/0 เครื่อง · ยังไม่มีผลตรวจ 4</span>
+      <span class="n">ราชบุรี</span>
+      <span class="ln"><span class="lb">อุปกรณ์</span><b style="color:#9aa6bd">–</b><span class="lt">พร้อมใช้ 0/0 เครื่อง · ยังไม่มีผล 4</span></span>
+      <span class="ln"><span class="lb">พื้นที่คลัง</span><b style="color:#0f9a68">100%</b><span class="lt">ผ่าน 7/7 ใบ</span></span>
       <span class="chips"><span class="late">เลยกำหนดตรวจ 4 เครื่อง</span></span></button><button type="button" class="rdy" style="--c:#0f9a68;--bg:#f1fbf6;--bd:#bfe9d6;--rc:#7a3fd0" data-pick="RDC01|เชียงใหม่|ภาคเหนือ">
       <span class="rg">ภาคเหนือ</span>
-      <span class="n">เชียงใหม่<span class="p">100%</span></span>
-      <span class="bar"><i style="width:100%;background:#0f9a68"></i><i style="width:0%;background:#d8351a"></i></span>
-      <span class="s">พร้อมใช้ 1/1 เครื่อง · ยังไม่มีผลตรวจ 1</span>
-      <span class="chips"><span class="late">เลยกำหนดตรวจ 1 เครื่อง</span></span></button><button type="button" class="rdy" style="--c:#0f9a68;--bg:#f1fbf6;--bd:#bfe9d6;--rc:#7a3fd0" data-pick="RDC01|เชียงราย|ภาคเหนือ">
+      <span class="n">เชียงใหม่</span>
+      <span class="ln"><span class="lb">อุปกรณ์</span><b style="color:#0f9a68">100%</b><span class="lt">พร้อมใช้ 1/1 เครื่อง · ยังไม่มีผล 1</span></span>
+      <span class="ln"><span class="lb">พื้นที่คลัง</span><b style="color:#0f9a68">100%</b><span class="lt">ผ่าน 12/12 ใบ</span></span>
+      <span class="chips"><span class="late">เลยกำหนดตรวจ 1 เครื่อง</span></span></button><button type="button" class="rdy" style="--c:#d8351a;--bg:#fff0ec;--bd:#f3a897;--rc:#7a3fd0" data-pick="RDC01|เชียงราย|ภาคเหนือ">
       <span class="rg">ภาคเหนือ</span>
-      <span class="n">เชียงราย<span class="p">100%</span></span>
-      <span class="bar"><i style="width:100%;background:#0f9a68"></i><i style="width:0%;background:#d8351a"></i></span>
-      <span class="s">พร้อมใช้ 1/1 เครื่อง</span>
-      <span class="chips"><span class="zone">ตรวจโซนไม่ผ่าน 5 ใบ</span></span></button><button type="button" class="rdy" style="--c:#d8351a;--bg:#fff0ec;--bd:#f3a897;--rc:#7a3fd0" data-pick="RDC01|พิษณุโลก|ภาคเหนือ">
+      <span class="n">เชียงราย</span>
+      <span class="ln"><span class="lb">อุปกรณ์</span><b style="color:#0f9a68">100%</b><span class="lt">พร้อมใช้ 1/1 เครื่อง</span></span>
+      <span class="ln"><span class="lb">พื้นที่คลัง</span><b style="color:#d8351a">67%</b><span class="lt">ผ่าน 10/15 ใบ · <span style="color:#c9301a">ไม่ผ่านยังไม่แก้ 5</span></span></span>
+      </button><button type="button" class="rdy" style="--c:#d8351a;--bg:#fff0ec;--bd:#f3a897;--rc:#7a3fd0" data-pick="RDC01|พิษณุโลก|ภาคเหนือ">
       <span class="rg">ภาคเหนือ</span>
-      <span class="n">พิษณุโลก<span class="p">67%</span></span>
-      <span class="bar"><i style="width:66.66666666666666%;background:#16a06c"></i><i style="width:33.33333333333333%;background:#d8351a"></i></span>
-      <span class="s">พร้อมใช้ 2/3 เครื่อง</span>
-      <span class="chips"><span class="bad">รอซ่อม 1 · นานสุด 11 วัน</span><span class="late">เลยกำหนดตรวจ 3 เครื่อง</span></span></button><button type="button" class="rdy" style="--c:#9aa6bd;--bg:#f6f8fb;--bd:#e1e6ef;--rc:#d9770f" data-pick="RDC01|โคราช|ภาคอีสาน">
+      <span class="n">พิษณุโลก</span>
+      <span class="ln"><span class="lb">อุปกรณ์</span><b style="color:#d8351a">67%</b><span class="lt">พร้อมใช้ 2/3 เครื่อง</span></span>
+      <span class="ln"><span class="lb">พื้นที่คลัง</span><b style="color:#0f9a68">100%</b><span class="lt">ผ่าน 15/15 ใบ</span></span>
+      <span class="chips"><span class="bad">รอซ่อม 1 · นานสุด 11 วัน</span><span class="late">เลยกำหนดตรวจ 3 เครื่อง</span></span></button><button type="button" class="rdy" style="--c:#d9770f;--bg:#fff6e8;--bd:#f6c98a;--rc:#d9770f" data-pick="RDC01|โคราช|ภาคอีสาน">
       <span class="rg">ภาคอีสาน</span>
-      <span class="n">โคราช<span class="p">–</span></span>
-      <span class="bar"><i style="width:0%;background:#9aa6bd"></i><i style="width:0%;background:#d8351a"></i></span>
-      <span class="s">พร้อมใช้ 0/0 เครื่อง · ยังไม่มีผลตรวจ 2</span>
-      <span class="chips"><span class="zone">ตรวจโซนไม่ผ่าน 2 ใบ</span><span class="late">เลยกำหนดตรวจ 2 เครื่อง</span></span></button><button type="button" class="rdy" style="--c:#9aa6bd;--bg:#f6f8fb;--bd:#e1e6ef;--rc:#d9770f" data-pick="RDC01|ขอนแก่น|ภาคอีสาน">
+      <span class="n">โคราช</span>
+      <span class="ln"><span class="lb">อุปกรณ์</span><b style="color:#9aa6bd">–</b><span class="lt">พร้อมใช้ 0/0 เครื่อง · ยังไม่มีผล 2</span></span>
+      <span class="ln"><span class="lb">พื้นที่คลัง</span><b style="color:#d9770f">87%</b><span class="lt">ผ่าน 13/15 ใบ · <span style="color:#c9301a">ไม่ผ่านยังไม่แก้ 2</span></span></span>
+      <span class="chips"><span class="late">เลยกำหนดตรวจ 2 เครื่อง</span></span></button><button type="button" class="rdy" style="--c:#0f9a68;--bg:#f1fbf6;--bd:#bfe9d6;--rc:#d9770f" data-pick="RDC01|ขอนแก่น|ภาคอีสาน">
       <span class="rg">ภาคอีสาน</span>
-      <span class="n">ขอนแก่น<span class="p">–</span></span>
-      <span class="bar"><i style="width:0%;background:#9aa6bd"></i><i style="width:0%;background:#d8351a"></i></span>
-      <span class="s">พร้อมใช้ 0/0 เครื่อง · ยังไม่มีผลตรวจ 2</span>
+      <span class="n">ขอนแก่น</span>
+      <span class="ln"><span class="lb">อุปกรณ์</span><b style="color:#9aa6bd">–</b><span class="lt">พร้อมใช้ 0/0 เครื่อง · ยังไม่มีผล 2</span></span>
+      <span class="ln"><span class="lb">พื้นที่คลัง</span><b style="color:#0f9a68">100%</b><span class="lt">ผ่าน 15/15 ใบ</span></span>
       <span class="chips"><span class="late">เลยกำหนดตรวจ 2 เครื่อง</span></span></button><button type="button" class="rdy" style="--c:#0f9a68;--bg:#f1fbf6;--bd:#bfe9d6;--rc:#d9770f" data-pick="RDC01|อุบลราชธานี|ภาคอีสาน">
       <span class="rg">ภาคอีสาน</span>
-      <span class="n">อุบลราชธานี<span class="p">100%</span></span>
-      <span class="bar"><i style="width:100%;background:#0f9a68"></i><i style="width:0%;background:#d8351a"></i></span>
-      <span class="s">พร้อมใช้ 1/1 เครื่อง</span>
-      </button><button type="button" class="rdy" style="--c:#0f9a68;--bg:#f1fbf6;--bd:#bfe9d6;--rc:#c2337a" data-pick="RDC01|สุราษฎร์ธานี|ภาคใต้">
+      <span class="n">อุบลราชธานี</span>
+      <span class="ln"><span class="lb">อุปกรณ์</span><b style="color:#0f9a68">100%</b><span class="lt">พร้อมใช้ 1/1 เครื่อง</span></span>
+      <span class="ln"><span class="lb">พื้นที่คลัง</span><b style="color:#0f9a68">100%</b><span class="lt">ผ่าน 15/15 ใบ</span></span>
+      </button><button type="button" class="rdy" style="--c:#d9770f;--bg:#fff6e8;--bd:#f6c98a;--rc:#c2337a" data-pick="RDC01|สุราษฎร์ธานี|ภาคใต้">
       <span class="rg">ภาคใต้</span>
-      <span class="n">สุราษฎร์ธานี<span class="p">100%</span></span>
-      <span class="bar"><i style="width:100%;background:#0f9a68"></i><i style="width:0%;background:#d8351a"></i></span>
-      <span class="s">พร้อมใช้ 3/3 เครื่อง</span>
-      <span class="chips"><span class="zone">ตรวจโซนไม่ผ่าน 1 ใบ</span></span></button><button type="button" class="rdy" style="--c:#d8351a;--bg:#fff0ec;--bd:#f3a897;--rc:#c2337a" data-pick="RDC01|หาดใหญ่|ภาคใต้">
+      <span class="n">สุราษฎร์ธานี</span>
+      <span class="ln"><span class="lb">อุปกรณ์</span><b style="color:#0f9a68">100%</b><span class="lt">พร้อมใช้ 3/3 เครื่อง</span></span>
+      <span class="ln"><span class="lb">พื้นที่คลัง</span><b style="color:#d9770f">93%</b><span class="lt">ผ่าน 13/14 ใบ · <span style="color:#c9301a">ไม่ผ่านยังไม่แก้ 1</span></span></span>
+      </button><button type="button" class="rdy" style="--c:#d8351a;--bg:#fff0ec;--bd:#f3a897;--rc:#c2337a" data-pick="RDC01|หาดใหญ่|ภาคใต้">
       <span class="rg">ภาคใต้</span>
-      <span class="n">หาดใหญ่<span class="p">50%</span></span>
-      <span class="bar"><i style="width:50%;background:#16a06c"></i><i style="width:50%;background:#d8351a"></i></span>
-      <span class="s">พร้อมใช้ 1/2 เครื่อง</span>
+      <span class="n">หาดใหญ่</span>
+      <span class="ln"><span class="lb">อุปกรณ์</span><b style="color:#d8351a">50%</b><span class="lt">พร้อมใช้ 1/2 เครื่อง</span></span>
+      <span class="ln"><span class="lb">พื้นที่คลัง</span><b style="color:#0f9a68">100%</b><span class="lt">ผ่าน 15/15 ใบ</span></span>
       <span class="chips"><span class="bad">รอซ่อม 1 · นานสุด 1 วัน</span></span></button></div></section>
   <div id="drill"><div class="board"><div class="bfbar">
     <label class="sel">คลัง<select data-bf="wh"><option value="all" selected="">ทั้งหมด</option><option value="WHA05">คลังในประเทศ (WHA05)</option><option value="RDC01">คลัง RDC ต่างจังหวัด</option></select></label>
@@ -1196,16 +1206,16 @@ document.querySelectorAll("[data-kic]").forEach(el => el.outerHTML = kIcon(el.da
    ไม่นับใบงานตรวจโซน (ภายใน/ภายนอกคลัง ออฟฟิศ Safety พื้นที่ MHE) เพราะไม่ใช่เครื่อง ---- */
 const ZONE_SUB = ["in", "out", "office", "safety", "mhearea"];
 function readyOf(L) {
-  const eq = {}; let zf = 0;
-  /* 9 ต.ค. ผู้ใช้เลือก: ใบตรวจโซนที่ไม่ผ่านและยังไม่แก้ = ป้ายเตือน "ตรวจโซนไม่ผ่าน" ไม่หัก % */
-  L.forEach(r => { if (kindOf(r) === "wh" && ZONE_SUB.includes(subOf(r))) { if (isFail(r) && repSt(r) !== "fixed") zf++; return; }
+  const eq = {}; let zf = 0, zchk = 0;
+  /* 9 ต.ค. ผู้ใช้เลือก: แยก อุปกรณ์ (เครื่องจักร + รถ) กับ พื้นที่คลัง (ใบตรวจโซน) · พื้นที่คลัง % = ใบที่มีผลและไม่ค้างไม่ผ่าน ÷ ใบที่มีผล */
+  L.forEach(r => { if (kindOf(r) === "wh" && ZONE_SUB.includes(subOf(r))) { if (r.r) zchk++; if (isFail(r) && repSt(r) !== "fixed") zf++; return; }
     const k = r.p + "|" + r.id.split("|")[3]; const e = eq[k] || (eq[k] = { chk: false, down: false, late: false, dd: 0 });
     if (r.r) e.chk = true; if (isFail(r) && repSt(r) !== "fixed") { e.down = true; e.dd = Math.max(e.dd, downDays(r)); }
     if (overdue(r)) e.late = true; });
   const list = Object.values(eq), n = list.length, chk = list.filter(e => e.chk).length, down = list.filter(e => e.down).length;
   /* เลยกำหนดตรวจ = เตือนอย่างเดียว ไม่หัก % (ผู้ใช้เลือก 3 ต.ค.) */
   return { n, chk, down, ready: chk - down, none: n - chk, pct: chk ? Math.round((chk - down) / chk * 100) : null,
-    late: list.filter(e => e.late).length, zf, maxDown: Math.max(0, ...list.filter(e => e.down).map(e => e.dd)) };
+    late: list.filter(e => e.late).length, zf, zchk, zpct: zchk ? Math.round((zchk - zf) / zchk * 100) : null, maxDown: Math.max(0, ...list.filter(e => e.down).map(e => e.dd)) };
 }
 const RCOL = { "WHA": "#16325c", "กรุงเทพฯ": "#1a5fe4", "ภาคกลาง": "#0b8f84", "ภาคเหนือ": "#7a3fd0", "ภาคอีสาน": "#d9770f", "ภาคใต้": "#c2337a" };
 function renderReady() {
@@ -1213,24 +1223,27 @@ function renderReady() {
   if (S.view !== "overview" || S.branch !== "all") { box.style.display = "none"; return; }
   box.style.display = "";
   const base = rows({ month: true, wh: true, rg: true, branch: true });
-  const tone = x => x.pct == null ? ["#9aa6bd", "#f6f8fb", "#e1e6ef"] : x.down === 0 ? ["#0f9a68", "#f1fbf6", "#bfe9d6"] : x.pct >= 85 ? ["#d9770f", "#fff6e8", "#f6c98a"] : ["#d8351a", "#fff0ec", "#f3a897"];
+  const tone1 = (pct, bad) => pct == null ? ["#9aa6bd", "#f6f8fb", "#e1e6ef", 0] : !bad ? ["#0f9a68", "#f1fbf6", "#bfe9d6", 1] : pct >= 85 ? ["#d9770f", "#fff6e8", "#f6c98a", 2] : ["#d8351a", "#fff0ec", "#f3a897", 3];
+  /* สีการ์ดตามส่วนที่แย่กว่า (อุปกรณ์ / พื้นที่คลัง) */
+  const tone = x => { const a = tone1(x.pct, x.down), b = tone1(x.zpct, x.zf); return a[3] >= b[3] ? a : b; };
+  const line = (lbl, pct, bad, txt) => { const [c] = tone1(pct, bad); return `<span class="ln"><span class="lb">${lbl}</span><b style="color:${c}">${pct == null ? "–" : pct + "%"}</b><span class="lt">${txt}</span></span>`; };
   const cards = [];
-  const add = (p, b, rg) => { const L = base.filter(r => r.p === p && r.b === b); if (!L.length) return; const x = readyOf(L); if (!x.n && !x.zf) return;
+  const add = (p, b, rg) => { const L = base.filter(r => r.p === p && r.b === b); if (!L.length) return; const x = readyOf(L); if (!x.n && !x.zchk && !x.zf) return;
     const [c, bg, bd] = tone(x), w = v => (x.chk ? v / x.chk * 100 : 0) + "%";
     cards.push(`<button type="button" class="rdy" style="--c:${c};--bg:${bg};--bd:${bd};--rc:${RCOL[rg]}" data-pick="${p}|${b}|${p === "RDC01" ? rg : ""}">
       <span class="rg">${rg === "WHA" ? "คลังในประเทศ" : rg}</span>
-      <span class="n">${b}<span class="p">${x.pct == null ? "–" : x.pct + "%"}</span></span>
-      <span class="bar"><i style="width:${w(x.ready)};background:${x.down ? "#16a06c" : c}"></i><i style="width:${w(x.down)};background:#d8351a"></i></span>
-      <span class="s">พร้อมใช้ ${x.ready}/${x.chk} เครื่อง${x.none ? ` · ยังไม่มีผลตรวจ ${x.none}` : ""}</span>
-      ${x.down || x.late || x.zf ? `<span class="chips">${x.down ? `<span class="bad">รอซ่อม ${x.down} · นานสุด ${x.maxDown} วัน</span>` : ""}${x.zf ? `<span class="zone">ตรวจโซนไม่ผ่าน ${x.zf} ใบ</span>` : ""}${x.late ? `<span class="late">เลยกำหนดตรวจ ${x.late} เครื่อง</span>` : ""}</span>` : ""}</button>`); };
+      <span class="n">${b}</span>
+      ${x.n ? line("อุปกรณ์", x.pct, x.down, `พร้อมใช้ ${x.ready}/${x.chk} เครื่อง${x.none ? ` · ยังไม่มีผล ${x.none}` : ""}`) : ""}
+      ${x.zchk || x.zf ? line("พื้นที่คลัง", x.zpct, x.zf, `ผ่าน ${x.zchk - x.zf}/${x.zchk} ใบ${x.zf ? ` · <span style="color:#c9301a">ไม่ผ่านยังไม่แก้ ${x.zf}</span>` : ""}`) : ""}
+      ${x.down || x.late ? `<span class="chips">${x.down ? `<span class="bad">รอซ่อม ${x.down} · นานสุด ${x.maxDown} วัน</span>` : ""}${x.late ? `<span class="late">เลยกำหนดตรวจ ${x.late} เครื่อง</span>` : ""}</span>` : ""}</button>`); };
   [...new Set(base.filter(r => r.p === "WHA05").map(r => r.b))].sort().forEach(b => add("WHA05", b, "WHA"));
   REGIONS.forEach(([rg, bs]) => bs.forEach(b => add("RDC01", b, rg)));
   const T = readyOf(base), [tc] = tone(T);
   const kindLbl = S.kind === "all" ? "เครื่องจักร + รถ MHE" : KIND[S.kind].label;
   box.innerHTML = `<div class="rdy-h"><span style="width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:#fff;background:linear-gradient(150deg,#13a878,#0a7353);box-shadow:0 8px 18px rgba(10,115,83,.35)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14 M22 4 12 14.01l-3-3"/></svg></span>
-      <div style="display:grid"><h2>ความพร้อมใช้งาน รายคลัง</h2><span style="font-size:12.5px;color:#5a6784">${kindLbl} · เครื่องที่ตรวจไม่ผ่านและยังไม่ได้กด "แก้ไขแล้ว" = รอซ่อม · กดการ์ดเพื่อดูใบงาน</span></div>
-      <span class="rdy-tot">รวมทุกคลัง <b style="color:${tc}">${T.pct == null ? "–" : T.pct + "%"}</b><span>พร้อมใช้ ${T.ready}/${T.chk} เครื่อง${T.down ? ` · <span style="color:#a8250f">รอซ่อม ${T.down}</span>` : ""}${T.zf ? ` · <span style="color:#c9301a">ตรวจโซนไม่ผ่าน ${T.zf} ใบ</span>` : ""}${T.late ? ` · <span style="color:#b85d00">เลยกำหนดตรวจ ${T.late}</span>` : ""}</span></span></div>
-    <div class="rdy-lg"><span><i style="background:#bfe9d6"></i>พร้อมทุกเครื่อง</span><span><i style="background:#f6c98a"></i>มีรอซ่อม (≥85%)</span><span><i style="background:#f3a897"></i>มีรอซ่อม (&lt;85%)</span><span><i style="background:#e1e6ef"></i>ยังไม่มีผลตรวจ</span><span><i style="background:#ffe2b8"></i>เลยกำหนดตรวจ = เตือน ไม่หัก %</span><span><i style="background:#fff;border:1.5px solid #e0523a"></i>ตรวจโซนไม่ผ่าน (ภายใน/นอกคลัง ออฟฟิศ Safety พื้นที่ MHE) = เตือน ไม่หัก %</span>
+      <div style="display:grid"><h2>ความพร้อมใช้งาน รายคลัง</h2><span style="font-size:12.5px;color:#5a6784">${kindLbl} · แยก อุปกรณ์ / พื้นที่คลัง · ไม่ผ่านและยังไม่ได้กด "แก้ไขแล้ว" = ยังไม่พร้อม · กดการ์ดเพื่อดูใบงาน</span></div>
+      <span class="rdy-tot"><span>รวมทุกคลัง</span>${T.n ? `<span class="tt">อุปกรณ์ <b style="color:${tone1(T.pct, T.down)[0]}">${T.pct == null ? "–" : T.pct + "%"}</b><span>พร้อมใช้ ${T.ready}/${T.chk} เครื่อง${T.down ? ` · <span style="color:#a8250f">รอซ่อม ${T.down}</span>` : ""}${T.late ? ` · <span style="color:#b85d00">เลยกำหนดตรวจ ${T.late}</span>` : ""}</span></span>` : ""}${T.zchk ? `<span class="tt">พื้นที่คลัง <b style="color:${tone1(T.zpct, T.zf)[0]}">${T.zpct}%</b><span>ผ่าน ${T.zchk - T.zf}/${T.zchk} ใบ${T.zf ? ` · <span style="color:#c9301a">ไม่ผ่านยังไม่แก้ ${T.zf}</span>` : ""}</span></span>` : ""}</span></div>
+    <div class="rdy-lg"><span><i style="background:#bfe9d6"></i>พร้อมทุกเครื่อง</span><span><i style="background:#f6c98a"></i>มีรอซ่อม (≥85%)</span><span><i style="background:#f3a897"></i>มีรอซ่อม (&lt;85%)</span><span><i style="background:#e1e6ef"></i>ยังไม่มีผลตรวจ</span><span><i style="background:#ffe2b8"></i>เลยกำหนดตรวจ = เตือน ไม่หัก %</span><span>อุปกรณ์ = เครื่องจักร + รถ MHE · พื้นที่คลัง = ใบตรวจโซน (ภายใน/นอกคลัง ออฟฟิศ Safety พื้นที่ MHE) · สีการ์ดตามส่วนที่แย่กว่า</span>
       <span style="margin-left:auto">${Object.entries(RCOL).map(([k, v]) => `<b style="color:${v}">● ${k === "WHA" ? "คลังในประเทศ" : k}</b>`).join(" ")}</span></div>
     <div class="rdy-grid">${cards.join("") || `<div style="color:#5a6784">ไม่มีข้อมูลเครื่องในตัวกรองนี้</div>`}</div>`;
 }
