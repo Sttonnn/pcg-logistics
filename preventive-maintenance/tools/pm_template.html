@@ -401,7 +401,7 @@
       </div>
       <div style="display:grid;gap:6px;justify-items:end;flex:none;max-width:100%">
         <button class="upl" id="uplBtn" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 M17 8l-5-5-5 5 M12 3v12"/></svg>อัปโหลด Excel ประจำวัน</button>
-        <span class="login"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4"/></svg>ต้อง login ก่อนอัปโหลด · ไฟล์ TrackingReport_PM_*.xlsx</span>
+        <span class="login" id="syncSt">กำลังเชื่อมข้อมูล… · ไฟล์ TrackingReport_PM_*.xlsx</span>
         <input type="file" id="file" accept=".xlsx,.xls" hidden>
         <button type="button" id="histBtn" class="login" style="cursor:pointer;border:0;background:none;padding:0;text-decoration:underline">ประวัติการอัปโหลด</button>
       </div>
@@ -590,7 +590,7 @@ const nextPass = r => {
     const pass = {}; DATA.forEach(x => { if (x.r === "pass" && failDate(x)) (pass[eqOf(x)] = pass[eqOf(x)] || []).push(x); });
     Object.values(pass).forEach(a => a.sort((a1, b1) => failDate(a1).localeCompare(failDate(b1)))); NP.pass = pass; }
   const fd = failDate(r); return fd ? (NP.pass[eqOf(r)] || []).find(x => failDate(x) > fd) : null; };
-const fixOf = r => { const f = FIX[fkey(r)]; if (f) return f; if (!isFail(r)) return {};
+const fixOf = r => { const f = FIX[fkey(r)]; if (f && !f.del) return f; if (!isFail(r)) return {};
   const np = nextPass(r); return np ? { st: "fixed", date: failDate(np), note: "ตรวจผ่านในใบ " + np.w + " (" + fmtD(failDate(np)) + ")", auto: true, by: np.w } : {}; };
 const autoTag = r => fixOf(r).auto ? " · อัตโนมัติ" : "";
 const daysPill = r => { const d = downDays(r), st = repSt(r);
@@ -1122,7 +1122,7 @@ document.addEventListener("click", e => {
 });
 document.addEventListener("click", e => {
   const q = e.target.closest("[data-quickfix]");
-  if (q) { e.preventDefault(); FIX[q.dataset.quickfix] = { st: "fixed", date: q.dataset.date, note: "รอบถัดไปตรวจผ่าน" }; saveFix(); render(); toast("ปิดเป็นแก้ไขแล้ว"); return; }
+  if (q) { e.preventDefault(); FIX[q.dataset.quickfix] = { st: "fixed", date: q.dataset.date, note: "รอบถัดไปตรวจผ่าน", at: new Date().toISOString() }; saveFix(); sbFix(q.dataset.quickfix); render(); toast("ปิดเป็นแก้ไขแล้ว"); return; }
   const ed = e.target.closest("[data-edit]");
   if (ed) { openDlg(ed.dataset.edit); return; }
   const go = e.target.closest("[data-go]");
@@ -1184,9 +1184,9 @@ $("dlgSt").onclick = e => { const b = e.target.closest("[data-dst]"); if (b) { D
 $("dlg").addEventListener("close", () => {
   if ($("dlg").returnValue !== "ok" || !DK) return;
   const r0 = DATA.find(x => fkey(x) === DK);
-  if (DST === "open" && !$("dlgNote").value.trim() && !(r0 && nextPass(r0))) delete FIX[DK];
+  if (DST === "open" && !$("dlgNote").value.trim() && !(r0 && nextPass(r0))) FIX[DK] = { del: true, at: new Date().toISOString() };
   else FIX[DK] = { st: DST, date: DST === "fixed" ? $("dlgDate").value : "", note: $("dlgNote").value.trim(), at: new Date().toISOString() };
-  saveFix(); render(); toast("บันทึกสถานะการซ่อมแล้ว");
+  saveFix(); sbFix(DK); render(); toast("บันทึกสถานะการซ่อมแล้ว");
 });
 
 /* ---- Upload (ทาง A): อ่าน Excel ในเบราว์เซอร์ ---- */
@@ -1215,20 +1215,20 @@ function loadXLSX() {
 /* รวมไฟล์ใหม่เข้ากับข้อมูลเดิม: มีแล้ว = อัปเดต, ยังไม่มี = เพิ่ม, ไม่อยู่ในไฟล์ = เก็บไว้เหมือนเดิม */
 const FIELDS = ["w", "s", "r", "due", "done", "e", "t", "b", "z", "n"];
 function mergeRows(newRows, addOnly) {
-  const db = new Map(DATA.map(r => [r.id, r])), seen = new Set(), changes = [];
+  const db = new Map(DATA.map(r => [r.id, r])), seen = new Set(), changes = [], up = [];
   let added = 0, changed = 0, same = 0;
   newRows.forEach(r => {
     if (seen.has(r.id)) return; seen.add(r.id);
     const old = db.get(r.id);
-    if (!old) { added++; db.set(r.id, r); return; }
+    if (!old) { added++; db.set(r.id, r); up.push(r); return; }
     if (addOnly) { same++; return; }
     const diff = FIELDS.filter(f => (old[f] || "") !== (r[f] || ""));
     if (!diff.length) { same++; return; }
-    changed++; db.set(r.id, r);
+    changed++; db.set(r.id, r); up.push(r);
     if (old.s !== r.s || old.r !== r.r || old.w !== r.w) changes.push({ r, from: old.s, to: r.s, rFrom: old.r, rTo: r.r, wFrom: old.w });
   });
   const kept = DATA.filter(r => !seen.has(r.id)).length;
-  return { rows: [...db.values()], added, changed, same, kept, changes, total: seen.size };
+  return { rows: [...db.values()], added, changed, same, kept, changes, total: seen.size, up };
 }
 const resLabel = x => x === "pass" ? "ผ่าน" : x && x.startsWith("fail") ? "ไม่ผ่าน " + x.split(":")[1] : "-";
 function showSummary(m, file, fileAsof, older) {
@@ -1240,7 +1240,7 @@ function showSummary(m, file, fileAsof, older) {
   $("sumChg").innerHTML = m.changes.slice(0, 40).map(c => `<div><b>${c.r.w !== "-" ? c.r.w : "(ยังไม่มีเลข)"}</b> ${c.r.e} · ${c.r.b}<br>
     ${c.from !== c.to ? `<span style="color:#5a6784">${c.from}</span> → <b>${c.to}</b>` : ""}${c.rFrom !== c.rTo ? ` · ผล ${resLabel(c.rFrom)} → <b style="color:${c.rTo.startsWith("fail") ? "#a8250f" : "#0a6b4d"}">${resLabel(c.rTo)}</b>` : ""}${c.wFrom === "-" && c.r.w !== "-" ? " · ได้เลขใบงานแล้ว" : ""}</div>`).join("")
     + (m.changes.length > 40 ? `<div>…และอีก ${m.changes.length - 40} ใบ</div>` : "") || `<div>ไม่มีใบงานที่เปลี่ยนสถานะ</div>`;
-  const nFix = Object.keys(FIX).length;
+  const nFix = Object.values(FIX).filter(f => !f.del).length;
   $("sumFix").textContent = nFix ? "✓ สถานะการซ่อมที่บันทึกบนเว็บ " + nFix + " ใบ ยังอยู่ครบ ไม่ถูกทับ" : "";
   $("sumDlg").showModal();
 }
@@ -1268,12 +1268,73 @@ $("file").onchange = async e => {
     LOG = LOG.slice(-60);
     const ok = ls.set(DBK, { asof: ASOF, rows: DATA }) && ls.set(LOGK, LOG);
     render(); showSummary(m, f.name, fileAsof, older);
-    if (!ok) toast("บันทึกในเบราว์เซอร์ไม่สำเร็จ (พื้นที่เต็ม) · ข้อมูลจะหายเมื่อรีเฟรช");
+    if (SBOK) {
+      try { await sbUp("pm_work_orders", m.up.map(r => ({ id: r.id, rec: r }))); await sbUp("pm_upload_log", [{ id: logId(LOG[LOG.length - 1]), rec: LOG[LOG.length - 1] }]);
+        toast("✓ บันทึกขึ้นระบบแล้ว ทุกเครื่องเห็นข้อมูลนี้"); }
+      catch (err) { toast("บันทึกขึ้นระบบไม่สำเร็จ: " + err.message + " · ลองอัปโหลดใหม่"); }
+    } else if (!ok) toast("บันทึกในเบราว์เซอร์ไม่สำเร็จ (พื้นที่เต็ม) · ข้อมูลจะหายเมื่อรีเฟรช");
   } catch (err) { toast("อัปโหลดไม่สำเร็จ: " + err.message); }
   e.target.value = "";
 };
 
-render();
+/* ---- เชื่อมทุกเครื่อง (9 ต.ค. ผู้ใช้ขอ): Supabase pm_work_orders / pm_fail_followup / pm_upload_log (id, rec jsonb)
+   localStorage เป็นแค่ cache · ไม่มีตาราง = เก็บในเครื่องนี้อย่างเดียวเหมือนเดิม · SQL: tools/pm.sql ---- */
+const SBU = "https://mgnshovnibcmiptoxdfe.supabase.co/rest/v1/", SBK = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1nbnNob3ZuaWJjbWlwdG94ZGZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzNzI1NDIsImV4cCI6MjEwNDk0ODU0Mn0.UoPu-i6ODMEgyuqoO6oKHf0JIqFKpWkSpBkOKrpITwQ";
+const sbH = x => Object.assign({ apikey: SBK, Authorization: "Bearer " + SBK, "Content-Type": "application/json" }, x || {});
+let SBOK = null, SBAT = 0;
+const logId = l => l.at + "|" + l.file;
+async function sbAll(t) {
+  let out = [];
+  for (let from = 0; ; from += 1000) {
+    const r = await fetch(SBU + t + "?select=id,rec&order=id", { headers: sbH({ Range: from + "-" + (from + 999) }) });
+    if (!r.ok) throw new Error(t + " " + r.status);
+    const a = await r.json(); out = out.concat(a); if (a.length < 1000) return out;
+  }
+}
+async function sbUp(t, rows) {
+  const at = new Date().toISOString();
+  for (let i = 0; i < rows.length; i += 400) {
+    const r = await fetch(SBU + t + "?on_conflict=id", { method: "POST", headers: sbH({ Prefer: "resolution=merge-duplicates,return=minimal" }),
+      body: JSON.stringify(rows.slice(i, i + 400).map(x => ({ id: x.id, rec: x.rec, updated_at: at }))) });
+    if (!r.ok) throw new Error(t + " " + r.status);
+  }
+}
+function sbFix(k) { if (SBOK && FIX[k]) sbUp("pm_fail_followup", [{ id: k, rec: FIX[k] }]).catch(err => toast("บันทึกสถานะซ่อมขึ้นระบบไม่สำเร็จ: " + err.message)); }
+function syncLabel() {
+  const el = $("syncSt"); if (!el) return;
+  el.textContent = SBOK === null ? "กำลังเชื่อมข้อมูล…" : SBOK ? "✓ เชื่อมทุกเครื่องแล้ว · ไฟล์ TrackingReport_PM_*.xlsx" : "⚠ ยังไม่เชื่อม: ข้อมูลอยู่ในเครื่องนี้เท่านั้น";
+  el.style.color = SBOK === false ? "#ffd27a" : "";
+}
+async function sbSync() {
+  if (location.protocol === "file:") { SBOK = false; syncLabel(); return; }
+  SBAT = Date.now();
+  try {
+    const [w, f, l] = await Promise.all(["pm_work_orders", "pm_fail_followup", "pm_upload_log"].map(sbAll));
+    /* ประวัติอัปโหลด: รวมของในเครื่อง + ในระบบ */
+    const rl = new Map(l.map(x => [x.id, x.rec])), pushLog = LOG.filter(x => !rl.has(logId(x)));
+    pushLog.forEach(x => rl.set(logId(x), x));
+    LOG = [...rl.values()].sort((a, b) => a.at.localeCompare(b.at)).slice(-60);
+    const rAsof = l.map(x => x.rec).filter(x => !x.older).map(x => x.asof).sort().pop() || "";
+    /* ใบงาน: ในเครื่องใหม่กว่า (หรือระบบยังว่าง) = ส่งขึ้น · ไม่งั้นใช้ของในระบบ */
+    const rRows = w.map(x => x.rec).filter(KNOWN);
+    if (!rRows.length || ASOF > rAsof) {
+      const mp = new Map(rRows.map(r => [r.id, r])); DATA.forEach(r => mp.set(r.id, r)); DATA = [...mp.values()];
+      await sbUp("pm_work_orders", DATA.map(r => ({ id: r.id, rec: r })));
+    } else { DATA = rRows; ASOF = rAsof; }
+    if (pushLog.length) await sbUp("pm_upload_log", pushLog.map(x => ({ id: logId(x), rec: x })));
+    /* สถานะการซ่อม: รายการเดียวกันใช้อันที่บันทึกล่าสุด (at) */
+    const rf = {}; f.forEach(x => rf[x.id] = x.rec);
+    const pushFix = Object.keys(FIX).filter(k => !rf[k] || (FIX[k].at || "") > (rf[k].at || ""));
+    pushFix.forEach(k => rf[k] = FIX[k]); FIX = rf;
+    if (pushFix.length) await sbUp("pm_fail_followup", pushFix.map(k => ({ id: k, rec: FIX[k] })));
+    ls.set(DBK, { asof: ASOF, rows: DATA }); ls.set(LOGK, LOG); saveFix();
+    SBOK = true;
+  } catch (err) { SBOK = false; console.warn("PM sync", err); }
+  syncLabel(); render();
+}
+document.addEventListener("visibilitychange", () => { if (!document.hidden && SBOK && Date.now() - SBAT > 60e3 && !document.querySelector("dialog[open]")) sbSync(); });
+
+render(); syncLabel(); sbSync();
 </script>
 </body>
 </html>
