@@ -769,12 +769,14 @@ const ls = { get(k, d) { try { const v = localStorage.getItem(k); return v ? JSO
 const saved = ls.get(DBK, null);
 /* 8 ต.ค. ผู้ใช้สั่ง: ตัดข้อมูลที่ระบุสาขา/อาคารไม่ได้ ("ไม่ระบุ") ออกทั้งหมด */
 const KNOWN = r => r.b !== "ไม่ระบุ";
-let DATA = (saved ? saved.rows : DATA0).filter(KNOWN), ASOF = saved ? saved.asof : ASOF0;
-let LOG = ls.get(LOGK, [{ at: "2026-09-29T11:27", file: "TrackingReport_PM_29_09_2026_11_27.xlsx", asof: ASOF0, total: DATA0.length, added: DATA0.length, changed: 0, same: 0, kept: 0 }]);
+/* 10 ต.ค. ความปลอดภัย: ข้อมูลจากระบบกลาง/ไฟล์/เครื่อง แทนอักขระที่ใช้แทรกโค้ด HTML (< > " ' `) ด้วยตัวหน้าตาคล้าย ก่อนนำไปแสดง (กัน Stored XSS) */
+const clean = v => typeof v === "string" ? v.replace(/[<>"'`]/g, c => ({ "<": "‹", ">": "›", '"': "″", "'": "′", "`": "′" })[c]) : Array.isArray(v) ? v.map(clean) : v && typeof v === "object" ? Object.fromEntries(Object.entries(v).map(([k, x]) => [clean(k), clean(x)])) : v;
+let DATA = clean(saved ? saved.rows : DATA0).filter(KNOWN), ASOF = saved ? saved.asof : ASOF0;
+let LOG = clean(ls.get(LOGK, [{ at: "2026-09-29T11:27", file: "TrackingReport_PM_29_09_2026_11_27.xlsx", asof: ASOF0, total: DATA0.length, added: DATA0.length, changed: 0, same: 0, kept: 0 }]));
 /* สถานะการซ่อมของใบงานที่ไม่ผ่าน: เก็บแยกจากไฟล์ Excel อัปโหลดใหม่ก็ไม่หาย
    (ต้นแบบเก็บในเบราว์เซอร์ · ของจริงเก็บตาราง Supabase pm_fail_followup) */
 const FIXK = "pcg-pm-fix";
-let FIX = {}; try { FIX = JSON.parse(localStorage.getItem(FIXK) || "{}"); } catch (e) {}
+let FIX = {}; try { FIX = clean(JSON.parse(localStorage.getItem(FIXK) || "{}")); } catch (e) {}
 const saveFix = () => { try { localStorage.setItem(FIXK, JSON.stringify(FIX)); } catch (e) {} };
 const fkey = r => r.id;
 const REP = {
@@ -1445,7 +1447,7 @@ function normalize(aoa) {
     const res = g("ผลการตรวจสอบ"), f = res.match(/ไม่ผ่าน\s*(\d+)/), pp = PPIX.map(i => iso(r[i])).find(Boolean) || "";
     return { ...(pp ? { pp } : {}), id: [p, g("เลขที่แผน"), g("กำหนดการครั้งที่"), g("รหัสอุปกรณ์")].join("|"), w: g("เลขที่ใบงาน"), p, b, z: z.replace("Zone ", "").replace("ถายนอก", "ภายนอก"), e: eq, t: g("ประเภทเครื่องจักร/อุปกรณ์"), n: plan,
       k: g("รายการตรวจสอบ"), due: iso(r[ix("กำหนดการดำเนินงาน")]), done: iso(r[ix("วันที่เสร็จสิ้น")]), s: g("สถานะ"), r: f ? "fail:" + f[1] : res === "ผ่าน" ? "pass" : "" };
-  }).filter(KNOWN);
+  }).map(clean).filter(KNOWN);
 }
 function toast(msg) { const t = $("toast"); t.textContent = msg; t.style.display = "block"; clearTimeout(t._h); t._h = setTimeout(() => t.style.display = "none", 4200); }
 function loadXLSX() {
@@ -1528,7 +1530,7 @@ async function sbAll(t) {
   for (let from = 0; ; from += 1000) {
     const r = await fetch(SBU + t + "?select=id,rec&order=id", { headers: sbH({ Range: from + "-" + (from + 999) }) });
     if (!r.ok) throw new Error(t + " " + r.status);
-    const a = await r.json(); out = out.concat(a); if (a.length < 1000) return out;
+    const a = clean(await r.json()); out = out.concat(a); if (a.length < 1000) return out;
   }
 }
 async function sbUp(t, rows) {

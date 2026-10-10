@@ -525,7 +525,9 @@ let OVR = {}, ONLINE = false, LAST = "";
 const S = { pf: "", pt: "", pr: null, pq: "fleet", ped: false, by: null, srev: null, scls: 0, scmp: "", sed: false, dst: "all", grp: "unit", gc: new Set(), mini: (() => { try { return localStorage.getItem("pcg-mhe-side") === "mini"; } catch (e) { return false; } })(), tU: new Set(), tMode: "sum", view: (location.hash.slice(1) || "sum"), round: null, ed: false, bsh: 0, bed: false, sopen: new Set(), unit: "all", site: "all", type: "all", en: "all", bk: "all", year: "all", q: "", sort: "rem", lim: 60, open: new Set(["Logistics"]) };
 function warn(msg) { $("warn").innerHTML = msg || ""; $("warn").classList.toggle("show", !!msg); }
 function toast(m) { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 2200); }
-function lsGet() { try { return JSON.parse(localStorage.getItem(LS) || "{}"); } catch (e) { return {}; } }
+/* 10 ต.ค. ความปลอดภัย: ข้อมูลจากระบบกลาง/เครื่อง แทนอักขระที่ใช้แทรกโค้ด HTML (< > " ' `) ด้วยตัวหน้าตาคล้าย ก่อนนำไปแสดง (กัน Stored XSS) */
+const clean = v => typeof v === "string" ? v.replace(/[<>"'`]/g, c => ({ "<": "‹", ">": "›", '"': "″", "'": "′", "`": "′" })[c]) : Array.isArray(v) ? v.map(clean) : v && typeof v === "object" ? Object.fromEntries(Object.entries(v).map(([k, x]) => [clean(k), clean(x)])) : v;
+function lsGet() { try { return clean(JSON.parse(localStorage.getItem(LS) || "{}")); } catch (e) { return {}; } }
 function lsSet(o) { try { localStorage.setItem(LS, JSON.stringify(o)); } catch (e) {} }
 const authH = () => window.PCGAuth ? PCGAuth.headers(SBK) : { apikey: SBK, Authorization: "Bearer " + SBK };
 async function sbLoad() {
@@ -533,7 +535,7 @@ async function sbLoad() {
   try {
     const r = await fetch(SB + "?select=id,rec,removed,updated_at&id=not.like.FILE%3A*", { headers: authH() });
     if (!r.ok) throw new Error(r.status);
-    const rows = await r.json(); OVR = {}; rows.forEach(x => OVR[x.id] = x); ONLINE = true;
+    const rows = clean(await r.json()); OVR = {}; rows.forEach(x => OVR[x.id] = x); ONLINE = true;
     const loc = lsGet(); if (Object.keys(loc).length) { await sbSave(Object.values(loc)); localStorage.removeItem(LS); }
     warn("");
   } catch (e) {
@@ -550,7 +552,7 @@ async function sbSave(rows) {
       if (!r.ok) { ONLINE = false; warn("บันทึกลง Supabase ไม่สำเร็จ (" + r.status + ") · เก็บในเบราว์เซอร์นี้ไว้ก่อน"); break; }
     }
   }
-  rows.forEach(x => OVR[x.id] = x);
+  rows = clean(rows); rows.forEach(x => OVR[x.id] = x);
   if (!ONLINE) { const o = lsGet(); rows.forEach(x => o[x.id] = x); lsSet(o); }
   LAST = new Date().toISOString();
 }
@@ -627,7 +629,7 @@ function render() {
     (LROWS(list).map(x => x.g ? x.g : (r => { const b = bOf(r), c = BK[b][1];
       return `<tr data-id="${esc(r.id)}"><td><span class="st" style="--c:${c}">${BK[b][0]}</span><div class="rem" style="--c:${c};margin-top:4px;font-size:13px">${remTxt(dOf(r.end))}</div></td>
         <td><div class="t1"><span class="uname" style="display:inline-flex"><i style="background:${ucol(r.unit || "ไม่ระบุ")}"></i>${esc(r.unit)}</span></div><div class="t2">${esc(r.site)}${r.ul ? " · UL " + esc(r.ul) : ""}</div></td>
-        <td><div class="t1">${esc(r.type)}${r.energy ? `<span class="en ${r.energy}">${r.energy}</span>` : ""}</div><div class="t2">${esc(r.sup)}</div></td>
+        <td><div class="t1">${esc(r.type)}${r.energy ? `<span class="en ${esc(r.energy)}">${esc(r.energy)}</span>` : ""}</div><div class="t2">${esc(r.sup)}</div></td>
         <td><div class="t1">${esc(r.model)}</div><div class="t2">${esc([r.size, r.cap ? money(r.cap) + " กก." : ""].filter(Boolean).join(" · "))}</div></td>
         <td><div class="t1 num">${esc(r.serial) || "–"}${r._web ? '<span class="web">แก้บนเว็บ</span>' : ""}</div><div class="t2">${r.no ? "เบอร์ " + esc(r.no) : ""}</div></td>
         <td><div class="t2">${thd(r.start)} → <b style="color:var(--ink)">${thd(r.end)}</b></div>${prog(r)}</td>
@@ -812,7 +814,7 @@ function renderRenew(base) {
     <button class="btn l" data-rexp style="padding:6px 11px">⬇ Export รอบนี้</button></div>
     <div class="tw"><table class="vt"><thead><tr><th>หมดสัญญา</th><th>หน่วยงาน / คลัง</th><th>ประเภท</th><th>รุ่น</th><th>Serial / เบอร์</th><th class="r">ค่าเช่า/เดือน</th><th>การตัดสินใจ</th><th>สัญญาใหม่</th><th>หมายเหตุ</th></tr></thead><tbody>
     ${L.map(r => { const c = BK[bOf(r)][1]; return `<tr><td><b>${thd(r.end)}</b><div class="rem" style="--c:${c};font-size:12px">${remTxt(dOf(r.end))}</div></td>
-      <td><div class="t1">${esc(r.unit)}</div><div class="t2">${esc(r.site)}</div></td><td><div class="t1">${esc(r.type)}${r.energy ? `<span class="en ${r.energy}">${r.energy}</span>` : ""}</div></td>
+      <td><div class="t1">${esc(r.unit)}</div><div class="t2">${esc(r.site)}</div></td><td><div class="t1">${esc(r.type)}${r.energy ? `<span class="en ${esc(r.energy)}">${esc(r.energy)}</span>` : ""}</div></td>
       <td><div class="t1">${esc(r.model)}</div><div class="t2">${esc(r.size)}</div></td><td><a href="#" data-open="${esc(r.id)}" class="t1 num" style="color:var(--ink)">${esc(r.serial) || "–"}</a><div class="t2">${r.no ? "เบอร์ " + esc(r.no) : ""}</div></td>
       <td class="r num">${money(r.price)}</td>
       <td style="min-width:150px"><select data-f="${esc(r.id)}|renew" class="dec-${r.renew || "none"}">${Object.entries(DEC).map(([k, l]) => `<option ${k === (r.renew || "") ? "selected" : ""} value="${k}">${l}</option>`).join("")}</select></td>
@@ -926,7 +928,7 @@ function renderSpec(base) {
       const uc = {}; a.forEach(r => uc[r.unit] = (uc[r.unit] || 0) + 1);
       const head = ty !== lastT ? `<tr class="sp-t"><td colspan="10">${esc(ty)}</td></tr>` : ""; lastT = ty;
       return head + `<tr data-sk="${esc(k)}" class="${op ? "on" : ""}"><td><span class="tg">${op ? "▾" : "▸"}</span><b>${esc(a[0].model || "ไม่ระบุรุ่น")}</b></td>
-        <td>${uq(a, enOf).map(e => `<span class="en ${e}">${e}</span>`).join("")}</td><td class="r num">${show(uq(a, r => r.cap), money)}</td><td class="r num">${show(uq(a, r => r.h), money)}</td>
+        <td>${uq(a, enOf).map(e => `<span class="en ${esc(e)}">${esc(e)}</span>`).join("")}</td><td class="r num">${show(uq(a, r => r.cap), money)}</td><td class="r num">${show(uq(a, r => r.h), money)}</td>
         <td class="t2">${show(uq(a, r => r.size))}</td><td class="t2">${show(uq(a, r => r.bat))}</td><td class="t2">${show(uq(a, r => r.sup))}</td><td class="c num"><b>${a.length}</b></td>
         <td>${Object.entries(uc).map(([u, n]) => `<span class="sc"><i class="sdot" style="background:${ucol(u)};margin:0"></i>${esc(u)} <b>×${n}</b></span>`).join("")}</td>
         <td class="t2"><span class="rem" style="--c:${BK[bOf(first)][1]}">${thd(first.end)}</span></td></tr>` +
@@ -1329,7 +1331,7 @@ function renderProp(base) {
   <section class="panel" id="p-list"><div class="phead"><h2>รายละเอียดรถที่หมดสัญญา ${per} · ทุกหน่วยงาน</h2><span class="note">เลือกรายการประมูล / ระยะสัญญา / แบตใหม่ ได้ทุกคัน บันทึกทันที</span></div>
     <datalist id="dlItem">${rowsB.map(r => `<option value="${esc(r.item)}">`).join("")}</datalist>
     <div class="tw"><table class="vt ve"><thead><tr><th>หน่วยงาน / คลัง</th><th>ประเภท · รุ่นเดิม</th><th>Serial</th><th>แบตเดิม</th><th>หมดสัญญา</th><th class="r">ค่าเช่าเดิม</th><th>รายการ / สเปกใหม่</th><th>สัญญาใหม่</th><th>แบตใหม่</th><th>การตัดสินใจ</th><th>หมายเหตุ</th></tr></thead><tbody>
-    ${L.map(r => `<tr><td><div class="t1">${esc(r.unit)}</div><div class="t2">${esc(siteOf(r))}</div></td><td><div class="t1">${esc(r.type)}</div><div class="t2">${esc(r.model)} · ${esc(r.size || "")}</div></td><td class="num t2">${esc(r.serial || "–")}</td><td>${r.energy ? `<span class="en ${r.energy}">${r.energy}</span>` : "–"}</td><td><b>${thd(r.end)}</b></td><td class="r num">${money(r.price)}</td>
+    ${L.map(r => `<tr><td><div class="t1">${esc(r.unit)}</div><div class="t2">${esc(siteOf(r))}</div></td><td><div class="t1">${esc(r.type)}</div><div class="t2">${esc(r.model)} · ${esc(r.size || "")}</div></td><td class="num t2">${esc(r.serial || "–")}</td><td>${r.energy ? `<span class="en ${esc(r.energy)}">${esc(r.energy)}</span>` : "–"}</td><td><b>${thd(r.end)}</b></td><td class="r num">${money(r.price)}</td>
       <td style="min-width:210px"><input data-f="${esc(r.id)}|renewItem" list="dlItem" value="${esc(r.renewItem || "")}" placeholder="${esc(itemOf(Object.assign({}, r, { renewItem: "" }), rowsB))}"></td>
       <td style="min-width:90px"><select data-f="${esc(r.id)}|renewTerm">${[["", "–"], ["3", "3 ปี"], ["5", "5 ปี"]].map(([k, l]) => `<option ${String(r.renewTerm || "") === k ? "selected" : ""} value="${k}">${l}</option>`).join("")}</select></td>
       <td style="min-width:110px"><select data-f="${esc(r.id)}|renewEnergy">${["", "Lithium", "Lead-Acid", "Gas"].map(k => `<option ${String(r.renewEnergy || "") === k ? "selected" : ""} value="${k}">${k || "อัตโนมัติ (" + newEn(Object.assign({}, r, { renewEnergy: "" })) + ")"}</option>`).join("")}</select></td>
