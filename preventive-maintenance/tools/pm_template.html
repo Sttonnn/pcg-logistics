@@ -387,6 +387,27 @@
     tr.bad td:first-child { box-shadow: none; }
     .type .bd .row { font-size: 12.5px; }
   }
+
+/* 10 ต.ค. กราฟแท่งซ้อน 100% */
+.sk{min-width:0;max-width:100%;margin-top:18px;background:#fff;border-radius:18px;box-shadow:0 8px 24px rgba(15,40,90,.08);padding:16px 18px}
+.sk-hd{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.sk-hd h3{margin:0;font-size:16px;color:#14254a} .sk-hd h3 small{font-size:12px;color:#5a6784;font-weight:600;margin-left:6px}
+.sk-lg{display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;font-weight:600;color:#2a3b5f} .sk-lg i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.sk-wrap{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+.sk-axis{display:flex;flex-direction:column;justify-content:space-between;height:300px;font-size:11px;color:#8a96ad;font-weight:600;text-align:right;min-width:34px;padding:0}
+.sk-axis span{line-height:0}
+.sk-plot{display:flex;align-items:flex-start;gap:14px;flex:1}
+.sk-grp{display:flex;flex-direction:column;gap:6px}
+.sk-cols{display:flex;gap:6px}
+.sk-gl{border-top:3px solid var(--g);color:var(--g);font-size:12.5px;font-weight:800;text-align:center;padding-top:4px;white-space:nowrap}
+.sk-col{display:flex;flex-direction:column;align-items:center;width:52px;cursor:pointer}
+.sk-col.big{width:70px;margin-right:6px;cursor:default}
+.sk-bar{height:300px;width:100%;display:flex;flex-direction:column-reverse;border-radius:8px;overflow:hidden;background:#eef2f8}
+.sk-bar span{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;font-variant-numeric:tabular-nums}
+.sk-col:not(.big):hover .sk-bar{outline:2px solid #14254a;outline-offset:1px}
+.sk-name{font-size:12px;font-weight:700;color:#14254a;margin-top:6px;text-align:center;line-height:1.2;min-height:30px;word-break:break-word}
+.sk-col.big .sk-name{font-size:13.5px}
+.sk-n{font-size:11px;color:#5a6784;font-weight:600}
 </style>
 </head>
 <body>
@@ -1015,6 +1036,32 @@ function renderDrill() {
     <tbody>${html}</tbody>
     <tfoot><tr class="gh tot"><td class="bn"><b>รวม${scope}</b></td>${cells(T)}<td></td></tr></tfoot></table></div>
     <div class="bnote"><span class="hot late">ส้ม</span> = มีงานเลยกำหนดต้องตามให้ทำ · <span class="hot bad">แดง</span> = มีเครื่องไม่ผ่านที่ยังไม่ได้ซ่อม · ผ่านต่ำกว่า 90% ตัวเลขเป็นสีแดง</div></div>`;
+  $("drill").insertAdjacentHTML("beforeend", stackHtml(R));
+}
+
+/* 10 ต.ค. ผู้ใช้ขอ: กราฟแท่งซ้อน 100% ต่อสาขา เรียงคลังในประเทศ → ภาค (ตามตัวกรองคลัง/ภาคเดียวกับตาราง) · แท่งซ้าย = รวม */
+const STK = [["done", "#1a5fe4", "#fff", "เสร็จ"], ["chk", "#7b61ff", "#fff", "ตรวจแล้ว รอปิดงาน"], ["work", "#9cc0ff", "#0f3fa4", "กำลังทำ"], ["late", "#ff8a3d", "#fff", "เลยกำหนด"]];
+const RGC = { "คลังในประเทศ": "#1a5fe4", "กรุงเทพฯ": "#0b6f7a", "ภาคกลาง": "#15a6a0", "ภาคเหนือ": "#7a3fd0", "ภาคอีสาน": "#d9770f", "ภาคใต้": "#c2410c", "อื่นๆ": "#5a6784" };
+function stackHtml(R) {
+  const groups = [];
+  const W = [...new Set(R.filter(r => r.p === "WHA05").map(r => r.b))].sort();
+  if (W.length) groups.push(["คลังในประเทศ", W.map(b => ["WHA05", b])]);
+  const D = R.filter(r => r.p === "RDC01"), dB = new Set(D.map(r => r.b));
+  REGIONS.forEach(([rg, bs]) => { const l = bs.filter(b => dB.has(b)); if (l.length) groups.push([rg, l.map(b => ["RDC01", b])]); });
+  const oth = [...dB].filter(b => !REGIONS.some(([, bs]) => bs.includes(b))); if (oth.length) groups.push(["อื่นๆ", oth.map(b => ["RDC01", b])]);
+  if (!groups.length) return "";
+  const col = (s, name, sub, pick, big) => { const segs = STK.map(([k, bg, fg, l]) => [Math.max(0, s[k]), bg, fg, l]).filter(([v]) => v > 0);
+    const tot = segs.reduce((a, [v]) => a + v, 0) || 1;
+    return `<div class="sk-col${big ? " big" : ""}"${pick ? ` data-pick="${pick}" tabindex="0"` : ""} title="${name}: ${segs.map(([v, , , l]) => `${l} ${v}`).join(" · ")}">
+      <div class="sk-bar">${segs.map(([v, bg, fg, l]) => { const pc = v / tot * 100; return `<span style="height:${pc}%;background:${bg};color:${fg}" data-tip="${l} ${v} ใบ (${Math.round(pc)}%)">${pc >= 6 ? Math.round(pc) + "%" : ""}</span>`; }).join("")}</div>
+      <div class="sk-name">${name}</div><div class="sk-n">${sub}</div></div>`; };
+  const T = stat(R);
+  return `<section class="sk"><div class="sk-hd"><h3>สัดส่วนสถานะงาน ① แยกสาขา <small>100% · ตามตัวกรองคลัง/ภาคด้านบน</small></h3>
+    <div class="sk-lg">${STK.map(([, bg, , l]) => `<span><i style="background:${bg}"></i>${l}</span>`).join("")}</div></div>
+    <div class="sk-wrap"><div class="sk-axis">${[100, 80, 60, 40, 20, 0].map(v => `<span>${v}%</span>`).join("")}</div>
+    <div class="sk-plot">${col(T, "รวม", T.n + " ใบ", "", true)}
+      ${groups.map(([g, list]) => `<div class="sk-grp" style="--g:${RGC[g] || "#5a6784"}"><div class="sk-cols">${list.map(([p, b]) => { const s = stat(R.filter(r => r.p === p && r.b === b)); return col(s, b, s.n + " ใบ", p + "|" + b + "|"); }).join("")}</div><div class="sk-gl">${g}</div></div>`).join("")}
+    </div></div></section>`;
 }
 
 /* เปลี่ยนระดับ + จำไว้ในประวัติเบราว์เซอร์ ให้ปุ่ม Back ของเบราว์เซอร์/มือถือ/iPad ย้อนกลับได้ */

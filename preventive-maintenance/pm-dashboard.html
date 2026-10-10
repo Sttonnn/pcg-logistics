@@ -386,6 +386,27 @@
     tr.bad td:first-child { box-shadow: none; }
     .type .bd .row { font-size: 12.5px; }
   }
+
+/* 10 ต.ค. กราฟแท่งซ้อน 100% */
+.sk{min-width:0;max-width:100%;margin-top:18px;background:#fff;border-radius:18px;box-shadow:0 8px 24px rgba(15,40,90,.08);padding:16px 18px}
+.sk-hd{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.sk-hd h3{margin:0;font-size:16px;color:#14254a} .sk-hd h3 small{font-size:12px;color:#5a6784;font-weight:600;margin-left:6px}
+.sk-lg{display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;font-weight:600;color:#2a3b5f} .sk-lg i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.sk-wrap{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+.sk-axis{display:flex;flex-direction:column;justify-content:space-between;height:300px;font-size:11px;color:#8a96ad;font-weight:600;text-align:right;min-width:34px;padding:0}
+.sk-axis span{line-height:0}
+.sk-plot{display:flex;align-items:flex-start;gap:14px;flex:1}
+.sk-grp{display:flex;flex-direction:column;gap:6px}
+.sk-cols{display:flex;gap:6px}
+.sk-gl{border-top:3px solid var(--g);color:var(--g);font-size:12.5px;font-weight:800;text-align:center;padding-top:4px;white-space:nowrap}
+.sk-col{display:flex;flex-direction:column;align-items:center;width:52px;cursor:pointer}
+.sk-col.big{width:70px;margin-right:6px;cursor:default}
+.sk-bar{height:300px;width:100%;display:flex;flex-direction:column-reverse;border-radius:8px;overflow:hidden;background:#eef2f8}
+.sk-bar span{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;font-variant-numeric:tabular-nums}
+.sk-col:not(.big):hover .sk-bar{outline:2px solid #14254a;outline-offset:1px}
+.sk-name{font-size:12px;font-weight:700;color:#14254a;margin-top:6px;text-align:center;line-height:1.2;min-height:30px;word-break:break-word}
+.sk-col.big .sk-name{font-size:13.5px}
+.sk-n{font-size:11px;color:#5a6784;font-weight:600}
 </style>
 </head>
 <body>
@@ -574,7 +595,46 @@
       <td class="c"><span class="hot late num">96</span></td>
       <td class="c num"><span style="color:#0a6b4d;font-weight:800">93%</span></td>
       <td class="c"><span class="hot bad num">16</span></td><td></td></tr></tfoot></table></div>
-    <div class="bnote"><span class="hot late">ส้ม</span> = มีงานเลยกำหนดต้องตามให้ทำ · <span class="hot bad">แดง</span> = มีเครื่องไม่ผ่านที่ยังไม่ได้ซ่อม · ผ่านต่ำกว่า 90% ตัวเลขเป็นสีแดง</div></div></div>
+    <div class="bnote"><span class="hot late">ส้ม</span> = มีงานเลยกำหนดต้องตามให้ทำ · <span class="hot bad">แดง</span> = มีเครื่องไม่ผ่านที่ยังไม่ได้ซ่อม · ผ่านต่ำกว่า 90% ตัวเลขเป็นสีแดง</div></div><section class="sk"><div class="sk-hd"><h3>สัดส่วนสถานะงาน ① แยกสาขา <small>100% · ตามตัวกรองคลัง/ภาคด้านบน</small></h3>
+    <div class="sk-lg"><span><i style="background:#1a5fe4"></i>เสร็จ</span><span><i style="background:#7b61ff"></i>ตรวจแล้ว รอปิดงาน</span><span><i style="background:#9cc0ff"></i>กำลังทำ</span><span><i style="background:#ff8a3d"></i>เลยกำหนด</span></div></div>
+    <div class="sk-wrap"><div class="sk-axis"><span>100%</span><span>80%</span><span>60%</span><span>40%</span><span>20%</span><span>0%</span></div>
+    <div class="sk-plot"><div class="sk-col big" title="รวม: เสร็จ 498 · ตรวจแล้ว รอปิดงาน 12 · กำลังทำ 33 · เลยกำหนด 96">
+      <div class="sk-bar"><span style="height:77.93427230046949%;background:#1a5fe4;color:#fff" data-tip="เสร็จ 498 ใบ (78%)">78%</span><span style="height:1.8779342723004695%;background:#7b61ff;color:#fff" data-tip="ตรวจแล้ว รอปิดงาน 12 ใบ (2%)"></span><span style="height:5.164319248826291%;background:#9cc0ff;color:#0f3fa4" data-tip="กำลังทำ 33 ใบ (5%)"></span><span style="height:15.023474178403756%;background:#ff8a3d;color:#fff" data-tip="เลยกำหนด 96 ใบ (15%)">15%</span></div>
+      <div class="sk-name">รวม</div><div class="sk-n">639 ใบ</div></div>
+      <div class="sk-grp" style="--g:#1a5fe4"><div class="sk-cols"><div class="sk-col" data-pick="WHA05|WH05|" tabindex="0" title="WH05: เสร็จ 146 · กำลังทำ 5 · เลยกำหนด 36">
+      <div class="sk-bar"><span style="height:78.07486631016043%;background:#1a5fe4;color:#fff" data-tip="เสร็จ 146 ใบ (78%)">78%</span><span style="height:2.6737967914438503%;background:#9cc0ff;color:#0f3fa4" data-tip="กำลังทำ 5 ใบ (3%)"></span><span style="height:19.25133689839572%;background:#ff8a3d;color:#fff" data-tip="เลยกำหนด 36 ใบ (19%)">19%</span></div>
+      <div class="sk-name">WH05</div><div class="sk-n">187 ใบ</div></div><div class="sk-col" data-pick="WHA05|WH32|" tabindex="0" title="WH32: เสร็จ 85 · เลยกำหนด 14">
+      <div class="sk-bar"><span style="height:85.85858585858585%;background:#1a5fe4;color:#fff" data-tip="เสร็จ 85 ใบ (86%)">86%</span><span style="height:14.14141414141414%;background:#ff8a3d;color:#fff" data-tip="เลยกำหนด 14 ใบ (14%)">14%</span></div>
+      <div class="sk-name">WH32</div><div class="sk-n">99 ใบ</div></div></div><div class="sk-gl">คลังในประเทศ</div></div><div class="sk-grp" style="--g:#0b6f7a"><div class="sk-cols"><div class="sk-col" data-pick="RDC01|สายไหม|" tabindex="0" title="สายไหม: เสร็จ 30 · กำลังทำ 2 · เลยกำหนด 2">
+      <div class="sk-bar"><span style="height:88.23529411764706%;background:#1a5fe4;color:#fff" data-tip="เสร็จ 30 ใบ (88%)">88%</span><span style="height:5.88235294117647%;background:#9cc0ff;color:#0f3fa4" data-tip="กำลังทำ 2 ใบ (6%)"></span><span style="height:5.88235294117647%;background:#ff8a3d;color:#fff" data-tip="เลยกำหนด 2 ใบ (6%)"></span></div>
+      <div class="sk-name">สายไหม</div><div class="sk-n">34 ใบ</div></div><div class="sk-col" data-pick="RDC01|หนองแขม|" tabindex="0" title="หนองแขม: เสร็จ 29 · ตรวจแล้ว รอปิดงาน 3 · กำลังทำ 1">
+      <div class="sk-bar"><span style="height:87.87878787878788%;background:#1a5fe4;color:#fff" data-tip="เสร็จ 29 ใบ (88%)">88%</span><span style="height:9.090909090909092%;background:#7b61ff;color:#fff" data-tip="ตรวจแล้ว รอปิดงาน 3 ใบ (9%)">9%</span><span style="height:3.0303030303030303%;background:#9cc0ff;color:#0f3fa4" data-tip="กำลังทำ 1 ใบ (3%)"></span></div>
+      <div class="sk-name">หนองแขม</div><div class="sk-n">33 ใบ</div></div><div class="sk-col" data-pick="RDC01|ลาดพร้าว|" tabindex="0" title="ลาดพร้าว: เสร็จ 15">
+      <div class="sk-bar"><span style="height:100%;background:#1a5fe4;color:#fff" data-tip="เสร็จ 15 ใบ (100%)">100%</span></div>
+      <div class="sk-name">ลาดพร้าว</div><div class="sk-n">15 ใบ</div></div><div class="sk-col" data-pick="RDC01|ปากเกร็ด|" tabindex="0" title="ปากเกร็ด: เสร็จ 15">
+      <div class="sk-bar"><span style="height:100%;background:#1a5fe4;color:#fff" data-tip="เสร็จ 15 ใบ (100%)">100%</span></div>
+      <div class="sk-name">ปากเกร็ด</div><div class="sk-n">15 ใบ</div></div></div><div class="sk-gl">กรุงเทพฯ</div></div><div class="sk-grp" style="--g:#15a6a0"><div class="sk-cols"><div class="sk-col" data-pick="RDC01|ศรีราชา|" tabindex="0" title="ศรีราชา: เสร็จ 5 · กำลังทำ 10 · เลยกำหนด 20">
+      <div class="sk-bar"><span style="height:14.285714285714285%;background:#1a5fe4;color:#fff" data-tip="เสร็จ 5 ใบ (14%)">14%</span><span style="height:28.57142857142857%;background:#9cc0ff;color:#0f3fa4" data-tip="กำลังทำ 10 ใบ (29%)">29%</span><span style="height:57.14285714285714%;background:#ff8a3d;color:#fff" data-tip="เลยกำหนด 20 ใบ (57%)">57%</span></div>
+      <div class="sk-name">ศรีราชา</div><div class="sk-n">35 ใบ</div></div><div class="sk-col" data-pick="RDC01|ราชบุรี|" tabindex="0" title="ราชบุรี: เสร็จ 5 · ตรวจแล้ว รอปิดงาน 2 · กำลังทำ 4 · เลยกำหนด 12">
+      <div class="sk-bar"><span style="height:21.73913043478261%;background:#1a5fe4;color:#fff" data-tip="เสร็จ 5 ใบ (22%)">22%</span><span style="height:8.695652173913043%;background:#7b61ff;color:#fff" data-tip="ตรวจแล้ว รอปิดงาน 2 ใบ (9%)">9%</span><span style="height:17.391304347826086%;background:#9cc0ff;color:#0f3fa4" data-tip="กำลังทำ 4 ใบ (17%)">17%</span><span style="height:52.17391304347826%;background:#ff8a3d;color:#fff" data-tip="เลยกำหนด 12 ใบ (52%)">52%</span></div>
+      <div class="sk-name">ราชบุรี</div><div class="sk-n">23 ใบ</div></div></div><div class="sk-gl">ภาคกลาง</div></div><div class="sk-grp" style="--g:#7a3fd0"><div class="sk-cols"><div class="sk-col" data-pick="RDC01|เชียงใหม่|" tabindex="0" title="เชียงใหม่: เสร็จ 12 · ตรวจแล้ว รอปิดงาน 1 · กำลังทำ 2 · เลยกำหนด 4">
+      <div class="sk-bar"><span style="height:63.1578947368421%;background:#1a5fe4;color:#fff" data-tip="เสร็จ 12 ใบ (63%)">63%</span><span style="height:5.263157894736842%;background:#7b61ff;color:#fff" data-tip="ตรวจแล้ว รอปิดงาน 1 ใบ (5%)"></span><span style="height:10.526315789473683%;background:#9cc0ff;color:#0f3fa4" data-tip="กำลังทำ 2 ใบ (11%)">11%</span><span style="height:21.052631578947366%;background:#ff8a3d;color:#fff" data-tip="เลยกำหนด 4 ใบ (21%)">21%</span></div>
+      <div class="sk-name">เชียงใหม่</div><div class="sk-n">19 ใบ</div></div><div class="sk-col" data-pick="RDC01|เชียงราย|" tabindex="0" title="เชียงราย: เสร็จ 17 · ตรวจแล้ว รอปิดงาน 2">
+      <div class="sk-bar"><span style="height:89.47368421052632%;background:#1a5fe4;color:#fff" data-tip="เสร็จ 17 ใบ (89%)">89%</span><span style="height:10.526315789473683%;background:#7b61ff;color:#fff" data-tip="ตรวจแล้ว รอปิดงาน 2 ใบ (11%)">11%</span></div>
+      <div class="sk-name">เชียงราย</div><div class="sk-n">19 ใบ</div></div><div class="sk-col" data-pick="RDC01|พิษณุโลก|" tabindex="0" title="พิษณุโลก: เสร็จ 24 · กำลังทำ 3 · เลยกำหนด 3">
+      <div class="sk-bar"><span style="height:80%;background:#1a5fe4;color:#fff" data-tip="เสร็จ 24 ใบ (80%)">80%</span><span style="height:10%;background:#9cc0ff;color:#0f3fa4" data-tip="กำลังทำ 3 ใบ (10%)">10%</span><span style="height:10%;background:#ff8a3d;color:#fff" data-tip="เลยกำหนด 3 ใบ (10%)">10%</span></div>
+      <div class="sk-name">พิษณุโลก</div><div class="sk-n">30 ใบ</div></div></div><div class="sk-gl">ภาคเหนือ</div></div><div class="sk-grp" style="--g:#d9770f"><div class="sk-cols"><div class="sk-col" data-pick="RDC01|โคราช|" tabindex="0" title="โคราช: เสร็จ 15 · กำลังทำ 2 · เลยกำหนด 2">
+      <div class="sk-bar"><span style="height:78.94736842105263%;background:#1a5fe4;color:#fff" data-tip="เสร็จ 15 ใบ (79%)">79%</span><span style="height:10.526315789473683%;background:#9cc0ff;color:#0f3fa4" data-tip="กำลังทำ 2 ใบ (11%)">11%</span><span style="height:10.526315789473683%;background:#ff8a3d;color:#fff" data-tip="เลยกำหนด 2 ใบ (11%)">11%</span></div>
+      <div class="sk-name">โคราช</div><div class="sk-n">19 ใบ</div></div><div class="sk-col" data-pick="RDC01|ขอนแก่น|" tabindex="0" title="ขอนแก่น: เสร็จ 15 · กำลังทำ 2 · เลยกำหนด 2">
+      <div class="sk-bar"><span style="height:78.94736842105263%;background:#1a5fe4;color:#fff" data-tip="เสร็จ 15 ใบ (79%)">79%</span><span style="height:10.526315789473683%;background:#9cc0ff;color:#0f3fa4" data-tip="กำลังทำ 2 ใบ (11%)">11%</span><span style="height:10.526315789473683%;background:#ff8a3d;color:#fff" data-tip="เลยกำหนด 2 ใบ (11%)">11%</span></div>
+      <div class="sk-name">ขอนแก่น</div><div class="sk-n">19 ใบ</div></div><div class="sk-col" data-pick="RDC01|อุบลราชธานี|" tabindex="0" title="อุบลราชธานี: เสร็จ 16 · ตรวจแล้ว รอปิดงาน 1 · กำลังทำ 1">
+      <div class="sk-bar"><span style="height:88.88888888888889%;background:#1a5fe4;color:#fff" data-tip="เสร็จ 16 ใบ (89%)">89%</span><span style="height:5.555555555555555%;background:#7b61ff;color:#fff" data-tip="ตรวจแล้ว รอปิดงาน 1 ใบ (6%)"></span><span style="height:5.555555555555555%;background:#9cc0ff;color:#0f3fa4" data-tip="กำลังทำ 1 ใบ (6%)"></span></div>
+      <div class="sk-name">อุบลราชธานี</div><div class="sk-n">18 ใบ</div></div></div><div class="sk-gl">ภาคอีสาน</div></div><div class="sk-grp" style="--g:#c2410c"><div class="sk-cols"><div class="sk-col" data-pick="RDC01|สุราษฎร์ธานี|" tabindex="0" title="สุราษฎร์ธานี: เสร็จ 41 · เลยกำหนด 1">
+      <div class="sk-bar"><span style="height:97.61904761904762%;background:#1a5fe4;color:#fff" data-tip="เสร็จ 41 ใบ (98%)">98%</span><span style="height:2.380952380952381%;background:#ff8a3d;color:#fff" data-tip="เลยกำหนด 1 ใบ (2%)"></span></div>
+      <div class="sk-name">สุราษฎร์ธานี</div><div class="sk-n">42 ใบ</div></div><div class="sk-col" data-pick="RDC01|หาดใหญ่|" tabindex="0" title="หาดใหญ่: เสร็จ 28 · ตรวจแล้ว รอปิดงาน 3 · กำลังทำ 1">
+      <div class="sk-bar"><span style="height:87.5%;background:#1a5fe4;color:#fff" data-tip="เสร็จ 28 ใบ (88%)">88%</span><span style="height:9.375%;background:#7b61ff;color:#fff" data-tip="ตรวจแล้ว รอปิดงาน 3 ใบ (9%)">9%</span><span style="height:3.125%;background:#9cc0ff;color:#0f3fa4" data-tip="กำลังทำ 1 ใบ (3%)"></span></div>
+      <div class="sk-name">หาดใหญ่</div><div class="sk-n">32 ใบ</div></div></div><div class="sk-gl">ภาคใต้</div></div>
+    </div></div></section></div>
 
   <section class="panel" id="tblSec" style="display: none; gap: 12px;">
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:space-between">
@@ -1154,6 +1214,32 @@ function renderDrill() {
     <tbody>${html}</tbody>
     <tfoot><tr class="gh tot"><td class="bn"><b>รวม${scope}</b></td>${cells(T)}<td></td></tr></tfoot></table></div>
     <div class="bnote"><span class="hot late">ส้ม</span> = มีงานเลยกำหนดต้องตามให้ทำ · <span class="hot bad">แดง</span> = มีเครื่องไม่ผ่านที่ยังไม่ได้ซ่อม · ผ่านต่ำกว่า 90% ตัวเลขเป็นสีแดง</div></div>`;
+  $("drill").insertAdjacentHTML("beforeend", stackHtml(R));
+}
+
+/* 10 ต.ค. ผู้ใช้ขอ: กราฟแท่งซ้อน 100% ต่อสาขา เรียงคลังในประเทศ → ภาค (ตามตัวกรองคลัง/ภาคเดียวกับตาราง) · แท่งซ้าย = รวม */
+const STK = [["done", "#1a5fe4", "#fff", "เสร็จ"], ["chk", "#7b61ff", "#fff", "ตรวจแล้ว รอปิดงาน"], ["work", "#9cc0ff", "#0f3fa4", "กำลังทำ"], ["late", "#ff8a3d", "#fff", "เลยกำหนด"]];
+const RGC = { "คลังในประเทศ": "#1a5fe4", "กรุงเทพฯ": "#0b6f7a", "ภาคกลาง": "#15a6a0", "ภาคเหนือ": "#7a3fd0", "ภาคอีสาน": "#d9770f", "ภาคใต้": "#c2410c", "อื่นๆ": "#5a6784" };
+function stackHtml(R) {
+  const groups = [];
+  const W = [...new Set(R.filter(r => r.p === "WHA05").map(r => r.b))].sort();
+  if (W.length) groups.push(["คลังในประเทศ", W.map(b => ["WHA05", b])]);
+  const D = R.filter(r => r.p === "RDC01"), dB = new Set(D.map(r => r.b));
+  REGIONS.forEach(([rg, bs]) => { const l = bs.filter(b => dB.has(b)); if (l.length) groups.push([rg, l.map(b => ["RDC01", b])]); });
+  const oth = [...dB].filter(b => !REGIONS.some(([, bs]) => bs.includes(b))); if (oth.length) groups.push(["อื่นๆ", oth.map(b => ["RDC01", b])]);
+  if (!groups.length) return "";
+  const col = (s, name, sub, pick, big) => { const segs = STK.map(([k, bg, fg, l]) => [Math.max(0, s[k]), bg, fg, l]).filter(([v]) => v > 0);
+    const tot = segs.reduce((a, [v]) => a + v, 0) || 1;
+    return `<div class="sk-col${big ? " big" : ""}"${pick ? ` data-pick="${pick}" tabindex="0"` : ""} title="${name}: ${segs.map(([v, , , l]) => `${l} ${v}`).join(" · ")}">
+      <div class="sk-bar">${segs.map(([v, bg, fg, l]) => { const pc = v / tot * 100; return `<span style="height:${pc}%;background:${bg};color:${fg}" data-tip="${l} ${v} ใบ (${Math.round(pc)}%)">${pc >= 6 ? Math.round(pc) + "%" : ""}</span>`; }).join("")}</div>
+      <div class="sk-name">${name}</div><div class="sk-n">${sub}</div></div>`; };
+  const T = stat(R);
+  return `<section class="sk"><div class="sk-hd"><h3>สัดส่วนสถานะงาน ① แยกสาขา <small>100% · ตามตัวกรองคลัง/ภาคด้านบน</small></h3>
+    <div class="sk-lg">${STK.map(([, bg, , l]) => `<span><i style="background:${bg}"></i>${l}</span>`).join("")}</div></div>
+    <div class="sk-wrap"><div class="sk-axis">${[100, 80, 60, 40, 20, 0].map(v => `<span>${v}%</span>`).join("")}</div>
+    <div class="sk-plot">${col(T, "รวม", T.n + " ใบ", "", true)}
+      ${groups.map(([g, list]) => `<div class="sk-grp" style="--g:${RGC[g] || "#5a6784"}"><div class="sk-cols">${list.map(([p, b]) => { const s = stat(R.filter(r => r.p === p && r.b === b)); return col(s, b, s.n + " ใบ", p + "|" + b + "|"); }).join("")}</div><div class="sk-gl">${g}</div></div>`).join("")}
+    </div></div></section>`;
 }
 
 /* เปลี่ยนระดับ + จำไว้ในประวัติเบราว์เซอร์ ให้ปุ่ม Back ของเบราว์เซอร์/มือถือ/iPad ย้อนกลับได้ */
