@@ -652,7 +652,7 @@ function renderHero() {
   const card = (bg, sh, q, lbl, val, unit, sub) => `<div class="card" style="background:${bg};box-shadow:${sh}"><div class="lbl"><span style="opacity:.8">${q}</span> ${lbl}</div><div class="val">${val}<small>${unit}</small></div><div class="sub">${sub}</div></div>`;
   $("seg").innerHTML = `<span style="font-size:13px;font-weight:700;color:rgba(255,255,255,.8)">กำลังดู:</span> <b style="font-size:16px">${scope}</b>${S.kind !== "all" ? ` <span class="ktag big" style="color:${KIND[S.kind].color};background:${KIND[S.kind].bg}">${kIcon(S.kind, 15)} ${KIND[S.kind].label}${S.sub !== "all" ? " · " + (SUBS[S.kind].find(([k]) => k === S.sub) || [, ""])[1] : ""}</span>` : ""}`;
   $("stats").innerHTML =
-    card("linear-gradient(150deg,#1a5fe4,#0f3fa4)", "0 12px 26px rgba(15,63,164,.4)", "①", "งานเสร็จแล้ว", s.pct + "%", "", `เสร็จ ${s.done.toLocaleString()} จาก ${s.n.toLocaleString()} ใบงาน`) +
+    card("linear-gradient(150deg,#1a5fe4,#0f3fa4)", "0 12px 26px rgba(15,63,164,.4)", "①", "งานเสร็จแล้ว", s.pct + "%", "", `เสร็จ + รอปิดงาน + กำลังทำ ${s.ok.toLocaleString()} จาก ${s.n.toLocaleString()} ใบงาน`) +
     card(s.late ? "linear-gradient(150deg,#ff8a3d,#d9570f)" : "linear-gradient(150deg,#4a5877,#333f5a)", "0 12px 26px rgba(217,87,15,.35)", "①", "เลยกำหนด ยังไม่ได้ตรวจ", s.late.toLocaleString(), "ใบ", s.late ? "ต้องตามให้ทำ" : "ไม่มีงานค้าง") +
     card("linear-gradient(150deg,#13a878,#0a7353)", "0 12px 26px rgba(10,115,83,.4)", "②", "ตรวจแล้วผ่าน", s.tested ? Math.round(s.pass / s.tested * 100) + "%" : "–", "", `ผ่าน ${s.pass.toLocaleString()} จาก ${s.tested.toLocaleString()} ใบที่ตรวจแล้ว`) +
     card(s.open ? "linear-gradient(150deg,#f0553a,#b8260f)" : "linear-gradient(150deg,#4a5877,#333f5a)", "0 12px 26px rgba(184,38,15,.35)", "②", "ไม่ผ่าน ยังไม่ได้แก้", s.open.toLocaleString(), "ใบ", s.open ? "ต้องตามให้ซ่อม" : "แก้ครบแล้ว");
@@ -901,9 +901,9 @@ function stat(L) {
   const open = fail.filter(r => repSt(r) !== "fixed");
   const lateOld = late.filter(r => dayDiff(r.due, ASOF) > 7).length, openOld = open.filter(r => downDays(r) > 7).length;
   const bad = lateOld || openOld;
-  const chk = L.filter(checkedOpen).length;
-  return { n, done, prog, chk, work: prog - chk - late.length, late: late.length, pass, fail: fail.length, open: open.length, tested: pass + fail.length,
-    pct: n ? Math.round(done / n * 100) : 0, lv: bad ? 2 : late.length || open.length ? 1 : 0, lateOld, openOld };
+  const chk = L.filter(checkedOpen).length, ok = done + chk + Math.max(0, prog - chk - late.length);   // 10 ต.ค. ผู้ใช้สั่ง: งานเสร็จ = เสร็จ + ตรวจแล้วรอปิดงาน + กำลังทำ (เหลือแค่เลยกำหนด)
+  return { ok, n, done, prog, chk, work: prog - chk - late.length, late: late.length, pass, fail: fail.length, open: open.length, tested: pass + fail.length,
+    pct: n ? Math.round(ok / n * 100) : 0, lv: bad ? 2 : late.length || open.length ? 1 : 0, lateOld, openOld };
 }
 const VERD = [["✓ ปกติ", "#e3f6ee", "#0a6b4d"], ["! ต้องดู", "#fff1d6", "#8a5200"], ["!! ต้องแก้", "#c9301a", "#fff"]];
 /* เหตุผลของป้าย เขียนเป็นภาษาคน */
@@ -918,7 +918,7 @@ const verdictOld = (s, light) => `<span style="display:grid;gap:4px;justify-item
 function q1(s, compact) {
   const w = x => (s.n ? x / s.n * 100 : 0).toFixed(1) + "%";
   return `<div class="qbox">${compact ? "" : `<div class="qt q1">① งานทำครบไหม?</div>`}
-    <div class="qline"><span class="qbig" style="color:#0f3fa4;${compact ? "font-size:22px" : ""}">${s.pct}%</span><span style="font-size:13.5px;color:#2a3b5f">เสร็จ <b>${s.done}</b> จาก ${s.n} ใบ</span></div>
+    <div class="qline"><span class="qbig" style="color:#0f3fa4;${compact ? "font-size:22px" : ""}">${s.pct}%</span><span style="font-size:13.5px;color:#2a3b5f">นับเป็นเสร็จ <b>${s.ok}</b> จาก ${s.n} ใบ (เสร็จ + รอปิดงาน + กำลังทำ)</span></div>
     <div class="pbar">${[[s.done, "#1a5fe4", "#fff", "เสร็จ (ปิดงานแล้ว)"], [s.chk, "#7b61ff", "#fff", "ตรวจแล้ว รอปิดงานในระบบ"], [s.work, "#9cc0ff", "#0f3fa4", "กำลังทำ (ยังไม่เลยกำหนด)"], [s.late, "#ff8a3d", "#fff", "เลยกำหนด ยังไม่ได้ตรวจ"]]
       .filter(([n]) => n > 0).map(([n, bg, fg, l]) => `<span style="width:${w(n)};background:${bg};color:${fg}" data-tip="${l} ${n} ใบ">${n / s.n >= .07 ? n : ""}</span>`).join("")}</div>
     <div class="plegend"><span><i style="background:#1a5fe4"></i>เสร็จ <b>${s.done}</b></span>${s.chk ? `<span><i style="background:#7b61ff"></i>ตรวจแล้ว รอปิดงาน <b>${s.chk}</b></span>` : ""}<span><i style="background:#9cc0ff"></i>กำลังทำ <b>${s.work}</b></span><span style="${s.late ? "color:#c2410c" : ""}"><i style="background:#ff8a3d"></i>เลยกำหนด <b>${s.late}</b></span></div></div>`;
