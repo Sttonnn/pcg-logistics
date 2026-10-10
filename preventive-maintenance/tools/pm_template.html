@@ -678,7 +678,7 @@ function renderHero() {
   $("stats").innerHTML =
     card("linear-gradient(150deg,#1a5fe4,#0f3fa4)", "0 12px 26px rgba(15,63,164,.4)", "①", "งานเสร็จแล้ว", s.pct + "%", "", `เสร็จ + รอปิดงาน + กำลังทำ ${s.ok.toLocaleString()} จาก ${s.n.toLocaleString()} ใบงาน`) +
     card(s.late ? "linear-gradient(150deg,#ff8a3d,#d9570f)" : "linear-gradient(150deg,#4a5877,#333f5a)", "0 12px 26px rgba(217,87,15,.35)", "①", "เลยกำหนด ยังไม่ได้ตรวจ", s.late.toLocaleString(), "ใบ", s.late ? "ต้องตามให้ทำ" : "ไม่มีงานค้าง") +
-    card("linear-gradient(150deg,#13a878,#0a7353)", "0 12px 26px rgba(10,115,83,.4)", "②", "ตรวจแล้วผ่าน", s.tested ? Math.round(s.pass / s.tested * 100) + "%" : "–", "", `ผ่าน ${s.pass.toLocaleString()} จาก ${s.tested.toLocaleString()} ใบที่ตรวจแล้ว`) +
+    card("linear-gradient(150deg,#13a878,#0a7353)", "0 12px 26px rgba(10,115,83,.4)", "②", "ตรวจแล้วผ่าน", s.tested ? Math.round(s.passOk / s.tested * 100) + "%" : "–", "", `ผ่าน ${s.pass.toLocaleString()}${s.passOk > s.pass ? " + แก้ไขแล้ว " + (s.passOk - s.pass).toLocaleString() : ""} จาก ${s.tested.toLocaleString()} ใบที่ตรวจแล้ว`) +
     card(s.open ? "linear-gradient(150deg,#f0553a,#b8260f)" : "linear-gradient(150deg,#4a5877,#333f5a)", "0 12px 26px rgba(184,38,15,.35)", "②", "ไม่ผ่าน ยังไม่ได้แก้", s.open.toLocaleString(), "ใบ", s.open ? "ต้องตามให้ซ่อม" : "แก้ครบแล้ว");
 }
 
@@ -926,7 +926,8 @@ function stat(L) {
   const lateOld = late.filter(r => dayDiff(dueOf(r), ASOF) > 7).length, openOld = open.filter(r => downDays(r) > 7).length;
   const bad = lateOld || openOld;
   const chk = L.filter(checkedOpen).length, ok = done + chk + Math.max(0, prog - chk - late.length);   // 10 ต.ค. ผู้ใช้สั่ง: งานเสร็จ = เสร็จ + ตรวจแล้วรอปิดงาน + กำลังทำ (เหลือแค่เลยกำหนด)
-  return { ok, n, done, prog, chk, work: prog - chk - late.length, late: late.length, pass, fail: fail.length, open: open.length, tested: pass + fail.length,
+  const passOk = pass + fail.length - open.length;   // 10 ต.ค. ผู้ใช้สั่ง: ใบไม่ผ่านที่แก้ไขแล้ว นับเป็นผ่าน (แก้ครบ = 100%)
+  return { ok, passOk, n, done, prog, chk, work: prog - chk - late.length, late: late.length, pass, fail: fail.length, open: open.length, tested: pass + fail.length,
     pct: n ? Math.round(ok / n * 100) : 0, lv: bad ? 2 : late.length || open.length ? 1 : 0, lateOld, openOld };
 }
 const VERD = [["✓ ปกติ", "#e3f6ee", "#0a6b4d"], ["! ต้องดู", "#fff1d6", "#8a5200"], ["!! ต้องแก้", "#c9301a", "#fff"]];
@@ -950,7 +951,7 @@ function q1(s, compact) {
 function q2(s, compact) {
   return `<div class="qbox">${compact ? "" : `<div class="qt q2">② เครื่องปกติไหม?</div>`}
     ${s.tested ? `<div class="pf"><span style="background:#e3f6ee;color:#0a6b4d">✓ ผ่าน ${s.pass}</span><span style="background:${s.fail ? "#ffe3dc" : "#f1f3f7"};color:${s.fail ? "#a8250f" : "#7a849a"}">✕ ไม่ผ่าน ${s.fail}</span></div>
-    <div style="font-size:12.5px;color:#5a6784">ตรวจแล้ว <b>${s.tested}</b> ใบ${s.chk ? ` (เสร็จ ${s.tested - s.chk} + รอปิดงาน ${s.chk})` : ""} · ผ่าน ${Math.round(s.pass / s.tested * 100)}% · ${s.open ? `<b style="color:#a8250f">ยังไม่ได้แก้ ${s.open}</b>` : s.fail ? "แก้ครบแล้ว" : "ไม่มีเครื่องเสีย"}</div>`
+    <div style="font-size:12.5px;color:#5a6784">ตรวจแล้ว <b>${s.tested}</b> ใบ${s.chk ? ` (เสร็จ ${s.tested - s.chk} + รอปิดงาน ${s.chk})` : ""} · ผ่าน ${Math.round(s.passOk / s.tested * 100)}% (นับที่แก้ไขแล้ว) · ${s.open ? `<b style="color:#a8250f">ยังไม่ได้แก้ ${s.open}</b>` : s.fail ? "แก้ครบแล้ว" : "ไม่มีเครื่องเสีย"}</div>`
     : `<div style="font-size:13px;color:#5a6784">ยังไม่มีผลตรวจในช่วงนี้</div>`}</div>`;
 }
 /* ภาคของ RDC ตามทีม "คลังสินค้าภาค…" ที่รับมอบหมายในระบบ PM */
@@ -979,7 +980,7 @@ function renderDrill() {
   }
   $("crumb").innerHTML = `<span class="cur">ตารางรวมทุกสาขา</span><span class="chint" style="margin-left:auto;font-size:12.5px;font-weight:600;color:#5a6784">กดที่แถวเพื่อดูใบงานของสาขานั้น</span>`;
   const R0 = rows({ wh: true, branch: true, rg: true });
-  const passPct = s => s.tested ? Math.round(s.pass / s.tested * 100) : null;
+  const passPct = s => s.tested ? Math.round(s.passOk / s.tested * 100) : null;
   /* ตัวกรองใหญ่ → เล็ก (คลัง → ภาค → สาขา) + เรียงลำดับ ตามที่ผู้ใช้ขอ 30 ก.ย. */
   const BF = S.bf || (S.bf = { wh: "all", rg: "all", sort: "group", dir: -1 });
   if (BF.rg !== "all") BF.wh = "RDC01";
