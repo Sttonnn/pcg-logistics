@@ -650,7 +650,7 @@ function rows(ignore = {}) {
   return DATA.filter(r =>
     (ignore.wh || S.wh === "all" || r.p === S.wh) &&
     (ignore.rg || !S.rg || r.p !== "RDC01" || regionOf(r.b) === S.rg) &&
-    (ignore.month || S.month === "all" || r.due.slice(0, 7) === S.month) &&
+    (ignore.month || S.month === "all" || dueOf(r).slice(0, 7) === S.month) &&
     (ignore.branch || S.branch === "all" || r.b === S.branch) &&
     (ignore.kind || S.kind === "all" || kindOf(r) === S.kind) &&
     (ignore.kind || S.kind === "all" || S.sub === "all" || subOf(r) === S.sub) &&
@@ -663,7 +663,10 @@ const isFail = r => r.r.startsWith("fail");
 /* "รอสร้างใบงาน" = แผนงาน ยังไม่เกิดงานจริง → ไม่นับเป็นงานค้าง/เลยกำหนด */
 /* ตรวจแล้ว (มีผล ผ่าน/ไม่ผ่าน) แต่ใบงานยังไม่ปิดในระบบ = "รอปิดงาน" ไม่นับเป็นเลยกำหนด */
 const checkedOpen = r => grp(r) === "prog" && !!r.r;
-const overdue = r => grp(r) === "prog" && !r.r && r.due && r.due < ASOF;
+/* 10 ต.ค. ผู้ใช้สั่ง: งานที่ "เลื่อนนัด" ไปขึ้นในวันที่เลื่อนไป (r.pp จากคอลัมน์ที่มีคำว่า เลื่อน ในไฟล์) · ไม่นับเป็นเลยกำหนดจนกว่าจะเลยวันใหม่ */
+const isPP = r => !!r.pp || /เลื่อน/.test(r.s || "");
+const dueOf = r => r.pp || r.due;
+const overdue = r => grp(r) === "prog" && !r.r && (isPP(r) ? !!r.pp && r.pp < ASOF : !!r.due && r.due < ASOF);
 
 function renderHero() {
   const last = LOG[LOG.length - 1];
@@ -680,7 +683,7 @@ function renderHero() {
 }
 
 function renderFilters() {
-  const months = [...new Set(DATA.map(r => r.due.slice(0, 7)).filter(Boolean))].sort();
+  const months = [...new Set(DATA.map(r => dueOf(r).slice(0, 7)).filter(Boolean))].sort();
   $("months").innerHTML = [["all", "ทุกเดือน"], ...months.map(m => [m, TH_M[+m.slice(5) - 1] + " " + (+m.slice(0, 4) + 543 - 2500)])]
     .map(([k, l]) => `<button type="button" class="${S.month === k ? "on" : ""}" data-month="${k}">${l}</button>`).join("");
   const base = DATA.filter(r => S.wh === "all" || r.p === S.wh);
@@ -835,7 +838,7 @@ function shiftPer(n) { const a = S.anchor || ASOF;
 
 function renderTable() {
   const [ps, pe] = perRange(), q = S.q.trim().toLowerCase();
-  const base = rows({ month: true }).filter(r => r.due >= ps && r.due <= pe);
+  const base = rows({ month: true }).filter(r => dueOf(r) >= ps && dueOf(r) <= pe);
   $("perTabs").innerHTML = [["day", "Daily"], ["week", "Weekly"], ["month", "Monthly"], ["all", "ทั้งหมด"]].map(([k, l]) => `<button type="button" class="${S.per === k ? "on" : ""}" data-per="${k}">${l}</button>`).join("");
   $("perLabel").textContent = perLabel([ps, pe]);
   ["perPrev", "perNext", "perToday"].forEach(id => $(id).style.visibility = S.per === "all" ? "hidden" : "");
@@ -852,14 +855,14 @@ function renderTable() {
   const R = base.filter(r => hit(r, S.st) && (S.freq === "all" || freqOf(r) === S.freq) &&
     (!q || (r.w + " " + r.e + " " + r.n).toLowerCase().includes(q)))
     /* เรื่องที่ต้องตามขึ้นก่อน: ไม่ผ่านยังไม่แก้ → เลยกำหนด → ที่เหลือ (ใหม่สุดก่อน) */
-    .sort((a, b) => ((isFail(b) && repSt(b) !== "fixed") - (isFail(a) && repSt(a) !== "fixed")) || (overdue(b) - overdue(a)) || b.due.localeCompare(a.due));
+    .sort((a, b) => ((isFail(b) && repSt(b) !== "fixed") - (isFail(a) && repSt(a) !== "fixed")) || (overdue(b) - overdue(a)) || dueOf(b).localeCompare(dueOf(a)));
   $("rowTag").textContent = R.length.toLocaleString() + " ใบงาน";
   $("tbody").innerHTML = R.slice(0, S.limit).map(r => {
     const g = ST[grp(r)], od = overdue(r);
     const res = r.r === "pass" ? `<span class="pill" style="background:#e3f6ee;color:#0a6b4d">✓ ผ่าน</span>` : isFail(r) ? `<span class="pill" style="background:#ffe3dc;color:#a8250f">✕ ไม่ผ่าน ${r.r.split(":")[1]}</span><div style="margin-top:6px;display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="pill" style="padding:3px 9px;font-size:11.5px;background:${REP[repSt(r)].bg};color:${REP[repSt(r)].fg}">${REP[repSt(r)].label}${autoTag(r)}</span><button type="button" class="btn ${repSt(r) === "fixed" ? "ghost" : "fix"}" data-edit="${fkey(r)}" style="padding:4px 10px;font-size:11.5px">อัปเดตการซ่อม</button></div>` : `<span style="color:#9aa6bd">ยังไม่ตรวจ</span>`;
     return `<tr class="${isFail(r) ? "bad" : ""}"><td class="num" style="font-weight:700;white-space:nowrap">${r.w === "-" ? "<span style='color:#9aa6bd'>ยังไม่มีเลข</span>" : r.w}</td>
       <td><div style="font-weight:700">${r.e}</div><div style="font-size:12px;color:#5a6784">${r.n}</div></td><td>${kindTag(r)} ${freqTag(r)} <span style="font-size:12.5px;color:#5a6784">${r.t === "-" ? "" : r.t}</span></td>
-      <td style="white-space:nowrap">${fmtD(r.due)}${od ? `<div style="font-size:12px;color:#a8250f;font-weight:700">เลยกำหนด</div>` : ""}</td>
+      <td style="white-space:nowrap">${fmtD(dueOf(r))}${isPP(r) ? `<div style="font-size:12px;color:#6a3fd0;font-weight:700">เลื่อนนัด${r.pp ? " · เดิม " + fmtD(r.due) : ""}</div>` : ""}${od ? `<div style="font-size:12px;color:#a8250f;font-weight:700">เลยกำหนด</div>` : ""}</td>
       <td><span class="pill" style="background:${g.bg};color:${g.fg}">${r.s}</span></td><td>${res}</td></tr>`;
   }).join("") || `<tr><td colspan="6" style="text-align:center;color:#5a6784;padding:22px">ไม่พบใบงาน</td></tr>`;
   $("more").style.display = R.length > S.limit ? "" : "none";
@@ -878,12 +881,12 @@ function renderFocus() {
   const box = $("focus");
   if (S.view !== "overview") { box.style.display = "none"; return; }
   box.style.display = "";
-  const R = rows({ month: true }), late = R.filter(overdue), age = r => dayDiff(r.due, ASOF);
+  const R = rows({ month: true }), late = R.filter(overdue), age = r => dayDiff(dueOf(r), ASOF);
   const late7 = late.filter(r => age(r) > 7);
   const byB = {}; late.forEach(r => byB[r.b] = (byB[r.b] || 0) + 1);
   const topB = Object.entries(byB).sort((a, b) => b[1] - a[1]).slice(0, 3);
   const fo = R.filter(r => isFail(r) && repSt(r) !== "fixed").sort((a, b) => downDays(b) - downDays(a)), fo7 = fo.filter(r => downDays(r) > 7);
-  const td = R.filter(r => r.due === ASOF && grp(r) !== "cancel"), tdDone = td.filter(r => grp(r) === "done").length;
+  const td = R.filter(r => dueOf(r) === ASOF && grp(r) !== "cancel"), tdDone = td.filter(r => grp(r) === "done").length;
   const level = late7.length || fo7.length ? "bad" : late.length || fo.length ? "warn" : "ok";
   const V = { bad: ["ต้องแก้", "#c9301a", "#fff"], warn: ["ต้องดู", "#ffb13d", "#5a3a00"], ok: ["ปกติ", "#13a878", "#fff"] }[level];
   const parts = [];
@@ -920,7 +923,7 @@ function stat(L) {
   const n = L.length, done = L.filter(r => grp(r) === "done").length, prog = L.filter(r => grp(r) === "prog").length;
   const late = L.filter(overdue), pass = L.filter(r => r.r === "pass").length, fail = L.filter(isFail);
   const open = fail.filter(r => repSt(r) !== "fixed");
-  const lateOld = late.filter(r => dayDiff(r.due, ASOF) > 7).length, openOld = open.filter(r => downDays(r) > 7).length;
+  const lateOld = late.filter(r => dayDiff(dueOf(r), ASOF) > 7).length, openOld = open.filter(r => downDays(r) > 7).length;
   const bad = lateOld || openOld;
   const chk = L.filter(checkedOpen).length, ok = done + chk + Math.max(0, prog - chk - late.length);   // 10 ต.ค. ผู้ใช้สั่ง: งานเสร็จ = เสร็จ + ตรวจแล้วรอปิดงาน + กำลังทำ (เหลือแค่เลยกำหนด)
   return { ok, n, done, prog, chk, work: prog - chk - late.length, late: late.length, pass, fail: fail.length, open: open.length, tested: pass + fail.length,
@@ -1253,14 +1256,15 @@ const iso = v => { const m = String(v || "").match(/(\d\d)\/(\d\d)\/(\d{4})/); r
 function normalize(aoa) {
   const h = aoa[0].map(x => String(x || "").trim()), ix = n => h.indexOf(n);
   const need = ["เลขที่แผน", "กำหนดการครั้งที่", "รหัสอุปกรณ์", "เลขที่ใบงาน", "รหัสโรงงาน", "ชื่ออุปกรณ์", "ชื่อแผน", "ผลการตรวจสอบ", "กำหนดการดำเนินงาน", "สถานะ"];
+  const PPIX = h.map((x, i) => /เลื่อน/.test(x) ? i : -1).filter(i => i >= 0);   // คอลัมน์วันที่เลื่อนนัด (ชื่อมีคำว่า เลื่อน)
   const miss = need.filter(n => ix(n) < 0); if (miss.length) throw new Error("ไม่พบคอลัมน์: " + miss.join(", "));
   return aoa.slice(1).filter(r => r && r.length).map(r => {
     const g = n => String(r[ix(n)] ?? "").trim(), p = g("รหัสโรงงาน"), plan = g("ชื่อแผน"), eq = g("ชื่ออุปกรณ์"), z = g("สถานที่ตั้ง");
     let b;
     if (p === "RDC01") b = BR.find(x => plan.includes(x)) || Object.entries(ALIAS).find(([k]) => plan.includes(k))?.[1] || "ไม่ระบุ";
     else { const m = (eq + " " + z).match(/WH ?(05|32)/); b = m ? "WH" + m[1] : z.includes("24-35") ? "WH32" : z.includes("1-23") ? "WH05" : "ไม่ระบุ"; }
-    const res = g("ผลการตรวจสอบ"), f = res.match(/ไม่ผ่าน\s*(\d+)/);
-    return { id: [p, g("เลขที่แผน"), g("กำหนดการครั้งที่"), g("รหัสอุปกรณ์")].join("|"), w: g("เลขที่ใบงาน"), p, b, z: z.replace("Zone ", "").replace("ถายนอก", "ภายนอก"), e: eq, t: g("ประเภทเครื่องจักร/อุปกรณ์"), n: plan,
+    const res = g("ผลการตรวจสอบ"), f = res.match(/ไม่ผ่าน\s*(\d+)/), pp = PPIX.map(i => iso(r[i])).find(Boolean) || "";
+    return { ...(pp ? { pp } : {}), id: [p, g("เลขที่แผน"), g("กำหนดการครั้งที่"), g("รหัสอุปกรณ์")].join("|"), w: g("เลขที่ใบงาน"), p, b, z: z.replace("Zone ", "").replace("ถายนอก", "ภายนอก"), e: eq, t: g("ประเภทเครื่องจักร/อุปกรณ์"), n: plan,
       k: g("รายการตรวจสอบ"), due: iso(r[ix("กำหนดการดำเนินงาน")]), done: iso(r[ix("วันที่เสร็จสิ้น")]), s: g("สถานะ"), r: f ? "fail:" + f[1] : res === "ผ่าน" ? "pass" : "" };
   }).filter(KNOWN);
 }
@@ -1270,7 +1274,7 @@ function loadXLSX() {
     s.src = "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"; s.onload = ok; s.onerror = () => no(new Error("โหลดตัวอ่าน Excel ไม่สำเร็จ")); document.head.appendChild(s); });
 }
 /* รวมไฟล์ใหม่เข้ากับข้อมูลเดิม: มีแล้ว = อัปเดต, ยังไม่มี = เพิ่ม, ไม่อยู่ในไฟล์ = เก็บไว้เหมือนเดิม */
-const FIELDS = ["w", "s", "r", "due", "done", "e", "t", "b", "z", "n"];
+const FIELDS = ["w", "s", "r", "due", "pp", "done", "e", "t", "b", "z", "n"];
 function mergeRows(newRows, addOnly) {
   const db = new Map(DATA.map(r => [r.id, r])), seen = new Set(), changes = [], up = [];
   let added = 0, changed = 0, same = 0;

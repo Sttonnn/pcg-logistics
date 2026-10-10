@@ -2,6 +2,7 @@ import openpyxl,json,re,collections as C,sys
 F=sys.argv[1]
 ws=openpyxl.load_workbook(F,read_only=True,data_only=True).worksheets[0]
 rows=list(ws.iter_rows(values_only=True)); h=rows[0]; ix={c:i for i,c in enumerate(h)}
+PPIX=[i for i,c in enumerate(h) if c and 'เลื่อน' in str(c)]  # 10 ต.ค. คอลัมน์วันที่เลื่อนนัด
 BR=['เชียงใหม่','เชียงราย','พิษณุโลก','ปากเกร็ด','หนองแขม','สายไหม','ลาดพร้าว','สุราษฎร์ธานี','หาดใหญ่','ราชบุรี','ศรีราชา','อุบลราชธานี','ขอนแก่น','โคราช']
 ALIAS={'สุราษ':'สุราษฎร์ธานี','อุบล':'อุบลราชธานี'}
 def d(v):
@@ -18,7 +19,8 @@ for r in rows[1:]:
         b='WH'+m[1] if m else ('WH32' if '24-35' in z else 'WH05' if '1-23' in z else 'ไม่ระบุ')
     if b=='ไม่ระบุ': continue  # 8 ต.ค. ผู้ใช้สั่งตัดข้อมูลที่ระบุสาขาไม่ได้ออก
     res=g('ผลการตรวจสอบ'); m=re.search(r'ไม่ผ่าน\s*(\d+)',res)
-    out.append({'id':'|'.join([p,g('เลขที่แผน'),g('กำหนดการครั้งที่'),g('รหัสอุปกรณ์')]),'w':g('เลขที่ใบงาน'),'p':p,'b':b,'z':g('สถานที่ตั้ง').replace('Zone ','').replace('ถายนอก','ภายนอก'),
+    pp=next((d(r[i]) for i in PPIX if d(r[i])),'')
+    out.append({**({'pp':pp} if pp else {}),'id':'|'.join([p,g('เลขที่แผน'),g('กำหนดการครั้งที่'),g('รหัสอุปกรณ์')]),'w':g('เลขที่ใบงาน'),'p':p,'b':b,'z':g('สถานที่ตั้ง').replace('Zone ','').replace('ถายนอก','ภายนอก'),
       'e':eq,'t':g('ประเภทเครื่องจักร/อุปกรณ์'),'n':plan,'k':g('รายการตรวจสอบ'),
       'due':d(r[ix['กำหนดการดำเนินงาน']]),'done':d(r[ix['วันที่เสร็จสิ้น']]),'s':g('สถานะ'),
       'r':('fail:'+m[1]) if m else ('pass' if res=='ผ่าน' else '')})
