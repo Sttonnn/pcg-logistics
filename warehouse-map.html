@@ -21,7 +21,7 @@
   .wrap.closed .tog { right: 12px; }
   .wrap.closed .tog svg { transform: rotate(180deg); }
   .map { position: relative; height: 540px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(32,30,29,0.12); background: #cfe4f2; }
-  .map svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .map > svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   .pins { position: absolute; inset: 0; pointer-events: none; }
   .pw { position: absolute; transform: translate(-50%, -90%); pointer-events: auto; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; }
   .pw:hover { z-index: 5; }
@@ -64,10 +64,23 @@
     @media (max-width: 600px) { .map { height: 620px !important; } }
   .side { max-height: none; overflow: visible; }
   }
+  /* 12 ต.ค. ผู้ใช้สั่ง: หน้าลูกค้า = แผนที่ใหญ่เต็มกรอบ · รายละเอียดขึ้นเมื่อชี้/กดหมุด */
+  .wrap.pub { grid-template-columns: minmax(0, 1fr) !important; gap: 0 !important; }
+  .wrap.pub .side, .wrap.pub .tog { display: none !important; }
+  .wrap.pub .map { height: 780px; border-radius: 16px; }
+  .pstat { position: absolute; z-index: 6; left: 14px; top: 14px; display: flex; gap: 8px; flex-wrap: wrap; pointer-events: none; }
+  .pstat span { background: rgba(255,255,255,.94); border-radius: 12px; padding: 8px 12px; box-shadow: 0 4px 14px rgba(0,0,0,.12); font-size: 12px; color: #6b6a68; display: grid; gap: 1px; }
+  .pstat b { font-size: 20px; line-height: 1.1; color: #123f8f; font-variant-numeric: tabular-nums; }
+  .pfloat { position: absolute; z-index: 8; right: 14px; top: 14px; width: 300px; max-height: calc(100% - 28px); overflow: auto; display: grid; gap: 8px; }
+  .pfloat .card { box-shadow: 0 10px 30px rgba(0,0,0,.18); }
+  .pfloat .x { justify-self: end; border: 0; background: #fff; border-radius: 999px; padding: 5px 12px; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+  .phint { position: absolute; z-index: 6; left: 14px; bottom: 14px; background: rgba(255,255,255,.94); border-radius: 999px; padding: 6px 12px; font-size: 12px; color: #6b6a68; box-shadow: 0 4px 12px rgba(0,0,0,.1); pointer-events: none; }
+  @media (max-width: 700px) { .wrap.pub .map { height: 640px; } .pfloat { left: 10px; right: 10px; top: auto; bottom: 10px; width: auto; max-height: 55%; } .pstat b { font-size: 16px; } }
 </style>
 </head>
 <body>
 <div class="wrap" id="wrap">
+<script>if (new URLSearchParams(location.search).get("mode") === "pub") document.getElementById("wrap").classList.add("pub");</script>
   <div id="map" class="map"><div class="loading">กำลังโหลดแผนที่…</div></div>
   <div class="side">
     <div class="legend">
@@ -189,7 +202,9 @@ function drawPins(layer, proj, idxs, big) {
     const isSel = sel != null && (typeof sel === "object" ? (sel.keys ? items.some(w => sel.keys.includes(w.region)) : sel.merge.some(i => c.m.includes(i))) : c.m.includes(sel));
     d.innerHTML = '<div class="pin' + (isSel ? " sel" : "") + '">' + whIcon(C[st]) + (n > 1 ? '<span class="n">' + n + '</span>' : "") + '</div>' +
       '<span class="lbl" style="border-color:' + C[st] + '"><i class="dot" style="background:' + C[st] + '"></i>' + (name.length > 1 ? name[0] + " +" + (name.length - 1) : name[0]) + '</span>';
-    d.onclick = () => select(c.m.length === 1 ? c.m[0] : { merge: c.m });
+    d.onclick = () => { if (PUB) { HOV = { items, pin: true, key: c.m.join(",") }; } select(c.m.length === 1 ? c.m[0] : { merge: c.m }); };
+    if (PUB) { d.onmouseenter = () => { if (!HOV || !HOV.pin) { HOV = { items, pin: false, key: c.m.join(",") }; pubFloat(); } };
+      d.onmouseleave = () => { if (HOV && !HOV.pin) { HOV = null; pubFloat(); } }; }
     layer.appendChild(d);
   });
 }
@@ -348,6 +363,7 @@ function drawMap() {
   const layer = document.createElement("div"); layer.className = "pins"; el.appendChild(layer);
   if (TH) drawTH(el, svg, W, H, layer); else drawOS(el, svg, W, H, layer);
   declutter(layer);
+  if (PUB) pubFloat();
 }
 
 const fail = msg => e => { console.error(e); document.getElementById("map").innerHTML = '<div class="loading">' + msg + '</div>'; };
@@ -395,6 +411,23 @@ function contractCard(w) {
     '</div></div>';
 }
 
+let HOV = null;
+/* แผนที่ลูกค้า: ตัวเลขสรุปมุมซ้ายบน + การ์ดรายละเอียดลอยมุมขวาเมื่อชี้/กดหมุด */
+function pubFloat() {
+  const el = document.getElementById("map"); if (!el) return;
+  if (!el.querySelector(".pstat")) {
+    const tot = rows.reduce((a, w) => a + (w.area || 0), 0), places = new Set(rows.map(w => normP(w.province) || w.wh)).size;
+    const st = document.createElement("div"); st.className = "pstat";
+    st.innerHTML = '<span><b>' + rows.length + '</b>คลังสินค้า</span><span><b>' + fmt(tot, 0) + '</b>ตร.ม. รวม</span><span><b>' + places + '</b>' + (TH ? "จังหวัด" : "เมือง") + '</span>';
+    el.appendChild(st);
+    const h = document.createElement("div"); h.className = "phint"; h.textContent = "ชี้หรือกดที่หมุดเพื่อดูรายละเอียดคลัง"; el.appendChild(h);
+  }
+  let f = el.querySelector(".pfloat");
+  if (!HOV) { if (f) f.remove(); return; }
+  if (!f) { f = document.createElement("div"); f.className = "pfloat"; el.appendChild(f); }
+  f.innerHTML = (HOV.pin ? '<button class="x" type="button">✕ ปิด</button>' : '') + HOV.items.map(pubCard).join("");
+  const x = f.querySelector(".x"); if (x) x.onclick = () => { HOV = null; select(null); };
+}
 /* โหมดลูกค้า: ภาพรวม = จำนวนคลัง พื้นที่รวม + รายชื่อคลังแยกภาค กด = ชี้บนแผนที่ */
 function pubOverview() {
   const tot = rows.reduce((a, w) => a + (w.area || 0), 0), places = new Set(rows.map(w => normP(w.province) || w.wh)).size;
