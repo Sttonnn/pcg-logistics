@@ -223,7 +223,7 @@ function drawPins(layer, proj, idxs, big) {
     d.title = name.join(" / ") + (n > 1 ? " · " + n + (PUB ? " คลัง" : " สัญญา") : "");
     const isSel = sel != null && (typeof sel === "object" ? (sel.keys ? items.some(w => sel.keys.includes(w.region)) : sel.merge.some(i => c.m.includes(i))) : c.m.includes(sel));
     const nm1 = name.length > 1 ? name[0] + " +" + (name.length - 1) : name[0];
-    d.innerHTML = PUB ? '<div class="pin pdot' + (n > 1 ? " m" : "") + (isSel ? " sel" : "") + '">' + (n > 1 ? n : "") + '</div><span class="lbl plain">' + nm1 + '</span>' :
+    d.innerHTML = PUB ? '<div class="pin pdot' + (n > 1 ? " m" : "") + (isSel ? " sel" : "") + '">' + (n > 1 ? n : "") + '</div>' :
       '<div class="pin' + (isSel ? " sel" : "") + '">' + whIcon(C[st]) + (n > 1 ? '<span class="n">' + n + '</span>' : "") + '</div>' +
       '<span class="lbl" style="border-color:' + C[st] + '"><i class="dot" style="background:' + C[st] + '"></i>' + nm1 + '</span>';
     d.onclick = () => { if (PUB) { HOV = { items, pin: true, key: c.m.join(",") }; } select(c.m.length === 1 ? c.m[0] : { merge: c.m }); };
@@ -284,7 +284,7 @@ function drawTH(el, svg, W, H, layer) {
   const cent = {};
   provs.features.forEach(f => {
     const R = REG[f.properties.r] || REG.Central;
-    mk("path", PUB ? { d: path(f), fill: "#fbfcfe", stroke: "#dfe5ee", "stroke-width": 0.6, "stroke-linejoin": "round" } : { d: path(f), fill: R.fill, stroke: R.fill, "stroke-width": 0.8, "stroke-linejoin": "round" }, gm);
+    mk("path", PUB ? { d: path(f), fill: "#fbfcfe", stroke: "#fbfcfe", "stroke-width": 0.8, "stroke-linejoin": "round" } : { d: path(f), fill: R.fill, stroke: R.fill, "stroke-width": 0.8, "stroke-linejoin": "round" }, gm);
     const c = path.centroid(f), a = path.area(f);
     const k = f.properties.r; cent[k] = cent[k] || { x: 0, y: 0, a: 0 };
     if (isFinite(c[0])) { cent[k].x += c[0] * a; cent[k].y += c[1] * a; cent[k].a += a; }
@@ -308,7 +308,7 @@ function drawTH(el, svg, W, H, layer) {
   const iw = I[1][0] - I[0][0], ih = I[1][1] - I[0][1];
   const lines = wide ? [[zr.x + zr.w, zr.y, I[0][0], I[0][1]], [zr.x + zr.w, zr.y + zr.h, I[0][0], I[1][1]]] : [[zr.x, zr.y + zr.h, I[0][0], I[0][1]], [zr.x + zr.w, zr.y + zr.h, I[1][0], I[0][1]]];
   const ZC = PUB ? "#1d5fd0" : "#9a4a33";
-  lines.forEach(l => mk("line", { x1: l[0], y1: l[1], x2: l[2], y2: l[3], stroke: ZC, "stroke-opacity": PUB ? ".18" : ".35", "stroke-width": 1, "stroke-dasharray": "3 3" }, svg));
+  if (!PUB) lines.forEach(l => mk("line", { x1: l[0], y1: l[1], x2: l[2], y2: l[3], stroke: ZC, "stroke-opacity": PUB ? ".18" : ".35", "stroke-width": 1, "stroke-dasharray": "3 3" }, svg));
   mk("rect", { x: zr.x, y: zr.y, width: zr.w, height: zr.h, fill: ZC, "fill-opacity": ".06", stroke: ZC, "stroke-opacity": PUB ? ".5" : "1", "stroke-width": 1.4, rx: 3 }, svg);
   if (PUB) { const fl = mk("filter", { id: "ish", x: "-10%", y: "-10%", width: "120%", height: "120%" }, svg.querySelector("defs")); mk("feDropShadow", { dx: 0, dy: 6, stdDeviation: 9, "flood-color": "#123f8f", "flood-opacity": ".16" }, fl); }
   mk("rect", PUB ? { x: I[0][0], y: I[0][1], width: iw, height: ih, fill: "#dde8f3", stroke: "#fff", "stroke-width": 4, rx: 14, filter: "url(#ish)" } : { x: I[0][0], y: I[0][1], width: iw, height: ih, fill: "#cfe4f2", stroke: "#9fb8c9", "stroke-width": 1.2, rx: 10 }, svg);
@@ -323,7 +323,7 @@ function drawTH(el, svg, W, H, layer) {
     const R = REG[f.properties.r] || REG.Central;
     const bkk = f.properties.p === "กรุงเทพมหานคร";
     const fc = PUB ? (bkk ? "#e9f0fc" : "#fbfcfe") : bkk ? "#e8745a" : R.fill;
-    mk("path", { d: ipath(f), fill: fc, stroke: PUB ? "#d3dcea" : fc, "stroke-width": 1, "stroke-linejoin": "round" }, gi);
+    mk("path", { d: ipath(f), fill: fc, stroke: fc, "stroke-width": 1, "stroke-linejoin": "round" }, gi);
     const c = ipath.centroid(f);
     if (!PUB && isFinite(c[0]) && c[0] > I[0][0] + 30 && c[0] < I[1][0] - 30 && c[1] > I[0][1] + 14 && c[1] < I[1][1] - 10) labels.push([c, f.properties.p, R.ink, bkk]);
   });
@@ -351,7 +351,7 @@ function drawTH(el, svg, W, H, layer) {
     t.setAttribute("x", L.x + ok[0]); t.setAttribute("y", L.y + ok[1]);
     taken.push([bb.x + ok[0], bb.y + ok[1], bb.x + bb.width + ok[0], bb.y + bb.height + ok[1]]);
   });
-  if (zIdx.length) {
+  if (zIdx.length && !PUB) {
     const n = zIdx.reduce((a, i) => a + G[i].items.length, 0);
     const t = document.createElement("div"); t.className = "zc";
     t.style.left = (zr.x + zr.w / 2) + "px"; t.style.top = (zr.y + zr.h / 2) + "px"; t.textContent = n;
