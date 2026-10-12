@@ -71,11 +71,18 @@
   .pstat { position: absolute; z-index: 6; left: 14px; top: 14px; display: flex; gap: 8px; flex-wrap: wrap; pointer-events: none; }
   .pstat span { background: rgba(255,255,255,.94); border-radius: 12px; padding: 8px 12px; box-shadow: 0 4px 14px rgba(0,0,0,.12); font-size: 12px; color: #6b6a68; display: grid; gap: 1px; }
   .pstat b { font-size: 20px; line-height: 1.1; color: #123f8f; font-variant-numeric: tabular-nums; }
-  .pfloat { position: absolute; z-index: 8; right: 14px; top: 14px; width: 300px; max-height: calc(100% - 28px); overflow: auto; display: grid; gap: 8px; }
-  .pfloat .card { box-shadow: 0 10px 30px rgba(0,0,0,.18); }
-  .pfloat .x { justify-self: end; border: 0; background: #fff; border-radius: 999px; padding: 5px 12px; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+  .pfloat { position: absolute; z-index: 8; width: max-content; max-width: 230px; background: #fff; border-radius: 12px; padding: 9px 12px; box-shadow: 0 10px 28px rgba(0,0,0,.22); display: grid; gap: 7px; pointer-events: auto; }
+  .pfloat .pm { display: grid; gap: 1px; padding-right: 16px; }
+  .pfloat .pm + .pm { border-top: 1px solid rgba(32,30,29,.08); padding-top: 7px; }
+  .pfloat .pm b { font-size: 13.5px; line-height: 1.3; }
+  .pfloat .pm span { font-size: 11.5px; color: #6b6a68; }
+  .pfloat .pm em { font-style: normal; font-weight: 800; font-size: 17px; color: #123f8f; font-variant-numeric: tabular-nums; }
+  .pfloat .pm em small { font-size: 11px; font-weight: 700; color: #1d5fd0; }
+  .pfloat .x { position: absolute; top: 4px; right: 4px; border: 0; background: #f1f1f2; border-radius: 999px; width: 22px; height: 22px; font: inherit; font-size: 11px; font-weight: 800; cursor: pointer; line-height: 1; }
+  .pfloat .tip { position: absolute; bottom: -6px; width: 14px; height: 14px; background: #fff; transform: rotate(45deg); box-shadow: 3px 3px 6px rgba(0,0,0,.08); }
+  .pfloat.below .tip { bottom: auto; top: -6px; box-shadow: -3px -3px 6px rgba(0,0,0,.06); }
   .phint { position: absolute; z-index: 6; left: 14px; bottom: 14px; background: rgba(255,255,255,.94); border-radius: 999px; padding: 6px 12px; font-size: 12px; color: #6b6a68; box-shadow: 0 4px 12px rgba(0,0,0,.1); pointer-events: none; }
-  @media (max-width: 700px) { .wrap.pub .map { height: 640px; } .pfloat { left: 10px; right: 10px; top: auto; bottom: 10px; width: auto; max-height: 55%; } .pstat b { font-size: 16px; } }
+  @media (max-width: 700px) { .wrap.pub .map { height: 640px; } .pstat b { font-size: 16px; } }
 </style>
 </head>
 <body>
@@ -197,7 +204,7 @@ function drawPins(layer, proj, idxs, big) {
     const n = items.length;
     const name = [...new Set(items.map(w => w.wh))];
     const d = document.createElement("div"); d.className = "pw";
-    d.style.left = c.x + "px"; d.style.top = c.y + "px";
+    d.style.left = c.x + "px"; d.style.top = c.y + "px"; d.dataset.key = c.m.join(",");
     d.title = name.join(" / ") + (n > 1 ? " · " + n + (PUB ? " คลัง" : " สัญญา") : "");
     const isSel = sel != null && (typeof sel === "object" ? (sel.keys ? items.some(w => sel.keys.includes(w.region)) : sel.merge.some(i => c.m.includes(i))) : c.m.includes(sel));
     d.innerHTML = '<div class="pin' + (isSel ? " sel" : "") + '">' + whIcon(C[st]) + (n > 1 ? '<span class="n">' + n + '</span>' : "") + '</div>' +
@@ -425,8 +432,18 @@ function pubFloat() {
   let f = el.querySelector(".pfloat");
   if (!HOV) { if (f) f.remove(); return; }
   if (!f) { f = document.createElement("div"); f.className = "pfloat"; el.appendChild(f); }
-  f.innerHTML = (HOV.pin ? '<button class="x" type="button">✕ ปิด</button>' : '') + HOV.items.map(pubCard).join("");
-  const x = f.querySelector(".x"); if (x) x.onclick = () => { HOV = null; select(null); };
+  /* 12 ต.ค. ผู้ใช้สั่ง: รายละเอียดเป็น pop up เล็กลอยเหนือคลังที่เลือก */
+  f.innerHTML = (HOV.pin ? '<button class="x" type="button" title="ปิด">✕</button>' : '') + HOV.items.map(w =>
+    '<div class="pm"><b>' + w.wh + '</b><span>' + [w.province, w.region].filter(Boolean).join(" · ") + '</span><em>' + fmt(w.area, 0) + ' <small>ตร.ม.</small></em></div>').join("") + '<i class="tip"></i>';
+  const x = f.querySelector(".x"); if (x) x.onclick = ev => { ev.stopPropagation(); HOV = null; select(null); };
+  const pw = el.querySelector('.pw[data-key="' + HOV.key + '"]');
+  if (pw) {
+    const px = parseFloat(pw.style.left), py = parseFloat(pw.style.top), W = el.clientWidth, fw = f.offsetWidth, fh = f.offsetHeight;
+    let left = Math.min(Math.max(px - fw / 2, 8), W - fw - 8), top = py - 44 - fh, below = top < 8;
+    if (below) top = py + 14;
+    f.style.left = left + "px"; f.style.top = top + "px"; f.classList.toggle("below", below);
+    f.querySelector(".tip").style.left = (px - left - 7) + "px";
+  }
 }
 /* โหมดลูกค้า: ภาพรวม = จำนวนคลัง พื้นที่รวม + รายชื่อคลังแยกภาค กด = ชี้บนแผนที่ */
 function pubOverview() {
