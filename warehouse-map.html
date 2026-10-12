@@ -77,6 +77,7 @@
       <span><i class="dot" style="background:#0d7d7d"></i>คลัง PCG</span>
     </div>
     <div id="detail"></div>
+    <script>if (new URLSearchParams(location.search).get("mode") === "pub") document.currentScript.parentNode.querySelector(".legend").innerHTML = '<span><i class="dot" style="background:#1d5fd0"></i>คลังสินค้า PCG · ตัวเลขในหมุด = จำนวนคลังในบริเวณเดียวกัน</span>';</script>
   </div>
 </div>
 <script>
@@ -93,10 +94,10 @@ const GEO = {
   "Indore":[22.72,75.86], "Alam Impian":[3.01,101.52]
 };
 const COUNTRY = { "Phnom Penh":"กัมพูชา" };
-const C = { ok:"#17803d", soon:"#b8760a", exp:"#c03a1c", own:"#0d7d7d" };
-const TINT = { ok:"#e7f4ec", soon:"#fdf2e0", exp:"#fdeae6", own:"#e4f2f2" };
+const C = { ok:"#17803d", soon:"#b8760a", exp:"#c03a1c", own:"#0d7d7d", pub:"#1d5fd0" };
+const TINT = { ok:"#e7f4ec", soon:"#fdf2e0", exp:"#fdeae6", own:"#e4f2f2", pub:"#e8f0fd" };
 const LABEL = { ok:"ปกติ", soon:"ใกล้หมด", exp:"หมดแล้ว", own:"คลัง PCG" };
-const RANK = { exp:3, soon:2, ok:1, own:0 };
+const RANK = { exp:3, soon:2, ok:1, own:0, pub:0 };
 const TH_M = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
 const thDate = s => { if (!s) return "—"; const p = s.split("-").map(Number); return p[2] + " " + TH_M[p[1]-1] + " " + (p[0]+543); };
 const fmt = (n, d) => n == null || !isFinite(n) ? "—" : n.toLocaleString("en-US", { minimumFractionDigits: d||0, maximumFractionDigits: d||0 });
@@ -104,6 +105,8 @@ const monthsLeft = end => end ? (new Date(end + "T00:00:00") - new Date()) / (86
 const statusOf = w => { if (w.type === "คลัง PCG" || w.owned) return "own"; const m = monthsLeft(w.end); if (m == null) return "ok"; return m < 0 ? "exp" : m <= 6 ? "soon" : "ok"; };
 
 const scope = new URLSearchParams(location.search).get("scope") === "OS" ? "OS" : "TH";
+/* 12 ต.ค. ผู้ใช้ขอ: โหมดลูกค้า (?mode=pub) = โชว์แค่ตำแหน่ง + ขนาดคลัง · ไม่มีค่าเช่า/สัญญา · ไม่แสดงสัญญาที่หมดแล้ว · หมุดสีเดียว */
+const PUB = new URLSearchParams(location.search).get("mode") === "pub";
 const D0 = window.WH_DATA || { domestic: [], oversea: [] };
 let EDITS = {}; try { EDITS = JSON.parse(localStorage.getItem("pcg-wh-edits") || "{}"); } catch (e) {}
 const build = (arr, pre) => {
@@ -116,7 +119,7 @@ const TH = scope === "TH";
 const rows = (TH ? D.domestic : D.oversea).map((w, i) => {
   const rent = TH ? (w.rentMonth || 0) : (w.rentUsd || 0);
   return Object.assign({}, w, { i, rent, st: statusOf(w), ml: monthsLeft(w.end), rate: w.area > 0 && rent > 0 ? rent / w.area : null });
-});
+}).filter(w => !PUB || w.st !== "exp");
 
 let G = [], missing = [];
 const normP = s => { s = String(s || "").replace(/^(จ\.|จังหวัด)\s*/, "").trim(); return /^(กทม|กรุงเทพ)/.test(s) ? "กรุงเทพมหานคร" : s; };
@@ -158,7 +161,7 @@ let provs = null;
 buildGroups();
 const mk = (tag, attrs, parent) => { const n = document.createElementNS(NS, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); if (parent) parent.appendChild(n); return n; };
 
-const ROOF = { "#17803d": "#0c5427", "#b8760a": "#8a5806", "#c03a1c": "#7d220f", "#0d7d7d": "#064f4f" };
+const ROOF = { "#1d5fd0": "#123f8f", "#17803d": "#0c5427", "#b8760a": "#8a5806", "#c03a1c": "#7d220f", "#0d7d7d": "#064f4f" };
 const WALL = { "#b8760a": "#d18a14" };
 const whIcon = c => { const w = WALL[c] || c, r = ROOF[c] || "#201e1d"; return '<svg viewBox="0 0 40 38" aria-hidden="true">' +
   '<ellipse cx="20" cy="34" rx="15" ry="3" fill="rgba(0,0,0,0.2)"/>' +
@@ -177,12 +180,12 @@ function drawPins(layer, proj, idxs, big) {
   });
   clusters.forEach(c => {
     const items = c.m.flatMap(i => G[i].items);
-    const st = items.reduce((s, w) => RANK[w.st] > RANK[s] ? w.st : s, items[0].st);
+    const st = PUB ? "pub" : items.reduce((s, w) => RANK[w.st] > RANK[s] ? w.st : s, items[0].st);
     const n = items.length;
     const name = [...new Set(items.map(w => w.wh))];
     const d = document.createElement("div"); d.className = "pw";
     d.style.left = c.x + "px"; d.style.top = c.y + "px";
-    d.title = name.join(" / ") + (n > 1 ? " · " + n + " สัญญา" : "");
+    d.title = name.join(" / ") + (n > 1 ? " · " + n + (PUB ? " คลัง" : " สัญญา") : "");
     const isSel = sel != null && (typeof sel === "object" ? (sel.keys ? items.some(w => sel.keys.includes(w.region)) : sel.merge.some(i => c.m.includes(i))) : c.m.includes(sel));
     d.innerHTML = '<div class="pin' + (isSel ? " sel" : "") + '">' + whIcon(C[st]) + (n > 1 ? '<span class="n">' + n + '</span>' : "") + '</div>' +
       '<span class="lbl" style="border-color:' + C[st] + '"><i class="dot" style="background:' + C[st] + '"></i>' + (name.length > 1 ? name[0] + " +" + (name.length - 1) : name[0]) + '</span>';
@@ -310,7 +313,7 @@ function drawTH(el, svg, W, H, layer) {
     const n = zIdx.reduce((a, i) => a + G[i].items.length, 0);
     const t = document.createElement("div"); t.className = "zc";
     t.style.left = (zr.x + zr.w / 2) + "px"; t.style.top = (zr.y + zr.h / 2) + "px"; t.textContent = n;
-    t.title = n + " สัญญาในกรอบขยาย";
+    t.title = n + (PUB ? " คลัง" : " สัญญา") + "ในกรอบขยาย";
     layer.appendChild(t);
   }
 }
@@ -392,7 +395,26 @@ function contractCard(w) {
     '</div></div>';
 }
 
+/* โหมดลูกค้า: ภาพรวม = จำนวนคลัง พื้นที่รวม + รายชื่อคลังแยกภาค กด = ชี้บนแผนที่ */
+function pubOverview() {
+  const tot = rows.reduce((a, w) => a + (w.area || 0), 0), places = new Set(rows.map(w => normP(w.province) || w.wh)).size;
+  const by = {}; rows.forEach(w => (by[w.region || "อื่นๆ"] = by[w.region || "อื่นๆ"] || []).push(w));
+  const stat = (v, l) => '<div style="display:grid;gap:2px;padding:10px 12px;border-radius:12px;background:#e8f0fd"><b style="font-size:20px;line-height:1.1;color:#123f8f;font-variant-numeric:tabular-nums">' + v + '</b><span style="font-size:11.5px;font-weight:700;color:#1d5fd0">' + l + '</span></div>';
+  return '<div class="card" style="gap:12px"><div style="display:flex;gap:12px;align-items:center">' + badge("wh", "#fff", "#1d5fd0", 40) +
+    '<div style="display:grid;gap:2px"><h3>' + (TH ? "เครือข่ายคลังสินค้าในประเทศ" : "เครือข่ายคลังสินค้าต่างประเทศ") + '</h3><span class="sub">กดชื่อคลังเพื่อดูตำแหน่งบนแผนที่</span></div></div>' +
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">' + stat(rows.length, "คลังสินค้า") + stat(fmt(tot / 1000, 1) + "k", "ตร.ม. รวม") + stat(places, TH ? "จังหวัด" : "เมือง") + '</div></div>' +
+    Object.keys(by).map(r => '<div class="card" style="gap:8px"><b style="font-size:13px;display:flex;justify-content:space-between">' + r + '<span class="sub">' + by[r].length + ' คลัง · ' + fmt(by[r].reduce((a, w) => a + (w.area || 0), 0), 0) + ' ตร.ม.</span></b><div class="list">' +
+      by[r].sort((a, b) => (b.area || 0) - (a.area || 0)).map(w => '<button class="row" data-wh="' + w.i + '">' + badge("wh", "#1d5fd0", "#e8f0fd", 28) + '<b>' + w.wh + '<span style="display:block;font-size:11px;font-weight:500;color:#6b6a68">' + (w.province || "") + '</span></b><i>' + fmt(w.area, 0) + ' ตร.ม.</i></button>').join("") + '</div></div>').join("");
+}
+function pubCard(w) {
+  return '<div class="card" style="gap:12px"><div style="display:flex;gap:12px;align-items:flex-start">' + badge("wh", "#1d5fd0", "#e8f0fd", 42) +
+    '<div style="display:grid;gap:3px;min-width:0"><h3>' + w.wh + '</h3><span class="sub" style="display:flex;align-items:center;gap:4px">' + ico("pin", "#9a9794", 13) + [w.province, w.region].filter(Boolean).join(" · ") + '</span></div></div>' +
+    '<div style="display:flex;align-items:baseline;gap:8px;padding:12px 14px;border-radius:12px;background:#e8f0fd;color:#123f8f"><b style="font-size:26px;line-height:1;font-variant-numeric:tabular-nums">' + fmt(w.area, 0) + '</b><span style="font-weight:700">ตร.ม.</span></div>' +
+    '<div>' + kvRow("pin", "ที่ตั้ง", [w.province, TH ? "ประเทศไทย" : w.region].filter(Boolean).join(", ")) + kvRow("wh", "ประเภท", w.st === "own" ? "คลังสินค้า PCG" : "คลังสินค้า") + '</div></div>';
+}
+
 function overview() {
+  if (PUB) return pubOverview();
   const cnt = s => rows.filter(w => w.st === s).length;
   const urgent = rows.filter(w => w.st === "soon" || w.st === "exp").sort((a, b) => a.ml - b.ml);
   const tile = s => '<div style="display:grid;gap:8px;padding:12px;border-radius:12px;background:' + TINT[s] + '">' +
@@ -423,12 +445,12 @@ function render() {
         '<div>' + kvRow("area", "พื้นที่รวม", fmt(items.reduce((a, w) => a + (w.area || 0), 0), 0) + " ตร.ม.") +
         kvRow("money", "ค่าเช่ารวม/เดือน", TH ? fmt(items.reduce((a, w) => a + (w.rent || 0), 0), 0) + " บาท" : "$" + fmt(items.reduce((a, w) => a + (w.rent || 0), 0), 0)) +
         '</div></div>' : items.length > 1 ? '<span class="sub">' + items.length + ' สัญญาในบริเวณนี้</span>' : '') +
-      items.map(contractCard).join("");
+      items.map(PUB ? pubCard : contractCard).join("");
     document.getElementById("back").onclick = () => select(null);
     if (grp) el.scrollTop = 0;
   }
   el.querySelectorAll("[data-wh]").forEach(b => b.onclick = () => {
-    const w = rows[+b.dataset.wh]; const idx = G.findIndex(g => g.items.includes(w));
+    const w = rows.find(x => x.i === +b.dataset.wh); const idx = G.findIndex(g => g.items.includes(w));
     if (idx >= 0) select(idx);
   });
   postSize();

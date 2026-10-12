@@ -7,7 +7,8 @@
   var HASH = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918";
   var LS = "pcg-gate", d = new Date(), TODAY = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
   var ok = false; try { var g = JSON.parse(localStorage.getItem(LS) || "null"); ok = !!(g && g.h === HASH && g.day === TODAY); } catch (e) {}
-  if (ok) return;
+  /* 12 ต.ค. หน้า Warehouse ลิงก์ลูกค้า (?customer=1) เปิดได้โดยไม่ต้องใส่รหัส · หน้านั้นตั้ง window.PCG_GATE_PUBLIC และแสดงเฉพาะแผนที่ตำแหน่ง/ขนาดคลัง */
+  if (ok || (window.PCG_GATE_PUBLIC && /[?&]customer=1(&|$)/.test(location.search))) return;
   var css = "html.pcgg-lock body>*:not(.pcgg-bg){filter:blur(12px);pointer-events:none;user-select:none}"
     + ".pcgg-bg{position:fixed;inset:0;z-index:99999;background:rgba(20,22,26,.6);display:flex;align-items:center;justify-content:center;padding:16px}"
     + ".pcgg-box{background:#fff;border-radius:20px;width:min(360px,100%);padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.3);font:14px 'IBM Plex Sans Thai',system-ui,sans-serif;color:#22262c;display:grid;gap:12px}"
