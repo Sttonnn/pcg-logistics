@@ -98,6 +98,25 @@
   .pdot.m { width: 34px; height: 44px; }
   .pdot.sel, .pw:hover .pdot { transform: scale(1.18) translateY(-2px); filter: drop-shadow(0 8px 10px rgba(29,78,216,.35)); }
   .lbl.plain { background: none; box-shadow: none; padding: 0; font-size: 11px; font-weight: 600; color: #22324a; margin-left: 5px; text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 2px #fff; }
+  .rchips { position: absolute; z-index: 6; right: 14px; top: 14px; width: 250px; display: grid; gap: 4px; background: rgba(255,255,255,.94); border-radius: 16px; padding: 12px; box-shadow: 0 10px 30px rgba(15,23,42,.14); }
+  .rchips h4 { margin: 0 0 4px 2px; font-size: 13px; color: #0f172a; display: grid; }
+  .rchips h4 small { font-size: 10.5px; font-weight: 500; color: #94a3b8; }
+  .rchips button { display: grid; grid-template-columns: 10px 1fr; column-gap: 8px; row-gap: 3px; align-items: center; text-align: left; border: 0; background: transparent; border-radius: 10px; padding: 7px 8px; font: inherit; font-size: 11px; color: #64748b; cursor: pointer; transition: background .15s; }
+  .rchips button:hover { background: #f1f5f9; }
+  .rchips button i { width: 10px; height: 10px; border-radius: 999px; grid-row: 1 / 3; }
+  .rchips button b { color: #0f172a; font-size: 12.5px; font-weight: 700; display: flex; justify-content: space-between; gap: 6px; }
+  .rchips button span { grid-column: 2; }
+  .rchips button u { grid-column: 2; display: block; height: 5px; border-radius: 9px; background: #eef2f7; text-decoration: none; overflow: hidden; }
+  .rchips button u em { display: block; height: 100%; border-radius: 9px; }
+  .rchips button.on { background: #0f172a; color: #cbd5e1; }
+  .rchips button.on b { color: #fff; }
+  .rchips button.on u { background: rgba(255,255,255,.15); }
+  .map.rsel .rchips button:not(.on) { opacity: .6; }
+  path.prov { transition: opacity .25s; }
+  path.prov.dim { fill: #f3eee4; stroke: #f3eee4; }
+  .pw { transition: opacity .25s; }
+  .pw.dim { opacity: .22; }
+  @media (max-width: 700px) { .rchips { left: 8px; right: 8px; top: 8px; width: auto; display: flex; gap: 4px; overflow-x: auto; padding: 6px; border-radius: 14px; scrollbar-width: none; } .rchips h4 { display: none; } .rchips button { flex: none; padding: 5px 9px; } .rchips button u { display: none; } }
   .wrap.pub .pstat { top: auto; bottom: 14px; gap: 0; background: rgba(255,255,255,.95); border-radius: 999px; padding: 6px 6px 6px 8px; box-shadow: 0 4px 14px rgba(0,0,0,.1); align-items: center; }
   .wrap.pub .pstat span { background: none; box-shadow: none; display: flex; align-items: baseline; gap: 5px; padding: 2px 10px; border-radius: 0; font-size: 11.5px; }
   .wrap.pub .pstat span + span { border-left: 1px solid rgba(32,30,29,.12); }
@@ -236,12 +255,16 @@ function drawPins(layer, proj, idxs, big, one) {
     const name = [...new Set(items.map(w => w.wh))];
     const d = document.createElement("div"); d.className = "pw";
     d.style.left = c.x + "px"; d.style.top = c.y + "px"; d.dataset.key = c.m.join(",");
+    if (PUB) { d.dataset.regs = "|" + [...new Set(items.map(w => w.region || ""))].join("|") + "|"; }
     d.title = name.join(" / ") + (n > 1 ? " · " + n + (PUB ? " คลัง" : " สัญญา") : "");
     const isSel = sel != null && (typeof sel === "object" ? (sel.keys ? items.some(w => sel.keys.includes(w.region)) : sel.merge.some(i => c.m.includes(i))) : c.m.includes(sel));
     const nm1 = name.length > 1 ? name[0] + " +" + (name.length - 1) : name[0];
     d.innerHTML = PUB ? '<div class="pin pdot' + (n > 1 ? " m" : "") + (isSel ? " sel" : "") + '">' + pubPin(n) + '</div><span class="lbl plain">' + (one || nm1) + '</span>' :
       '<div class="pin' + (isSel ? " sel" : "") + '">' + whIcon(C[st]) + (n > 1 ? '<span class="n">' + n + '</span>' : "") + '</div>' +
       '<span class="lbl" style="border-color:' + C[st] + '"><i class="dot" style="background:' + C[st] + '"></i>' + nm1 + '</span>';
+    if (PUB) { /* 12 ต.ค. ขนาดหมุดตามพื้นที่ (log) : 441 ตร.ม. ≈ 0.8 เท่า · 50,000 ≈ 1.3 เท่า */
+      const ar = items.reduce((a, w) => a + (w.area || 0), 0), k = Math.max(.78, Math.min(1.7, .8 + .42 * Math.log10(Math.max(ar, 1) / 500)));
+      const pd = d.querySelector(".pdot"); pd.style.width = (30 * k) + "px"; pd.style.height = (39 * k) + "px"; d.dataset.h = 39 * k; }
     d.onclick = () => { if (PUB) { HOV = { items, pin: true, key: c.m.join(",") }; } select(c.m.length === 1 ? c.m[0] : { merge: c.m }); };
     if (PUB) { d.onmouseenter = () => { if (!HOV || !HOV.pin) { HOV = { items, pin: false, key: c.m.join(",") }; pubFloat(); } };
       d.onmouseleave = () => { if (HOV && !HOV.pin) { HOV = null; pubFloat(); } }; }
@@ -291,7 +314,7 @@ function drawTH(el, svg, W, H, layer) {
   }
   /* 12 ต.ค. ผู้ใช้ว่ากรอบขยายรก → โหมดลูกค้าไม่มีกรอบขยาย: แผนที่ไทยเต็มกรอบ · คลังใน กทม.และปริมณฑล รวมเป็นจุดเดียว (pop up แสดงทุกคลัง) */
   if (PUB) { ox = 0; mainW = W; mainH = H; }
-  const M = PUB ? [[24, 30], [W - 24, H - 64]] : [[ox + 18, 44], [ox + mainW - 10, mainH - 14]];
+  const M = PUB ? (W < 700 ? [[20, 96], [W - 20, H - 64]] : [[24, 40], [W - 290, H - 64]]) : [[ox + 18, 44], [ox + mainW - 10, mainH - 14]];
   const proj = d3.geoMercator().fitExtent(M, thF);
   const path = d3.geoPath(proj);
   mk("clipPath", { id: "cm" }, mk("defs", {}, svg)).appendChild(mk("rect", { x: 0, y: 0, width: wide && !PUB ? ox + mainW + 16 : W, height: wide && PUB ? H : mainH }));
@@ -302,7 +325,7 @@ function drawTH(el, svg, W, H, layer) {
   const cent = {};
   provs.features.forEach(f => {
     const R = REG[f.properties.r] || REG.Central;
-    mk("path", PUB ? { d: path(f), fill: PUBF[f.properties.r] || PUBF.Central, stroke: PUBF[f.properties.r] || PUBF.Central, "stroke-width": 0.8, "stroke-linejoin": "round" } : { d: path(f), fill: R.fill, stroke: R.fill, "stroke-width": 0.8, "stroke-linejoin": "round" }, gm);
+    mk("path", PUB ? { d: path(f), fill: PUBF[f.properties.r] || PUBF.Central, stroke: PUBF[f.properties.r] || PUBF.Central, "stroke-width": 0.8, "stroke-linejoin": "round", class: "prov", "data-r": f.properties.r, "data-p": f.properties.p } : { d: path(f), fill: R.fill, stroke: R.fill, "stroke-width": 0.8, "stroke-linejoin": "round" }, gm);
     const c = path.centroid(f), a = path.area(f);
     const k = f.properties.r; cent[k] = cent[k] || { x: 0, y: 0, a: 0 };
     if (isFinite(c[0])) { cent[k].x += c[0] * a; cent[k].y += c[1] * a; cent[k].a += a; }
@@ -421,7 +444,7 @@ function drawMap() {
   const layer = document.createElement("div"); layer.className = "pins"; el.appendChild(layer);
   if (TH) drawTH(el, svg, W, H, layer); else drawOS(el, svg, W, H, layer);
   declutter(layer);
-  if (PUB) pubFloat();
+  if (PUB) { pubFloat(); applyReg(); }
 }
 
 const fail = msg => e => { console.error(e); document.getElementById("map").innerHTML = '<div class="loading">' + msg + '</div>'; };
@@ -469,7 +492,22 @@ function contractCard(w) {
     '</div></div>';
 }
 
-let HOV = null;
+let HOV = null, SELR = null;
+const regCol = k => /WHA/.test(k) ? "#2563eb" : /กรุงเทพ/.test(k) ? "#f0806a" : /เหนือ/.test(k) ? "#5cc95a" : /อีสาน/.test(k) ? "#f5b82e" : /ใต้/.test(k) ? "#2fbf86" : /กลาง/.test(k) ? "#2bb3d1" : "#94a3b8";
+/* เน้นภาคที่เลือก: หมุดภาคอื่นจาง · จังหวัดนอกภาคจาง (ภาคเมือง/WHA = เฉพาะจังหวัดที่มีคลัง · ภาคอื่น = ภาคภูมิศาสตร์ของคลังในภาคนั้น) */
+function applyReg() {
+  const el = document.getElementById("map"); if (!el) return;
+  el.querySelectorAll(".rchips button").forEach(b => b.classList.toggle("on", b.dataset.r === SELR));
+  el.classList.toggle("rsel", !!SELR);
+  el.querySelectorAll(".pw").forEach(p => p.classList.toggle("dim", !!SELR && (p.dataset.regs || "").indexOf("|" + SELR + "|") < 0));
+  let keep = null;
+  if (SELR && provs) {
+    const ws = rows.filter(w => (w.region || "อื่นๆ") === SELR), pr = new Set(ws.map(w => normP(w.province)));
+    const geo = new Set(provs.features.filter(f => pr.has(f.properties.p)).map(f => f.properties.r));
+    keep = /กรุงเทพ|WHA/.test(SELR) ? (p, r) => pr.has(p) : (p, r) => geo.has(r);
+  }
+  el.querySelectorAll("path.prov").forEach(n => n.classList.toggle("dim", !!keep && !keep(n.dataset.p, n.dataset.r)));
+}
 /* แผนที่ลูกค้า: ตัวเลขสรุปมุมซ้ายบน + การ์ดรายละเอียดลอยมุมขวาเมื่อชี้/กดหมุด */
 function pubFloat() {
   const el = document.getElementById("map"); if (!el) return;
@@ -478,6 +516,13 @@ function pubFloat() {
     const st = document.createElement("div"); st.className = "pstat";
     st.innerHTML = '<span><b>' + rows.length + '</b>คลังสินค้า</span><span><b>' + fmt(tot, 0) + '</b>ตร.ม. รวม</span><span><b>' + places + '</b>' + (TH ? "จังหวัด" : "เมือง") + '</span><span class="ph">ชี้หรือกดที่จุดเพื่อดูรายละเอียด</span>';
     el.appendChild(st);
+    /* 12 ต.ค. แถบสรุปรายภาค (ตามภาคในข้อมูลคลัง) กด = เน้นภาคนั้นบนแผนที่ */
+    const by = {}; rows.forEach(w => { const k = w.region || "อื่นๆ"; (by[k] = by[k] || { n: 0, a: 0 }); by[k].n++; by[k].a += w.area || 0; });
+    const rc = document.createElement("div"); rc.className = "rchips";
+    const amax = Math.max(...Object.values(by).map(v => v.a));
+    rc.innerHTML = '<h4>พื้นที่คลังรายภาค <small>กดเพื่อเน้นบนแผนที่</small></h4>' + Object.keys(by).sort((a, b) => by[b].a - by[a].a).map(k => '<button type="button" data-r="' + k + '"><i style="background:' + regCol(k) + '"></i><b>' + k + '</b><span>' + by[k].n + ' คลัง · ' + fmt(by[k].a, 0) + ' ตร.ม.</span><u><em style="width:' + Math.max(4, by[k].a / amax * 100) + '%;background:' + regCol(k) + '"></em></u></button>').join("");
+    rc.onclick = ev => { const b = ev.target.closest("button"); if (!b) return; SELR = SELR === b.dataset.r ? null : b.dataset.r; HOV = null; pubFloat(); applyReg(); };
+    el.appendChild(rc);
   }
   let f = el.querySelector(".pfloat");
   if (!HOV) { if (f) f.remove(); return; }
@@ -490,7 +535,7 @@ function pubFloat() {
   const pw = el.querySelector('.pw[data-key="' + HOV.key + '"]');
   if (pw) {
     const px = parseFloat(pw.style.left), py = parseFloat(pw.style.top), W = el.clientWidth, fw = f.offsetWidth, fh = f.offsetHeight;
-    let left = Math.min(Math.max(px - fw / 2, 8), W - fw - 8), top = py - (PUB ? 52 : 20) - fh, below = top < 8;
+    let left = Math.min(Math.max(px - fw / 2, 8), W - fw - 8), top = py - (PUB ? (+pw.dataset.h || 39) + 13 : 20) - fh, below = top < 8;
     if (below) top = py + (PUB ? 10 : 20);
     f.style.left = left + "px"; f.style.top = top + "px"; f.classList.toggle("below", below);
     f.querySelector(".tip").style.left = (px - left - 7) + "px";
