@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Corrective Maintenance · ภาพรวมงานแจ้งซ่อม</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap">
+<style>
+  :root {
+    --bg: #f1f3f8; --ink: #17213a; --ink2: #5b6782; --ink3: #8a95ab; --line: #e6eaf2; --chip: #e9edf5;
+    --done: #0f9a6e; --review: #7c3aed; --wait: #d97706; --prog: #2563eb; --cancel: #b8c0cf; --bad: #dc3b26;
+    --acc: #f26b1d; --acc2: #c2410c;
+    --shadow: 0 10px 26px rgba(23,33,58,.09); --shadow-s: 0 4px 14px rgba(23,33,58,.07);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'IBM Plex Sans Thai', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  button, select, input { font: inherit; color: inherit; }
+  .num { font-family: Archivo, 'IBM Plex Sans Thai', sans-serif; font-variant-numeric: tabular-nums; }
+  .lay { display: grid; grid-template-columns: 252px minmax(0,1fr); min-height: 100vh; }
+
+  /* แถบซ้าย */
+  .side { position: sticky; top: 0; height: 100vh; overflow: auto; background: #131c2e; color: #dfe5f1; padding: 18px 14px; display: flex; flex-direction: column; gap: 16px; }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 0 4px; }
+  .brand .ic { width: 42px; height: 42px; border-radius: 13px; display: grid; place-items: center; background: linear-gradient(150deg,#ff9a3d,#e0480f); color: #fff; box-shadow: 0 8px 18px rgba(242,107,29,.35); flex: none; }
+  .brand b { display: block; font-size: 15px; color: #fff; line-height: 1.2; } .brand small { font-size: 11.5px; color: #95a1ba; }
+  .side h5 { margin: 4px 6px 4px; font-size: 11px; letter-spacing: .08em; color: #7d89a3; text-transform: uppercase; }
+  .nav { display: grid; gap: 3px; }
+  .nav button { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; cursor: pointer; border: 0; border-radius: 12px; padding: 10px 12px; background: transparent; color: #cfd6e4; font-size: 14px; font-weight: 600; }
+  .nav button:hover { background: rgba(255,255,255,.06); }
+  .nav button.on { background: linear-gradient(150deg,#ff8a34,#e0480f); color: #fff; box-shadow: 0 8px 18px rgba(224,72,15,.3); }
+  .nav button .c { margin-left: auto; font-size: 11.5px; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: rgba(255,255,255,.12); }
+  .nav button.on .c { background: rgba(255,255,255,.25); }
+  .sites { display: grid; gap: 6px; }
+  .sbtn { cursor: pointer; border: 1px solid rgba(255,255,255,.08); border-radius: 13px; padding: 9px 11px; background: rgba(255,255,255,.03); text-align: left; display: grid; gap: 5px; color: #dfe5f1; }
+  .sbtn.on { border-color: #ff9a3d; background: rgba(255,138,52,.12); }
+  .sbtn .r1 { display: flex; justify-content: space-between; gap: 8px; font-weight: 700; font-size: 13.5px; } .sbtn .r1 span { color: #95a1ba; font-size: 12px; font-weight: 600; }
+  .sbtn .mini { display: flex; height: 6px; border-radius: 4px; overflow: hidden; gap: 1px; background: rgba(255,255,255,.08); }
+  .guide { margin-top: auto; border-radius: 16px; padding: 13px 14px; background: linear-gradient(150deg,#ffe0a8,#ffbe5c); color: #3a2400; cursor: pointer; border: 0; text-align: left; display: grid; gap: 3px; }
+  .guide b { font-size: 14px; } .guide span { font-size: 12px; }
+
+  /* หัว */
+  .hero { position: relative; overflow: hidden; padding: 20px clamp(16px,2.6vw,36px) 24px; color: #fff; background: linear-gradient(150deg,#1a2238 0%,#2b2240 46%,#6b2a12 100%); border-radius: 0 0 32px 32px; box-shadow: 0 18px 40px rgba(26,34,56,.25); }
+  .hero .glow { position: absolute; border-radius: 999px; pointer-events: none; }
+  .top { position: relative; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .back { display: inline-flex; align-items: center; gap: 8px; color: #fff; text-decoration: none; font-size: 14px; font-weight: 700; padding: 9px 16px 9px 12px; border-radius: 999px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.24); white-space: nowrap; }
+  .ttl { display: grid; flex: 1 1 260px; min-width: 0; }
+  .kicker { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.72); }
+  h1 { margin: 0; font-size: 28px; line-height: 1.25; font-weight: 700; }
+  h1 em { font-style: normal; font-family: Archivo, sans-serif; font-weight: 900; color: #ffb27a; font-size: .8em; margin-left: 8px; letter-spacing: .01em; }
+  .asof { font-size: 12.5px; color: rgba(255,255,255,.75); }
+  .upl { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; border: 0; border-radius: 14px; padding: 11px 18px; font-size: 14px; font-weight: 700; color: #7a2a06; background: #fff; box-shadow: 0 8px 20px rgba(0,0,0,.25); white-space: nowrap; }
+  .upl:hover { background: #fff1e6; }
+  .syncst { font-size: 12px; color: rgba(255,255,255,.75); }
+  .lnk { cursor: pointer; border: 0; background: none; padding: 0; color: rgba(255,255,255,.75); font-size: 12px; text-decoration: underline; }
+  .fbar { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 18px; }
+  .fbox { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 6px 8px 6px 14px; border-radius: 14px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); font-size: 12.5px; font-weight: 600; color: rgba(255,255,255,.8); }
+  .fbox input, .fbox select { border: 0; border-radius: 10px; padding: 6px 10px; background: #fff; color: var(--ink); font-size: 13px; font-weight: 600; min-height: 32px; }
+  .qk { display: inline-flex; gap: 4px; padding: 4px; border-radius: 14px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); flex-wrap: wrap; }
+  .qk button { cursor: pointer; border: 0; border-radius: 10px; padding: 7px 12px; background: transparent; color: #fff; font-size: 13px; font-weight: 700; }
+  .qk button.on { background: #fff; color: var(--ink); }
+
+  .stats { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0,1fr)) minmax(0,1.15fr); gap: 12px; margin-top: 16px; }
+  .card { border-radius: 22px; padding: 15px 17px; background: #fff; color: var(--ink); box-shadow: 0 10px 24px rgba(0,0,0,.18); min-width: 0; display: grid; gap: 2px; align-content: start; border-top: 5px solid var(--c); }
+  .card .lbl { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 700; color: var(--ink2); }
+  .card .lbl i { width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; background: color-mix(in srgb, var(--c) 14%, #fff); color: var(--c); flex: none; }
+  .card .val { font-family: Archivo, sans-serif; font-size: 38px; font-weight: 900; line-height: 1.1; margin-top: 6px; }
+  .card .val small { font-family: 'IBM Plex Sans Thai', sans-serif; font-size: 14px; font-weight: 600; color: var(--ink2); margin-left: 4px; }
+  .card .sub { font-size: 12px; color: var(--ink2); }
+  .card.perf { display: flex; align-items: center; gap: 10px; padding-right: 12px; border-top-color: var(--done); }
+  .card.perf .pt { display: grid; gap: 2px; min-width: 0; }
+
+  main { padding: 22px clamp(16px,2.6vw,36px) 48px; display: grid; gap: 20px; min-width: 0; }
+  .grid2 { display: grid; grid-template-columns: minmax(0,1.25fr) minmax(0,1fr); gap: 18px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px; }
+  .panel { background: #fff; border-radius: 22px; box-shadow: var(--shadow); padding: 18px 20px; min-width: 0; }
+  .panel h2 { margin: 0; font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .panel .hint { font-size: 12.5px; color: var(--ink2); margin: 3px 0 12px; }
+  .tag { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--chip); color: var(--ink2); }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: var(--ink2); margin-bottom: 8px; font-weight: 600; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+
+  /* กราฟแท่งรายเดือน */
+  .mchart { display: grid; grid-template-columns: 34px minmax(0,1fr); gap: 6px; }
+  .yax { position: relative; height: 240px; font-size: 11px; color: var(--ink3); text-align: right; }
+  .yax span { position: absolute; right: 0; transform: translateY(50%); }
+  .plot { position: relative; height: 240px; display: flex; align-items: flex-end; gap: 10px; border-bottom: 1px solid var(--line); }
+  .plot .gl { position: absolute; left: 0; right: 0; border-top: 1px dashed #edf0f5; pointer-events: none; }
+  .mcol { flex: 1; max-width: 64px; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch; margin: 0 auto; cursor: pointer; position: relative; }
+  .mcol .tt { text-align: center; font-size: 12.5px; font-weight: 800; color: var(--ink); margin-bottom: 3px; }
+  .mcol .stk { display: flex; flex-direction: column-reverse; gap: 2px; }
+  .mcol .stk span { display: flex; align-items: center; justify-content: center; color: #fff; font-size: 11px; font-weight: 800; min-height: 2px; }
+  .mcol .stk span:last-child { border-radius: 4px 4px 0 0; }
+  .mcol:hover .stk { filter: brightness(1.06); outline: 2px solid var(--ink); outline-offset: 1px; }
+  .xax { display: flex; gap: 10px; margin-left: 40px; }
+  .xax span { flex: 1; max-width: 64px; margin: 0 auto; text-align: center; font-size: 11.5px; font-weight: 700; color: var(--ink2); padding-top: 6px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th { text-align: left; font-size: 12px; font-weight: 700; color: var(--ink2); background: #f6f7fb; padding: 9px 10px; position: sticky; top: 0; z-index: 1; }
+  td { padding: 9px 10px; border-bottom: 1px solid #eef1f6; vertical-align: middle; }
+  tr.ck { cursor: pointer; } tr.ck:hover td { background: #fff8f2; }
+  .tw { overflow-x: auto; margin: 0 -20px; padding: 0 20px; }
+  .tw table { min-width: 760px; }
+  .bar { display: flex; gap: 2px; height: 10px; border-radius: 5px; overflow: hidden; background: #f0f2f7; min-width: 80px; }
+  .bar span { height: 100%; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+  .pill i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .pri { display: inline-block; min-width: 28px; text-align: center; padding: 2px 7px; border-radius: 7px; font-size: 11.5px; font-weight: 800; }
+  .pri.P1 { background: #fde3df; color: #a8250f; } .pri.P2 { background: #fdeccc; color: #8a4b05; } .pri.P3 { background: #e8edf6; color: #3a4a6b; }
+  .over { color: var(--bad); font-weight: 700; font-size: 12px; }
+  .muted { color: var(--ink2); font-size: 12.5px; }
+  .pills { display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: #fff; box-shadow: var(--shadow-s); flex-wrap: wrap; }
+  .pills button { cursor: pointer; border: 0; border-radius: 999px; padding: 7px 13px; font-size: 13px; font-weight: 700; background: transparent; color: var(--ink2); white-space: nowrap; }
+  .pills button.on { background: var(--ink); color: #fff; }
+  .search { flex: 1 1 220px; display: flex; align-items: center; gap: 8px; padding: 4px 14px; border-radius: 999px; background: #fff; box-shadow: var(--shadow-s); min-width: 0; }
+  .search input { border: 0; outline: 0; background: transparent; min-height: 36px; flex: 1; min-width: 0; font-size: 14px; }
+  .more { cursor: pointer; border: 0; border-radius: 999px; padding: 9px 18px; font-weight: 700; background: var(--chip); color: var(--ink); justify-self: center; }
+
+  .hbar { display: grid; grid-template-columns: minmax(90px,170px) minmax(0,1fr) 46px; gap: 10px; align-items: center; padding: 5px 0; font-size: 13px; }
+  .hbar .nm { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hbar .v { font-weight: 800; text-align: right; }
+  .hbar .bar { height: 14px; border-radius: 4px; }
+  .hbar.ck { cursor: pointer; border-radius: 8px; } .hbar.ck:hover .nm { color: var(--acc2); }
+
+  .todo { display: grid; gap: 8px; }
+  .titem { display: grid; grid-template-columns: auto minmax(0,1fr) auto; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 14px; background: #f8f9fc; border-left: 4px solid var(--c); cursor: pointer; }
+  .titem:hover { background: #fff5ec; }
+  .titem .d { font-family: Archivo, sans-serif; font-weight: 900; font-size: 20px; text-align: center; line-height: 1; } .titem .d small { display: block; font-family: 'IBM Plex Sans Thai'; font-size: 10.5px; font-weight: 600; color: var(--ink2); }
+  .titem b { font-size: 13.5px; } .titem .m { font-size: 12px; color: var(--ink2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .empty { padding: 26px; text-align: center; color: var(--ink2); }
+
+  .pcards { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
+  .pc { border-radius: 16px; padding: 13px 14px; background: #f8f9fc; display: grid; gap: 4px; }
+  .pc .h { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 13px; }
+  .pc .n { font-family: Archivo, sans-serif; font-weight: 900; font-size: 28px; line-height: 1.1; }
+  .pc .s { font-size: 12px; color: var(--ink2); }
+
+  dialog { border: 0; border-radius: 22px; padding: 0; box-shadow: 0 30px 80px rgba(0,0,0,.3); width: min(720px, calc(100% - 28px)); max-height: calc(100vh - 40px); }
+  dialog::backdrop { background: rgba(15,22,38,.5); }
+  .dlg { padding: 20px 22px; display: grid; gap: 12px; }
+  .dlg h3 { margin: 0; font-size: 18px; }
+  .kv { display: grid; grid-template-columns: 150px minmax(0,1fr); gap: 6px 12px; font-size: 13.5px; } .kv span { color: var(--ink2); }
+  .tl { display: flex; gap: 0; overflow-x: auto; padding: 6px 0; }
+  .tl div { flex: 1; min-width: 96px; text-align: center; font-size: 11.5px; color: var(--ink2); position: relative; padding-top: 18px; }
+  .tl div::before { content: ""; position: absolute; top: 5px; left: 50%; width: 11px; height: 11px; margin-left: -5px; border-radius: 50%; background: var(--c, #cfd6e3); z-index: 1; }
+  .tl div::after { content: ""; position: absolute; top: 10px; left: 0; right: 0; height: 2px; background: #e3e7ef; }
+  .tl div b { display: block; color: var(--ink); font-size: 12px; }
+  .btn { cursor: pointer; border: 0; border-radius: 12px; padding: 9px 16px; font-weight: 700; font-size: 13.5px; background: var(--chip); color: var(--ink); }
+  .btn.p { background: linear-gradient(150deg,#ff8a34,#e0480f); color: #fff; }
+  .sumg { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 8px; }
+  .sumg div { background: #f6f7fb; border-radius: 12px; padding: 10px; text-align: center; } .sumg b { display: block; font-family: Archivo; font-size: 24px; } .sumg span { font-size: 12px; color: var(--ink2); }
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #17213a; color: #fff; padding: 11px 18px; border-radius: 12px; font-size: 13.5px; font-weight: 600; z-index: 99; box-shadow: 0 12px 30px rgba(0,0,0,.3); }
+  .tip { position: fixed; z-index: 50; pointer-events: none; background: #17213a; color: #fff; border-radius: 10px; padding: 8px 11px; font-size: 12px; line-height: 1.55; box-shadow: 0 10px 24px rgba(0,0,0,.25); min-width: 150px; }
+  .tip b { font-size: 12.5px; } .tip i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; }
+  .warn { border-radius: 14px; padding: 10px 14px; background: #fff7e6; color: #7a4a00; font-size: 13px; border: 1px solid #ffe0a3; }
+  .sidebtn { display: none; }
+
+  @media (max-width: 1280px) { .stats { grid-template-columns: repeat(3, minmax(0,1fr)); } .grid3 { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 1100px) {
+    .lay { grid-template-columns: 1fr; }
+    .side { position: fixed; left: 0; top: 0; z-index: 60; width: 270px; transform: translateX(-105%); transition: transform .2s; }
+    .side.open { transform: none; box-shadow: 0 0 0 100vmax rgba(10,15,30,.45); }
+    .sidebtn { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; border: 1px solid rgba(255,255,255,.24); background: rgba(255,255,255,.12); color: #fff; border-radius: 999px; padding: 9px 14px; font-weight: 700; font-size: 13.5px; }
+    .grid2 { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 720px) { .stats { grid-template-columns: 1fr 1fr; } .card.perf { grid-column: 1 / -1; } .grid3, .pcards { grid-template-columns: 1fr; } h1 { font-size: 22px; } .card .val { font-size: 30px; } .kv { grid-template-columns: 1fr; } .sumg { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+<div class="lay">
+<aside class="side" id="side" aria-label="เมนู"></aside>
+<div style="min-width:0">
+<header class="hero">
+  <div class="glow" style="top:-60%;right:-10%;width:46vw;height:46vw;background:radial-gradient(circle,rgba(255,120,40,.45),rgba(255,120,40,0) 66%)"></div>
+  <div class="glow" style="top:-40%;left:-12%;width:40vw;height:40vw;background:radial-gradient(circle,rgba(80,110,255,.3),rgba(80,110,255,0) 66%)"></div>
+  <div class="top">
+    <button class="sidebtn" id="sideBtn" type="button">☰ เมนู</button>
+    <a class="back" href="../index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>หน้าหลัก</a>
+    <div class="ttl"><span class="kicker">PCG · วิศวกรรม · งานซ่อมบำรุง</span><h1>ภาพรวมงานแจ้งซ่อม<em>Corrective Maintenance</em></h1><span class="asof" id="asof"></span></div>
+    <div style="display:grid;gap:5px;justify-items:end;max-width:100%">
+      <button class="upl" id="uplBtn" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 M17 8l-5-5-5 5 M12 3v12"/></svg>อัปโหลด Excel แจ้งซ่อม</button>
+      <span class="syncst" id="syncSt">กำลังเชื่อมข้อมูล…</span>
+      <input type="file" id="file" accept=".xlsx,.xls" hidden>
+    </div>
+  </div>
+  <div class="fbar">
+    <label class="fbox">วันที่แจ้ง <input type="date" id="dFrom"> – <input type="date" id="dTo"></label>
+    <div class="qk" id="qk"></div>
+    <label class="fbox">คลัง <select id="fPlant"></select></label>
+    <label class="fbox">ความเร่งด่วน <select id="fPri"><option value="">ทั้งหมด</option><option value="P1">P1 งานเร่งด่วนมาก</option><option value="P2">P2 งานเร่งด่วน</option><option value="P3">P3 งานทั่วไป</option></select></label>
+  </div>
+  <div class="stats" id="stats"></div>
+</header>
+<main id="main"></main>
+</div>
+</div>
+<dialog id="dlg"></dialog>
+<div class="tip" id="tip" hidden></div>
+<script>
+/*__CM_PARSE__*/
+const DATA0 = /*__CM_DATA__*/[];
+const ASOF0 = "/*__ASOF__*/";
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const ls = { get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
+const DBK = "pcg-cm-db", LOGK = "pcg-cm-log";
+let DB = ls.get(DBK, null), DATA = DB && DB.asof >= ASOF0 ? DB.rows : DATA0, ASOF = DB && DB.asof >= ASOF0 ? DB.asof : ASOF0;
+let LOG = ls.get(LOGK, [{ at: ASOF0, file: "TrackingWorkOrderCompleted_14_10_2026_16_28.xlsx", asof: ASOF0, total: DATA0.length, added: DATA0.length, changed: 0, same: 0, kept: 0 }]);
+
+/* กลุ่มสถานะ · สีผ่านตัวตรวจสี (ลำดับ เสร็จ → รอตรวจรับ → รออนุมัติ → กำลังทำ) · ยกเลิก = เทากลาง */
+const G = [
+  { k: "done", t: "เสร็จสิ้น", c: "#0f9a6e" }, { k: "review", t: "รอตรวจรับงาน", c: "#7c3aed" },
+  { k: "wait", t: "รออนุมัติ", c: "#d97706" }, { k: "prog", t: "กำลังดำเนินการ", c: "#2563eb" }, { k: "cancel", t: "ยกเลิก / ไม่อนุมัติ", c: "#b8c0cf" }];
+const GM = Object.fromEntries(G.map(g => [g.k, g]));
+const MTH = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+const thd = s => { if (!s) return "–"; const [y, m, d] = s.slice(0, 10).split("-"); return `${+d} ${MTH[+m - 1]} ${(+y + 543) % 100}`; };
+const tht = s => s ? thd(s) + (s.length > 10 && s.slice(11, 16) !== "00:00" ? " " + s.slice(11, 16) : "") : "–";
+const ymL = ym => { const [y, m] = ym.split("-"); return MTH[+m - 1] + " " + (+y + 543) % 100; };
+const hrs = (a, b) => a && b ? (new Date(b) - new Date(a)) / 36e5 : null;
+const fmtH = h => h == null ? "–" : h < 24 ? h.toFixed(1) + " ชม." : (h / 24).toFixed(1) + " วัน";
+const today = () => new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);
+const pct = (a, b) => b ? Math.round(a / b * 1000) / 10 : 0;
+
+const S = { view: (location.hash || "#ov").slice(1), site: "", from: "", to: "", plant: "", pri: "", st: "", q: "", n: 50, qk: "all" };
+if (!["ov", "an", "list", "log"].includes(S.view)) S.view = "ov";
+
+/* ตัวกรองหลัก (ทุกมุมมองใช้ร่วมกัน) */
+function base(noSite) {
+  return DATA.filter(r => (!S.plant || r.plant === S.plant) && (!S.pri || r.pri === S.pri) && (noSite || !S.site || r.site === S.site)
+    && (!S.from || r.created.slice(0, 10) >= S.from) && (!S.to || r.created.slice(0, 10) <= S.to));
+}
+function stat(a) {
+  const c = { n: a.length }; G.forEach(g => c[g.k] = 0); a.forEach(r => c[r.g]++);
+  c.fin = c.done + c.review; c.open = c.wait + c.prog; c.valid = c.n - c.cancel;
+  c.perf = pct(c.fin, c.valid); c.over = a.filter(r => r.g !== "cancel" && r.over).length; c.overP = pct(c.over, c.valid);
+  const t = a.filter(r => (r.g === "done" || r.g === "review") && r.closed).map(r => hrs(r.created, r.closed)).filter(x => x != null && x >= 0);
+  c.mttr = t.length ? t.reduce((s, x) => s + x, 0) / t.length : null;
+  const sc = a.map(r => r.score).filter(x => x != null); c.score = sc.length ? sc.reduce((s, x) => s + x, 0) / sc.length : null; c.scN = sc.length;
+  return c;
+}
+const ageOf = r => Math.max(0, Math.floor((new Date(today()) - new Date(r.created.slice(0, 10))) / 864e5));
+const IC = {
+  list: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2 M9 3h6v4H9z M9 12h6 M9 16h4"/></svg>',
+  ok: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+  prog: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+  wait: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12 M6 22h12 M7 2v4a5 5 0 0 0 10 0V2 M7 22v-4a5 5 0 0 1 10 0v4"/></svg>',
+  ov: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v9H3z M14 3h7v5h-7z M14 12h7v9h-7z M3 16h7v5H3z"/></svg>',
+  an: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18 M7 15l4-4 3 3 5-6"/></svg>',
+  log: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2 M3 12a9 9 0 1 0 3-6.7L3 8 M3 3v5h5"/></svg>'
+};
+const stPill = r => { const g = GM[r.g]; return `<span class="pill" style="background:${g.c}1f;color:${r.g === "cancel" ? "#5b6782" : g.c}"><i></i>${esc(r.st || g.t)}</span>`; };
+const stackBar = c => `<div class="bar">${G.map(g => c[g.k] ? `<span style="width:${c[g.k] / c.n * 100}%;background:${g.c}"></span>` : "").join("")}</div>`;
+
+function renderSide() {
+  const a = base(true), sites = [...new Set(a.map(r => r.site))].sort(), all = stat(a);
+  $("side").innerHTML = `<div class="brand"><span class="ic">${IC.prog}</span><div><b>Corrective Maintenance</b><small>สรุปรวมงานแจ้งซ่อม</small></div></div>
+    <div><h5>มุมมอง</h5><div class="nav">
+      <button class="${S.view === "ov" ? "on" : ""}" data-view="ov">${IC.ov}ภาพรวม</button>
+      <button class="${S.view === "an" ? "on" : ""}" data-view="an">${IC.an}วิเคราะห์การเสีย</button>
+      <button class="${S.view === "list" ? "on" : ""}" data-view="list">${IC.list}รายการใบงาน<span class="c">${stat(base()).open}</span></button>
+      <button class="${S.view === "log" ? "on" : ""}" data-view="log">${IC.log}ประวัติการอัปโหลด</button></div></div>
+    <div><h5>อาคาร / สาขา</h5><div class="sites">
+      <button class="sbtn ${!S.site ? "on" : ""}" data-site=""><span class="r1">ทุกอาคาร <span>${all.n} งาน · ค้าง ${all.open}</span></span>${stackBar(all)}</button>
+      ${sites.map(s => { const c = stat(a.filter(r => r.site === s)); return `<button class="sbtn ${S.site === s ? "on" : ""}" data-site="${esc(s)}"><span class="r1">${esc(s)} <span>${c.n} งาน · ค้าง ${c.open}</span></span>${stackBar(c)}</button>`; }).join("")}
+    </div></div>
+    <button class="guide" id="guideBtn" type="button"><b>📖 คู่มือการอ่าน</b><span>สถานะแต่ละสี · วิธีคิด %Performance · SLA</span></button>`;
+}
+
+function renderStats() {
+  const c = stat(base());
+  const R = 34, L = Math.PI * R, p = Math.min(100, c.perf);
+  const card = (col, ic, lbl, v, sub) => `<div class="card" style="--c:${col}"><span class="lbl"><i>${ic}</i>${lbl}</span><span class="val">${v}<small>รายการ</small></span><span class="sub">${sub}</span></div>`;
+  $("stats").innerHTML = card("#3b4a6b", IC.list, "งานแจ้งซ่อมทั้งหมด", c.n, `ยกเลิก / ไม่อนุมัติ ${c.cancel} · เกิน SLA ${c.over}`)
+    + card(GM.done.c, IC.ok, "ดำเนินการแล้วเสร็จ", c.fin, `ปิดงานแล้ว ${c.done} · รอตรวจรับ ${c.review}`)
+    + card(GM.prog.c, IC.prog, "กำลังดำเนินการ", c.prog, "มอบหมาย / ช่างกำลังซ่อม")
+    + card(GM.wait.c, IC.wait, "รออนุมัติ", c.wait, "แจ้งแล้ว รอคลังอนุมัติ")
+    + `<div class="card perf"><svg width="92" height="56" viewBox="0 0 84 50" aria-hidden="true" style="flex:none"><path d="M8 44a34 34 0 0 1 68 0" fill="none" stroke="#e7ebf2" stroke-width="9" stroke-linecap="round"/><path d="M8 44a34 34 0 0 1 68 0" fill="none" stroke="${p >= 90 ? GM.done.c : p >= 75 ? GM.wait.c : "#dc3b26"}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${L * p / 100} ${L}"/></svg>
+      <div class="pt"><span class="lbl" style="font-size:13.5px;font-weight:700;color:var(--ink2)">%Performance</span><span class="val num" style="font-size:34px;font-weight:900;line-height:1.1">${c.valid ? c.perf.toFixed(1) : "–"}<small style="font-size:16px">%</small></span><span class="sub">แล้วเสร็จ ÷ งานที่ไม่ยกเลิก</span></div></div>`;
+}
+
+/* กราฟรายเดือน (แท่งซ้อน) + hover */
+function monthChart(a) {
+  const M = {}; a.forEach(r => { const k = r.created.slice(0, 7); (M[k] = M[k] || []).push(r); });
+  const ks = Object.keys(M).sort(); if (!ks.length) return '<div class="empty">ไม่มีข้อมูลในช่วงนี้</div>';
+  const cs = ks.map(k => stat(M[k])), mx = Math.max(...cs.map(c => c.n)), step = mx <= 10 ? 2 : mx <= 40 ? 10 : mx <= 100 ? 20 : 50, top = Math.ceil(mx / step) * step || 1;
+  const ticks = []; for (let v = 0; v <= top; v += step) ticks.push(v);
+  return `<div class="legend">${G.map(g => `<span><i style="background:${g.c}"></i>${g.t}</span>`).join("")}</div>
+    <div class="mchart"><div class="yax">${ticks.map(v => `<span style="bottom:${v / top * 100}%">${v}</span>`).join("")}</div>
+    <div class="plot">${ticks.slice(1).map(v => `<div class="gl" style="bottom:${v / top * 100}%"></div>`).join("")}
+      ${cs.map((c, i) => `<div class="mcol" data-month="${ks[i]}" data-tip="${esc(JSON.stringify({ t: ymL(ks[i]), c }))}"><div class="tt num">${c.n}</div><div class="stk" style="height:${c.n / top * 100}%">${G.map(g => c[g.k] ? `<span style="flex:${c[g.k]};background:${g.c};${g.k === "cancel" ? "color:#3b4560" : ""}">${c[g.k] / top >= .07 ? c[g.k] : ""}</span>` : "").join("")}</div></div>`).join("")}
+    </div></div><div class="xax">${ks.map(k => `<span>${ymL(k)}</span>`).join("")}</div>`;
+}
+
+function siteTable(a) {
+  const sites = [...new Set(a.map(r => r.site))].sort();
+  const rows = sites.map(s => [s, stat(a.filter(r => r.site === s))]);
+  const tot = stat(a);
+  const tr = (nm, c, attr) => `<tr ${attr || ""}><td><b>${esc(nm)}</b></td><td class="num"><b>${c.n}</b></td><td style="min-width:120px">${stackBar(c)}</td><td class="num"><b style="color:${c.perf >= 90 ? GM.done.c : c.perf >= 75 ? GM.wait.c : "#dc3b26"}">${c.valid ? c.perf.toFixed(1) + "%" : "–"}</b></td><td class="num">${c.prog || "·"}</td><td class="num">${c.wait || "·"}</td><td class="num">${c.over ? `<span class="over">${c.over}</span> <span class="muted">(${c.overP.toFixed(0)}%)</span>` : "·"}</td><td class="num muted">${fmtH(c.mttr)}</td></tr>`;
+  return `<div class="tw"><table><thead><tr><th>อาคาร</th><th>งาน</th><th>สถานะ</th><th>%Performance</th><th>กำลังทำ</th><th>รออนุมัติ</th><th>เกิน SLA</th><th>เวลาแจ้ง→ปิดเฉลี่ย</th></tr></thead><tbody>
+    ${rows.map(([s, c]) => tr(s, c, `class="ck" data-site="${esc(s)}"`)).join("")}${rows.length > 1 ? tr("รวม", tot, 'style="background:#f6f7fb"') : ""}</tbody></table></div>`;
+}
+
+function todoList(a, n) {
+  const o = a.filter(r => r.g === "wait" || r.g === "prog").sort((x, y) => x.created.localeCompare(y.created));
+  if (!o.length) return '<div class="empty">✓ ไม่มีงานค้าง</div>';
+  return `<div class="todo">${o.slice(0, n).map(r => `<div class="titem" style="--c:${GM[r.g].c}" data-wo="${esc(r.id)}"><div class="d num">${ageOf(r)}<small>วัน</small></div>
+    <div style="min-width:0"><b>${esc(r.wo)}</b> · <span class="pri ${esc(r.pri)}">${esc(r.pri)}</span> ${r.over ? '<span class="over">เกิน SLA</span>' : ""}<div class="m">${esc(r.eq)} · ${esc(r.desc)}</div></div>${stPill(r)}</div>`).join("")}</div>${o.length > n ? `<button class="more" data-view="list" data-st="open" style="margin-top:10px">ดูงานค้างทั้งหมด ${o.length} รายการ</button>` : ""}`;
+}
+
+function woTable(a, lim) {
+  return `<div class="tw"><table><thead><tr><th>เลขที่ใบงาน</th><th>อุปกรณ์ / โซน</th><th>คำอธิบาย</th><th>ความเร่งด่วน</th><th>วันที่แจ้ง</th><th>วันที่แล้วเสร็จ</th><th>สถานะงาน</th></tr></thead><tbody>
+    ${a.slice(0, lim).map(r => `<tr class="ck" data-wo="${esc(r.id)}"><td><b>${esc(r.wo)}</b><div class="muted">${esc(r.site)}</div></td><td>${esc(r.eq)}${r.loc && r.loc.trim() !== r.eq.trim() ? `<div class="muted">${esc(r.loc)}</div>` : ""}</td><td style="max-width:320px">${esc(r.desc) || '<span class="muted">–</span>'}</td>
+      <td><span class="pri ${esc(r.pri)}">${esc(r.pri)}</span> ${r.over && r.g !== "cancel" ? '<div class="over">เกิน SLA</div>' : ""}</td><td class="num">${tht(r.created)}</td><td class="num">${r.g === "done" || r.g === "review" ? tht(r.closed) : '<span class="muted">–</span>'}</td><td>${stPill(r)}</td></tr>`).join("") || `<tr><td colspan="7" class="empty">ไม่พบใบงาน</td></tr>`}</tbody></table></div>`;
+}
+
+function hbars(list, col, attr) {
+  const mx = Math.max(1, ...list.map(x => x[1]));
+  return list.map(([nm, v, sub]) => `<div class="hbar ${attr ? "ck" : ""}" ${attr ? `${attr}="${esc(nm)}"` : ""}><span class="nm" title="${esc(nm)}">${esc(nm)}</span><div class="bar"><span style="width:${v / mx * 100}%;background:${col}"></span></div><span class="v num">${v}</span></div>${sub ? `<div class="muted" style="margin:-3px 0 4px">${sub}</div>` : ""}`).join("") || '<div class="empty">ไม่มีข้อมูล</div>';
+}
+const count = (a, f) => { const m = {}; a.forEach(r => [].concat(f(r)).filter(Boolean).forEach(k => m[k] = (m[k] || 0) + 1)); return Object.entries(m).sort((x, y) => y[1] - x[1]); };
+
+function renderMain() {
+  const a = base(), c = stat(a), scope = (S.site || "ทุกอาคาร") + (S.from || S.to ? ` · ${thd(S.from) === "–" ? "เริ่มต้น" : thd(S.from)} – ${thd(S.to) === "–" ? "ล่าสุด" : thd(S.to)}` : " · ทุกช่วงเวลา");
+  const span = DATA.length ? [DATA.map(r => r.created).sort()[0], DATA.map(r => r.created).sort().pop()] : ["", ""];
+  const cover = `<div class="warn">ข้อมูลในระบบตอนนี้ครอบคลุมใบแจ้งซ่อมวันที่ <b>${thd(span[0])} – ${thd(span[1])}</b> (${DATA.length} ใบ) · อัปโหลดไฟล์ใหม่ = รวมกับของเดิม (ใบงานเดิมอัปเดตสถานะ ใบใหม่เพิ่มเข้า)</div>`;
+  let h = "";
+  if (S.view === "ov") {
+    h = `${cover}<div class="grid2">
+      <section class="panel"><h2>แนวโน้มงานแจ้งซ่อมรายเดือน <span class="tag">${esc(scope)}</span></h2><p class="hint">ตามวันที่แจ้ง · แยกตามสถานะงาน · ชี้แท่งเพื่อดูตัวเลข กดแท่ง = ดูใบงานเดือนนั้น</p>${monthChart(a)}</section>
+      <section class="panel"><h2>งานค้าง ต้องติดตาม <span class="tag">${c.open} รายการ</span></h2><p class="hint">รออนุมัติ + กำลังดำเนินการ · เรียงงานที่แจ้งนานสุดก่อน (ตัวเลข = แจ้งมาแล้วกี่วัน)</p>${todoList(a, 6)}</section></div>
+      <section class="panel"><h2>สรุปรายอาคาร</h2><p class="hint">กดแถว = ดูเฉพาะอาคารนั้น · %Performance = แล้วเสร็จ (ปิดงาน + รอตรวจรับ) ÷ งานทั้งหมดที่ไม่ถูกยกเลิก</p>${siteTable(base(true))}</section>
+      <section class="panel"><h2>ใบงานล่าสุด <span class="tag">${a.length} รายการ</span></h2><p class="hint">กดแถว = รายละเอียด / สาเหตุ / วิธีแก้</p>${woTable([...a].sort((x, y) => y.created.localeCompare(x.created)), 8)}<div style="display:grid;margin-top:10px"><button class="more" data-view="list">ดูรายการใบงานทั้งหมด</button></div></section>`;
+  } else if (S.view === "an") {
+    const v = a.filter(r => r.g !== "cancel");
+    const pc = ["P1", "P2", "P3"].map(p => { const x = v.filter(r => r.pri === p), s = stat(x); return `<div class="pc"><span class="h"><span class="pri ${p}">${p}</span>${esc((x[0] || {}).priName || { P1: "งานเร่งด่วนมาก", P2: "งานเร่งด่วน", P3: "งานทั่วไป" }[p])}</span><span class="n num">${x.length}</span><span class="s">เกิน SLA <b style="color:${s.overP > 50 ? "#dc3b26" : "inherit"}">${s.over} (${s.overP.toFixed(0)}%)</b> · แจ้ง→ปิดเฉลี่ย <b>${fmtH(s.mttr)}</b></span></div>`; }).join("");
+    const eqs = count(v, r => r.eq).slice(0, 10).map(([k, n]) => { const x = v.filter(r => r.eq === k); return [k, n, `${esc(x[0].site)} · ${esc(x[0].loc)}`]; });
+    h = `${cover}<section class="panel"><h2>ความเร่งด่วน และ SLA <span class="tag">${esc(scope)}</span></h2><p class="hint">ไม่นับงานที่ยกเลิก / ไม่อนุมัติ · เกิน SLA ตามช่อง "เกิน SLA" ในระบบ</p><div class="pcards">${pc}</div></section>
+      <div class="grid3">
+        <section class="panel"><h2>กลุ่มอาการเสีย</h2><p class="hint">1 ใบงานอาจมีหลายกลุ่ม</p>${hbars(count(v, r => r.sym.length ? r.sym : ["ไม่ระบุ"]), "#e0480f")}</section>
+        <section class="panel"><h2>โซนที่แจ้งซ่อมบ่อย</h2><p class="hint">Top 10 · กด = ดูใบงาน</p>${hbars(count(v, r => r.loc).slice(0, 10), "#2563eb", "data-qloc")}</section>
+        <section class="panel"><h2>วิธีแก้ไข</h2><p class="hint">จากช่องวิธีแก้ไข (เฉพาะที่ระบุ)</p>${hbars(count(v, r => (r.fix.split(" · ")[0] || "ไม่ระบุ")).slice(0, 8), "#0f9a6e")}</section>
+      </div>
+      <div class="grid2">
+        <section class="panel"><h2>อุปกรณ์ที่แจ้งซ่อมบ่อยที่สุด</h2><p class="hint">Top 10 · กด = ดูใบงานของอุปกรณ์นั้น</p>${hbars(eqs, "#7c3aed", "data-qeq")}</section>
+        <section class="panel"><h2>คุณภาพงานซ่อม</h2><p class="hint">จากคะแนนประเมินหลังซ่อม (1–5) และเวลาตั้งแต่แจ้งถึงปิดงาน</p>
+          <div class="pcards" style="grid-template-columns:1fr 1fr"><div class="pc"><span class="h">คะแนนประเมินเฉลี่ย</span><span class="n num">${c.score ? c.score.toFixed(2) : "–"}<small style="font-size:14px"> / 5</small></span><span class="s">จาก ${c.scN} ใบงานที่ประเมินแล้ว</span></div>
+          <div class="pc"><span class="h">แจ้ง → ปิดงาน เฉลี่ย</span><span class="n num" style="font-size:24px">${fmtH(c.mttr)}</span><span class="s">เฉพาะงานที่แล้วเสร็จ</span></div></div>
+          <h4 style="margin:14px 0 6px;font-size:13px;color:var(--ink2)">คะแนนแต่ละระดับ</h4>${hbars([5, 4, 3, 2, 1].map(s => ["★".repeat(s), v.filter(r => r.score === s).length]).filter(x => x[1]), "#f2b705")}</section>
+      </div>`;
+  } else if (S.view === "list") {
+    let L = a.filter(r => !S.st || (S.st === "open" ? r.g === "wait" || r.g === "prog" : S.st === "over" ? r.over && r.g !== "cancel" : r.g === S.st));
+    if (S.q) { const q = S.q.toLowerCase(); L = L.filter(r => [r.wo, r.eq, r.loc, r.desc, r.site, r.symName, r.cause, r.fix].join(" ").toLowerCase().includes(q)); }
+    L.sort((x, y) => y.created.localeCompare(x.created));
+    const cnt = k => k === "" ? a.length : k === "open" ? c.open : k === "over" ? c.over : c[k];
+    h = `<section class="panel" style="display:grid;gap:12px"><h2>รายการใบงานแจ้งซ่อม <span class="tag">${esc(scope)} · ${L.length} รายการ</span></h2>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><div class="pills">${[["", "ทั้งหมด"], ["open", "งานค้าง"], ...G.map(g => [g.k, g.t]), ["over", "เกิน SLA"]].map(([k, t]) => `<button class="${S.st === k ? "on" : ""}" data-st="${k}">${t} <span class="num" style="opacity:.7">${cnt(k)}</span></button>`).join("")}</div>
+      <label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5b6782" stroke-width="2.2" stroke-linecap="round"><path d="m21 21-4.3-4.3 M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"/></svg><input id="q" value="${esc(S.q)}" placeholder="ค้นหา เลขใบงาน / อุปกรณ์ / โซน / อาการ"></label></div>
+      ${woTable(L, S.n)}${L.length > S.n ? `<button class="more" id="moreBtn">แสดงเพิ่ม (${L.length - S.n})</button>` : ""}</section>`;
+  } else {
+    h = `<section class="panel"><h2>ประวัติการอัปโหลด</h2><p class="hint">ทุกครั้งที่อัปโหลดไฟล์ = รวมกับของเดิม ไม่ลบใบงานที่ไม่อยู่ในไฟล์</p>
+      <div class="tw"><table><thead><tr><th>เวลาอัปโหลด</th><th>ไฟล์</th><th>ข้อมูล ณ</th><th>ในไฟล์</th><th>ใหม่</th><th>อัปเดต</th><th>เหมือนเดิม</th><th>เก็บไว้ (ไม่อยู่ในไฟล์)</th></tr></thead><tbody>
+      ${[...LOG].reverse().map(l => `<tr><td class="num">${tht(l.at)}</td><td>${esc(l.file)}</td><td class="num">${tht(l.asof)}</td><td class="num">${l.total}</td><td class="num">${l.added}</td><td class="num">${l.changed}</td><td class="num">${l.same}</td><td class="num">${l.kept}</td></tr>`).join("")}</tbody></table></div></section>`;
+  }
+  $("main").innerHTML = h;
+  const q = $("q"); if (q) q.oninput = () => { S.q = q.value; S.n = 50; const p = q.selectionStart; renderMain(); const n = $("q"); n.focus(); n.setSelectionRange(p, p); };
+  const mb = $("moreBtn"); if (mb) mb.onclick = () => { S.n += 100; renderMain(); };
+}
+
+function renderFilters() {
+  const plants = [...new Set(DATA.map(r => r.plant))].sort();
+  $("fPlant").innerHTML = `<option value="">ทั้งหมด</option>` + plants.map(p => `<option value="${esc(p)}" ${S.plant === p ? "selected" : ""}>${esc(p)} · ${esc((DATA.find(r => r.plant === p) || {}).unit || "")}</option>`).join("");
+  $("fPri").value = S.pri; $("dFrom").value = S.from; $("dTo").value = S.to;
+  const QK = [["all", "ทั้งหมด"], ["m", "เดือนนี้"], ["3m", "3 เดือน"], ["y", "ปีนี้"]];
+  $("qk").innerHTML = QK.map(([k, t]) => `<button type="button" class="${S.qk === k ? "on" : ""}" data-qk="${k}">${t}</button>`).join("");
+  const span = DATA.length ? DATA.map(r => r.created).sort() : [];
+  $("asof").textContent = `ข้อมูล ณ ${tht(ASOF)} · ใบแจ้งซ่อม ${DATA.length} รายการ` + (span.length ? ` (แจ้ง ${thd(span[0])} – ${thd(span[span.length - 1])})` : "");
+}
+function render() { renderFilters(); renderSide(); renderStats(); renderMain(); }
+
+/* รายละเอียดใบงาน */
+function openWO(id) {
+  const r = DATA.find(x => x.id === id); if (!r) return;
+  const steps = [["แจ้งซ่อม", r.created], ["อนุมัติ", r.approved], ["มอบหมาย", r.assigned], ["เริ่มงาน", r.started], ["ปิดงาน", r.closed]];
+  $("dlg").innerHTML = `<div class="dlg"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><h3>${esc(r.wo)}</h3>${stPill(r)}<span class="pri ${esc(r.pri)}">${esc(r.pri)} ${esc(r.priName)}</span>${r.over && r.g !== "cancel" ? '<span class="over">เกิน SLA</span>' : ""}<button class="btn" data-close style="margin-left:auto">ปิด</button></div>
+    <div style="font-size:15px;font-weight:600">${esc(r.desc) || "–"}</div>
+    <div class="tl">${steps.map(([t, d]) => `<div style="--c:${d ? GM.done.c : "#cfd6e3"}"><b>${t}</b>${tht(d)}</div>`).join("")}</div>
+    <div class="kv"><span>อุปกรณ์</span><b>${esc(r.eq)} <span class="muted">(${esc(r.eqCode)})</span></b><span>สถานที่</span><span style="color:var(--ink)">${esc(r.site)} · ${esc(r.loc)} <span class="muted">${esc(r.locCode)}</span></span>
+      <span>คลัง</span><span style="color:var(--ink)">${esc(r.plant)} · ${esc(r.unit)}</span><span>แผนกผู้แจ้ง</span><span style="color:var(--ink)">${esc(r.dept) || "–"}</span>
+      <span>กลุ่มอาการเสีย</span><span style="color:var(--ink)">${esc(r.sym.join(", ")) || "–"} ${r.symName ? `<span class="muted">· ${esc(r.symName)}</span>` : ""}</span>
+      <span>สาเหตุ</span><span style="color:var(--ink)">${esc(r.cause) || "–"}</span><span>วิธีแก้ไข</span><span style="color:var(--ink)">${esc(r.fix) || "–"}</span>
+      <span>กำหนดเสร็จ (SLA)</span><span style="color:var(--ink)">${tht(r.due)} · ${esc(r.sla)}</span><span>แจ้ง → ปิดงาน</span><span style="color:var(--ink)">${fmtH(hrs(r.created, r.closed))}</span>
+      <span>คะแนนประเมิน</span><span style="color:var(--ink)">${r.score != null ? "★".repeat(r.score) + ` (${r.score}/5)` : "–"}</span><span>ประวัติซ่อมอุปกรณ์นี้</span><span style="color:var(--ink)">${r.repairs != null ? r.repairs + " ครั้ง" : "–"}</span>
+      <span>หน่วยที่รับผิดชอบ</span><span style="color:var(--ink)">${esc(r.team) || "–"}</span></div></div>`;
+  $("dlg").showModal();
+}
+function guide() {
+  $("dlg").innerHTML = `<div class="dlg"><div style="display:flex;align-items:center"><h3>📖 คู่มือการอ่าน</h3><button class="btn" data-close style="margin-left:auto">ปิด</button></div>
+    <div class="kv" style="grid-template-columns:170px 1fr">${G.map(g => `<span><span class="pill" style="background:${g.c}1f;color:${g.k === "cancel" ? "#5b6782" : g.c}"><i></i>${g.t}</span></span><span style="color:var(--ink)">${{ done: "ปิดงานแล้ว (Completed / CLOSE)", review: "ช่างซ่อมเสร็จ รอผู้แจ้ง/คลังตรวจรับ (Send to Review) · นับเป็นแล้วเสร็จ", wait: "แจ้งแล้ว รอคลังอนุมัติ", prog: "อนุมัติแล้ว มอบหมาย/ช่างกำลังซ่อม (Assignment ฯลฯ)", cancel: "ยกเลิก (Cancelled) / ไม่อนุมัติ (Reject) · ไม่นับใน %Performance" }[g.k]}</span>`).join("")}</div>
+    <p style="margin:0;font-size:13.5px;line-height:1.7"><b>%Performance</b> = (ปิดงาน + รอตรวจรับ) ÷ (งานทั้งหมด − ยกเลิก/ไม่อนุมัติ) · เขียว ≥ 90% · ส้ม 75–89% · แดง &lt; 75%<br><b>เกิน SLA</b> = ตามช่อง "เกิน SLA" ในระบบแจ้งซ่อม · <b>อาคาร</b> = จากรหัสสถานที่ (WHA05-<b>32</b>-001 → WH32)<br>
+    <b>อัปโหลด</b>: Export ไฟล์ TrackingWorkOrder (ชีต Report) จากระบบ → ปุ่ม "อัปโหลด Excel แจ้งซ่อม" → ตรวจสรุปแล้วกดบันทึก · รวมกับของเดิม ไม่ลบใบงานเดิม · ไม่เก็บชื่อพนักงาน</p></div>`;
+  $("dlg").showModal();
+}
+
+/* อัปโหลด */
+let PEND = null;
+function loadXLSX() { return window.XLSX ? Promise.resolve() : new Promise((ok, no) => { const s = document.createElement("script"); s.src = "https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"; s.onload = ok; s.onerror = () => no(new Error("โหลดตัวอ่าน Excel ไม่สำเร็จ")); document.head.appendChild(s); }); }
+async function upload(f) {
+  try {
+    await loadXLSX();
+    const wb = XLSX.read(await f.arrayBuffer(), { type: "array" }), sh = wb.Sheets.Report || wb.Sheets[wb.SheetNames[0]];
+    const rows = cmParse.parse(XLSX.utils.sheet_to_json(sh, { header: 1, raw: true }));
+    if (!rows.length) throw new Error("ไม่พบใบงานในไฟล์");
+    const asof = cmParse.asofOf(f.name) || new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 16);
+    const cur = new Map(DATA.map(r => [r.id, r])), inF = new Set(rows.map(r => r.id)), m = { add: [], chg: [], same: 0, up: [] };
+    rows.forEach(r => { const o = cur.get(r.id); if (!o) { m.add.push(r); m.up.push(r); } else if (JSON.stringify(o) !== JSON.stringify(r)) { m.chg.push([o, r]); m.up.push(r); } else m.same++; });
+    const kept = DATA.filter(r => !inF.has(r.id)).length, older = asof < ASOF;
+    PEND = { f: f.name, asof, rows, m, kept, older };
+    $("dlg").innerHTML = `<div class="dlg"><h3>ตรวจก่อนบันทึก · ${esc(f.name)}</h3>
+      ${older ? `<div class="warn">ไฟล์นี้เก่ากว่าข้อมูลปัจจุบัน (${tht(ASOF)}) · จะเพิ่มเฉพาะใบงานใหม่ ไม่ย้อนสถานะใบงานเดิม</div>` : ""}
+      <div class="sumg"><div><b>${m.add.length}</b><span>ใบงานใหม่</span></div><div><b>${older ? 0 : m.chg.length}</b><span>อัปเดต</span></div><div><b>${m.same}</b><span>เหมือนเดิม</span></div><div><b>${kept}</b><span>เก็บไว้ (ไม่อยู่ในไฟล์)</span></div></div>
+      ${!older && m.chg.length ? `<div style="max-height:220px;overflow:auto"><table><thead><tr><th>ใบงาน</th><th>สถานะเดิม</th><th>สถานะใหม่</th></tr></thead><tbody>${m.chg.filter(([o, r]) => o.st !== r.st).map(([o, r]) => `<tr><td>${esc(r.wo)}</td><td>${stPill(o)}</td><td>${stPill(r)}</td></tr>`).join("") || '<tr><td colspan="3" class="muted">สถานะไม่เปลี่ยน (เปลี่ยนรายละเอียดอื่น)</td></tr>'}</tbody></table></div>` : ""}
+      <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" data-close>ยกเลิก</button><button class="btn p" data-commit>✓ บันทึก</button></div></div>`;
+    $("dlg").showModal();
+  } catch (err) { toast("อัปโหลดไม่สำเร็จ: " + err.message); }
+}
+async function commit() {
+  const P = PEND; if (!P) return; PEND = null;
+  const mp = new Map(DATA.map(r => [r.id, r])), up = P.older ? P.m.add : P.m.up;
+  up.forEach(r => mp.set(r.id, r)); DATA = [...mp.values()]; if (!P.older) ASOF = P.asof;
+  const l = { at: new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 16), file: P.f, asof: P.asof, older: P.older, total: P.rows.length, added: P.m.add.length, changed: P.older ? 0 : P.m.chg.length, same: P.m.same, kept: P.kept };
+  LOG.push(l); ls.set(DBK, { asof: ASOF, rows: DATA }); ls.set(LOGK, LOG);
+  $("dlg").close(); render();
+  if (SBOK) { try { await sbUp("cm_work_orders", up.map(r => ({ id: r.id, rec: r }))); await sbUp("cm_upload_log", [{ id: logId(l), rec: l }]); toast(`บันทึกแล้ว · ใหม่ ${l.added} · อัปเดต ${l.changed}`); } catch (e) { toast("บันทึกขึ้นระบบไม่สำเร็จ: " + e.message); } }
+  else toast("บันทึกในเบราว์เซอร์นี้แล้ว (ยังไม่เชื่อมระบบ)");
+}
+function toast(t) { const d = document.createElement("div"); d.className = "toast"; d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), 3200); }
+
+/* เหตุการณ์ */
+document.addEventListener("click", e => {
+  const t = e.target.closest("[data-view],[data-site],[data-st],[data-wo],[data-qk],[data-month],[data-qloc],[data-qeq],[data-close],[data-commit],#guideBtn,#uplBtn,#sideBtn");
+  if (!t) { if (!e.target.closest("#side")) $("side").classList.remove("open"); return; }
+  if (t.id === "uplBtn") { $("file").click(); return; }
+  if (t.id === "sideBtn") { $("side").classList.toggle("open"); return; }
+  if (t.id === "guideBtn") { guide(); return; }
+  if ("close" in t.dataset) { $("dlg").close(); PEND = null; return; }
+  if ("commit" in t.dataset) { commit(); return; }
+  if (t.dataset.wo) { openWO(t.dataset.wo); return; }
+  if (t.dataset.qk) { const d = today(), y = d.slice(0, 4), m = d.slice(0, 7); S.qk = t.dataset.qk;
+    if (S.qk === "all") { S.from = S.to = ""; } else if (S.qk === "m") { S.from = m + "-01"; S.to = d; } else if (S.qk === "y") { S.from = y + "-01-01"; S.to = d; }
+    else { const x = new Date(d); x.setMonth(x.getMonth() - 2); S.from = x.toISOString().slice(0, 7) + "-01"; S.to = d; } render(); return; }
+  if (t.dataset.month) { const m = t.dataset.month, e2 = new Date(+m.slice(0, 4), +m.slice(5), 0).getDate(); S.from = m + "-01"; S.to = m + "-" + String(e2).padStart(2, "0"); S.qk = ""; S.view = "list"; S.st = ""; history.replaceState(null, "", "#list"); render(); scrollTo(0, 0); return; }
+  if ("qloc" in t.dataset || "qeq" in t.dataset) { S.q = t.dataset.qloc || t.dataset.qeq; S.view = "list"; S.st = ""; history.replaceState(null, "", "#list"); render(); scrollTo(0, 0); return; }
+  if ("site" in t.dataset) { S.site = t.dataset.site; $("side").classList.remove("open"); render(); return; }
+  if ("st" in t.dataset && !t.dataset.view) { S.st = t.dataset.st; S.n = 50; renderMain(); return; }
+  if (t.dataset.view) { S.view = t.dataset.view; if ("st" in t.dataset) S.st = t.dataset.st; history.replaceState(null, "", "#" + S.view); $("side").classList.remove("open"); render(); scrollTo(0, 0); }
+});
+$("file").onchange = e => { const f = e.target.files[0]; if (f) upload(f); e.target.value = ""; };
+$("dFrom").onchange = e => { S.from = e.target.value; S.qk = ""; render(); };
+$("dTo").onchange = e => { S.to = e.target.value; S.qk = ""; render(); };
+$("fPlant").onchange = e => { S.plant = e.target.value; S.site = ""; render(); };
+$("fPri").onchange = e => { S.pri = e.target.value; render(); };
+document.addEventListener("mousemove", e => {
+  const t = e.target.closest && e.target.closest("[data-tip]"), tip = $("tip");
+  if (!t) { tip.hidden = true; return; }
+  const d = JSON.parse(t.dataset.tip);
+  tip.innerHTML = `<b>${esc(d.t)} · ${d.c.n} รายการ</b><br>${G.map(g => d.c[g.k] ? `<i style="background:${g.c}"></i>${g.t} ${d.c[g.k]}` : "").filter(Boolean).join("<br>")}<br>%Performance ${d.c.perf.toFixed(1)}%`;
+  tip.hidden = false; const w = tip.offsetWidth; tip.style.left = Math.min(innerWidth - w - 8, e.clientX + 14) + "px"; tip.style.top = (e.clientY + 14) + "px";
+});
+
+/* เชื่อมทุกเครื่อง: Supabase cm_work_orders / cm_upload_log (id, rec jsonb) · ไม่มีตาราง = เก็บในเครื่องนี้ · SQL: tools/cm.sql */
+const SBU = "https://mgnshovnibcmiptoxdfe.supabase.co/rest/v1/", SBK = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1nbnNob3ZuaWJjbWlwdG94ZGZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzNzI1NDIsImV4cCI6MjEwNDk0ODU0Mn0.UoPu-i6ODMEgyuqoO6oKHf0JIqFKpWkSpBkOKrpITwQ";
+const sbH = x => Object.assign({ apikey: SBK, Authorization: "Bearer " + SBK, "Content-Type": "application/json" }, x || {});
+let SBOK = null;
+const logId = l => l.at + "|" + l.file;
+async function sbAll(t) { let out = []; for (let from = 0; ; from += 1000) { const r = await fetch(SBU + t + "?select=id,rec&order=id", { headers: sbH({ Range: from + "-" + (from + 999) }) }); if (!r.ok) throw new Error(t + " " + r.status); const a = await r.json(); out = out.concat(a); if (a.length < 1000) return out; } }
+async function sbUp(t, rows) { const at = new Date().toISOString(); for (let i = 0; i < rows.length; i += 400) { const r = await fetch(SBU + t + "?on_conflict=id", { method: "POST", headers: sbH({ Prefer: "resolution=merge-duplicates,return=minimal" }), body: JSON.stringify(rows.slice(i, i + 400).map(x => ({ id: x.id, rec: x.rec, updated_at: at }))) }); if (!r.ok) throw new Error(t + " " + r.status); } }
+function syncLabel() { const el = $("syncSt"); el.textContent = SBOK === null ? "กำลังเชื่อมข้อมูล…" : SBOK ? "✓ เชื่อมทุกเครื่องแล้ว · ไฟล์ TrackingWorkOrder*.xlsx" : "⚠ ยังไม่เชื่อม: ข้อมูลอยู่ในเครื่องนี้เท่านั้น"; el.style.color = SBOK === false ? "#ffd27a" : ""; }
+async function sbSync() {
+  if (location.protocol === "file:") { SBOK = false; syncLabel(); return; }
+  try {
+    const [w, l] = await Promise.all(["cm_work_orders", "cm_upload_log"].map(sbAll));
+    const rl = new Map(l.map(x => [x.id, x.rec])), pushLog = LOG.filter(x => !rl.has(logId(x))); pushLog.forEach(x => rl.set(logId(x), x));
+    LOG = [...rl.values()].sort((a, b) => a.at.localeCompare(b.at)).slice(-60);
+    const rAsof = LOG.filter(x => !x.older).map(x => x.asof).sort().pop() || "", rRows = w.map(x => x.rec).filter(r => r && typeof r.id === "string" && typeof r.created === "string" && Array.isArray(r.sym) && GM[r.g]);
+    if (!rRows.length || ASOF > rAsof) { const mp = new Map(rRows.map(r => [r.id, r])); DATA.forEach(r => mp.set(r.id, r)); DATA = [...mp.values()]; await sbUp("cm_work_orders", DATA.map(r => ({ id: r.id, rec: r }))); }
+    else { DATA = rRows; ASOF = rAsof; }
+    if (pushLog.length) await sbUp("cm_upload_log", pushLog.map(x => ({ id: logId(x), rec: x })));
+    ls.set(DBK, { asof: ASOF, rows: DATA }); ls.set(LOGK, LOG); SBOK = true;
+  } catch (err) { SBOK = false; console.warn("CM sync", err); }
+  syncLabel(); render();
+}
+render(); syncLabel(); sbSync();
+</script>
+</body>
+</html>
