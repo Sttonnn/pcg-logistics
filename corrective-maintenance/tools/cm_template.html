@@ -156,36 +156,24 @@
   .sidebtn { display: none; }
 
 
-  /* ===== รูปแบบให้เลือก (14 ต.ค. ผู้ใช้ขอหลายรูปแบบ) · body.ui-a/b/c/d · ?ui= · จำ localStorage pcg-cm-ui ===== */
-  .uisw { display: inline-flex; gap: 3px; padding: 3px; border-radius: 12px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); }
-  .uisw button { cursor: pointer; border: 0; border-radius: 9px; padding: 5px 10px; font-size: 12px; font-weight: 700; background: transparent; color: #fff; }
-  .uisw button.on { background: #fff; color: var(--ink); }
+  /* ===== แบบ B "แบบ BI" (ผู้ใช้เลือก 14 ต.ค. จาก A/B/C/D) · body.ui-b เสมอ ===== */
   .tnav { display: none; position: relative; gap: 6px; flex-wrap: wrap; margin-top: 14px; }
   .tnav button { cursor: pointer; border: 0; border-radius: 12px; padding: 9px 15px; font-size: 13.5px; font-weight: 700; background: var(--chip); color: var(--ink2); display: inline-flex; align-items: center; gap: 7px; }
   .tnav button.on { background: var(--ink); color: #fff; }
   .tnav select { border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font-weight: 700; background: #fff; }
   .gbig { display: grid; justify-items: center; gap: 4px; text-align: center; }
   .gbig b { font-family: Archivo, sans-serif; font-size: 44px; font-weight: 900; line-height: 1; }
-  .kan { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; }
-  .kcol { background: #f4f6fa; border-radius: 18px; padding: 10px; display: grid; gap: 8px; align-content: start; min-width: 0; }
-  .kcol h3 { margin: 0; display: flex; align-items: center; gap: 8px; font-size: 14px; padding: 4px 6px; border-bottom: 3px solid var(--c); }
-  .kcol h3 span { margin-left: auto; font-family: Archivo; font-size: 18px; color: var(--c); }
-  .kcard { background: #fff; border-radius: 13px; padding: 10px 11px; box-shadow: 0 2px 8px rgba(23,33,58,.07); cursor: pointer; display: grid; gap: 4px; border-left: 4px solid var(--c); }
-  .kcard:hover { box-shadow: 0 6px 16px rgba(23,33,58,.14); }
-  .kcard .r { display: flex; gap: 6px; align-items: center; font-size: 12px; } .kcard .r b { font-size: 13px; } .kcard .r .ag { margin-left: auto; color: var(--ink2); font-weight: 700; }
-  .kcard .e { font-size: 12.5px; font-weight: 600; } .kcard .d { font-size: 12px; color: var(--ink2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .kmore { font-size: 12px; color: var(--ink2); text-align: center; padding: 4px; cursor: pointer; border: 0; background: none; font-weight: 700; }
 
   /* B · แบบ BI: หัวขาว ไม่มีแถบซ้าย แท็บด้านบน การ์ดไอคอนใหญ่ */
-  .ui-b .side, .ui-b .sidebtn, .ui-d .side, .ui-d .sidebtn { display: none !important; }
-  .ui-b .lay, .ui-d .lay { grid-template-columns: 1fr; }
-  .ui-b .tnav, .ui-d .tnav { display: flex; }
+  .ui-b .side, .ui-b .sidebtn { display: none !important; }
+  .ui-b .lay { grid-template-columns: 1fr; }
+  .ui-b .tnav { display: flex; }
   .ui-b .hero { background: #fff; color: var(--ink); border-radius: 0; box-shadow: 0 1px 0 var(--line); padding-bottom: 20px; }
   .ui-b .hero .glow { display: none; }
   .ui-b h1 { color: #1a2a6c; font-size: 32px; font-weight: 800; } .ui-b h1 em { color: #1a2a6c; display: block; margin: 0; font-size: 22px; }
   .ui-b .kicker, .ui-b .asof, .ui-b .syncst { color: var(--ink2); }
   .ui-b .back { color: var(--ink); background: var(--chip); border-color: var(--line); }
-  .ui-b .upl { background: #1a2a6c; color: #fff; } .ui-b .uisw { background: var(--chip); border-color: var(--line); } .ui-b .uisw button { color: var(--ink2); } .ui-b .uisw button.on { background: #1a2a6c; color: #fff; }
+  .ui-b .upl { background: #1a2a6c; color: #fff; }
   .ui-b .fbox { background: #f4f6fa; border-color: var(--line); color: var(--ink2); } .ui-b .fbox input, .ui-b .fbox select { border: 1px solid var(--line); }
   .ui-b .qk { background: #f4f6fa; border-color: var(--line); } .ui-b .qk button { color: var(--ink2); } .ui-b .qk button.on { background: #1a2a6c; color: #fff; }
   .ui-b .card { border-top: 0; border-radius: 26px; box-shadow: 0 6px 22px rgba(26,42,108,.12); border: 1px solid #e3e8f4; text-align: center; justify-items: center; padding: 16px; }
@@ -194,33 +182,6 @@
   .ui-b .card.perf { flex-direction: column; } .ui-b .panel h2 { color: #1a2a6c; font-size: 19px; } .ui-b .panel { border-radius: 26px; border: 1px solid #e3e8f4; }
   .ui-b th { background: #1a2a6c; color: #fff; }
 
-  /* C · ห้องควบคุม โทนมืด */
-  .ui-c { --bg: #0a1120; --ink: #e7edf9; --ink2: #9aa8c4; --ink3: #6d7b98; --line: #1d2945; --chip: #17223a; }
-  .ui-c .hero { background: linear-gradient(150deg,#0f1a33,#0b1426 60%,#2a1406); box-shadow: none; border-bottom: 1px solid #1d2945; }
-  .ui-c .side { background: #070d1a; border-right: 1px solid #1d2945; }
-  .ui-c .card, .ui-c .panel { background: #111b31; color: var(--ink); box-shadow: 0 0 0 1px #1d2945; }
-  .ui-c .card { border-top-width: 3px; } .ui-c .card .lbl i { background: color-mix(in srgb, var(--c) 22%, #111b31); }
-  .ui-c th { background: #16213a; color: var(--ink2); } .ui-c td { border-bottom-color: #1a2540; } .ui-c tr.ck:hover td { background: #172442; }
-  .ui-c .titem, .ui-c .pc, .ui-c .kcol { background: #16213a; } .ui-c .titem:hover { background: #1b2a4a; }
-  .ui-c .bar { background: #1b2741; } .ui-c .plot .gl { border-top-color: #1b2741; } .ui-c .plot { border-bottom-color: #26334f; }
-  .ui-c .pills, .ui-c .search { background: #111b31; box-shadow: 0 0 0 1px #1d2945; } .ui-c .pills button.on { background: #ff8a34; color: #1b0f05; }
-  .ui-c .warn { background: #2a1f0a; border-color: #5a3d0c; color: #ffd28a; } .ui-c .more, .ui-c .btn { background: #1b2741; color: var(--ink); }
-  .ui-c .pri.P3 { background: #1f2c48; color: #b9c6e0; } .ui-c .pri.P1 { background: #3b1a16; color: #ff9d8a; } .ui-c .pri.P2 { background: #3a2a0c; color: #ffc46b; }
-  .ui-c dialog { background: #111b31; color: var(--ink); } .ui-c .tl div::after { background: #26334f; } .ui-c .sumg div { background: #16213a; }
-  .trow td { background: #f6f7fb; } .ui-c .trow td { background: #16213a; }
-  .ui-c input, .ui-c select { color: #17213a; } .ui-c .search input { color: var(--ink); } .ui-c .uisw button.on, .ui-c .qk button.on { color: #17213a; }
-  .ui-c .mcol:hover .stk { outline-color: #fff; } .ui-c .kcard { background: #111b31; }
-
-  /* D · บอร์ดติดตามงาน (Kanban) หัวขาวเรียบ */
-  .ui-d .hero { background: linear-gradient(120deg,#fff 0%,#fff6ef 100%); color: var(--ink); border-radius: 0 0 26px 26px; box-shadow: 0 6px 20px rgba(23,33,58,.06); }
-  .ui-d .hero .glow { display: none; } .ui-d h1 em { color: var(--acc); } .ui-d .kicker, .ui-d .asof, .ui-d .syncst { color: var(--ink2); }
-  .ui-d .back { color: var(--ink); background: var(--chip); border-color: var(--line); } .ui-d .upl { background: linear-gradient(150deg,#ff8a34,#e0480f); color: #fff; }
-  .ui-d .uisw { background: var(--chip); border-color: var(--line); } .ui-d .uisw button { color: var(--ink2); } .ui-d .uisw button.on { background: var(--acc); color: #fff; }
-  .ui-d .fbox { background: #fff; border-color: var(--line); color: var(--ink2); } .ui-d .fbox input, .ui-d .fbox select { border: 1px solid var(--line); }
-  .ui-d .qk { background: #fff; border-color: var(--line); } .ui-d .qk button { color: var(--ink2); } .ui-d .qk button.on { background: var(--acc); color: #fff; }
-  .ui-d .stats { grid-template-columns: repeat(5, minmax(0,1fr)); } .ui-d .card { box-shadow: none; border: 1px solid var(--line); border-top: 0; border-left: 5px solid var(--c); border-radius: 16px; }
-  .ui-d .card.perf { border-left-color: var(--done); } .ui-d .tnav button.on { background: var(--acc); }
-  @media (max-width: 1000px) { .kan { grid-template-columns: 1fr 1fr; } } @media (max-width: 620px) { .kan { grid-template-columns: 1fr; } }
   @media (max-width: 1280px) { .stats { grid-template-columns: repeat(3, minmax(0,1fr)); } .grid3 { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 1100px) {
     .lay { grid-template-columns: 1fr; }
@@ -245,7 +206,6 @@
     <div class="ttl"><span class="kicker">PCG · วิศวกรรม · งานซ่อมบำรุง</span><h1>ภาพรวมงานแจ้งซ่อม<em>Corrective Maintenance</em></h1><span class="asof" id="asof"></span></div>
     <div style="display:grid;gap:5px;justify-items:end;max-width:100%">
       <button class="upl" id="uplBtn" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 M17 8l-5-5-5 5 M12 3v12"/></svg>อัปโหลด Excel แจ้งซ่อม</button>
-      <div class="uisw" id="uiSw"></div>
       <span class="syncst" id="syncSt">กำลังเชื่อมข้อมูล…</span>
       <input type="file" id="file" accept=".xlsx,.xls" hidden>
     </div>
@@ -289,10 +249,7 @@ const fmtH = h => h == null ? "–" : h < 24 ? h.toFixed(1) + " ชม." : (h / 
 const today = () => new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);
 const pct = (a, b) => b ? Math.round(a / b * 1000) / 10 : 0;
 
-const UIS = [["a", "A · แถบซ้ายโทนเข้ม"], ["b", "B · แบบ BI"], ["c", "C · ห้องควบคุม (มืด)"], ["d", "D · บอร์ดติดตามงาน"]];
-let UI = new URLSearchParams(location.search).get("ui") || ls.get("pcg-cm-ui", "a"); if (!UIS.some(u => u[0] === UI)) UI = "a";
-document.body.classList.add("ui-" + UI);
-function setUI(u) { document.body.classList.remove("ui-" + UI); UI = u; document.body.classList.add("ui-" + UI); ls.set("pcg-cm-ui", u); render(); }
+const UI = "b"; document.body.classList.add("ui-b"); /* แบบ BI (ผู้ใช้เลือก 14 ต.ค.) */
 const S = { view: (location.hash || "#ov").slice(1), site: "", from: "", to: "", plant: "", pri: "", st: "", q: "", n: 50, qk: "all" };
 if (!["ov", "an", "list", "log"].includes(S.view)) S.view = "ov";
 
@@ -396,22 +353,12 @@ function renderMain() {
   const span = DATA.length ? [DATA.map(r => r.created).sort()[0], DATA.map(r => r.created).sort().pop()] : ["", ""];
   const cover = `<div class="warn">ข้อมูลในระบบตอนนี้ครอบคลุมใบแจ้งซ่อมวันที่ <b>${thd(span[0])} – ${thd(span[1])}</b> (${DATA.length} ใบ) · อัปโหลดไฟล์ใหม่ = รวมกับของเดิม (ใบงานเดิมอัปเดตสถานะ ใบใหม่เพิ่มเข้า)</div>`;
   let h = "";
-  if (S.view === "ov" && UI === "b") {
+  if (S.view === "ov") {
     h = `${cover}<div class="grid2">
       <section class="panel"><h2>แนวโน้มงานแจ้งซ่อมรายเดือน <span class="tag">${esc(scope)}</span></h2><p class="hint">แยกตามสถานะงาน · ชี้แท่งเพื่อดูตัวเลข</p>${monthChart(a)}</section>
       <section class="panel" style="display:grid;gap:14px;align-content:start"><h2>%Performance</h2>${perfBig(c)}<h2 style="margin-top:6px">งานค้าง ต้องติดตาม <span class="tag">${c.open}</span></h2>${todoList(a, 3)}</section></div>
       <section class="panel"><h2>รายการใบงาน <span class="tag">${a.length} รายการ</span></h2><p class="hint">กดแถว = รายละเอียด</p>${woTable([...a].sort((x, y) => y.created.localeCompare(x.created)), 10)}<div style="display:grid;margin-top:10px"><button class="more" data-view="list">ดูทั้งหมด</button></div></section>
       <section class="panel"><h2>สรุปรายอาคาร</h2><p class="hint">กดแถว = ดูเฉพาะอาคารนั้น</p>${siteTable(base(true))}</section>`;
-  } else if (S.view === "ov" && UI === "d") {
-    h = `${cover}<section class="panel"><h2>บอร์ดติดตามงานแจ้งซ่อม <span class="tag">${esc(scope)}</span></h2><p class="hint">ไล่ตามขั้นตอน รออนุมัติ → กำลังซ่อม → รอตรวจรับ → เสร็จสิ้น · ตัวเลขมุมขวา = แจ้งมาแล้วกี่วัน · กดการ์ด = รายละเอียด</p>${kanban(a)}</section>
-      <div class="grid2"><section class="panel"><h2>แนวโน้มรายเดือน</h2><p class="hint">ชี้แท่งเพื่อดูตัวเลข · กดแท่ง = ใบงานเดือนนั้น</p>${monthChart(a)}</section>
-      <section class="panel"><h2>สรุปรายอาคาร</h2><p class="hint">กดแถว = ดูเฉพาะอาคารนั้น</p>${siteTable(base(true))}</section></div>`;
-  } else if (S.view === "ov") {
-    h = `${cover}<div class="grid2">
-      <section class="panel"><h2>แนวโน้มงานแจ้งซ่อมรายเดือน <span class="tag">${esc(scope)}</span></h2><p class="hint">ตามวันที่แจ้ง · แยกตามสถานะงาน · ชี้แท่งเพื่อดูตัวเลข กดแท่ง = ดูใบงานเดือนนั้น</p>${monthChart(a)}</section>
-      <section class="panel"><h2>งานค้าง ต้องติดตาม <span class="tag">${c.open} รายการ</span></h2><p class="hint">รออนุมัติ + กำลังดำเนินการ · เรียงงานที่แจ้งนานสุดก่อน (ตัวเลข = แจ้งมาแล้วกี่วัน)</p>${todoList(a, 6)}</section></div>
-      <section class="panel"><h2>สรุปรายอาคาร</h2><p class="hint">กดแถว = ดูเฉพาะอาคารนั้น · %Performance = แล้วเสร็จ (ปิดงาน + รอตรวจรับ) ÷ งานทั้งหมดที่ไม่ถูกยกเลิก</p>${siteTable(base(true))}</section>
-      <section class="panel"><h2>ใบงานล่าสุด <span class="tag">${a.length} รายการ</span></h2><p class="hint">กดแถว = รายละเอียด / สาเหตุ / วิธีแก้</p>${woTable([...a].sort((x, y) => y.created.localeCompare(x.created)), 8)}<div style="display:grid;margin-top:10px"><button class="more" data-view="list">ดูรายการใบงานทั้งหมด</button></div></section>`;
   } else if (S.view === "an") {
     const v = a.filter(r => r.g !== "cancel");
     const pc = ["P1", "P2", "P3"].map(p => { const x = v.filter(r => r.pri === p), s = stat(x); return `<div class="pc"><span class="h"><span class="pri ${p}">${p}</span>${esc((x[0] || {}).priName || { P1: "งานเร่งด่วนมาก", P2: "งานเร่งด่วน", P3: "งานทั่วไป" }[p])}</span><span class="n num">${x.length}</span><span class="s">เกิน SLA <b style="color:${s.overP > 50 ? "#dc3b26" : "inherit"}">${s.over} (${s.overP.toFixed(0)}%)</b> · แจ้ง→ปิดเฉลี่ย <b>${fmtH(s.mttr)}</b></span></div>`; }).join("");
@@ -462,14 +409,7 @@ function perfBig(c) {
   return `<div class="gbig"><svg width="240" height="140" viewBox="0 0 200 116" aria-hidden="true"><path d="M20 100a80 80 0 0 1 160 0" fill="none" stroke="#e7ebf2" stroke-width="22" stroke-linecap="round"/><path d="M20 100a80 80 0 0 1 160 0" fill="none" stroke="${col}" stroke-width="22" stroke-linecap="round" stroke-dasharray="${251.3 * p / 100} 252"/><line x1="100" y1="100" x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}" stroke="#1a2a6c" stroke-width="5" stroke-linecap="round"/><circle cx="100" cy="100" r="9" fill="#1a2a6c"/></svg>
     <b class="num" style="color:${col}">${c.valid ? c.perf.toFixed(1) : "–"}%</b><span class="muted">แล้วเสร็จ ${c.fin} จาก ${c.valid} งาน (ไม่นับยกเลิก ${c.cancel})</span></div>`;
 }
-function kanban(a) {
-  const cols = ["wait", "prog", "review", "done"], lim = { done: 6, review: 8 };
-  return `<div class="kan">${cols.map(k => { const g = GM[k], L = a.filter(r => r.g === k).sort((x, y) => k === "done" || k === "review" ? y.created.localeCompare(x.created) : x.created.localeCompare(y.created)), n = lim[k] || 12;
-    return `<div class="kcol" style="--c:${g.c}"><h3>${g.t}<span>${L.length}</span></h3>${L.slice(0, n).map(r => `<div class="kcard" style="--c:${g.c}" data-wo="${esc(r.id)}"><div class="r"><b>${esc(r.wo)}</b><span class="pri ${esc(r.pri)}">${esc(r.pri)}</span>${r.over ? '<span class="over">SLA</span>' : ""}<span class="ag num">${ageOf(r)} วัน</span></div><div class="e">${esc(r.eq)}</div><div class="d">${esc(r.desc)}</div><div class="muted" style="font-size:11.5px">${esc(r.site)} · ${tht(r.created)}</div></div>`).join("") || '<div class="muted" style="text-align:center;padding:14px">ไม่มีงาน</div>'}${L.length > n ? `<button class="kmore" data-view="list" data-st="${k}">+ อีก ${L.length - n} รายการ</button>` : ""}</div>`; }).join("")}</div>
-    ${a.some(r => r.g === "cancel") ? `<p class="muted" style="margin:10px 2px 0">ยกเลิก / ไม่อนุมัติ ${a.filter(r => r.g === "cancel").length} รายการ (ไม่แสดงบนบอร์ด)</p>` : ""}`;
-}
 function renderTnav() {
-  $("uiSw").innerHTML = UIS.map(([k, t]) => `<button type="button" class="${UI === k ? "on" : ""}" data-ui="${k}" title="${t}">${k.toUpperCase()}</button>`).join("");
   const sites = [...new Set(base(true).map(r => r.site))].sort();
   $("tnav").innerHTML = [["ov", "ภาพรวม", IC.ov], ["an", "วิเคราะห์การเสีย", IC.an], ["list", "รายการใบงาน", IC.list], ["log", "ประวัติอัปโหลด", IC.log]].map(([k, t, ic]) => `<button type="button" class="${S.view === k ? "on" : ""}" data-view="${k}">${ic}${t}</button>`).join("")
     + `<select id="tSite"><option value="">ทุกอาคาร</option>${sites.map(x => `<option ${S.site === x ? "selected" : ""}>${esc(x)}</option>`).join("")}</select><button type="button" id="guideBtn2" data-guide>📖 คู่มือ</button>`;
@@ -537,9 +477,8 @@ function toast(t) { const d = document.createElement("div"); d.className = "toas
 
 /* เหตุการณ์ */
 document.addEventListener("click", e => {
-  const t = e.target.closest("[data-ui],[data-guide],[data-view],[data-site],[data-st],[data-wo],[data-qk],[data-month],[data-qloc],[data-qeq],[data-close],[data-commit],#guideBtn,#uplBtn,#sideBtn");
+  const t = e.target.closest("[data-guide],[data-view],[data-site],[data-st],[data-wo],[data-qk],[data-month],[data-qloc],[data-qeq],[data-close],[data-commit],#guideBtn,#uplBtn,#sideBtn");
   if (!t) { if (!e.target.closest("#side")) $("side").classList.remove("open"); return; }
-  if (t.dataset.ui) { setUI(t.dataset.ui); return; }
   if ("guide" in t.dataset) { guide(); return; }
   if (t.id === "uplBtn") { $("file").click(); return; }
   if (t.id === "sideBtn") { $("side").classList.toggle("open"); return; }
