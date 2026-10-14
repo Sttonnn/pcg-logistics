@@ -235,7 +235,7 @@
   .pin2 input:focus, .pnt:focus { outline: 2px solid var(--acc); border-color: var(--acc); }
   .pcs { display: flex; flex-wrap: wrap; gap: 3px; min-height: 6px; margin-bottom: 5px; }
   .pch { display: inline-flex; align-items: center; gap: 3px; font-size: 10.5px; font-weight: 700; padding: 2px 6px; border-radius: 7px; background: #eef0f3; border: 1px solid #dfe2e7; cursor: grab; user-select: none; }
-  .pch i { font-style: normal; font-size: 9.5px; background: var(--dark); color: #fff; border-radius: 5px; padding: 0 3px; }
+  .pch i { font-style: normal; font-size: 9.5px; background: var(--dark); color: #fff; border-radius: 5px; padding: 0 3px; } .pch i.o { background: #fff; color: var(--ink2); border: 1px solid var(--ink3); }
   .pch.mv { background: #fff2d6; border-color: #f2c45c; } .pch.sel { background: var(--acc); border-color: var(--acc2); box-shadow: 0 0 0 2px rgba(242,183,5,.35); } .pch.drag { opacity: .4; }
   .pnt { width: 100%; border: 1px dashed var(--line); border-radius: 7px; padding: 4px 6px; font-size: 11px; background: #fffdf3; } .pnt.has { border-style: solid; border-color: #f2c45c; background: #fff6d6; }
   td.ptot { padding: 8px 10px; text-align: center; min-width: 110px; } td.ptot b { font-size: 16px; display: block; } td.ptot small { font-size: 10.5px; color: var(--ink2); }
@@ -664,7 +664,7 @@ function renderRenew(base) {
       <td><div class="t1">${esc(r.model)}</div><div class="t2">${esc(r.size)}</div></td><td><a href="#" data-open="${esc(r.id)}" class="t1 num" style="color:var(--ink)">${esc(r.serial) || "–"}</a><div class="t2">${r.no ? "เบอร์ " + esc(r.no) : ""}</div></td>
       <td class="r num">${money(r.price)}</td>
       <td style="min-width:150px"><select data-f="${esc(r.id)}|renew" class="dec-${r.renew || "none"}">${Object.entries(DEC).map(([k, l]) => `<option ${k === (r.renew || "") ? "selected" : ""} value="${k}">${l}</option>`).join("")}</select></td>
-      <td><select data-f="${esc(r.id)}|renewTerm">${[["", "ยังไม่ระบุ"], ["3", "3 ปี"], ["5", "5 ปี"]].map(([k, l]) => `<option ${k === String(r.renewTerm || "") ? "selected" : ""} value="${k}">${l}</option>`).join("")}</select></td>
+      <td><select data-f="${esc(r.id)}|renewTerm">${[["", origTerm(r) ? `ตามสัญญาเดิม (${origTerm(r)} ปี)` : "ยังไม่ระบุ"], ["3", "3 ปี"], ["5", "5 ปี"]].map(([k, l]) => `<option ${k === String(r.renewTerm || "") ? "selected" : ""} value="${k}">${l}</option>`).join("")}</select></td>
       <td style="min-width:150px"><input data-f="${esc(r.id)}|renewNote" value="${esc(r.renewNote || "")}"></td></tr>`; }).join("") || '<tr><td colspan="9" class="empty">ไม่มีรถในรอบนี้</td></tr>'}</tbody></table></div></section>`;
 }
 /* ไฟล์ที่หน่วยงานเซ็น (ผู้ใช้ขอ 5 ต.ค.): เก็บไฟล์เป็นแถว id FILE:<สุ่ม> ในตาราง mhe_vehicles (rec = name/type/size/data base64) · ไม่โหลดตอนเปิดหน้า โหลดเมื่อกดเปิด · รายการไฟล์อยู่ใน CFG:confirm rows[i].files */
@@ -701,6 +701,9 @@ async function saveConf(el) {
 /* ตารางสรุปตามสเปกแบบ PPT (ผู้ใช้ขอ 5 ต.ค.): แถว = รายการ/สเปก · คอลัมน์ = คลัง (Logistics) / หน่วยงาน (อื่นๆ) แยก 3 ปี / 5 ปี · Logistics กับหน่วยงานอื่นคนละแท็บ (Excel คนละชีต) */
 const PPT_T = [["3", "3 ปี"], ["5", "5 ปี"], ["", "ยังไม่ระบุ"]];
 /* 14 ต.ค. ผู้ใช้ขอ: แก้ตารางสรุปตามสเปกได้ (เต็มจอ) · คอลัมน์ของรถ = renewCol (โยกรถ) หรือคลัง/หน่วยงานเดิม · ค่าที่กรอกเกินจำนวนรถ + หมายเหตุช่อง เก็บ id CFG:ppcell */
+/* 14 ต.ค. ผู้ใช้สั่ง (ตามเอกสารที่ผู้บริหารอนุมัติ): ตารางสรุปแสดง 3 ปี / 5 ปี เสมอ · รถที่ยังไม่เลือกสัญญาใหม่ = ตามสัญญาเดิม (ระยะ เริ่ม→หมด ≥ 4 ปี = 5 ปี · น้อยกว่า = 3 ปี · ไม่มีวันที่ = ยังไม่ระบุ) */
+const origTerm = r => { if (!r.start || !r.end) return ""; const y = (new Date(r.end) - new Date(r.start)) / (365.25 * 864e5); return !(y > 0) ? "" : y >= 4 ? "5" : "3"; };
+const termOf = r => String(r.renewTerm || origTerm(r) || "");
 const ppColLG = r => r.renewCol || siteOf(r), ppColOT = r => r.renewCol || r.unit || "ไม่ระบุ";
 const ppCfg = () => (OVR["CFG:ppcell"] && OVR["CFG:ppcell"].rec) || {};
 const ppKey = (tk, i, c) => [tk, i, c].map(encodeURIComponent).join("|");
@@ -712,14 +715,14 @@ function ppData(a, colOf, tk) {
   Object.keys(M).forEach(k => { const [t, i, c] = k.split("|").map(decodeURIComponent); if (t !== tk) return; const v = M[k]; if (!((+v.t3 || 0) + (+v.t5 || 0)) && !v.note) return; if (!items.includes(i)) items.push(i); if (!cols.includes(c)) cols.push(c); });
   ((CF.rows || {})[tk] || []).forEach(i => items.includes(i) || items.push(i)); ((CF.cols || {})[tk] || []).forEach(c => cols.includes(c) || cols.push(c));
   const cars = (i, c) => a.filter(r => it(r) === i && colOf(r) === c);
-  const cell = (i, c) => { const cs = cars(i, c), d = k => cs.filter(r => String(r.renewTerm || "") === k).length, o = M[ppKey(tk, i, c)] || {};
+  const cell = (i, c) => { const cs = cars(i, c), d = k => cs.filter(r => termOf(r) === k).length, o = M[ppKey(tk, i, c)] || {};
     let k3 = d("3"), k5 = d("5"); if (o.t3 != null) k3 = +o.t3; if (o.t5 != null) k5 = +o.t5;
     return { cs, k3, k5, ku: Math.max(0, cs.length - k3 - k5), tot: Math.max(cs.length, k3 + k5), note: o.note || "" }; };
   const C = {}; items.forEach(i => cols.forEach(c => C[i + "\u0001" + c] = cell(i, c)));
   const g = (i, c) => C[i + "\u0001" + c];
-  const T = PPT_T.filter(([k]) => Object.values(C).some(x => (k === "3" ? x.k3 : k === "5" ? x.k5 : x.ku) > 0));
+  const T = PPT_T.filter(([k]) => k !== "" || Object.values(C).some(x => x.ku > 0));
   const n = (i, c, k) => { let s = 0; items.forEach(ii => { if (i != null && ii !== i) return; cols.forEach(cc => { if (c != null && cc !== c) return; const x = g(ii, cc); s += k == null ? x.tot : k === "3" ? x.k3 : k === "5" ? x.k5 : x.ku; }); }); return s; };
-  return { cols, items, T: T.length ? T : [PPT_T[2]], n, g, it, rowsB };
+  return { cols, items, T, n, g, it, rowsB };
 }
 function ppMatrix(a, colOf, title, colLbl) {
   if (!a.length) return `<div class="empty">ไม่มีรถ${title}ในรอบนี้</div>`;
@@ -740,11 +743,11 @@ async function saveRemark(el) {
 }
 function ppSpecPanel(L) {
   const LG = L.filter(r => r.unit === "Logistics"), OT = L.filter(r => r.unit !== "Logistics"), tab = S.ptab || "lg";
-  const la = L.filter(r => r.energy === "Lead-Acid").length, un = L.filter(r => !r.renewTerm).length;
+  const la = L.filter(r => r.energy === "Lead-Acid").length, un = L.filter(r => !termOf(r)).length, od = L.filter(r => !r.renewTerm && termOf(r)).length;
   return `<section class="panel"><div class="phead"><h2>สรุปตามสเปก</h2><span class="tabs"><button class="${tab === "lg" ? "on" : ""}" data-rtab="lg">Logistics · ${LG.length} คัน</button><button class="${tab === "ot" ? "on" : ""}" data-rtab="ot">หน่วยงานอื่นๆ · ${OT.length} คัน</button></span>
     <span class="note">รายการ = ตามตารางราคาประมูล (จับคู่อัตโนมัติ) · Export รอบนี้ = แยกชีต Logistics / หน่วยงานอื่นๆ</span>
     <button class="btn p" data-ppe style="padding:7px 13px">✎ แก้ไขตาราง (เต็มจอ)</button></div>${tab === "lg" ? ppMatrix(LG, ppColLG, "Logistics") : ppMatrix(OT, ppColOT, "หน่วยงานอื่นๆ")}
-    <div class="note" style="margin-top:8px">${la ? `*** รถประเภทเดิมเป็นแบตน้ำ (${la} คัน) เปลี่ยนเป็นแบต Lithium ทั้งหมด` : ""}${un ? `${la ? " · " : ""}ยังไม่ระบุสัญญาใหม่ ${un} คัน — กด "✎ แก้ไขตาราง" แล้วกรอก 3 ปี / 5 ปี ในแต่ละช่อง หรือเลือก "สัญญาใหม่" ในรายการรถด้านล่าง` : ""}</div></section>`;
+    <div class="note" style="margin-top:8px">${la ? `*** รถประเภทเดิมเป็นแบตน้ำ (${la} คัน) เปลี่ยนเป็นแบต Lithium ทั้งหมด` : ""}${un ? `${la ? " · " : ""}ยังไม่ระบุสัญญา ${un} คัน (ไม่มีวันที่สัญญาเดิม)` : ""}${od ? `${la || un ? " · " : ""}3 ปี / 5 ปี ของรถ ${od} คันที่ยังไม่เลือกสัญญาใหม่ = ตามสัญญาเดิม — แก้ได้ที่ "✎ แก้ไขตาราง"` : ""}</div></section>`;
 }
 /* ---- หน้าจอแก้ไขตารางสรุปตามสเปก (เต็มจอ) ---- */
 let PPSEL = null;
@@ -757,7 +760,7 @@ function renderPPE() {
   const L = ppL(), tab = S.ptab || "lg", tk = tab, a = L.filter(r => tab === "lg" ? r.unit === "Logistics" : r.unit !== "Logistics"), colOf = tab === "lg" ? ppColLG : ppColOT;
   const D = ppData(a, colOf, tk), opts = [...new Set([...D.rowsB.map(r => r.item), ...D.items])].filter(x => !D.items.includes(x));
   const colOpts = [...new Set((tab === "lg" ? ALL.filter(r => r.unit === "Logistics").map(siteOf) : ALL.filter(r => r.unit !== "Logistics").map(r => r.unit || "ไม่ระบุ")))].filter(x => !D.cols.includes(x)).sort((x, y) => x.localeCompare(y, "th"));
-  const chip = r => `<span class="pch${PPSEL === r.id ? " sel" : ""}${r.renewCol ? " mv" : ""}" draggable="true" data-car="${esc(r.id)}" title="${esc([r.model, r.serial && "S/N " + r.serial, r.no && "เบอร์ " + r.no, siteOf(r), "หมด " + thd(r.end), r.renewCol && "โยกมาจาก " + (tab === "lg" ? siteOf(r) : r.unit)].filter(Boolean).join(" · "))}">${esc(r.no || r.serial || r.model || "รถ")}${r.renewTerm ? `<i>${r.renewTerm}</i>` : ""}</span>`;
+  const chip = r => `<span class="pch${PPSEL === r.id ? " sel" : ""}${r.renewCol ? " mv" : ""}" draggable="true" data-car="${esc(r.id)}" title="${esc([r.model, r.serial && "S/N " + r.serial, r.no && "เบอร์ " + r.no, siteOf(r), "หมด " + thd(r.end), r.renewCol && "โยกมาจาก " + (tab === "lg" ? siteOf(r) : r.unit)].filter(Boolean).join(" · "))}">${esc(r.no || r.serial || r.model || "รถ")}${termOf(r) ? `<i class="${r.renewTerm ? "" : "o"}" title="${r.renewTerm ? "สัญญาใหม่ที่เลือกแล้ว" : "ตามสัญญาเดิม"}">${termOf(r)}</i>` : ""}</span>`;
   const td = (i, c) => { const x = D.g(i, c), k = ppKey(tk, i, c);
     return `<td class="pce${x.tot ? "" : " emp"}" data-cell="${encodeURIComponent(i)}|${encodeURIComponent(c)}"><div class="pct"><b class="num">${x.tot || "·"}</b>${x.ku ? `<span class="pu">ยังไม่ระบุ ${x.ku}</span>` : ""}</div>
       <div class="pin2"><label>3 ปี<input type="number" min="0" data-pq="${k}|3" value="${x.k3 || ""}" placeholder="–"></label><label>5 ปี<input type="number" min="0" data-pq="${k}|5" value="${x.k5 || ""}" placeholder="–"></label></div>
@@ -778,7 +781,7 @@ async function ppSetQty(el) {
   const p = el.dataset.pq.split("|"), term = p.pop(), [tk, i, c] = p.map(decodeURIComponent), k = ppKey(tk, i, c);
   const a = ppL().filter(r => tk === "lg" ? r.unit === "Logistics" : r.unit !== "Logistics"), D = ppData(a, tk === "lg" ? ppColLG : ppColOT, tk), x = D.g(i, c);
   const v = Math.max(0, parseInt(el.value) || 0), t3 = term === "3" ? v : x.k3, t5 = term === "5" ? v : x.k5;
-  const cs = x.cs.slice().sort((p, q) => String(p.renewTerm || "9").localeCompare(String(q.renewTerm || "9")) || p.id.localeCompare(q.id)), ups = [];
+  const cs = x.cs.slice().sort((p, q) => (termOf(p) || "9").localeCompare(termOf(q) || "9") || p.id.localeCompare(q.id)), ups = [];
   cs.forEach((r, j) => { const nt = j < t3 ? "3" : j < t3 + t5 ? "5" : ""; if (String(r.renewTerm || "") !== nt) { r.renewTerm = nt; const rec = Object.assign({}, r); delete rec.id; delete rec._web; ups.push({ id: r.id, rec }); } });
   if (ups.length) await sbSave(ups);
   await ppSaveCfg(CF => { const o = CF.map[k] || {}; if (t3 + t5 > cs.length) { o.t3 = t3; o.t5 = t5; } else { delete o.t3; delete o.t5; } if (Object.keys(o).length) CF.map[k] = o; else delete CF.map[k]; });
