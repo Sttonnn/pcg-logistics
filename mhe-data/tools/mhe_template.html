@@ -765,7 +765,7 @@ function ppSpecPanel(L) {
     <div class="note" style="margin-top:8px">${la ? `*** รถประเภทเดิมเป็นแบตน้ำ (${la} คัน) เปลี่ยนเป็นแบต Lithium ทั้งหมด` : ""}${od ? `${la ? " · " : ""}3 ปี / 5 ปี ของรถ ${od} คันที่ยังไม่เลือกสัญญาใหม่ = ตามสัญญาเดิม — แก้ได้ที่ "✎ แก้ไขตาราง"` : ""}</div></section>`;
 }
 /* ---- หน้าจอแก้ไขตารางสรุปตามสเปก (เต็มจอ) ---- */
-let PPSEL = null;
+let PPSEL = null, PPMV = false; /* PPMV = โหมดโยกย้ายรถ (แสดงชิปรถ) · ค่าเริ่ม = ซ่อน */
 const ppL = () => { rInit(); return ALL.filter(r => match(r) && inR(r)); };
 function renderPPE() {
   let el = $("ppe"); if (!S.ppe) { if (el) el.remove(); document.body.classList.remove("ppe-on"); return; }
@@ -778,11 +778,12 @@ function renderPPE() {
   const chip = r => `<span class="pch${PPSEL === r.id ? " sel" : ""}${r.renewCol ? " mv" : ""}" draggable="true" data-car="${esc(r.id)}" title="${esc([r.model, r.serial && "S/N " + r.serial, r.no && "เบอร์ " + r.no, siteOf(r), "หมด " + thd(r.end), r.renewCol && "โยกมาจาก " + (tab === "lg" ? siteOf(r) : r.unit)].filter(Boolean).join(" · "))}">${esc(r.no || r.serial || r.model || "รถ")}${termOf(r) ? `<i class="${r.renewTerm ? "" : "o"}" title="${r.renewTerm ? "สัญญาใหม่ที่เลือกแล้ว" : "ตามสัญญาเดิม"}">${termOf(r)}</i>` : ""}</span>`;
   const td = (i, c) => { const x = D.g(i, c), k = ppKey(tk, i, c);
     return `<td class="pce${x.tot ? "" : " emp"}" data-cell="${encodeURIComponent(i)}|${encodeURIComponent(c)}"><div class="pct"><b class="num">${x.tot || "·"}</b><label>3 ปี<input type="number" min="0" data-pq="${k}|3" value="${x.k3 || ""}" placeholder="–"></label><label>5 ปี<input type="number" min="0" data-pq="${k}|5" value="${x.k5 || ""}" placeholder="–"></label></div>
-      <div class="pcs">${x.cs.map(chip).join("")}</div><input class="pnt${x.note ? " has" : ""}" data-pn="${k}" value="${esc(x.note)}" placeholder="💬 หมายเหตุ"></td>`; };
-  el.innerHTML = `<div class="ppe-h"><div><h2>แก้ไขตารางสรุปตามสเปก</h2><div class="t2">${rLbl()} · กรอก 3 ปี / 5 ปี ในช่อง · ลากรถ (หรือกดรถแล้วกดช่องปลายทาง) เพื่อโยก · พิมพ์หมายเหตุใต้ช่อง (ช่องว่าง ชี้เมาส์ถึงจะเห็นช่องกรอก) · บันทึกทันที</div></div>
+      ${PPMV ? `<div class="pcs">${x.cs.map(chip).join("")}</div>` : ""}<input class="pnt${x.note ? " has" : ""}" data-pn="${k}" value="${esc(x.note)}" placeholder="💬 หมายเหตุ"></td>`; };
+  el.innerHTML = `<div class="ppe-h"><div><h2>แก้ไขตารางสรุปตามสเปก</h2><div class="t2">${rLbl()} · กรอก 3 ปี / 5 ปี ในช่อง · ${PPMV ? "ลากรถ (หรือกดรถแล้วกดช่องปลายทาง) เพื่อโยก" : "กด 🚚 โยกย้ายรถ เพื่อดูรถรายคันและโยก"} · พิมพ์หมายเหตุใต้ช่อง (ช่องว่าง ชี้เมาส์ถึงจะเห็นช่องกรอก) · บันทึกทันที</div></div>
     <span class="tabs"><button class="${tab === "lg" ? "on" : ""}" data-rtab="lg">Logistics</button><button class="${tab === "ot" ? "on" : ""}" data-rtab="ot">หน่วยงานอื่นๆ</button></span>
     <select data-ppaddrow><option value="">＋ เพิ่มรายการ/สเปก</option>${opts.map(o => `<option>${esc(o)}</option>`).join("")}<option value="*">พิมพ์ชื่อเอง…</option></select>
     <select data-ppaddcol><option value="">＋ เพิ่ม${tab === "lg" ? "คลัง" : "หน่วยงาน"}</option>${colOpts.map(o => `<option>${esc(o)}</option>`).join("")}<option value="*">พิมพ์ชื่อเอง…</option></select>
+    <button class="btn ${PPMV ? "y" : "l"}" data-ppmv>${PPMV ? "✓ เลิกโยกย้ายรถ" : "🚚 โยกย้ายรถ"}</button>
     <button class="btn y" data-ppeclose>✓ เสร็จ</button></div>
     <div class="ppe-b"><table class="ppe-t"><thead><tr><th class="pst">รายการ / สเปก</th>${D.cols.map(c => `<th>${esc(c)}<small>${D.n(null, c)} คัน</small></th>`).join("")}<th class="ptc">รวม</th></tr></thead><tbody>
     ${D.items.map(i => `<tr><th class="pst">${esc(i)}</th>${D.cols.map(c => td(i, c)).join("")}<td class="ptot num"><b>${D.n(i)}</b><small>3 ปี ${D.n(i, null, "3")} · 5 ปี ${D.n(i, null, "5")}</small></td></tr>`).join("") || `<tr><td class="empty" colspan="${D.cols.length + 2}">ไม่มีรถในรอบนี้</td></tr>`}</tbody>
@@ -1361,7 +1362,8 @@ document.addEventListener("click", async e => {
   if ("rexp" in t.dataset) { exportRenew(); return; }
   if (t.dataset.rtab) { S.ptab = t.dataset.rtab; PPSEL = null; render(); return; }
   if ("ppe" in t.dataset && t.matches("button")) { S.ppe = true; PPSEL = null; render(); return; }
-  if ("ppeclose" in t.dataset) { S.ppe = false; PPSEL = null; render(); return; }
+  if ("ppmv" in t.dataset) { PPMV = !PPMV; PPSEL = null; renderPPE(); return; }
+  if ("ppeclose" in t.dataset) { S.ppe = false; PPSEL = null; PPMV = false; render(); return; }
   if (t.dataset.bsh) { S.bsh = +t.dataset.bsh; renderBid(); return; }
   if ("bedit" in t.dataset) { BDRAFT = JSON.parse(JSON.stringify(bidData())); S.bed = true; renderBid(); return; }
   if ("bcancel" in t.dataset) { S.bed = false; BDRAFT = null; renderBid(); return; }
