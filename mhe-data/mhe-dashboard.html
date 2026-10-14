@@ -214,6 +214,31 @@
   .cfi a { color: var(--ink); text-decoration: none; } .cfi a:hover { text-decoration: underline; } .cfi .x { border: 0; background: none; color: #a8251a; cursor: pointer; font-size: 11px; padding: 0 4px; } .cfi .x.arm { font-weight: 800; }
   .cfa { padding: 4px 9px !important; font-size: 12px !important; }
   .ppt td.rmk { min-width: 200px; } .ppt td.rmk input { width: 100%; border: 1px dashed var(--line); border-radius: 8px; padding: 5px 8px; font: inherit; font-size: 12px; background: #fffdf3; } .ppt td.rmk input.ok { border-color: #18794a; }
+  .ppt td[data-nt] { position: relative; } .ppt td[data-nt]::after { content: ""; position: absolute; top: 4px; right: 4px; width: 7px; height: 7px; border-radius: 9px; background: var(--m3); }
+  body.ppe-on { overflow: hidden; }
+  #ppe { position: fixed; inset: 0; z-index: 900; background: var(--bg); display: grid; grid-template-rows: auto 1fr; }
+  .ppe-h { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 14px clamp(12px,2vw,24px); background: var(--dark); color: #fff; }
+  .ppe-h h2 { margin: 0; font-size: 18px; } .ppe-h .t2 { color: rgba(255,255,255,.65); font-size: 12px; } .ppe-h > div:first-child { flex: 1 1 360px; }
+  .ppe-h select { border-radius: 10px; border: 1px solid rgba(255,255,255,.25); background: rgba(255,255,255,.1); color: #fff; padding: 8px 10px; font-weight: 700; font-size: 13px; } .ppe-h select option { color: #111; }
+  .ppe-h .tabs button { color: var(--ink); } .ppe-h .tabs button.on { background: var(--acc); color: #1b1f24; }
+  .ppe-b { overflow: auto; padding: 0 0 40px; } .ppe-t { margin: 14px clamp(12px,2vw,24px); }
+  .ppe-t { border-collapse: separate; border-spacing: 0; background: #fff; border-radius: 14px; box-shadow: var(--shadow); }
+  .ppe-t th, .ppe-t td { border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); vertical-align: top; }
+  .ppe-t thead th { position: sticky; top: 0; z-index: 3; background: var(--head); padding: 9px 10px; font-size: 12.5px; text-align: center; min-width: 150px; }
+  .ppe-t thead th small { display: block; color: var(--ink3); font-weight: 600; font-size: 11px; }
+  .ppe-t th.pst { position: sticky; left: 0; z-index: 2; background: #fff; text-align: left; padding: 10px 12px; font-size: 13px; min-width: 210px; max-width: 260px; }
+  .ppe-t thead th.pst { z-index: 4; background: var(--head); } .ppe-t tfoot th.pst, .ppe-t tfoot td { background: var(--head); }
+  td.pce { padding: 7px; min-width: 150px; width: 150px; transition: background .12s; } td.pce.emp { background: #fcfcfa; } td.pce.emp:not(:hover):not(:focus-within) .pin2, td.pce.emp:not(:hover):not(:focus-within) .pnt:not(.has) { visibility: hidden; } td.pce.emp:not(:hover):not(:focus-within) .pct b { color: #d6d6d0; } td.pce.ov { background: var(--tint); box-shadow: inset 0 0 0 2px var(--acc); }
+  .pct { display: flex; align-items: baseline; gap: 6px; } .pct b { font-size: 18px; } .pce.emp .pct b { color: var(--ink3); font-size: 14px; } .pu { font-size: 10.5px; font-weight: 700; color: var(--m3); }
+  .pin2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin: 5px 0; } .pin2 label { display: grid; font-size: 10.5px; font-weight: 700; color: var(--ink2); }
+  .pin2 input { width: 100%; border: 1px solid var(--line); border-radius: 7px; padding: 4px 6px; font-weight: 800; font-family: Archivo, sans-serif; text-align: center; background: #fff; }
+  .pin2 input:focus, .pnt:focus { outline: 2px solid var(--acc); border-color: var(--acc); }
+  .pcs { display: flex; flex-wrap: wrap; gap: 3px; min-height: 6px; margin-bottom: 5px; }
+  .pch { display: inline-flex; align-items: center; gap: 3px; font-size: 10.5px; font-weight: 700; padding: 2px 6px; border-radius: 7px; background: #eef0f3; border: 1px solid #dfe2e7; cursor: grab; user-select: none; }
+  .pch i { font-style: normal; font-size: 9.5px; background: var(--dark); color: #fff; border-radius: 5px; padding: 0 3px; }
+  .pch.mv { background: #fff2d6; border-color: #f2c45c; } .pch.sel { background: var(--acc); border-color: var(--acc2); box-shadow: 0 0 0 2px rgba(242,183,5,.35); } .pch.drag { opacity: .4; }
+  .pnt { width: 100%; border: 1px dashed var(--line); border-radius: 7px; padding: 4px 6px; font-size: 11px; background: #fffdf3; } .pnt.has { border-style: solid; border-color: #f2c45c; background: #fff6d6; }
+  td.ptot { padding: 8px 10px; text-align: center; min-width: 110px; } td.ptot b { font-size: 16px; display: block; } td.ptot small { font-size: 10.5px; color: var(--ink2); }
   .ppt th.un { color: var(--m3); } .ppt td:first-child { white-space: nowrap; position: sticky; left: 0; background: #fff; z-index: 1; } .ppt tfoot td:first-child { background: var(--head); } .ppt th.pmh b { color: var(--acc); font-size: 17px; } .ppt tbody tr { cursor: default; }
   .pm th.pmh { background: var(--dark); color: #fff; text-align: left; font-size: 13px; }
   .sup .ok { color: #18794a; font-weight: 900; font-size: 15px; } .sup .ng { color: var(--exp); font-weight: 800; } .sup td { font-size: 12.5px; } .sup input { min-width: 90px; } .sup input.it { min-width: 240px; }
@@ -517,7 +542,7 @@ const FIELDS = [
   ["เตรียมต่อสัญญารอบถัดไป", [["renew", "การตัดสินใจ", "r"], ["renewNote", "หมายเหตุรอบต่อสัญญา", "w"]]]
 ];
 const DEC = { "": "ยังไม่ตัดสินใจ", renew: "ต่อสัญญาเดิม", bid: "ประมูล / เปลี่ยนรุ่น", return: "คืนรถ ไม่ต่อ" };
-const RENEWK = ["renew", "renewNote", "renewItem", "renewTerm", "renewEnergy"];
+const RENEWK = ["renew", "renewNote", "renewItem", "renewTerm", "renewEnergy", "renewCol"];
 const CMP = FIELDS.flatMap(g => g[1].map(f => f[0])).filter(k => !RENEWK.includes(k));
 
 /* ---- ข้อมูล: ไฟล์ที่ฝังไว้ + ที่บันทึกบนเว็บ (Supabase mhe_vehicles, ไม่มีตาราง → localStorage) ---- */
@@ -643,6 +668,8 @@ function render() {
   $("fbar").style.display = ["bid", "deliv", "prop"].includes(S.view) ? "none" : "";
   renderSide();
   if (S.view === "renew") renderRenew(base);
+  if (S.ppe && S.view !== "renew") S.ppe = false;
+  renderPPE();
   if (S.view === "spec") renderSpecSheet(base);
   if (S.view === "deliv") renderDeliv();
   if (S.view === "prop") renderProp(ALL);
@@ -854,21 +881,36 @@ async function saveConf(el) {
 }
 /* ตารางสรุปตามสเปกแบบ PPT (ผู้ใช้ขอ 5 ต.ค.): แถว = รายการ/สเปก · คอลัมน์ = คลัง (Logistics) / หน่วยงาน (อื่นๆ) แยก 3 ปี / 5 ปี · Logistics กับหน่วยงานอื่นคนละแท็บ (Excel คนละชีต) */
 const PPT_T = [["3", "3 ปี"], ["5", "5 ปี"], ["", "ยังไม่ระบุ"]];
-function ppData(a, colOf) {
-  const rowsB = (propRound() || { sheets: [{ rows: [] }] }).sheets[0].rows, it = r => itemOf(r, rowsB);
+/* 14 ต.ค. ผู้ใช้ขอ: แก้ตารางสรุปตามสเปกได้ (เต็มจอ) · คอลัมน์ของรถ = renewCol (โยกรถ) หรือคลัง/หน่วยงานเดิม · ค่าที่กรอกเกินจำนวนรถ + หมายเหตุช่อง เก็บ id CFG:ppcell */
+const ppColLG = r => r.renewCol || siteOf(r), ppColOT = r => r.renewCol || r.unit || "ไม่ระบุ";
+const ppCfg = () => (OVR["CFG:ppcell"] && OVR["CFG:ppcell"].rec) || {};
+const ppKey = (tk, i, c) => [tk, i, c].map(encodeURIComponent).join("|");
+function ppData(a, colOf, tk) {
+  const rowsB = (propRound() || { sheets: [{ rows: [] }] }).sheets[0].rows, it = r => itemOf(r, rowsB), CF = ppCfg(), M = CF.map || {};
   const by = (f, x) => { const c = {}; x.forEach(r => { const k = f(r); c[k] = (c[k] || 0) + 1; }); return Object.entries(c).sort((p, q) => q[1] - p[1]).map(e => e[0]); };
-  const cols = by(colOf, a), items = by(it, a), T = PPT_T.filter(([k]) => a.some(r => String(r.renewTerm || "") === k));
-  const n = (i, c, k) => a.filter(r => (i == null || it(r) === i) && (c == null || colOf(r) === c) && (k == null || String(r.renewTerm || "") === k)).length;
-  return { cols, items, T, n };
+  const cols = by(colOf, a), items = by(it, a);
+  /* แถว/คอลัมน์ที่เพิ่มเอง หรือมีค่ากรอกไว้ แม้ไม่มีรถ */
+  Object.keys(M).forEach(k => { const [t, i, c] = k.split("|").map(decodeURIComponent); if (t !== tk) return; const v = M[k]; if (!((+v.t3 || 0) + (+v.t5 || 0)) && !v.note) return; if (!items.includes(i)) items.push(i); if (!cols.includes(c)) cols.push(c); });
+  ((CF.rows || {})[tk] || []).forEach(i => items.includes(i) || items.push(i)); ((CF.cols || {})[tk] || []).forEach(c => cols.includes(c) || cols.push(c));
+  const cars = (i, c) => a.filter(r => it(r) === i && colOf(r) === c);
+  const cell = (i, c) => { const cs = cars(i, c), d = k => cs.filter(r => String(r.renewTerm || "") === k).length, o = M[ppKey(tk, i, c)] || {};
+    let k3 = d("3"), k5 = d("5"); if (o.t3 != null) k3 = +o.t3; if (o.t5 != null) k5 = +o.t5;
+    return { cs, k3, k5, ku: Math.max(0, cs.length - k3 - k5), tot: Math.max(cs.length, k3 + k5), note: o.note || "" }; };
+  const C = {}; items.forEach(i => cols.forEach(c => C[i + "\u0001" + c] = cell(i, c)));
+  const g = (i, c) => C[i + "\u0001" + c];
+  const T = PPT_T.filter(([k]) => Object.values(C).some(x => (k === "3" ? x.k3 : k === "5" ? x.k5 : x.ku) > 0));
+  const n = (i, c, k) => { let s = 0; items.forEach(ii => { if (i != null && ii !== i) return; cols.forEach(cc => { if (c != null && cc !== c) return; const x = g(ii, cc); s += k == null ? x.tot : k === "3" ? x.k3 : k === "5" ? x.k5 : x.ku; }); }); return s; };
+  return { cols, items, T: T.length ? T : [PPT_T[2]], n, g, it, rowsB };
 }
 function ppMatrix(a, colOf, title, colLbl) {
   if (!a.length) return `<div class="empty">ไม่มีรถ${title}ในรอบนี้</div>`;
-  const { cols, items, T, n } = ppData(a, colOf), z = v => v || '<span class="z">·</span>', RM = ppRemarks(), tk = title === "Logistics" ? "lg" : "ot";
-  return `<div class="tw"><table class="mx pm ppt"><thead><tr><th colspan="${cols.length * T.length + 3}" class="pmh">${title} <b>${a.length}</b> คัน</th></tr>
+  const tk = title === "Logistics" ? "lg" : "ot", { cols, items, T, n, g } = ppData(a, colOf, tk), z = v => v || '<span class="z">·</span>', RM = ppRemarks();
+  const nt = (i, c, j) => { const x = g(i, c); return j === 0 && x.note ? ` title="💬 ${esc(x.note)}" data-nt="1"` : ""; };
+  return `<div class="tw"><table class="mx pm ppt"><thead><tr><th colspan="${cols.length * T.length + 3}" class="pmh">${title} <b>${n()}</b> คัน${n() !== a.length ? ` <small style="font-weight:600;opacity:.75">(รถในรอบ ${a.length} คัน)</small>` : ""}</th></tr>
     <tr><th rowspan="2">รายการ / สเปก</th>${cols.map(c => `<th colspan="${T.length}" class="c gl">${esc(c)}</th>`).join("")}<th rowspan="2" class="c gl">รวม</th><th rowspan="2" class="gl">Remark</th></tr>
     <tr>${cols.map(() => T.map(([k, l], j) => `<th class="c ${j ? "" : "gl"} ${k ? "" : "un"}">${l}</th>`).join("")).join("")}</tr></thead><tbody>
-    ${items.map(i => `<tr><td class="t1">${esc(i)}</td>${cols.map(c => T.map(([k], j) => `<td class="c num ${j ? "" : "gl"}">${z(n(i, c, k))}</td>`).join("")).join("")}<td class="c num gl"><b>${n(i)}</b></td><td class="gl rmk"><input data-rm="${esc(tk + "|" + i)}" value="${esc(RM[tk + "|" + i] || "")}" placeholder="เช่น สลับรถกับคลัง…"></td></tr>`).join("")}</tbody>
-    <tfoot><tr><td>รวม</td>${cols.map(c => `<td colspan="${T.length}" class="c num gl">${n(null, c)}</td>`).join("")}<td class="c num gl">${a.length}</td><td class="gl rmk"><input data-rm="${tk}|*" value="${esc(RM[tk + "|*"] || "")}" placeholder="หมายเหตุรวม"></td></tr></tfoot></table></div>`;
+    ${items.map(i => `<tr><td class="t1">${esc(i)}</td>${cols.map(c => T.map(([k], j) => `<td class="c num ${j ? "" : "gl"}"${nt(i, c, j)}>${z(n(i, c, k))}</td>`).join("")).join("")}<td class="c num gl"><b>${n(i)}</b></td><td class="gl rmk"><input data-rm="${esc(tk + "|" + i)}" value="${esc(RM[tk + "|" + i] || "")}" placeholder="เช่น สลับรถกับคลัง…"></td></tr>`).join("")}</tbody>
+    <tfoot><tr><td>รวม</td>${cols.map(c => `<td colspan="${T.length}" class="c num gl">${n(null, c)}</td>`).join("")}<td class="c num gl">${n()}</td><td class="gl rmk"><input data-rm="${tk}|*" value="${esc(RM[tk + "|*"] || "")}" placeholder="หมายเหตุรวม"></td></tr></tfoot></table></div>`;
 }
 /* Remark ต่อแถวรายการ (เก็บ id CFG:ppremark · key = lg|รายการ หรือ ot|รายการ · "|*" = แถวรวม) */
 const ppRemarks = () => (OVR["CFG:ppremark"] && OVR["CFG:ppremark"].rec && OVR["CFG:ppremark"].rec.map) || {};
@@ -881,15 +923,67 @@ function ppSpecPanel(L) {
   const LG = L.filter(r => r.unit === "Logistics"), OT = L.filter(r => r.unit !== "Logistics"), tab = S.ptab || "lg";
   const la = L.filter(r => r.energy === "Lead-Acid").length, un = L.filter(r => !r.renewTerm).length;
   return `<section class="panel"><div class="phead"><h2>สรุปตามสเปก</h2><span class="tabs"><button class="${tab === "lg" ? "on" : ""}" data-rtab="lg">Logistics · ${LG.length} คัน</button><button class="${tab === "ot" ? "on" : ""}" data-rtab="ot">หน่วยงานอื่นๆ · ${OT.length} คัน</button></span>
-    <span class="note">รายการ = ตามตารางราคาประมูล (จับคู่อัตโนมัติ) · Export รอบนี้ = แยกชีต Logistics / หน่วยงานอื่นๆ</span></div>
-    ${tab === "lg" ? ppMatrix(LG, siteOf, "Logistics") : ppMatrix(OT, r => r.unit, "หน่วยงานอื่นๆ")}
-    <div class="note" style="margin-top:8px">${la ? `*** รถประเภทเดิมเป็นแบตน้ำ (${la} คัน) เปลี่ยนเป็นแบต Lithium ทั้งหมด` : ""}${un ? `${la ? " · " : ""}ยังไม่ระบุสัญญาใหม่ ${un} คัน — เลือก "สัญญาใหม่" 3 ปี / 5 ปี ในรายการรถด้านล่าง แล้วตารางจะแยกคอลัมน์ 3 ปี / 5 ปี ให้` : ""}</div></section>`;
+    <span class="note">รายการ = ตามตารางราคาประมูล (จับคู่อัตโนมัติ) · Export รอบนี้ = แยกชีต Logistics / หน่วยงานอื่นๆ</span>
+    <button class="btn p" data-ppe style="padding:7px 13px">✎ แก้ไขตาราง (เต็มจอ)</button></div>${tab === "lg" ? ppMatrix(LG, ppColLG, "Logistics") : ppMatrix(OT, ppColOT, "หน่วยงานอื่นๆ")}
+    <div class="note" style="margin-top:8px">${la ? `*** รถประเภทเดิมเป็นแบตน้ำ (${la} คัน) เปลี่ยนเป็นแบต Lithium ทั้งหมด` : ""}${un ? `${la ? " · " : ""}ยังไม่ระบุสัญญาใหม่ ${un} คัน — กด "✎ แก้ไขตาราง" แล้วกรอก 3 ปี / 5 ปี ในแต่ละช่อง หรือเลือก "สัญญาใหม่" ในรายการรถด้านล่าง` : ""}</div></section>`;
+}
+/* ---- หน้าจอแก้ไขตารางสรุปตามสเปก (เต็มจอ) ---- */
+let PPSEL = null;
+const ppL = () => { rInit(); return ALL.filter(r => match(r) && inR(r)); };
+function renderPPE() {
+  let el = $("ppe"); if (!S.ppe) { if (el) el.remove(); document.body.classList.remove("ppe-on"); return; }
+  if (!el) { el = document.createElement("div"); el.id = "ppe"; document.body.appendChild(el); }
+  document.body.classList.add("ppe-on");
+  const sc = el.querySelector(".ppe-b"), sx = sc ? sc.scrollLeft : 0, sy = sc ? sc.scrollTop : 0;
+  const L = ppL(), tab = S.ptab || "lg", tk = tab, a = L.filter(r => tab === "lg" ? r.unit === "Logistics" : r.unit !== "Logistics"), colOf = tab === "lg" ? ppColLG : ppColOT;
+  const D = ppData(a, colOf, tk), opts = [...new Set([...D.rowsB.map(r => r.item), ...D.items])].filter(x => !D.items.includes(x));
+  const colOpts = [...new Set((tab === "lg" ? ALL.filter(r => r.unit === "Logistics").map(siteOf) : ALL.filter(r => r.unit !== "Logistics").map(r => r.unit || "ไม่ระบุ")))].filter(x => !D.cols.includes(x)).sort((x, y) => x.localeCompare(y, "th"));
+  const chip = r => `<span class="pch${PPSEL === r.id ? " sel" : ""}${r.renewCol ? " mv" : ""}" draggable="true" data-car="${esc(r.id)}" title="${esc([r.model, r.serial && "S/N " + r.serial, r.no && "เบอร์ " + r.no, siteOf(r), "หมด " + thd(r.end), r.renewCol && "โยกมาจาก " + (tab === "lg" ? siteOf(r) : r.unit)].filter(Boolean).join(" · "))}">${esc(r.no || r.serial || r.model || "รถ")}${r.renewTerm ? `<i>${r.renewTerm}</i>` : ""}</span>`;
+  const td = (i, c) => { const x = D.g(i, c), k = ppKey(tk, i, c);
+    return `<td class="pce${x.tot ? "" : " emp"}" data-cell="${encodeURIComponent(i)}|${encodeURIComponent(c)}"><div class="pct"><b class="num">${x.tot || "·"}</b>${x.ku ? `<span class="pu">ยังไม่ระบุ ${x.ku}</span>` : ""}</div>
+      <div class="pin2"><label>3 ปี<input type="number" min="0" data-pq="${k}|3" value="${x.k3 || ""}" placeholder="–"></label><label>5 ปี<input type="number" min="0" data-pq="${k}|5" value="${x.k5 || ""}" placeholder="–"></label></div>
+      <div class="pcs">${x.cs.map(chip).join("")}</div><input class="pnt${x.note ? " has" : ""}" data-pn="${k}" value="${esc(x.note)}" placeholder="💬 หมายเหตุ"></td>`; };
+  el.innerHTML = `<div class="ppe-h"><div><h2>แก้ไขตารางสรุปตามสเปก</h2><div class="t2">${rLbl()} · กรอก 3 ปี / 5 ปี ในช่อง · ลากรถ (หรือกดรถแล้วกดช่องปลายทาง) เพื่อโยก · พิมพ์หมายเหตุใต้ช่อง · บันทึกทันที</div></div>
+    <span class="tabs"><button class="${tab === "lg" ? "on" : ""}" data-rtab="lg">Logistics</button><button class="${tab === "ot" ? "on" : ""}" data-rtab="ot">หน่วยงานอื่นๆ</button></span>
+    <select data-ppaddrow><option value="">＋ เพิ่มรายการ/สเปก</option>${opts.map(o => `<option>${esc(o)}</option>`).join("")}<option value="*">พิมพ์ชื่อเอง…</option></select>
+    <select data-ppaddcol><option value="">＋ เพิ่ม${tab === "lg" ? "คลัง" : "หน่วยงาน"}</option>${colOpts.map(o => `<option>${esc(o)}</option>`).join("")}<option value="*">พิมพ์ชื่อเอง…</option></select>
+    <button class="btn y" data-ppeclose>✓ เสร็จ</button></div>
+    <div class="ppe-b"><table class="ppe-t"><thead><tr><th class="pst">รายการ / สเปก</th>${D.cols.map(c => `<th>${esc(c)}<small>${D.n(null, c)} คัน</small></th>`).join("")}<th>รวม</th></tr></thead><tbody>
+    ${D.items.map(i => `<tr><th class="pst">${esc(i)}</th>${D.cols.map(c => td(i, c)).join("")}<td class="ptot num"><b>${D.n(i)}</b><small>3 ปี ${D.n(i, null, "3")} · 5 ปี ${D.n(i, null, "5")}</small></td></tr>`).join("") || `<tr><td class="empty" colspan="${D.cols.length + 2}">ไม่มีรถในรอบนี้</td></tr>`}</tbody>
+    <tfoot><tr><th class="pst">รวม</th>${D.cols.map(c => `<td class="ptot num"><b>${D.n(null, c)}</b><small>3 ปี ${D.n(null, c, "3")} · 5 ปี ${D.n(null, c, "5")}</small></td>`).join("")}<td class="ptot num"><b>${D.n()}</b><small>3 ปี ${D.n(null, null, "3")} · 5 ปี ${D.n(null, null, "5")}</small></td></tr></tfoot></table></div>`;
+  const b = el.querySelector(".ppe-b"); b.scrollLeft = sx; b.scrollTop = sy;
+}
+async function ppSaveCfg(fn) { const CF = JSON.parse(JSON.stringify(ppCfg())); CF.map = CF.map || {}; CF.rows = CF.rows || {}; CF.cols = CF.cols || {}; fn(CF); await sbSave([{ id: "CFG:ppcell", rec: CF }]); }
+/* กรอก 3 ปี / 5 ปี: กำหนดสัญญาใหม่ให้รถในช่องตามจำนวน (3 ปีก่อน แล้ว 5 ปี ที่เหลือ = ยังไม่ระบุ) · ถ้ากรอกเกินจำนวนรถ เก็บตัวเลขไว้ใน CFG:ppcell */
+async function ppSetQty(el) {
+  const p = el.dataset.pq.split("|"), term = p.pop(), [tk, i, c] = p.map(decodeURIComponent), k = ppKey(tk, i, c);
+  const a = ppL().filter(r => tk === "lg" ? r.unit === "Logistics" : r.unit !== "Logistics"), D = ppData(a, tk === "lg" ? ppColLG : ppColOT, tk), x = D.g(i, c);
+  const v = Math.max(0, parseInt(el.value) || 0), t3 = term === "3" ? v : x.k3, t5 = term === "5" ? v : x.k5;
+  const cs = x.cs.slice().sort((p, q) => String(p.renewTerm || "9").localeCompare(String(q.renewTerm || "9")) || p.id.localeCompare(q.id)), ups = [];
+  cs.forEach((r, j) => { const nt = j < t3 ? "3" : j < t3 + t5 ? "5" : ""; if (String(r.renewTerm || "") !== nt) { r.renewTerm = nt; const rec = Object.assign({}, r); delete rec.id; delete rec._web; ups.push({ id: r.id, rec }); } });
+  if (ups.length) await sbSave(ups);
+  await ppSaveCfg(CF => { const o = CF.map[k] || {}; if (t3 + t5 > cs.length) { o.t3 = t3; o.t5 = t5; } else { delete o.t3; delete o.t5; } if (Object.keys(o).length) CF.map[k] = o; else delete CF.map[k]; });
+  render(); toast(ONLINE ? "บันทึกแล้ว" : "บันทึกในเบราว์เซอร์นี้แล้ว");
+}
+async function ppSetNote(el) {
+  const k = el.dataset.pn, v = el.value.trim();
+  await ppSaveCfg(CF => { const o = CF.map[k] || {}; if (v) o.note = v; else delete o.note; if (Object.keys(o).length) CF.map[k] = o; else delete CF.map[k]; });
+  render(); toast("บันทึกหมายเหตุแล้ว");
+}
+/* โยกรถ: เปลี่ยนรายการ/สเปก (renewItem) และคอลัมน์ (renewCol = ว่าง ถ้ากลับคลัง/หน่วยงานเดิม) */
+async function ppMove(id, cellv) {
+  const [i, c] = cellv.split("|").map(decodeURIComponent), r = ALL.find(x => x.id === id); if (!r) return;
+  const home = r.unit === "Logistics" ? siteOf(r) : (r.unit || "ไม่ระบุ"), rowsB = (propRound() || { sheets: [{ rows: [] }] }).sheets[0].rows;
+  const autoI = (matchItem(r, rowsB) || {}).item || autoItem(r), ni = i === autoI ? "" : i, nc = c === home ? "" : c;
+  if ((r.renewItem || "") === ni && (r.renewCol || "") === nc) return;
+  r.renewItem = ni; r.renewCol = nc; const rec = Object.assign({}, r); delete rec.id; delete rec._web;
+  await sbSave([{ id, rec }]); PPSEL = null; render(); toast(`โยก ${r.no || r.serial || "รถ"} → ${i} · ${c}`);
 }
 function ppAoa(a, colOf, title) {
   if (!a.length) return [[title + " 0 คัน"]];
-  const { cols, items, T, n } = ppData(a, colOf), RM = ppRemarks(), tk = title === "Logistics" ? "lg" : "ot";
-  return [[`${title} ${a.length} คัน`], ["รายการ / สเปก", ...cols.flatMap(c => T.map((_, j) => j ? "" : c)), "รวม", "Remark"], ["", ...cols.flatMap(() => T.map(t => t[1])), "", ""],
-    ...items.map(i => [i, ...cols.flatMap(c => T.map(([k]) => n(i, c, k) || "")), n(i), RM[tk + "|" + i] || ""]), ["รวม", ...cols.flatMap(c => T.map((_, j) => j ? "" : n(null, c))), a.length, RM[tk + "|*"] || ""]];
+  const tk = title === "Logistics" ? "lg" : "ot", { cols, items, T, n, g } = ppData(a, colOf, tk), RM = ppRemarks();
+  return [[`${title} ${n()} คัน`], ["รายการ / สเปก", ...cols.flatMap(c => T.map((_, j) => j ? "" : c)), "รวม", "Remark"], ["", ...cols.flatMap(() => T.map(t => t[1])), "", ""],
+    ...items.map(i => [i, ...cols.flatMap(c => T.map(([k]) => n(i, c, k) || "")), n(i), RM[tk + "|" + i] || ""]), ["รวม", ...cols.flatMap(c => T.map((_, j) => j ? "" : n(null, c))), n(), RM[tk + "|*"] || ""]];
 }
 function ppSheet(aoa, nT) {
   const ws = XLSX.utils.aoa_to_sheet(aoa), W = aoa[1] ? aoa[1].length : 1, M = [{ s: { r: 0, c: 0 }, e: { r: 0, c: W - 1 } }];
@@ -908,9 +1002,13 @@ function exportRenew() {
   const ws = XLSX.utils.aoa_to_sheet([H, ...L.map(r => [r.unit, r.site, r.ul, r.type, r.energy, r.model, r.size, r.serial, r.no, r.start, r.end, r.price, DEC[r.renew || ""], r.renewNote || ""])]);
   H.forEach((_, j) => { const c = ws[XLSX.utils.encode_cell({ r: 0, c: j })]; if (c) c.s = { font: { bold: true, color: { rgb: "FFFFFF" } }, fill: { fgColor: { rgb: "22262C" } } }; });
   ws["!cols"] = [12, 20, 7, 15, 11, 20, 22, 14, 6, 11, 11, 10, 18, 30].map(w => ({ wch: w }));
-  const wb = XLSX.utils.book_new(), LG = L.filter(r => r.unit === "Logistics"), OT = L.filter(r => r.unit !== "Logistics"), nT = a => Math.max(1, PPT_T.filter(([k]) => a.some(r => String(r.renewTerm || "") === k)).length);
-  XLSX.utils.book_append_sheet(wb, ppSheet(ppAoa(LG, siteOf, "Logistics"), nT(LG)), "Logistics");
-  XLSX.utils.book_append_sheet(wb, ppSheet(ppAoa(OT, r => r.unit, "หน่วยงานอื่นๆ"), nT(OT)), "หน่วยงานอื่นๆ");
+  const wb = XLSX.utils.book_new(), LG = L.filter(r => r.unit === "Logistics"), OT = L.filter(r => r.unit !== "Logistics");
+  const sh = (a, colOf, title, tk) => { const D = a.length ? ppData(a, colOf, tk) : null, ws = ppSheet(ppAoa(a, colOf, title), D ? D.T.length : 1);
+    const notes = D ? D.items.flatMap(i => D.cols.map(c => [i, c, D.g(i, c).note]).filter(x => x[2])) : [];
+    if (notes.length) XLSX.utils.sheet_add_aoa(ws, [[], ["หมายเหตุรายช่อง"], ...notes.map(([i, c, t]) => [i + " · " + c, t])], { origin: -1 });
+    return ws; };
+  XLSX.utils.book_append_sheet(wb, sh(LG, ppColLG, "Logistics", "lg"), "Logistics");
+  XLSX.utils.book_append_sheet(wb, sh(OT, ppColOT, "หน่วยงานอื่นๆ", "ot"), "หน่วยงานอื่นๆ");
   XLSX.utils.book_append_sheet(wb, ws, "รายการรถ");
   XLSX.writeFile(wb, `PCG MHE ต่อสัญญา ${rLbl().replace(/\//g, "-")}.xlsx`);
 }
@@ -1418,7 +1516,9 @@ document.addEventListener("click", async e => {
   if (t.dataset.cfdel) { cfDel(t); return; }
   if ("cadd" in t.dataset) { const rows = JSON.parse(JSON.stringify(confRows())); rows.push({ unit: "หน่วยงานใหม่", qty: null, status: "", note: "" }); await sbSave([{ id: "CFG:confirm", rec: { rows } }]); render(); return; }
   if ("rexp" in t.dataset) { exportRenew(); return; }
-  if (t.dataset.rtab) { S.ptab = t.dataset.rtab; render(); return; }
+  if (t.dataset.rtab) { S.ptab = t.dataset.rtab; PPSEL = null; render(); return; }
+  if ("ppe" in t.dataset && t.matches("button")) { S.ppe = true; PPSEL = null; render(); return; }
+  if ("ppeclose" in t.dataset) { S.ppe = false; PPSEL = null; render(); return; }
   if (t.dataset.bsh) { S.bsh = +t.dataset.bsh; renderBid(); return; }
   if ("bedit" in t.dataset) { BDRAFT = JSON.parse(JSON.stringify(bidData())); S.bed = true; renderBid(); return; }
   if ("bcancel" in t.dataset) { S.bed = false; BDRAFT = null; renderBid(); return; }
@@ -1450,6 +1550,14 @@ document.addEventListener("click", async e => {
   if (t.dataset.del) { if (!t.classList.contains("arm")) { t.classList.add("arm"); t.textContent = "กดอีกครั้งเพื่อยืนยันลบ"; return; } await sbSave([{ id: t.dataset.del, removed: true }]); $("dlg").close(); render(); toast("ลบแล้ว"); return; }
   if ("commit" in t.dataset && PEND) { t.disabled = true; t.textContent = "กำลังบันทึก…"; await sbSave(PEND.map(r => { const rec = Object.assign({}, r), o = ALL.find(x => x.id === r.id); delete rec.id; if (o) RENEWK.forEach(k => rec[k] = o[k] || ""); return { id: r.id, rec }; })); PEND = null; $("dlg").close(); render(); toast(ONLINE ? "บันทึกแล้ว" : "บันทึกในเบราว์เซอร์นี้แล้ว"); return; }
 });
+document.addEventListener("click", e => { if (!S.ppe) return; const ch = e.target.closest(".pch"), ce = e.target.closest("td.pce");
+  if (ch) { PPSEL = PPSEL === ch.dataset.car ? null : ch.dataset.car; renderPPE(); if (PPSEL) toast("เลือกรถแล้ว · กดช่องปลายทางเพื่อโยก"); return; }
+  if (ce && PPSEL && !e.target.closest("input")) ppMove(PPSEL, ce.dataset.cell); });
+document.addEventListener("dragstart", e => { const ch = e.target.closest && e.target.closest(".pch"); if (!ch) return; e.dataTransfer.setData("text/plain", ch.dataset.car); e.dataTransfer.effectAllowed = "move"; ch.classList.add("drag"); });
+document.addEventListener("dragover", e => { const ce = e.target.closest && e.target.closest("td.pce"); if (!ce) return; e.preventDefault(); document.querySelectorAll("td.pce.ov").forEach(x => x !== ce && x.classList.remove("ov")); ce.classList.add("ov"); });
+document.addEventListener("dragleave", e => { const ce = e.target.closest && e.target.closest("td.pce"); if (ce && !ce.contains(e.relatedTarget)) ce.classList.remove("ov"); });
+document.addEventListener("drop", e => { const ce = e.target.closest && e.target.closest("td.pce"); if (!ce) return; e.preventDefault(); ce.classList.remove("ov"); const id = e.dataTransfer.getData("text/plain"); if (id) ppMove(id, ce.dataset.cell); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && S.ppe && !$("dlg").open) { S.ppe = false; render(); } });
 $("file").addEventListener("change", e => { const f = e.target.files[0]; if (f) upload(f); e.target.value = ""; });
 $("cfile").addEventListener("change", e => { const f = [...e.target.files]; if (f.length) cfUpload(f); e.target.value = ""; });
 $("bfile").addEventListener("change", e => { const f = e.target.files[0]; if (f) bidUpload(f); e.target.value = ""; });
@@ -1458,6 +1566,10 @@ document.addEventListener("change", async e => { const el = e.target; if (!el.da
   else if (el.id === "pf" || el.id === "pt") { if (!el.value) return; S[el.id] = el.value; if (S.pf > S.pt) [S.pf, S.pt] = [S.pt, S.pf]; render(); }
   else if (el.id === "rx") { S.rx = el.checked; render(); }
   else if (el.dataset.rm != null) saveRemark(el);
+  else if (el.dataset.pq) ppSetQty(el);
+  else if (el.dataset.pn) ppSetNote(el);
+  else if ("ppaddrow" in el.dataset || "ppaddcol" in el.dataset) { const row = "ppaddrow" in el.dataset; let v = el.value; if (v === "*") v = (prompt(row ? "ชื่อรายการ/สเปก" : "ชื่อคลัง/หน่วยงาน") || "").trim(); if (!v) { el.value = ""; return; }
+    const tk = S.ptab || "lg"; await ppSaveCfg(CF => { const o = row ? CF.rows : CF.cols; o[tk] = o[tk] || []; if (!o[tk].includes(v)) o[tk].push(v); }); render(); toast((row ? "เพิ่มรายการ " : "เพิ่มคอลัมน์ ") + v); }
   else if (el.id === "pr") { S.pr = el.value; render(); }
   else if (el.dataset.c) saveConf(el);
   else if (el.dataset.dl) saveDlv(el);
