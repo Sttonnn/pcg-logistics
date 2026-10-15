@@ -508,6 +508,18 @@
     </section>
   </div>
 
+  <div id="vRej" style="display:none;gap:22px">
+    <section class="panel" style="display:grid;gap:12px">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:space-between">
+        <h2>ประวัติปฏิเสธใบงาน <span class="tag" id="rjTag"></span></h2>
+        <input id="rjQ" type="search" placeholder="ค้นหาเลขใบงาน / อุปกรณ์ / สาขา" style="padding:9px 12px;border:1px solid #d7deea;border-radius:10px;font:inherit;min-width:240px">
+      </div>
+      <p class="hint">ใบงานสถานะ "ปฏิเสธงาน" ไม่แสดงในภาพรวม และไม่นับในตัวเลขทุกช่อง · เก็บไว้ดูย้อนหลังที่นี่</p>
+      <div class="pills" id="rjBr"></div>
+      <div class="tbl-wrap"><table><thead><tr><th>ใบงาน</th><th>อุปกรณ์</th><th>ประเภท</th><th>คลัง / สาขา</th><th>กำหนดการ</th><th>สถานะ</th></tr></thead><tbody id="rjBody"></tbody></table></div>
+    </section>
+  </div>
+
   <span class="note">ต้นแบบ (Mock up) · ข้อมูลจริงจาก TrackingReport_PM 29 ก.ย. 2026 (ตัดชื่อพนักงานออก) · ข้อมูลที่อัปโหลดและสถานะการซ่อมยังเก็บในเบราว์เซอร์นี้เท่านั้น (ของจริงเก็บใน Supabase ทุกคนเห็นเหมือนกัน)</span>
 </main>
 <dialog id="guideDlg" style="width:min(720px,calc(100% - 32px))"><form method="dialog" class="guide" style="padding:20px 22px;display:grid;gap:12px">
@@ -649,7 +661,7 @@ const kindTag = r => `<span class="ktag" style="color:${KIND[kindOf(r)].color};b
 const S = { sub: "all", kind: "all", view: "overview", fst: "all", wh: "all", month: "all", branch: "all", type: "all", cancel: false, plan: false, per: "all", freq: "all", anchor: null, rg: null, st: "all", q: "", limit: 25 };
 
 function rows(ignore = {}) {
-  return DATA.filter(r =>
+  return DATA.filter(r => !isRej(r) &&
     (ignore.wh || S.wh === "all" || r.p === S.wh) &&
     (ignore.rg || !S.rg || r.p !== "RDC01" || regionOf(r.b) === S.rg) &&
     (ignore.month || S.month === "all" || dueOf(r).slice(0, 7) === S.month) &&
@@ -661,6 +673,8 @@ function rows(ignore = {}) {
     (ignore.plan || S.plan || GROUP[r.s] !== "wait"));
 }
 const grp = r => GROUP[r.s] || "prog";
+/* ปฏิเสธงาน = ถือว่าลบออกจากระบบ (ผู้ใช้สั่ง 15 ต.ค.) → ไม่นับทุกที่ ดูได้ที่เมนู "ประวัติปฏิเสธใบงาน" */
+const isRej = r => /ปฏิเสธ/.test(r.s || "");
 const isFail = r => r.r.startsWith("fail");
 /* "รอสร้างใบงาน" = แผนงาน ยังไม่เกิดงานจริง → ไม่นับเป็นงานค้าง/เลยกำหนด */
 /* ตรวจแล้ว (มีผล ผ่าน/ไม่ผ่าน) แต่ใบงานยังไม่ปิดในระบบ = "รอปิดงาน" ไม่นับเป็นเลยกำหนด */
@@ -692,10 +706,10 @@ function renderFilters() {
   const brs = [...new Set(base.map(r => r.b))].sort((a, b) => (a === "ไม่ระบุ") - (b === "ไม่ระบุ") || a.localeCompare(b, "th"));
   if (S.branch !== "all" && !brs.includes(S.branch)) S.branch = "all";
   $("branch").innerHTML = `<option value="all">ทั้งหมด</option>` + brs.map(b => `<option ${S.branch === b ? "selected" : ""}>${b}</option>`).join("");
-  const kc = k => DATA.filter(r => (k === "all" || kindOf(r) === k) && GROUP[r.s] !== "cancel" && GROUP[r.s] !== "wait").length;
+  const kc = k => DATA.filter(r => !isRej(r) && (k === "all" || kindOf(r) === k) && GROUP[r.s] !== "cancel" && GROUP[r.s] !== "wait").length;
   $("kinds").innerHTML = [["all", "ทั้งหมด"], ["wh", KIND.wh.label], ["mhe", KIND.mhe.label]]
     .map(([k, l]) => `<button type="button" class="${S.kind === k ? "on" : ""}" data-kind="${k}" style="${k !== "all" && S.kind !== k ? "color:" + KIND[k].color : ""}">${kIcon(k, 17)} ${l} <span class="kc">${kc(k)}</span></button>`).join("");
-  const sc = k => DATA.filter(r => kindOf(r) === S.kind && subOf(r) === k && GROUP[r.s] !== "cancel" && GROUP[r.s] !== "wait").length;
+  const sc = k => DATA.filter(r => !isRej(r) && kindOf(r) === S.kind && subOf(r) === k && GROUP[r.s] !== "cancel" && GROUP[r.s] !== "wait").length;
   $("subs").style.display = S.kind === "all" ? "none" : "";
   $("subs").innerHTML = S.kind === "all" ? "" : `<span class="sublbl">${S.kind === "mhe" ? "ชนิดรถ" : "พื้นที่ตรวจ"}</span>` + [["all", "ทั้งหมด"], ...SUBS[S.kind].map(([k, l]) => [k, l])].filter(([k]) => k === "all" || sc(k))
     .map(([k, l]) => `<button type="button" class="${S.sub === k ? "on" : ""}" data-sub="${k}">${l}${k !== "all" ? ` <span class="kc">${sc(k)}</span>` : ""}</button>`).join("");
@@ -877,6 +891,19 @@ function renderTabs() {
     .map(([k, l, ic]) => `<button type="button" class="${S.view === k ? "on" : ""}" data-view="${k}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="${ic}"/></svg>${l}${k === "fail" && n ? ` <span class="cnt">ค้าง ${n}</span>` : ""}</button>`).join("");
   $("vOverview").style.display = S.view === "overview" ? "grid" : "none";
   $("vFail").style.display = S.view === "fail" ? "grid" : "none";
+  $("vRej").style.display = S.view === "rej" ? "grid" : "none";
+}
+function renderRej() {
+  const q = ($("rjQ").value || "").trim().toLowerCase(), all = DATA.filter(isRej);
+  const by = {}; all.forEach(r => by[r.b] = (by[r.b] || 0) + 1);
+  if (S.rjb && !by[S.rjb]) S.rjb = null;
+  $("rjBr").innerHTML = all.length ? [`<button type="button" class="${!S.rjb ? "on" : ""}" data-rjb="">ทั้งหมด ${all.length}</button>`].concat(Object.entries(by).sort((a, b) => b[1] - a[1]).map(([b, n]) => `<button type="button" class="${S.rjb === b ? "on" : ""}" data-rjb="${b}">${b} ${n}</button>`)).join("") : "";
+  const R = all.filter(r => (!S.rjb || r.b === S.rjb) && (!q || (r.w + " " + r.e + " " + r.n + " " + r.b).toLowerCase().includes(q))).sort((a, b) => dueOf(b).localeCompare(dueOf(a)));
+  $("rjTag").textContent = R.length.toLocaleString() + " ใบงาน";
+  $("rjBody").innerHTML = R.map(r => `<tr><td class="num" style="font-weight:700;white-space:nowrap">${r.w === "-" ? "<span style='color:#9aa6bd'>ยังไม่มีเลข</span>" : r.w}</td>
+    <td><div style="font-weight:700">${r.e}</div><div style="font-size:12px;color:#5a6784">${r.n}</div></td><td>${kindTag(r)} ${freqTag(r)} <span style="font-size:12.5px;color:#5a6784">${r.t === "-" ? "" : r.t}</span></td>
+    <td style="white-space:nowrap">${r.p === "RDC01" ? "RDC" : "WHA"} · ${r.b}</td><td style="white-space:nowrap">${fmtD(dueOf(r))}</td>
+    <td><span class="pill" style="background:#f1f3f7;color:#7a849a">${r.s}</span></td></tr>`).join("") || `<tr><td colspan="6" style="text-align:center;color:#5a6784;padding:22px">ไม่มีใบงานที่ถูกปฏิเสธ</td></tr>`;
 }
 /* กล่อง "วันนี้ต้องดูอะไร": สรุปเป็นภาษาคน 3 เรื่อง + ปุ่มพาไปดูรายการ */
 function renderFocus() {
@@ -1089,7 +1116,7 @@ const SIC = { ov: "M3 3v16a2 2 0 0 0 2 2h16 M7 16h8 M7 11h12 M7 6h3", fail: "M12
   wrench: "M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" };
 const sv = (d, z = 18) => `<svg width="${z}" height="${z}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`;
 function renderSide() {
-  const all = rows({ kind: true }), nFail = rows().filter(r => isFail(r) && repSt(r) !== "fixed").length;
+  const all = rows({ kind: true }), nFail = rows().filter(r => isFail(r) && repSt(r) !== "fixed").length, nRej = DATA.filter(isRej).length;
   const kItem = k => { const L = k === "all" ? all : all.filter(r => kindOf(r) === k), st = stat(L);
     return `<button type="button" class="sitem k-${k} ${S.kind === k ? "on" : ""}" data-kind="${k}"><span class="ic">${kIcon(k, 19)}</span><span class="tx">${k === "all" ? "ทั้งหมด" : KIND[k].label}
       <span class="smini"><span>${st.n} ใบ</span><span class="ok">เสร็จ ${st.pct}%</span>${st.late ? `<span class="lt">ค้าง ${st.late}</span>` : ""}</span></span></button>`; };
@@ -1097,6 +1124,7 @@ function renderSide() {
     <div class="sh">มุมมอง</div>
     <button type="button" class="sitem ${S.view === "overview" ? "on" : ""}" data-view="overview"><span class="ic">${sv(SIC.ov)}</span><span class="tx">ภาพรวม PM<small>ตารางรวมทุกสาขา</small></span></button>
     <button type="button" class="sitem ${S.view === "fail" ? "on" : ""}" data-view="fail"><span class="ic">${sv(SIC.fail)}</span><span class="tx">สถิติการเสีย<small>ไม่ผ่าน · ติดตามซ่อม</small></span>${nFail ? `<span class="bd hot">${nFail}</span>` : ""}</button>
+    <button type="button" class="sitem ${S.view === "rej" ? "on" : ""}" data-view="rej"><span class="ic">${sv("M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M4.93 4.93l14.14 14.14")}</span><span class="tx">ปฏิเสธใบงาน<small>ประวัติ · ไม่นับในภาพรวม</small></span>${nRej ? `<span class="bd">${nRej}</span>` : ""}</button>
     <div class="sh">ประเภทการตรวจ</div>${kItem("wh")}${kItem("mhe")}${kItem("all")}
     <div class="sh">อื่นๆ</div>
     <button type="button" class="sitem" data-sidehist="1"><span class="ic">${sv(SIC.hist)}</span><span class="tx">ประวัติการอัปโหลด<small>${LOG.length} ครั้ง</small></span></button>
@@ -1161,7 +1189,7 @@ function renderReady() {
       <span style="margin-left:auto">${Object.entries(RCOL).map(([k, v]) => `<b style="color:${v}">● ${k === "WHA" ? "คลังในประเทศ" : k}</b>`).join(" ")}</span></div>
     <div class="rdy-grid">${cards.join("") || `<div style="color:#5a6784">ไม่มีข้อมูลเครื่องในตัวกรองนี้</div>`}</div>`;
 }
-function render() { renderFilters(); renderHero(); renderTabs(); renderSide(); renderReady(); if (S.view === "overview") { renderDrill(); if (S.wh !== "all" && S.branch !== "all") renderTable(); } else renderFail(); }
+function render() { renderFilters(); renderHero(); renderTabs(); renderSide(); renderReady(); if (S.view === "overview") { renderDrill(); if (S.wh !== "all" && S.branch !== "all") renderTable(); } else if (S.view === "rej") renderRej(); else renderFail(); }
 
 /* ตัวกรอง/เรียงลำดับของตารางรวม */
 document.addEventListener("change", e => {
@@ -1217,6 +1245,8 @@ document.addEventListener("click", e => {
 });
 $("branch").onchange = e => { S.branch = e.target.value; render(); };
 $("type").onchange = e => { S.type = e.target.value; render(); };
+$("rjQ").oninput = () => renderRej();
+document.addEventListener("click", e => { const b = e.target.closest("[data-rjb]"); if (b) { S.rjb = b.dataset.rjb || null; renderRej(); } });
 $("showCancel").onchange = e => { S.cancel = e.target.checked; render(); };
 $("showPlan").onchange = e => { S.plan = e.target.checked; render(); };
 $("q").oninput = e => { S.q = e.target.value; S.limit = 25; renderTable(); };
