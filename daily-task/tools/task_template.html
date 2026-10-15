@@ -249,6 +249,62 @@
   body.dt .prio.H { background: rgba(239,68,68,.18); color: #fca5a5; } body.dt .prio.M { background: rgba(217,119,6,.2); color: #fcd34d; } body.dt .prio.L { background: rgba(59,130,246,.2); color: #93c5fd; }
   @media (max-width: 1200px) { .mc { grid-template-columns: 1fr 1fr; } .mc > :nth-child(2) { grid-column: 1 / -1; order: -1; } }
   @media (max-width: 640px) { .mc { grid-template-columns: 1fr; } .pipe, .pipe2 { grid-template-columns: 1fr 26px 1fr 26px 1fr; } .node .o { width: 64px; height: 64px; font-size: 22px; } }
+  /* ===== 16 ต.ค. ผู้ใช้สั่ง: หน้ากรอก Task กว้าง ตัวใหญ่ อ่านชัด · ธีมสว่างมีมิติ (ค่าเริ่ม) ===== */
+  body:not(.dt) { --bg: #f3f1fb; --line: #e6e1f5;
+    background: radial-gradient(900px 520px at 100% -5%, rgba(167,139,250,.30), transparent 62%), radial-gradient(800px 480px at -8% 18%, rgba(56,189,248,.20), transparent 60%), radial-gradient(700px 500px at 60% 110%, rgba(244,114,182,.14), transparent 60%),
+      linear-gradient(rgba(109,40,217,.035) 1px, transparent 1px) 0 0 / 36px 36px, linear-gradient(90deg, rgba(109,40,217,.035) 1px, transparent 1px) 0 0 / 36px 36px, linear-gradient(180deg, #f7f5ff, #eef4fd);
+    background-attachment: fixed; }
+  body:not(.dt) .panel, body:not(.dt) .kpi, body:not(.dt) .side, body:not(.dt) .filters, body:not(.dt) .own, body:not(.dt) nav.tabs button { background: rgba(255,255,255,.86); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,.9);
+    box-shadow: 0 1px 0 rgba(255,255,255,.9) inset, 0 1px 2px rgba(40,20,100,.06), 0 14px 34px -16px rgba(76,29,149,.28); }
+  body:not(.dt) nav.tabs button.on { background: linear-gradient(135deg, #7c3aed, #4c1d95); color: #fff; box-shadow: 0 10px 24px -10px rgba(76,29,149,.7); }
+  body:not(.dt) header.top { background: linear-gradient(120deg, #4c1d95 0%, #7c3aed 50%, #38bdf8 130%); box-shadow: 0 18px 40px -18px rgba(76,29,149,.6); }
+  body:not(.dt) th { background: linear-gradient(180deg, #f7f4ff, #ede7ff); color: #3b1d8f; border-bottom: 2px solid #d8ccfb; font-size: 13px; }
+  body:not(.dt) tr.add td { background: linear-gradient(180deg, #faf7ff, #f3edff); }
+  body.v-list .wrap { max-width: 1840px; }
+  .todo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 14px; margin-bottom: 14px; align-items: start; }
+  .todo .panel { margin: 0; } .tdo h2 { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .tdo .dot { width: 12px; height: 12px; border-radius: 50%; box-shadow: 0 0 0 4px rgba(37,99,235,.15); } .tdo.late .dot { box-shadow: 0 0 0 4px rgba(220,38,38,.15); }
+  .tdo .hs { margin-left: auto; font-size: 12.5px; font-weight: 600; color: var(--mut); }
+  .tdo.late { border-top: 4px solid #dc2626; } .tdo:not(.late) { border-top: 4px solid #2563eb; }
+  .tdl { max-height: 420px; overflow: auto; border-radius: 12px; }
+  .tdl table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  .tdl th { position: sticky; top: 0; z-index: 1; text-align: left; font-size: 12.5px; color: var(--mut); background: #f3f1fb; padding: 8px 10px; }
+  .tdl td { padding: 9px 10px; border-top: 1px solid var(--line); vertical-align: top; }
+  .tdl tr:nth-child(even) td { background: rgba(124,58,237,.03); }
+  .tdl td.tn { font-weight: 650; line-height: 1.35; } .tdl .pn { color: var(--mut); font-weight: 500; }
+  .tdl .sm2 { font-size: 12px; color: var(--mut); font-weight: 500; margin-top: 2px; }
+  .tdl td.tl { white-space: nowrap; font-weight: 700; color: #1d4ed8; } .tdl td.tl.soon { color: #d97706; } .tdl td.tl.late { color: #dc2626; }
+  .tdl td.tp { width: 92px; } .tdl td.tw { width: 46%; } .tdl textarea.why { width: 100%; min-height: 38px; }
+  .tdl textarea.why.need { border-color: #fca5a5; background: #fff7f7; }
+  .whyt { font-size: 12px; color: #7f1d1d; margin-top: 4px; line-height: 1.3; } .whyt.no { color: #dc2626; font-weight: 700; }
+  body.dt .tdl th { background: #111a3a; } body.dt .tdl textarea.why.need { background: #2a0f16; border-color: #7f1d1d; } body.dt .whyt { color: #fca5a5; }
+  @media (max-width: 1100px) { .todo { grid-template-columns: 1fr; } }
+  /* หน้าตาราง: แถบเลือกคนย้ายขึ้นเป็นแถวบน ให้ตารางได้ความกว้างเต็ม */
+  body.v-list .lay { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  body.v-list .side { position: static; display: flex; gap: 10px; align-items: stretch; padding: 10px; flex-wrap: wrap; }
+  body.v-list .side h4 { align-self: center; margin: 0 6px; }
+  body.v-list .pb { width: auto; min-width: 230px; padding: 9px 12px; }
+  body.v-list .pb .av { width: 36px; height: 36px; font-size: 14px; } body.v-list .pb .mini { margin-top: 3px; }
+  .sheet td.pcol { width: 112px; }
+  @media (max-width: 1500px) { .sheet { font-size: 14px; } .sheet td, .sheet th { padding-left: 7px !important; padding-right: 7px !important; } .sheet input.ci[type=date] { width: 128px; } } .sheet .pc { display: grid; gap: 6px; } .sheet .pc .pbar { height: 7px; min-width: 0; }
+  .sheet td:nth-child(3) .ci { width: 128px !important; }
+  .sheet { max-height: calc(100vh - 210px); }
+  .sheet table { font-size: 15px; }
+  .sheet th { padding: 13px 12px; font-size: 13.5px; letter-spacing: .02em; }
+  .sheet td { padding: 9px 10px; vertical-align: top; }
+  .sheet td.num { padding-top: 17px; font-size: 14px; font-weight: 700; }
+  .sheet .ci { font-size: 15px; padding: 9px 10px; line-height: 1.45; }
+  .sheet textarea.ta { resize: none; overflow: hidden; display: block; width: 100%; min-height: 40px; font-family: inherit; }
+  .sheet td.tt { min-width: 220px; width: 32%; } .sheet td.tt .ta { font-weight: 600; font-size: 15.5px; }
+  .sheet td.nt { min-width: 150px; width: 18%; } .sheet td.nt .ta { color: var(--ink2); font-size: 14px; }
+  .sheet input.ci[type=date] { width: 138px; font-size: 14px; padding: 9px 6px; } .sheet select.ci { padding: 9px 8px; }
+  .sheet .ci.cp { font-size: 15px; min-width: 84px; } .sheet .pbar { height: 9px; }
+  .sheet td.stc { white-space: nowrap; padding-top: 14px; } .sheet td.stc .pill { font-size: 13px; padding: 5px 12px; } .sheet .due { font-size: 12.5px; margin-top: 6px; color: var(--ink2); }
+  .sheet tr.r td { border-bottom: 1px solid var(--line); } body:not(.dt) .sheet tr.r:nth-child(odd) td { background: rgba(124,58,237,.025); }
+  body:not(.dt) .sheet tr.r:hover td { background: #f5f0ff; }
+  .sheet .ci.big { font-size: 16px; font-weight: 600; padding: 11px 12px; }
+  .sheet tr.add td { padding: 12px 10px; top: 46px; }
+  @media (max-width: 1000px) { body.v-list .lay { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -314,7 +370,7 @@ const ORDER = ["done", "wait", "prog", "delay"];
 const ST_L = JSON.parse(JSON.stringify(ST)), ST_D = {
   done: { c: "#0ea371", bg: "rgba(14,163,113,.18)", fg: "#6ee7b7" }, wait: { c: "#d27c00", bg: "rgba(210,124,0,.2)", fg: "#fcd34d" },
   prog: { c: "#3b82f6", bg: "rgba(59,130,246,.2)", fg: "#93c5fd" }, delay: { c: "#ef4444", bg: "rgba(239,68,68,.2)", fg: "#fca5a5" }, cancel: { c: "#64708f", bg: "rgba(148,163,184,.14)", fg: "#a5b0c8" } };
-let DT = (() => { try { return localStorage.getItem("pcg-task-theme") !== "light"; } catch (e) { return true; } })();
+let DT = (() => { try { return localStorage.getItem("pcg-task-theme") === "dark"; } catch (e) { return false; } })();
 function applyTheme() { document.body.classList.toggle("dt", DT); for (const k in ST) Object.assign(ST[k], (DT ? ST_D : ST_L)[k]); $("bTheme").innerHTML = DT ? "☀ แบบสว่าง" : "◐ Digital Twin"; }
 
 /* ---------- ข้อมูล ---------- */
@@ -493,38 +549,57 @@ const pSel = (v, attrs) => { const o = PSTEPS.includes(v) ? PSTEPS : PSTEPS.conc
 function rowHtml(t, kid) {
   const s = stOf(t), k = kid ? [] : kidsOf(t.id), op = S.open[t.id], auto = k.length > 0, p = progOf(t), id = t.id;
   const f = (n, v, ty, w) => `<input class="ci" data-id="${id}" data-f="${n}" type="${ty || "text"}" value="${esc(v || "")}" ${w ? `style="width:${w}"` : ""}>`;
+  const ta = (n, v, ph) => `<textarea class="ci ta" rows="1" data-id="${id}" data-f="${n}" placeholder="${ph || ""}">${esc(v || "")}</textarea>`;
   return `<tr class="r ${kid ? "kid" : ""} ${s === "cancel" ? "cx" : ""}" data-row="${id}">
     <td class="num" style="color:var(--mut);white-space:nowrap">${esc(t.no || "")}</td>
-    <td class="tt" style="min-width:260px"><div style="display:flex;align-items:center;gap:4px">${k.length ? `<button type="button" class="tog" data-tog="${id}" title="งานย่อย">${op ? "−" : "+"}</button>` : kid ? `<span style="color:var(--mut)">↳</span>` : ""}${f("title", t.title)}</div>${k.length ? `<span class="tag" style="margin:4px 0 0 30px;display:inline-block">${k.length} งานย่อย</span>` : ""}</td>
+    <td class="tt"><div style="display:flex;align-items:flex-start;gap:6px">${k.length ? `<button type="button" class="tog" data-tog="${id}" title="งานย่อย">${op ? "−" : "+"}</button>` : kid ? `<span style="color:var(--mut);padding-top:8px">↳</span>` : ""}${ta("title", t.title)}</div>${k.length ? `<span class="tag" style="margin:4px 0 0 30px;display:inline-block">${k.length} งานย่อย</span>` : ""}</td>
     <td>${f("owner", t.owner, "text", "120px").replace("<input", `<input list="ownL2"`)}</td>
     <td><select class="ci" data-id="${id}" data-f="pri">${["H", "M", "L"].map(x => `<option value="${x}" ${(t.pri || "M") === x ? "selected" : ""}>${PRI[x]}</option>`).join("")}</select></td>
     <td>${f("start", t.start, "date")}</td><td>${f("target", t.target, "date")}</td>
-    <td style="min-width:150px">${auto ? `<div title="เฉลี่ยจากงานย่อย">${pbar(t)}<div style="font-size:11px;color:var(--mut)">เฉลี่ยงานย่อย</div></div>` : `<div style="display:flex;align-items:center;gap:6px">${pSel(p || 0, `data-id="${id}" data-f="prog"`)}<div class="pbar" style="flex:1"><span style="width:${p || 0}%;background:${ST[s].c}"></span></div></div>`}</td>
-    <td>${pill(s)}</td><td style="font-size:13px;white-space:nowrap">${s === "cancel" ? "" : dueTxt(t)}</td>
-    <td style="min-width:180px">${f("note", t.note)}</td>
-    <td style="white-space:nowrap"><button type="button" class="btn line sm" data-edit="${id}" title="รายละเอียด · งานย่อย · ยกเลิก · ลบ">⋯</button>${kid ? "" : ` <button type="button" class="btn line sm" data-addkid="${id}" title="เพิ่มงานย่อย">＋ย่อย</button>`}</td></tr>` +
+    <td class="pcol">${auto ? `<div title="เฉลี่ยจากงานย่อย">${pbar(t)}<div style="font-size:11px;color:var(--mut)">เฉลี่ยงานย่อย</div></div>` : `<div class="pc">${pSel(p || 0, `data-id="${id}" data-f="prog"`)}<div class="pbar"><span style="width:${p || 0}%;background:${ST[s].c}"></span></div></div>`}</td>
+    <td class="stc">${pill(s)}<div class="due">${s === "cancel" ? "" : dueTxt(t)}</div>${s === "delay" ? (t.why ? `<div class="whyt" title="เหตุผลที่ล่าช้า">💬 ${esc(t.why)}</div>` : `<div class="whyt no">ยังไม่ใส่เหตุผล</div>`) : ""}</td>
+    <td class="nt">${ta("note", t.note, "—")}</td>
+    <td style="white-space:nowrap"><button type="button" class="btn line sm" data-edit="${id}" title="รายละเอียด · งานย่อย · ยกเลิก · ลบ">⋯</button>${kid ? "" : ` <button type="button" class="btn line sm" data-addkid="${id}" title="เพิ่มงานย่อย">＋</button>`}</td></tr>` +
     (op ? k.map(x => rowHtml(x, true)).join("") : "");
 }
 function addRow() {
   return `<tr class="add"><td class="num" style="color:var(--acc);font-weight:800">＋</td>
-    <td><input class="ci" id="nT" placeholder="พิมพ์ชื่องานใหม่ แล้วกด Enter" style="width:100%"></td>
+    <td><input class="ci big" id="nT" placeholder="＋ พิมพ์ชื่องานใหม่ แล้วกด Enter" style="width:100%"></td>
     <td><input class="ci" id="nO" list="ownL2" value="${esc(S.own !== "all" ? S.own : BD().own)}" style="width:120px"></td>
     <td><select class="ci" id="nP">${["H", "M", "L"].map(x => `<option value="${x}" ${x === "M" ? "selected" : ""}>${PRI[x]}</option>`).join("")}</select></td>
     <td><input class="ci" id="nS" type="date" value="${TODAY}"></td><td><input class="ci" id="nG" type="date"></td>
-    <td>${pSel(0, `id="nR"`)}</td><td colspan="2" style="font-size:12px;color:var(--mut)">สถานะคำนวณให้อัตโนมัติ</td>
+    <td>${pSel(0, `id="nR"`)}</td><td style="font-size:12px;color:var(--mut)">สถานะคำนวณให้อัตโนมัติ</td>
     <td><input class="ci" id="nN" placeholder="หมายเหตุ"></td><td><button type="button" class="btn pri sm" id="nAdd">เพิ่มงาน</button></td></tr>`;
 }
+/* 16 ต.ค. ผู้ใช้ขอ: งานที่ต้องทำวันนี้ (On process ยังไม่ Delay) · งานที่ล่าช้าแล้ว (Delay) แยกตารางข้างกัน + ช่องใส่เหตุผล (field why) */
+function todoHtml() {
+  const leaf = live().filter(t => !t.cancel && !kidsOf(t.id).length && (S.own === "all" || t.owner === S.own) && (S.pri === "all" || (t.pri || "M") === S.pri));
+  const nm = t => { const pa = t.parent && byId(t.parent); return (pa ? `<span class="pn">${esc(pa.title)} ›</span> ` : "") + esc(t.title); };
+  const P = leaf.filter(t => stOf(t) === "prog").sort((a, b) => (a.target || "9").localeCompare(b.target || "9"));
+  const D = leaf.filter(t => stOf(t) === "delay").sort((a, b) => lateDays(b) - lateDays(a));
+  const lft = t => { const d = leftDays(t); return d == null ? "ไม่มี Target" : d === 0 ? "ครบกำหนดวันนี้" : "เหลือ " + d + " วัน"; };
+  const rowP = t => `<tr data-dr="${t.id}"><td class="tn">${nm(t)}<div class="sm2">${esc(t.owner || "–")} · Target ${fmtD(t.target)}</div></td>
+    <td class="tp">${pSel(progOf(t) || 0, `data-id="${t.id}" data-f="prog"`)}</td><td class="tl ${leftDays(t) != null && leftDays(t) <= 3 ? "soon" : ""}">${lft(t)}</td></tr>`;
+  const rowD = t => `<tr data-dr="${t.id}"><td class="tn">${nm(t)}<div class="sm2">${esc(t.owner || "–")} · Target ${fmtD(t.target)} · ${progOf(t) || 0}%</div></td>
+    <td class="tl late">ช้า ${lateDays(t)} วัน</td><td class="tw"><textarea class="ci ta why ${t.why ? "" : "need"}" rows="1" data-id="${t.id}" data-f="why" placeholder="ใส่เหตุผลที่ล่าช้า…">${esc(t.why || "")}</textarea></td></tr>`;
+  const miss = D.filter(t => !t.why).length;
+  return `<section class="panel tdo"><h2><span class="dot" style="background:${ST.prog.c}"></span>งานที่ต้องทำวันนี้ <span class="tag">${P.length} งาน</span><span class="hs">On process · ยังไม่เลย Target</span></h2>
+      ${P.length ? `<div class="tdl"><table><thead><tr><th>งาน</th><th>Progress</th><th>เหลือเวลา</th></tr></thead><tbody>${P.map(rowP).join("")}</tbody></table></div>` : `<div class="empty">ไม่มีงานที่กำลังทำ</div>`}</section>
+    <section class="panel tdo late"><h2><span class="dot" style="background:${ST.delay.c}"></span>งานที่ล่าช้าแล้ว <span class="tag" style="background:#fee2e2;color:#b91c1c">${D.length} งาน</span>${miss ? `<span class="hs" style="color:#b91c1c">ยังไม่ใส่เหตุผล ${miss} งาน</span>` : D.length ? `<span class="hs">ใส่เหตุผลครบแล้ว ✓</span>` : ""}</h2>
+      ${D.length ? `<div class="tdl"><table><thead><tr><th>งาน</th><th>ล่าช้า</th><th>เหตุผลที่ล่าช้า</th></tr></thead><tbody>${D.map(rowD).join("")}</tbody></table></div>` : `<div class="empty">ไม่มีงานล่าช้า ✓</div>`}</section>`;
+}
+const refreshTodo = () => { const x = $("todo"); if (x) { x.innerHTML = todoHtml(); x.querySelectorAll("textarea.ta").forEach(grow); } };
 function renderList() {
   const order = { delay: 0, prog: 1, wait: 2, done: 3, cancel: 4 }, num = t => parseFloat(t.no) || 0;
   const srt = { new: (a, b) => (b.created || "").localeCompare(a.created || "") || num(b) - num(a), no: (a, b) => num(a) - num(b), st: (a, b) => order[stOf(a)] - order[stOf(b)] || (stOf(a) === "delay" ? lateDays(b) - lateDays(a) : (a.target || "9").localeCompare(b.target || "9")) || num(a) - num(b), due: (a, b) => (a.target || "9").localeCompare(b.target || "9") };
   const L = filtered().sort(srt[S.sort] || srt.new);
-  $("view").innerHTML = `<section class="panel"><h2>ตาราง Task · ${esc(BD().n)} <span class="tag">${L.length} งาน</span>
+  $("view").innerHTML = `<div id="todo" class="todo">${todoHtml()}</div><section class="panel"><h2>ตาราง Task · ${esc(BD().n)} <span class="tag">${L.length} งาน</span>
       <span style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center"><label style="font-size:13px;color:var(--mut);display:inline-flex;gap:6px;align-items:center">เรียง <select id="fSort" style="border:1px solid var(--line);border-radius:10px;padding:6px 8px">${[["new", "งานใหม่ล่าสุดก่อน"], ["st", "Delay ก่อน (ตามสถานะ)"], ["due", "Target ใกล้สุดก่อน"], ["no", "ตาม NO."]].map(([k, l]) => `<option value="${k}" ${(S.sort || "new") === k ? "selected" : ""}>${l}</option>`).join("")}</select></label>
       <label style="font-size:13px;color:var(--mut);display:inline-flex;gap:6px;align-items:center"><input type="checkbox" id="fCx" ${S.cx ? "checked" : ""}> แสดงงานที่ยกเลิก</label><button type="button" class="btn line sm" data-expand="1">${Object.keys(S.open).length ? "ย่องานย่อย" : "กางงานย่อยทั้งหมด"}</button></span></h2>
     <p class="hint">พิมพ์งานใหม่ในแถวบนสุดแล้วกด Enter · แก้ชื่อ ผู้รับผิดชอบ ความสำคัญ วันที่ % หมายเหตุ ได้ในตารางเลย (บันทึกทันที) · <b>สถานะ</b> คำนวณอัตโนมัติจาก % และ Target · ปุ่ม ⋯ = รายละเอียด / ยกเลิกงาน / ลบ</p>
     <datalist id="ownL2">${[...new Set(owners().concat(BOARDS.map(b => b.own)))].map(o => `<option value="${esc(o)}">`).join("")}</datalist>
-    <div class="tbl sheet"><table><thead><tr><th>NO.</th><th>งาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>เริ่ม</th><th>Target</th><th>Progress</th><th>สถานะ</th><th>กำหนดส่ง</th><th>หมายเหตุ</th><th></th></tr></thead>
-    <tbody>${addRow()}${L.map(t => rowHtml(t)).join("") || `<tr><td colspan="11" class="empty">ยังไม่มีงาน · พิมพ์งานแรกในแถวด้านบน</td></tr>`}</tbody></table></div></section>`;
+    <div class="tbl sheet"><table><thead><tr><th>NO.</th><th>งาน</th><th>ผู้รับผิดชอบ</th><th>ความสำคัญ</th><th>เริ่ม</th><th>Target</th><th>Progress</th><th>สถานะ · กำหนดส่ง</th><th>หมายเหตุ</th><th></th></tr></thead>
+    <tbody>${addRow()}${L.map(t => rowHtml(t)).join("") || `<tr><td colspan="10" class="empty">ยังไม่มีงาน · พิมพ์งานแรกในแถวด้านบน</td></tr>`}</tbody></table></div></section>`;
 }
 /* บันทึกค่าที่แก้ในตาราง → อัปเดต % / วันที่เสร็จ / งานหลัก แล้ววาดแถวใหม่ (ไม่รีเฟรชทั้งหน้า) */
 function patchTask(t, patch) {
@@ -534,10 +609,11 @@ function patchTask(t, patch) {
   if (t.parent) { const pa = byId(t.parent); if (pa) { pa.u = nowIso(); fix(pa); touched.push(pa); } }
   persist(touched); return touched;
 }
+const growAll = () => document.querySelectorAll("textarea.ta").forEach(grow);
 function redrawRows(ids) {
   ids.forEach(id => { const tr = document.querySelector(`tr[data-row="${id}"]`), t = byId(id); if (!tr || !t) return;
     const tmp = document.createElement("tbody"); const was = S.open[id]; if (!t.parent) S.open[id] = false; tmp.innerHTML = rowHtml(t, !!t.parent); if (!t.parent) S.open[id] = was; tr.replaceWith(tmp.firstElementChild); });
-  renderSide(); renderTabs(); renderFilters();
+  renderSide(); renderTabs(); renderFilters(); refreshTodo(); growAll();
 }
 function quickAdd() {
   const title = $("nT").value.trim(); if (!title) { $("nT").focus(); return; }
@@ -624,7 +700,8 @@ function renderSide() {
 }
 function render() {
   location.hash = S.view; renderSide(); renderTabs(); renderFilters();
-  ({ ov: renderOv, list: renderList, tl: renderTl, kpi: renderKpi, guide: renderGuide })[S.view]();
+  document.body.classList.toggle("v-list", S.view === "list");
+  ({ ov: renderOv, list: renderList, tl: renderTl, kpi: renderKpi, guide: renderGuide })[S.view](); if (S.view === "list") growAll();
   $("asof").textContent = `งานของ ${BD().n} · ข้อมูล ณ ${fmtD(TODAY)} · ${live().filter(t => !t.parent).length} งาน · ${live().filter(t => t.parent).length} งานย่อย · สถานะคำนวณจากวันนี้`;
 }
 
@@ -786,7 +863,10 @@ document.addEventListener("change", e => {
   const n = document.querySelector(`tr[data-row="${t.id}"] [data-f="${el.dataset.f}"]`); if (n) { n.classList.add("saved"); setTimeout(() => n.classList.remove("saved"), 700); }
 });
 document.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.closest && e.target.closest("tr.add")) { e.preventDefault(); quickAdd(); }
-  else if (e.key === "Enter" && e.target.classList && e.target.classList.contains("ci") && e.target.tagName === "INPUT") e.target.blur(); });
+  else if (e.key === "Enter" && !e.shiftKey && e.target.classList && e.target.classList.contains("ci") && /INPUT|TEXTAREA/.test(e.target.tagName)) { e.preventDefault(); e.target.blur(); } });
+/* ช่องชื่องาน/หมายเหตุ ขยายตามความยาวข้อความ */
+const grow = el => { el.style.height = "auto"; el.style.height = el.scrollHeight + 2 + "px"; };
+document.addEventListener("input", e => { if (e.target.classList && e.target.classList.contains("ta")) grow(e.target); });
 $("dlgf").addEventListener("click", e => { if (e.target.id === "eSave") saveEdit(); else if (e.target.id === "eDel") delEdit(); else if (e.target.id === "impOk") applyImport(); });
 $("bAdd").onclick = () => openEdit(null);
 document.addEventListener("click", e => { if (e.target.id === "nAdd") quickAdd(); });
