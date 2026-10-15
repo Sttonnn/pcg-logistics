@@ -175,6 +175,80 @@
   @media (max-width: 1000px) { .lay { grid-template-columns: 1fr; } .side { position: static; grid-template-columns: repeat(2, 1fr); } .side h4 { grid-column: 1 / -1; } }
   @media (max-width: 1200px) { .kpis { grid-template-columns: repeat(3, 1fr); } .g2, .g3 { grid-template-columns: 1fr; } }
   @media (max-width: 640px) { .wrap { padding: 0 12px 50px; } .kpis { grid-template-columns: repeat(2, 1fr); } .ttl h1 { font-size: 22px; } .fr { grid-template-columns: 1fr; } .hbtns { margin-left: 0; } .owners { grid-template-columns: 1fr; } .mets { grid-template-columns: repeat(2, 1fr); } .kpi .v { font-size: 30px; } }
+  /* ===== Digital Twin / Mission Control (16 ต.ค. ผู้ใช้ขอ: สวยและ Digital twin กว่านี้) · body.dt = ธีมมืด (ค่าเริ่ม) · ปุ่มสลับแบบสว่างที่หัว ===== */
+  .clock { font-family: Archivo, monospace; font-variant-numeric: tabular-nums; font-size: 13px; letter-spacing: .06em; opacity: .9; }
+  .live { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; letter-spacing: .14em; color: #34d399; }
+  .live i { width: 8px; height: 8px; border-radius: 50%; background: #34d399; box-shadow: 0 0 10px #34d399; animation: blink 1.6s infinite; }
+  @keyframes blink { 50% { opacity: .25; } }
+  .mc { display: grid; grid-template-columns: 300px 1fr 260px; gap: 16px; margin-bottom: 16px; }
+  .mc .panel { position: relative; overflow: hidden; min-width: 0; } .g2 > * { min-width: 0; }
+  .hring { display: grid; place-items: center; position: relative; padding: 6px 0; }
+  .hring .c { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+  .hring .c b { font-family: Archivo; font-size: 36px; line-height: 1; }
+  .hring .c span { font-size: 11px; color: var(--mut); letter-spacing: .08em; }
+  .pipe { display: grid; grid-template-columns: 1fr 70px 1fr 70px 1fr; align-items: center; gap: 0; padding: 18px 6px 4px; }
+  .node { text-align: center; display: grid; justify-items: center; gap: 6px; cursor: pointer; border: 0; background: none; padding: 0; }
+  .node .o { width: 92px; height: 92px; border-radius: 50%; display: grid; place-items: center; font-family: Archivo; font-size: 30px; font-weight: 800; color: var(--ink); background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--nc) 38%, transparent), color-mix(in srgb, var(--nc) 10%, transparent) 70%); border: 2px solid var(--nc); box-shadow: 0 0 0 6px color-mix(in srgb, var(--nc) 12%, transparent), 0 0 26px color-mix(in srgb, var(--nc) 55%, transparent); transition: transform .2s; }
+  .node:hover .o { transform: scale(1.06); }
+  .node b { font-size: 13px; } .node small { font-size: 11px; color: var(--mut); }
+  .wire { height: 3px; border-radius: 3px; background: linear-gradient(90deg, color-mix(in srgb, var(--a) 70%, transparent), color-mix(in srgb, var(--b) 70%, transparent)); position: relative; overflow: hidden; }
+  .wire::after { content: ""; position: absolute; top: -2px; width: 18px; height: 7px; border-radius: 7px; background: #fff; box-shadow: 0 0 10px #fff, 0 0 18px var(--b); animation: flow 1.8s linear infinite; }
+  @keyframes flow { from { left: -20px; } to { left: 100%; } }
+  .pipe2 { display: grid; grid-template-columns: 1fr 70px 1fr 70px 1fr; }
+  .drop { grid-column: 3; display: grid; justify-items: center; }
+  .drop .v { width: 3px; height: 26px; background: linear-gradient(180deg, color-mix(in srgb, var(--prog) 70%, transparent), color-mix(in srgb, var(--delay) 80%, transparent)); }
+  .stack { display: grid; gap: 10px; }
+  .pls { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; padding: 11px 12px; border-radius: 14px; border: 1px solid var(--line); background: var(--card2); }
+  .pls b { font-family: Archivo; font-size: 22px; }
+  .pls span { font-size: 12px; color: var(--ink2); }
+  .feed { display: grid; gap: 6px; font-size: 13px; max-height: 360px; overflow: auto; }
+  .feed button { display: grid; grid-template-columns: 74px 1fr auto; gap: 10px; align-items: center; text-align: left; border: 1px solid var(--line); background: var(--card2); border-radius: 12px; padding: 9px 11px; color: var(--ink); width: 100%; }
+  .feed .tg { font-family: Archivo, monospace; font-size: 11px; font-weight: 800; letter-spacing: .06em; border-radius: 6px; padding: 3px 6px; text-align: center; }
+  .heat { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 13px); grid-auto-columns: 13px; gap: 3px; padding-bottom: 4px; }
+  .heat i { border-radius: 3px; background: var(--hz); display: block; }
+  .heat i.t { outline: 2px solid #22d3ee; outline-offset: 1px; }
+  .hlab { display: grid; grid-auto-flow: column; grid-auto-columns: 16px; white-space: nowrap; height: 14px; font-size: 10px; color: var(--mut); margin-bottom: 4px; }
+  .owng { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+  .og { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center; padding: 12px; border-radius: 16px; border: 1px solid var(--line); background: var(--card2); cursor: pointer; text-align: left; color: var(--ink); width: 100%; }
+  .og .ring { width: 70px; height: 70px; } .og .ring svg { width: 70px; height: 70px; } .og .ring b { font-size: 18px; inset: -6px 0 0; }
+  :root { --card2: #faf9fe; --hz: #ece9f6; --prog: #2563eb; --delay: #dc2626; }
+  body.dt { --bg: #050a1c; --card: rgba(14, 22, 54, .78); --card2: rgba(25, 36, 82, .55); --ink: #e8ecff; --ink2: #aeb7e2; --mut: #7480b6; --line: rgba(129, 148, 255, .16); --tint: rgba(124, 58, 237, .22); --acc: #a78bfa; --acc2: #c4b5fd; --hz: rgba(129, 148, 255, .08); --prog: #3b82f6; --delay: #ef4444;
+    --sh: 0 0 0 1px rgba(129,148,255,.14), 0 18px 40px -20px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.05);
+    background: radial-gradient(1100px 600px at 85% -10%, rgba(124,58,237,.28), transparent 60%), radial-gradient(900px 500px at -10% 30%, rgba(34,211,238,.14), transparent 60%),
+      linear-gradient(rgba(129,148,255,.05) 1px, transparent 1px) 0 0 / 44px 44px, linear-gradient(90deg, rgba(129,148,255,.05) 1px, transparent 1px) 0 0 / 44px 44px, #050a1c; background-attachment: fixed; }
+  body.dt header.top { background: linear-gradient(120deg, rgba(10,16,44,.95), rgba(46,16,101,.9) 55%, rgba(14,116,144,.85)); border-bottom: 1px solid rgba(129,148,255,.25); box-shadow: 0 0 40px -10px rgba(124,58,237,.6); }
+  body.dt header.top::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: linear-gradient(90deg, transparent, #22d3ee, #a78bfa, transparent); }
+  body.dt .logo { background: linear-gradient(135deg, #22d3ee, #7c3aed); box-shadow: 0 0 24px rgba(34,211,238,.55); } body.dt .logo svg { stroke: #fff; }
+  body.dt .ttl h1 { background: linear-gradient(90deg, #fff, #a5f3fc 60%, #c4b5fd); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  body.dt .btn { background: rgba(255,255,255,.08); color: #e8ecff; border: 1px solid rgba(255,255,255,.2); box-shadow: none; }
+  body.dt .btn.pri, body.dt #bAdd { background: linear-gradient(135deg, #22d3ee, #7c3aed); border: 0; color: #fff; box-shadow: 0 0 18px rgba(124,58,237,.55); }
+  body.dt .btn.line { background: rgba(255,255,255,.05); border-color: var(--line); color: var(--ink2); }
+  body.dt .btn.red { background: rgba(239,68,68,.16); color: #fca5a5; }
+  body.dt .panel, body.dt .kpi, body.dt .side, body.dt .filters, body.dt .own { background: var(--card); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  body.dt .kpi .v { text-shadow: 0 0 18px color-mix(in srgb, var(--c) 70%, transparent); }
+  body.dt .kpi::before { box-shadow: 0 0 14px var(--c); }
+  body.dt nav.tabs button { background: var(--card); color: var(--ink2); box-shadow: var(--sh); }
+  body.dt nav.tabs button.on { background: linear-gradient(135deg, rgba(34,211,238,.25), rgba(124,58,237,.45)); color: #fff; box-shadow: 0 0 0 1px rgba(167,139,250,.6), 0 0 20px rgba(124,58,237,.45); }
+  body.dt .chip { background: rgba(255,255,255,.04); border-color: var(--line); color: var(--ink2); } body.dt .chip.on { background: linear-gradient(135deg, #0891b2, #6d28d9); border-color: transparent; color: #fff; }
+  body.dt select, body.dt input, body.dt textarea { color-scheme: dark; }
+  body.dt .filters select, body.dt .filters input[type=search], body.dt .fl input, body.dt .fl select, body.dt .fl textarea, body.dt #fSort { background: rgba(5,10,28,.6) !important; border-color: var(--line) !important; color: var(--ink) !important; }
+  body.dt .pb .mini span { background: rgba(255,255,255,.06); border-color: var(--line); color: var(--ink2); }
+  body.dt .irow, body.dt .met, body.dt .pb { background: var(--card2); border-color: var(--line); color: var(--ink); }
+  body.dt .pb.on { background: linear-gradient(135deg, rgba(34,211,238,.35), rgba(124,58,237,.7)); box-shadow: 0 0 22px rgba(124,58,237,.5); }
+  body.dt th, body.dt .tlh, body.dt .tlh div:first-child { background: #121c45; color: #a5f3fc; border-bottom: 1px solid rgba(34,211,238,.35); }
+  body.dt td { border-bottom-color: var(--line); } body.dt tr.r:hover td { background: rgba(124,58,237,.1); } body.dt tr.kid td { background: rgba(255,255,255,.02); }
+  body.dt .ci { color: var(--ink); } body.dt .ci:hover, body.dt .ci:focus { background: rgba(5,10,28,.7); border-color: rgba(167,139,250,.6); box-shadow: 0 0 0 3px rgba(124,58,237,.25); }
+  body.dt tr.add td { background: #1a1446; border-bottom-color: rgba(167,139,250,.45); } body.dt tr.add .ci { background: rgba(5,10,28,.7); border-color: rgba(167,139,250,.35); }
+  body.dt .pbar, body.dt .sbar { background: rgba(255,255,255,.08); }
+  body.dt .tl { border-color: var(--line); } body.dt .tlr { border-bottom-color: var(--line); } body.dt .tlr .nm { background: #0b1233; border-right-color: var(--line); } body.dt .mgrid { background: rgba(129,148,255,.08); }
+  body.dt dialog { background: #0b1233; color: var(--ink); border: 1px solid rgba(129,148,255,.3); } body.dt .dh { background: linear-gradient(120deg, #0e7490, #6d28d9); } body.dt .df { border-top-color: var(--line); }
+  body.dt .note { background: rgba(217,119,6,.12); border-color: rgba(217,119,6,.35); color: #fcd34d; } body.dt .ok { background: rgba(16,185,129,.12); border-color: rgba(16,185,129,.35); color: #6ee7b7; }
+  body.dt .tag { background: rgba(167,139,250,.16); color: #c4b5fd; } body.dt .mlab, body.dt .mcol .tot { color: var(--ink2); } body.dt .mchart { border-bottom-color: var(--line); }
+  body.dt .tog { background: rgba(167,139,250,.2); color: #ddd6fe; }
+  body.dt .grade, body.dt .prio, body.dt .pill { filter: saturate(1.1); }
+  body.dt .prio.H { background: rgba(239,68,68,.18); color: #fca5a5; } body.dt .prio.M { background: rgba(217,119,6,.2); color: #fcd34d; } body.dt .prio.L { background: rgba(59,130,246,.2); color: #93c5fd; }
+  @media (max-width: 1200px) { .mc { grid-template-columns: 1fr 1fr; } .mc > :nth-child(2) { grid-column: 1 / -1; order: -1; } }
+  @media (max-width: 640px) { .mc { grid-template-columns: 1fr; } .pipe, .pipe2 { grid-template-columns: 1fr 26px 1fr 26px 1fr; } .node .o { width: 64px; height: 64px; font-size: 22px; } }
 </style>
 </head>
 <body>
@@ -185,7 +259,9 @@
       <div class="logo"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#6d28d9" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
       <div class="ttl"><small>PCG · แผนกโครงการ · PROJECT TEAM</small><h1>Daily Task Dashboard</h1><div class="sub" id="asof"></div></div>
       <div class="hbtns">
+        <span style="display:grid;justify-items:end;gap:2px"><span class="live"><i></i>LIVE</span><span class="clock" id="clock"></span></span>
         <span class="sync" id="syncSt"></span>
+        <button class="btn ghost" id="bTheme" title="สลับธีม"></button>
         <button class="btn ghost" id="bImp" style="display:none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg>นำเข้า Excel</button>
         <button class="btn ghost" id="bExp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>Export Excel</button>
         <button class="btn" id="bAdd"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>เพิ่มงาน (ฟอร์ม)</button>
@@ -259,7 +335,7 @@
 </script>
 <script>
 const DATA0 = [{"title":"ผังห้อง Training คลัง 32 + รายการราคาใหม่","owner":"K.ศุภณัฐ","start":"2026-01-02","target":"2026-01-06","prog":100,"cancel":false,"note":"","id":"T1","no":1},{"title":"4 Way shuttle (Org.)","owner":"K.ศุภณัฐ","start":"2026-01-08","target":"2026-01-09","prog":100,"cancel":false,"note":"","id":"T2","no":2},{"title":"4 Way Presentation","owner":"K.ศุภณัฐ","start":"2026-01-12","target":"2026-06-30","prog":100,"cancel":false,"note":"","id":"T3","no":3},{"title":"วาง Layout ใหม่คลัง 32","owner":"K.ศุภณัฐ","start":"2026-01-09","target":"2026-01-13","prog":100,"cancel":false,"note":"","id":"T4","no":4},{"title":"เป้า Robot ใหม่ เทียบกับคน","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-09","prog":100,"cancel":false,"note":"ส่งรายละเอียดให้ ปรางเรียบร้อย","id":"T5","no":5},{"title":"Iot Project ภาพรวมทั้งปี","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-15","prog":100,"cancel":false,"note":"P ดำเนินการ","id":"T6","no":6},{"title":"Requirement Forklift Project 2026","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-15","prog":100,"cancel":false,"note":"","id":"T7","no":7},{"title":"Location คลังสินค้า 3 คลัง ส่งพี่เต้ย","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-15","prog":100,"cancel":false,"note":"","id":"T8","no":8},{"title":"Application การชาร์ตแบต ของรถ Forklift ที่เป็น Lithium","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-15","prog":0,"cancel":false,"note":"","id":"T9","no":9},{"title":"งานเพิ่มเครื่องอัดขยะ","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-15","prog":100,"cancel":false,"note":"เริ่มเข้างาน 07-08 Feb 26","id":"T10","no":10},{"title":"งานเพิ่ม Platform telescopics","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-30","prog":100,"cancel":false,"note":"ส่งให้ บุยธรรมแล้ว","id":"T11","no":11},{"title":"TOR เครื่องอัดขยะ ทาง Supplier Sign","owner":"K.ศุภณัฐ","start":"2026-01-23","target":"2026-01-25","prog":100,"cancel":false,"note":"ส่งตัวปรับแก้ไปแล้ว 27 Jan","id":"T12","no":12},{"title":"สัญญา ส่งให้ทาง Supplier","owner":"K.ศุภณัฐ","start":"2026-01-23","target":"2026-01-30","prog":null,"cancel":true,"note":"รอพี่ไพ Review","id":"T13","no":13},{"title":"ส่ง Questionnair ให้ทาง Cainiao","owner":"K.ศุภณัฐ","start":"2026-01-23","target":"2026-01-23","prog":100,"cancel":false,"note":"ส่งภายในวันนี้ 23","id":"T14","no":14},{"title":"งาน Renovate คลังราชบุรี Phase 2","owner":"K.ศุภณัฐ","start":"2026-01-27","target":"2026-01-30","prog":25,"cancel":false,"note":"","id":"T15","no":15},{"title":"งาน โต๊ะ Furniture ห้องประชุมใหม่","owner":"K.ศุภณัฐ","start":"2026-02-05","target":"2026-02-06","prog":100,"cancel":false,"note":"","id":"T16","no":16},{"title":"งานต่อเติม Flowrack คลัง WHA 05","owner":"K.ศุภณัฐ","start":"2026-02-05","target":"2026-02-06","prog":100,"cancel":false,"note":"รอใบเสนอราคา","id":"T17","no":17},{"title":"งานปรับปรุง กำแพง Robot และประตู","owner":"K.ศุภณัฐ","start":"2026-02-05","target":"2026-02-06","prog":100,"cancel":false,"note":"รอใบเสนอราคา","id":"T18","no":18},{"title":"งานส่งต่อรองของ น้ำมัน เครื่องจักร ของเครื่องอัดขยะ","owner":"K.ศุภณัฐ","start":"2026-02-05","target":"2026-02-06","prog":100,"cancel":false,"note":"รอเขียนบันทึก","id":"T19","no":19},{"title":"งาน Renovate คลังพิษณุโลก (HighBay)","owner":"K.ศุภณัฐ","start":"2026-02-05","target":"2026-09-30","prog":null,"cancel":true,"note":"Concept","id":"T20","no":20},{"title":"งานออกแบบ Design 2 ชั้นห้องตู้ปลา","owner":"K.ศุภณัฐ","start":"2026-02-06","target":"2026-02-12","prog":100,"cancel":false,"note":"เหลือประเมินราคาให้พี่แต้ม","id":"T21","no":21},{"title":"GPS Tacking Forklift","owner":"K.ศุภณัฐ","start":"2026-02-06","target":"2026-02-12","prog":null,"cancel":true,"note":"","id":"T22","no":22},{"title":"E-Com Desing","owner":"K.ศุภณัฐ","start":"2026-02-25","target":"2026-02-26","prog":100,"cancel":false,"note":"","id":"T23","no":23},{"title":"แบบคลังสินค้า โคราช ที่มี","owner":"K.ศุภณัฐ","start":"2026-02-25","target":"2026-02-26","prog":100,"cancel":false,"note":"","id":"T24","no":24},{"title":"พัดลมเป่าในตู้ Load คลัง 32","owner":"K.ศุภณัฐ","start":"2026-02-25","target":"2026-02-26","prog":null,"cancel":true,"note":"","id":"T25","no":25},{"title":"Drawing Korat WH Rev. 2","owner":"K.ศุภณัฐ","start":"2026-03-02","target":"2026-03-04","prog":100,"cancel":false,"note":"ปรับแก้ขนาด คลังสินค้า","id":"T26","no":26},{"title":"Action Plan ละเอียดสำหรับ การก่อสร้างคลัง","owner":"K.ศุภณัฐ","start":"2026-03-02","target":"2026-03-10","prog":100,"cancel":false,"note":"","id":"T27","no":27},{"title":"ปากเกร็ด Drawing","owner":"K.ศุภณัฐ","start":"2026-03-04","target":"2026-03-10","prog":100,"cancel":false,"note":"","id":"T28","no":28},{"title":"บันทึกงานเก้าอี้ ห้องประชุม","owner":"K.ศุภณัฐ","start":"2026-03-04","target":"2026-03-10","prog":100,"cancel":false,"note":"","id":"T29","no":29},{"title":"Dashboard BI ของ Axons MA","owner":"K.ศุภณัฐ","start":"2026-03-04","target":"2026-03-08","prog":100,"cancel":false,"note":"","id":"T30","no":30},{"title":"Plant Meeting Mar 2026","owner":"K.ศุภณัฐ","start":"2026-03-04","target":"2026-03-13","prog":100,"cancel":false,"note":"","id":"T31","no":31},{"title":"Checklist BT Forklift","owner":"K.วัฒนา","start":"2026-03-04","target":"2026-03-13","prog":0,"cancel":false,"note":"","id":"T32","no":32},{"title":"Stock Rack ด้านหลังคลังสินค้า","owner":"K.ศุภณัฐ","start":"2026-03-04","target":"2026-03-13","prog":100,"cancel":false,"note":"","id":"T33","no":33},{"title":"เขียนบันทึกงาน เปลี่ยนบัว Training Room","owner":"K.ศุภณัฐ","start":"2026-03-16","target":"2026-03-18","prog":100,"cancel":false,"note":"","id":"T34","no":34},{"title":"แบบสำรวจ Height Selection ของคลัง RDC","owner":"K.ศุภณัฐ","start":"2026-03-16","target":"2026-03-18","prog":100,"cancel":false,"note":"มีข้อมูลแล้วรอดำเนินการ","id":"T35","no":35},{"title":"ใบ ขอ ช่างซ่อมบำรุง / ผู้จัดการแผนกโครงการ Automate","owner":"K.ศุภณัฐ","start":"2026-03-16","target":"2026-03-20","prog":100,"cancel":false,"note":"","id":"T36","no":36},{"title":"งาน Memo งานซื้อ Robot","owner":"K.ศุภณัฐ","start":"2026-03-26","target":"2026-03-28","prog":100,"cancel":false,"note":"","id":"T37","no":37},{"title":"งาน TOR งานซื้อ Robot","owner":"K.ศุภณัฐ","start":"2026-03-26","target":"2026-03-28","prog":100,"cancel":false,"note":"","id":"T38","no":38},{"title":"Famework งาน 4-Way Shuttle","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-10","prog":100,"cancel":false,"note":"นำเสนอพี่แต้มแล้ว","id":"T39","no":39},{"title":"Famework งาน AGV/AMR","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-10","prog":50,"cancel":false,"note":"","id":"T40","no":40},{"title":"เปรียบเทียบ Soalr Cell คลังสินค้า สุราษรฏ์","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-24","prog":100,"cancel":false,"note":"","id":"T41","no":41},{"title":"Robot Improve ขา 7 / 10","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-10","prog":100,"cancel":false,"note":"","id":"T42","no":42},{"title":"Plant Meeting Presentation Axons Maintenance","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-23","prog":100,"cancel":false,"note":"","id":"T43","no":43},{"title":"ปรับ Weekly Report","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-20","prog":100,"cancel":false,"note":"","id":"T44","no":44},{"title":"Action Plan รายละเอียดแต่ละโครงการ","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-28","prog":96,"cancel":false,"note":"","id":"T45","no":45},{"title":"4 Way shuttle","owner":"K.ศุภณัฐ","start":"2026-04-24","target":"2026-04-28","prog":100,"cancel":false,"note":"","id":"T45-1","no":"45.1","parent":"T45"},{"title":"AGV Project","owner":"K.ศุภณัฐ","start":"2026-04-24","target":"2026-04-28","prog":75,"cancel":false,"note":"","id":"T45-2","no":"45.2","parent":"T45"},{"title":"Robot Arm","owner":"K.ศุภณัฐ","start":"2026-04-24","target":"2026-04-28","prog":100,"cancel":false,"note":"","id":"T45-3","no":"45.3","parent":"T45"},{"title":"Camera sensor","owner":"K.ศุภณัฐ","start":"2026-04-24","target":"2026-04-28","prog":100,"cancel":false,"note":"","id":"T45-4","no":"45.4","parent":"T45"},{"title":"IOT Phase 2","owner":"K.ศุภณัฐ","start":"2026-04-24","target":"2026-04-28","prog":100,"cancel":false,"note":"","id":"T45-5","no":"45.5","parent":"T45"},{"title":"Robot Cleaning","owner":"K.ศุภณัฐ","start":"2026-04-24","target":"2026-04-28","prog":100,"cancel":false,"note":"","id":"T45-6","no":"45.6","parent":"T45"},{"title":"กรอกรายละเอียด ของ Domino","owner":"K.ศุภณัฐ","start":"2026-04-23","target":"2026-04-24","prog":100,"cancel":false,"note":"","id":"T46","no":46},{"title":"MHE นัด Supplier ดู นวัตกรรใหม่","owner":"K.ศุภณัฐ","start":"2026-04-27","target":"2026-04-30","prog":0,"cancel":false,"note":"","id":"T47","no":47},{"title":"Lighting Layout คลังโคราช","owner":"K.ศุภณัฐ","start":"2026-04-27","target":"2026-04-30","prog":100,"cancel":false,"note":"","id":"T48","no":48},{"title":"List รายการ IOT ว่าทำอะไรแล้วบ้าง","owner":"K.ศุภณัฐ","start":"2026-05-05","target":"2026-05-10","prog":100,"cancel":false,"note":"","id":"T49","no":49},{"title":"List รายการ Roobot ว่าทำอะไรแล้วบ้าง","owner":"K.ศุภณัฐ","start":"2026-05-05","target":"2026-05-10","prog":100,"cancel":false,"note":"","id":"T50","no":50},{"title":"บันทึกขออนุมัติ งานทาสีฝ้า","owner":"K.ศุภณัฐ","start":"2026-05-05","target":"2026-05-10","prog":100,"cancel":false,"note":"","id":"T51","no":51},{"title":"บันทึกขออนุมัติ งานซ่อมพื้นหน้า Dock Load","owner":"K.ศุภณัฐ","start":"2026-05-05","target":"2026-05-10","prog":100,"cancel":false,"note":"","id":"T52","no":52},{"title":"งานหินคลุกด้านข้างคลังสินค้า","owner":"K.ศุภณัฐ","start":"2026-07-13","target":"2026-07-14","prog":100,"cancel":false,"note":"","id":"T53","no":53},{"title":"Presentation สำหรับเพิ่มพื้นที่การจัดเก็บสินค้า","owner":"K.ศุภณัฐ","start":"2026-07-13","target":"2026-07-14","prog":100,"cancel":false,"note":"","id":"T54","no":54},{"title":"งานต่อเติม โรงอาคาร คลัง 5 (แบบประเมินราคา)","owner":"K.ศุภณัฐ","start":"2026-07-13","target":"2026-07-14","prog":100,"cancel":false,"note":"","id":"T55","no":55},{"title":"งานสำนักงาน Operatin คลัง 5","owner":"K.ศุภณัฐ","start":"2026-07-13","target":"2026-07-14","prog":null,"cancel":true,"note":"","id":"T56","no":56},{"title":"ต่อสัญญา MHE ประจำปี 2570","owner":"K.ศุภณัฐ","start":"2026-07-01","target":"2026-07-31","prog":0,"cancel":false,"note":"","id":"T57","no":57},{"title":"สรุป ตรวจสอบ Racking - RDC ทั่วประเทศ","owner":"K.ศุภณัฐ","start":"2026-07-01","target":"2026-07-31","prog":100,"cancel":false,"note":"","id":"T58","no":58},{"title":"CEO Presentation","owner":"K.ศุภณัฐ","start":"2026-07-01","target":"2026-08-08","prog":100,"cancel":false,"note":"","id":"T59","no":59},{"title":"งบประมาณย้ายคลังสินค้า โคราช","owner":"K.ศุภณัฐ","start":"2026-07-01","target":"2026-08-08","prog":100,"cancel":false,"note":"","id":"T60","no":60},{"title":"เขียนแบบก่อสร้างคลังสินค้า 3 คลัง","owner":"K.ศุภณัฐ","start":"","target":"","prog":null,"cancel":false,"note":"","id":"T61","no":61},{"title":"งบประมาณคลังสินค้า SCX A1","owner":"K.ศุภณัฐ","start":"","target":"","prog":null,"cancel":false,"note":"","id":"T62","no":62},{"title":"โครงการ 4Way Shuttle ที่คลังสินค้าใหม่","owner":"K.ศุภณัฐ","start":"","target":"","prog":null,"cancel":false,"note":"","id":"T63","no":63}];
-const ASOF0 = "2026-10-15T14:42";
+const ASOF0 = "2026-10-15T14:49";
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const ls = { get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } } };
@@ -282,6 +358,12 @@ const ST = {
   cancel: { t: "ยกเลิก", c: "#a3acbd", bg: "#f1f3f7", fg: "#5b6478" }
 };
 const ORDER = ["done", "wait", "prog", "delay"];
+/* ธีมมืด: สีผ่านตัวตรวจสีบนพื้น #0d1430 (16 ต.ค.) */
+const ST_L = JSON.parse(JSON.stringify(ST)), ST_D = {
+  done: { c: "#0ea371", bg: "rgba(14,163,113,.18)", fg: "#6ee7b7" }, wait: { c: "#d27c00", bg: "rgba(210,124,0,.2)", fg: "#fcd34d" },
+  prog: { c: "#3b82f6", bg: "rgba(59,130,246,.2)", fg: "#93c5fd" }, delay: { c: "#ef4444", bg: "rgba(239,68,68,.2)", fg: "#fca5a5" }, cancel: { c: "#64708f", bg: "rgba(148,163,184,.14)", fg: "#a5b0c8" } };
+let DT = (() => { try { return localStorage.getItem("pcg-task-theme") !== "light"; } catch (e) { return true; } })();
+function applyTheme() { document.body.classList.toggle("dt", DT); for (const k in ST) Object.assign(ST[k], (DT ? ST_D : ST_L)[k]); $("bTheme").innerHTML = DT ? "☀ แบบสว่าง" : "◐ Digital Twin"; }
 
 /* ---------- ข้อมูล ---------- */
 function clean(v) { return typeof v === "string" ? v.replace(/</g, "‹").replace(/>/g, "›") : v; }
@@ -381,40 +463,78 @@ function irow(t) {
   const s = stOf(t);
   return `<button type="button" class="irow" data-edit="${t.id}"><span>${pill(s)}</span><span><div class="t">${esc(t.title)}</div><div class="m">${esc(t.owner || "ยังไม่ระบุผู้รับผิดชอบ")} · Target ${fmtD(t.target)} · ${progOf(t)}%</div></span><span style="font-size:13px;text-align:right">${dueTxt(t)}</span></button>`;
 }
+function heroRing(pct, on) {
+  const r = 70, C = 2 * Math.PI * r;
+  return `<svg width="180" height="180" viewBox="0 0 180 180"><defs><linearGradient id="rg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#a78bfa"/></linearGradient><filter id="gl"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <circle cx="90" cy="90" r="${r + 12}" fill="none" stroke="var(--line)" stroke-width="1" stroke-dasharray="2 5"/>
+    <circle cx="90" cy="90" r="${r}" fill="none" stroke="var(--hz)" stroke-width="14"/>
+    <circle cx="90" cy="90" r="${r}" fill="none" stroke="url(#rg)" stroke-width="14" stroke-linecap="round" stroke-dasharray="${C * pct / 100} ${C}" transform="rotate(-90 90 90)" filter="url(#gl)"/>
+    <circle cx="90" cy="90" r="${r - 18}" fill="none" stroke="#0ea371" stroke-width="4" stroke-linecap="round" stroke-dasharray="${2 * Math.PI * (r - 18) * on / 100} ${C}" transform="rotate(-90 90 90)" opacity=".85"/></svg>`;
+}
+function heatmap(L) {
+  const y = TODAY.slice(0, 4), d0 = new Date(y + "-01-01T00:00:00Z"), by = {};
+  L.filter(t => t.target && t.target.startsWith(y) && stOf(t) !== "cancel").forEach(t => { const v = by[t.target] = by[t.target] || { n: 0, d: 0, ok: 0 }; v.n++; if (stOf(t) === "delay") v.d++; if (stOf(t) === "done") v.ok++; });
+  const start = new Date(d0); start.setUTCDate(start.getUTCDate() - start.getUTCDay());
+  const cells = [], labs = []; let lastM = -1;
+  for (let d = new Date(start), w = 0; d.getUTCFullYear() <= +y; w++) {
+    for (let k = 0; k < 7; k++, d.setUTCDate(d.getUTCDate() + 1)) {
+      const iso = d.toISOString().slice(0, 10), v = by[iso], inY = iso.startsWith(y);
+      if (k === 0) { const m = d.getUTCMonth(); labs.push(m !== lastM && inY ? TH_M[m] : ""); if (inY) lastM = m; }
+      const col = !inY ? "transparent" : !v ? "var(--hz)" : v.d ? ST.delay.c : v.ok === v.n ? ST.done.c : ST.prog.c;
+      const op = v ? Math.min(1, .45 + v.n * .18) : 1;
+      cells.push(`<i class="${iso === TODAY ? "t" : ""}" style="background:${col};opacity:${op}" title="${inY ? fmtD(iso) + (v ? ` · Target ${v.n} งาน · เสร็จ ${v.ok}${v.d ? ` · Delay ${v.d}` : ""}` : " · ไม่มีงานครบกำหนด") : ""}"></i>`);
+    }
+  }
+  return `<div style="overflow-x:auto;max-width:100%"><div style="width:max-content"><div class="hlab">${labs.map(l => `<span>${l}</span>`).join("")}</div><div class="heat">${cells.join("")}</div></div></div>
+    <div class="legend" style="margin-top:8px"><span><i style="background:var(--hz)"></i>ไม่มีงาน</span><span><i style="background:${ST.done.c}"></i>เสร็จครบ</span><span><i style="background:${ST.prog.c}"></i>ยังมีงานค้าง</span><span><i style="background:${ST.delay.c}"></i>มี Delay</span><span><i style="outline:2px solid #22d3ee;background:transparent"></i>วันนี้</span></div>`;
+}
 function renderOv() {
   const L = tops(), c = stat(L);
-  const delay = L.filter(t => stOf(t) === "delay").sort((a, b) => lateDays(b) - lateDays(a) || (a.pri === "H" ? -1 : 1));
-  const soon = L.filter(t => stOf(t) === "prog" || stOf(t) === "wait").filter(t => { const l = leftDays(t); return l != null && l <= 7; }).sort((a, b) => leftDays(a) - leftDays(b));
-  const open = L.filter(t => ["prog", "delay", "wait"].includes(stOf(t)));
-  const pc = { H: 0, M: 0, L: 0 }; open.forEach(t => pc[t.pri || "M"]++);
-  const recent = live().filter(t => t.hist && t.hist.length).map(t => ({ t, h: t.hist[t.hist.length - 1] })).sort((a, b) => b.h.at.localeCompare(a.h.at)).slice(0, 6);
-  const os = owners().map(o => ({ o, c: stat(live().filter(t => !t.parent && t.owner === o)) }));
-  const tot = Math.max(1, c.n);
-  $("view").innerHTML = kpiCards(c) + `
-  <div class="g2">
-    <section class="panel"><h2>${sv(IC.delay)}ต้องตามตอนนี้ <span class="tag">Delay ${delay.length} · ครบกำหนดใน 7 วัน ${soon.length}</span></h2>
-      <p class="hint">งาน Delay เรียงจากเลยกำหนดนานสุด แล้วตามด้วยงานที่ใกล้ครบกำหนด · กดงานเพื่ออัปเดตความคืบหน้า</p>
-      <div class="rows">${delay.concat(soon).slice(0, 8).map(irow).join("") || `<div class="ok">✓ ไม่มีงาน Delay และไม่มีงานครบกำหนดใน 7 วันนี้</div>`}</div>
-      ${delay.length + soon.length > 8 ? `<button type="button" class="btn line sm" style="margin-top:10px" data-go="delay">ดูทั้งหมด →</button>` : ""}</section>
-    <section class="panel"><h2>สัดส่วนสถานะงาน</h2><p class="hint">ไม่นับงานที่ยกเลิก · ${c.n} งาน</p>
-      <div class="sbar" style="height:22px">${ORDER.filter(k => c[k]).map(k => `<span style="flex:${c[k]};background:${ST[k].c}" title="${ST[k].t} ${c[k]}"></span>`).join("")}</div>
-      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px">${ORDER.map(k => `<button type="button" class="irow" data-go="${k}" style="grid-template-columns:auto 1fr auto"><i style="width:12px;height:12px;border-radius:3px;background:${ST[k].c}"></i><span class="t">${ST[k].t}</span><b class="num">${c[k]} <span style="color:var(--mut);font-weight:500;font-size:12px">${Math.round(c[k] / tot * 100)}%</span></b></button>`).join("")}</div>
-      <h2 style="margin-top:20px;font-size:16px">งานที่ยังเปิดอยู่ แยกความสำคัญ</h2><p class="hint">On process + Delay + ยังไม่เริ่ม · ${open.length} งาน</p>
-      <div style="display:flex;gap:10px">${["H", "M", "L"].map(p => `<div class="met" style="flex:1">${prio(p)}<b class="num" style="margin-top:6px">${pc[p]}</b><span>งาน</span></div>`).join("")}</div>
-    </section>
+  const delay = L.filter(t => stOf(t) === "delay").sort((a, b) => lateDays(b) - lateDays(a));
+  const soon = L.filter(t => ["prog", "wait"].includes(stOf(t))).filter(t => { const l = leftDays(t); return l != null && l <= 7; }).sort((a, b) => leftDays(a) - leftDays(b));
+  const open = L.filter(t => ["prog", "delay", "wait"].includes(stOf(t))), pc = { H: 0, M: 0, L: 0 }; open.forEach(t => pc[t.pri || "M"]++);
+  const wk = (() => { const d = new Date(TODAY + "T00:00:00Z"); d.setUTCDate(d.getUTCDate() - 7); return d.toISOString().slice(0, 10); })();
+  const doneWk = live().filter(t => !t.parent && t.doneAt && t.doneAt > wk).length, addWk = live().filter(t => !t.parent && (t.created || "").slice(0, 10) > wk).length;
+  const recent = live().filter(t => t.hist && t.hist.length).map(t => ({ t, h: t.hist[t.hist.length - 1] })).sort((a, b) => b.h.at.localeCompare(a.h.at)).slice(0, 8);
+  const node = (k, sub) => `<button type="button" class="node" data-go="${k}" style="--nc:${ST[k].c}"><span class="o">${c[k]}</span><b>${ST[k].t}</b><small>${sub}</small></button>`;
+  const wire = (a, b) => `<div class="wire" style="--a:${ST[a].c};--b:${ST[b].c}"></div>`;
+  const feedRow = t => { const s = stOf(t), l = leftDays(t); return `<button type="button" data-edit="${t.id}"><span class="tg" style="background:${ST[s].bg};color:${ST[s].fg}">${s === "delay" ? "+" + lateDays(t) + "D" : l === 0 ? "TODAY" : "T-" + l}</span><span><b style="font-weight:600">${esc(t.title)}</b><div style="font-size:11px;color:var(--mut)">${esc(t.owner || "")} · Target ${fmtD(t.target)}</div></span><b class="num">${progOf(t)}%</b></button>`; };
+  const os = owners();
+  $("view").innerHTML = `
+  <div class="mc">
+    <section class="panel"><h2 style="font-size:15px;letter-spacing:.04em">MISSION PROGRESS <span class="tag">${esc(BD().n)}</span></h2>
+      <div class="hring">${heroRing(c.pct, c.onPct)}<div class="c"><b class="num">${c.pct}%</b><span>สำเร็จ ${c.done}/${c.n}</span><span style="color:#34d399">ตรงเวลา ${c.onPct}%</span></div></div>
+      <div class="legend" style="justify-content:center"><span><i style="background:linear-gradient(90deg,#22d3ee,#a78bfa)"></i>งานสำเร็จ</span><span><i style="background:#0ea371"></i>ส่งตรงเวลา</span></div></section>
+    <section class="panel"><h2 style="font-size:15px;letter-spacing:.04em">TASK FLOW · สายงานตอนนี้ <span class="tag">${c.n} งาน · ยกเลิก ${live().filter(t => !t.parent && t.cancel).length}</span></h2>
+      <p class="hint">งานไหลจาก ยังไม่เริ่ม → On process → เสร็จสิ้น · งานที่เลย Target หลุดลงไปเป็น Delay · กดวงกลมเพื่อดูรายการ</p>
+      <div class="pipe">${node("wait", "รอเริ่ม")}${wire("wait", "prog")}${node("prog", "อยู่ในกำหนด")}${wire("prog", "done")}${node("done", `ตรงเวลา ${c.onT}`)}</div>
+      <div class="pipe2"><div class="drop"><span class="v"></span>${node("delay", "เลย Target")}</div></div></section>
+    <section class="panel"><h2 style="font-size:15px;letter-spacing:.04em">PULSE · 7 วันล่าสุด</h2>
+      <div class="stack" style="margin-top:12px">
+        <div class="pls"><span style="color:#22d3ee">${sv(IC.list, 20)}</span><span>งานเพิ่มใหม่</span><b class="num">${addWk}</b></div>
+        <div class="pls"><span style="color:${ST.done.c}">${sv(IC.done, 20)}</span><span>ปิดงานสำเร็จ</span><b class="num">${doneWk}</b></div>
+        <div class="pls"><span style="color:${ST.delay.c}">${sv(IC.delay, 20)}</span><span>Delay ตอนนี้</span><b class="num" style="color:${ST.delay.fg}">${c.delay}</b></div>
+        <div class="pls"><span style="color:${ST.wait.c}">${sv(IC.wait, 20)}</span><span>ครบกำหนดใน 7 วัน</span><b class="num">${soon.length}</b></div>
+      </div></section>
   </div>
-  <section class="panel" style="margin-top:16px"><h2>งานรายเดือน (ตามเดือนที่ครบกำหนด) <span class="tag">${S.own === "all" ? "ทุกคน" : esc(S.own)}</span></h2><p class="hint">แยกตามสถานะ · ชี้แท่งเพื่อดูตัวเลข · กดแท่ง = ดูรายการงานเดือนนั้น</p>${monthChart(L)}</section>
+  ${kpiCards(c)}
+  <div class="g2">
+    <section class="panel"><h2>${sv(IC.delay)}ALERT FEED · ต้องตามตอนนี้ <span class="tag">Delay ${delay.length} · ใกล้ครบ ${soon.length}</span></h2>
+      <p class="hint">+ND = เลยกำหนด N วัน · T-N = เหลือ N วัน · กดเพื่ออัปเดต</p>
+      <div class="feed">${delay.concat(soon).slice(0, 12).map(feedRow).join("") || `<div class="ok">✓ ไม่มีงาน Delay และไม่มีงานครบกำหนดใน 7 วัน</div>`}</div></section>
+    <section class="panel"><h2>WORKLOAD MAP · ปี ${+TODAY.slice(0, 4) + 543}</h2><p class="hint">แต่ละช่อง = 1 วัน (ตาม Target) · สีเข้ม = งานเยอะ · ชี้ช่องเพื่อดูรายละเอียด</p>${heatmap(L)}
+      <h2 style="font-size:15px;margin-top:18px">งานเปิดอยู่ แยกความสำคัญ</h2>
+      <div style="display:flex;gap:10px;margin-top:8px">${["H", "M", "L"].map(p => `<div class="met" style="flex:1">${prio(p)}<b class="num" style="margin-top:6px">${pc[p]}</b><span>งาน</span></div>`).join("")}</div></section>
+  </div>
+  <section class="panel" style="margin-top:16px"><h2>งานรายเดือน (ตามเดือนที่ครบกำหนด)</h2><p class="hint">แยกตามสถานะ · ชี้แท่งเพื่อดูตัวเลข · กดแท่ง = ดูรายการงานเดือนนั้น</p>${monthChart(L)}</section>
   <div class="g2" style="margin-top:16px">
-    <section class="panel"><h2>${sv(IC.kpi)}สรุปรายผู้รับผิดชอบ</h2><p class="hint">คะแนน KPI ดูรายละเอียดที่แท็บ "KPI ผู้รับผิดชอบ"</p>
-      <div class="tbl" style="max-height:none"><table><thead><tr><th>ผู้รับผิดชอบ</th><th>งาน</th><th>สำเร็จ</th><th>On process</th><th>Delay</th><th>% สำเร็จ</th><th>KPI</th></tr></thead><tbody>
-      ${os.map(({ o, c }) => { const k = kpiOf(o); return `<tr class="r" data-own="${esc(o)}"><td><b>${esc(o)}</b></td><td class="num">${c.n}</td><td class="num">${c.done}</td><td class="num">${c.prog}</td><td class="num" style="color:${c.delay ? "#a51d1d" : ""};font-weight:${c.delay ? 700 : 400}">${c.delay}</td><td class="num">${c.pct}%</td><td><span class="grade" style="background:${gradeCol(k.score)[1]};color:${gradeCol(k.score)[0]}">${k.score} · ${k.grade}</span></td></tr>`; }).join("") || `<tr><td colspan="7" class="empty">ยังไม่มีข้อมูล</td></tr>`}
-      </tbody></table></div></section>
-    <section class="panel"><h2>อัปเดตล่าสุด</h2><p class="hint">การเปลี่ยนความคืบหน้าที่บันทึกบนเว็บ</p>
-      <div class="rows">${recent.map(({ t, h }) => `<button type="button" class="irow" data-edit="${t.id}"><span>${pill(stOf(t))}</span><span><div class="t">${esc(t.title)}</div><div class="m">${h.from == null ? "" : h.from + "% → "}${h.p}% · ${new Date(h.at).toLocaleString("th-TH", { dateStyle: "medium", timeStyle: "short" })}</div></span><span></span></button>`).join("") || `<div class="note">ยังไม่มีการอัปเดตบนเว็บ · กดงานใดก็ได้เพื่อปรับ % ความคืบหน้า แล้วประวัติจะขึ้นที่นี่</div>`}</div></section>
+    <section class="panel"><h2>${sv(IC.kpi)}ทีม · KPI ผู้รับผิดชอบ</h2><p class="hint">กดเพื่อดูรายละเอียดที่แท็บ KPI</p>
+      <div class="owng">${os.map(o => { const k = kpiOf(o), gc = gradeCol(k.score); return `<button type="button" class="og" data-own="${esc(o)}"><span class="ring">${ring(k.score, DT ? "#22d3ee" : gc[0])}<b>${k.score}</b></span><span><b style="font-size:15px">${esc(o)}</b><div style="font-size:12px;color:var(--mut)">${k.c.n} งาน · เสร็จ ${k.c.pct}% · Delay ${k.c.delay}</div><span class="grade" style="background:${gc[1]};color:${gc[0]};display:inline-block;margin-top:4px">เกรด ${k.grade}</span></span></button>`; }).join("") || `<div class="empty">ยังไม่มีงาน</div>`}</div></section>
+    <section class="panel"><h2>ACTIVITY LOG · อัปเดตล่าสุด</h2><p class="hint">การเปลี่ยนความคืบหน้าที่บันทึกบนเว็บ</p>
+      <div class="feed">${recent.map(({ t, h }) => `<button type="button" data-edit="${t.id}"><span class="tg" style="background:${ST[stOf(t)].bg};color:${ST[stOf(t)].fg}">${new Date(h.at).toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" })}</span><span><b style="font-weight:600">${esc(t.title)}</b><div style="font-size:11px;color:var(--mut)">${new Date(h.at).toLocaleDateString("th-TH", { day: "numeric", month: "short" })} · ${h.from == null ? "เพิ่มงาน" : h.from + "% → " + h.p + "%"}</div></span><b class="num">${h.p}%</b></button>`).join("") || `<div class="note">ยังไม่มีการอัปเดตบนเว็บ</div>`}</div></section>
   </div>`;
 }
 
-/* ---------- รายการงาน ---------- */
 /* ---------- ตาราง Task (16 ต.ค. ผู้ใช้สั่ง: ไม่กรอก Excel แล้ว · ทีมกรอกบนเว็บ แก้ในตารางได้ทันที) ---------- */
 const PSTEPS = [0, 5, 10, 20, 25, 30, 40, 50, 60, 70, 75, 80, 90, 95, 100];
 const pSel = (v, attrs) => { const o = PSTEPS.includes(v) ? PSTEPS : PSTEPS.concat(v).sort((a, b) => a - b); return `<select class="ci cp" ${attrs}>${o.map(x => `<option value="${x}" ${x === v ? "selected" : ""}>${x}%</option>`).join("")}</select>`; };
@@ -509,8 +629,8 @@ function kpiOf(o) {
   const dur = L.filter(t => stOf(t) === "done" && t.start && (t.doneAt || t.target)).map(t => Math.max(1, days(t.start, t.doneAt || t.target) + 1));
   return { c, score, grade: score >= 90 ? "A" : score >= 80 ? "B" : score >= 70 ? "C" : "D", noDelay: Math.round(noDelay * 100), onR: Math.round(onR * 100), avgLate, avgP, open: openL.length, lates, avgDur: dur.length ? Math.round(dur.reduce((a, b) => a + b, 0) / dur.length) : 0 };
 }
-const gradeCol = s => s >= 90 ? ["#0a6b4d", "#e3f6ee"] : s >= 80 ? ["#1e4fb0", "#e6eefe"] : s >= 70 ? ["#8a5300", "#fff3db"] : ["#a51d1d", "#fde8e8"];
-function ring(v, col) { const r = 34, C = 2 * Math.PI * r; return `<svg width="84" height="84" viewBox="0 0 84 84"><circle cx="42" cy="42" r="${r}" fill="none" stroke="#ece9f6" stroke-width="9"/><circle cx="42" cy="42" r="${r}" fill="none" stroke="${col}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C * v / 100} ${C}" transform="rotate(-90 42 42)"/></svg>`; }
+const gradeCol = s => { const k = s >= 90 ? "done" : s >= 80 ? "prog" : s >= 70 ? "wait" : "delay"; return [ST[k].fg, ST[k].bg]; };
+function ring(v, col) { const r = 34, C = 2 * Math.PI * r; return `<svg width="84" height="84" viewBox="0 0 84 84"><circle cx="42" cy="42" r="${r}" fill="none" stroke="var(--hz)" stroke-width="9"/><circle cx="42" cy="42" r="${r}" fill="none" stroke="${col}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C * v / 100} ${C}" transform="rotate(-90 42 42)"/></svg>`; }
 function renderKpi() {
   const os = owners().filter(o => S.own === "all" || o === S.own);
   $("view").innerHTML = `<div class="note" style="margin-bottom:14px"><b>คะแนน KPI</b> = 40% อัตราสำเร็จ (งานเสร็จ ÷ งานทั้งหมด) + 40% ส่งตรงเวลา (เสร็จภายใน Target ÷ งานที่เสร็จ) + 20% งานค้างที่ไม่ Delay · เกรด A ≥ 90 · B ≥ 80 · C ≥ 70 · D &lt; 70 · ไม่นับงานที่ยกเลิก · งานจาก Excel ที่ไม่มีวันเสร็จจริงถือว่าส่งตรงเวลา (ปรับ % เป็น 100 บนเว็บ ระบบจะบันทึกวันที่เสร็จให้)</div>
@@ -732,6 +852,9 @@ document.addEventListener("mousemove", e => { const c = e.target.closest(".mcol"
   tip.innerHTML = `<b>Target ${fmtM(d.m)}</b>` + ORDER.filter(k => d.v[k]).map(k => `<div><span><i style="background:${ST[k].c}"></i>${ST[k].t}</span><b style="display:inline">${d.v[k]}</b></div>`).join("") + `<div style="border-top:1px solid rgba(255,255,255,.2);margin-top:4px;padding-top:4px"><span>รวม</span><b style="display:inline">${ORDER.reduce((a, k) => a + d.v[k], 0)}</b></div>`;
   tip.style.display = "block"; tip.style.left = Math.min(e.clientX + 14, innerWidth - tip.offsetWidth - 10) + "px"; tip.style.top = (e.clientY + 14) + "px"; });
 window.addEventListener("hashchange", () => { const h = location.hash.slice(1); if (h !== S.view && ["ov", "list", "tl", "kpi", "guide"].includes(h)) { S.view = h; render(); } });
+applyTheme();
+$("bTheme").onclick = () => { DT = !DT; try { localStorage.setItem("pcg-task-theme", DT ? "dark" : "light"); } catch (e) {} applyTheme(); render(); };
+const tick = () => { $("clock").textContent = new Date().toLocaleString("th-TH", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", second: "2-digit" }); }; tick(); setInterval(tick, 1000);
 render(); syncLabel(); sbSync();
 </script>
 </body>
