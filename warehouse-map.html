@@ -278,8 +278,12 @@ function drawOS(el, svg, W, H, layer) {
   proj.fitExtent([[54, 54], [W - 54, H - 54]], { type: "MultiPoint", coordinates: G.map(g => [g.ll[1], g.ll[0]]) });
   const path = d3.geoPath(proj);
   const g = mk("g", {}, svg);
+  const rgOf = {}; if (PUB) rows.forEach(w => { const id = OSID(w.region || ""); if (id) rgOf[id] = w.region; });
   countries.forEach(f => {
     const home = HOME.includes(+f.id);
+    if (PUB) { const c = OSF[+f.id] && rgOf[+f.id] ? OSF[+f.id] : "#fbf6ec";
+      mk("path", { d: path(f) || "", fill: c, stroke: "#ffffff", "stroke-width": c === "#fbf6ec" ? 1 : 1.6, "stroke-linejoin": "round", class: rgOf[+f.id] ? "prov" : "", "data-rg": rgOf[+f.id] || "" }, g);
+      return; }
     mk("path", { d: path(f) || "", fill: home ? "#fbf7f1" : "#ebe7e0", stroke: home ? "#cfc6ba" : "#ffffff", "stroke-width": home ? 1.4 : 1, "stroke-linejoin": "round" }, g);
   });
   countries.forEach(f => {
@@ -493,7 +497,11 @@ function contractCard(w) {
 }
 
 let HOV = null, SELR = null;
-const regCol = k => /WHA/.test(k) ? "#2563eb" : /กรุงเทพ/.test(k) ? "#f0806a" : /เหนือ/.test(k) ? "#5cc95a" : /อีสาน/.test(k) ? "#f5b82e" : /ใต้/.test(k) ? "#2fbf86" : /กลาง/.test(k) ? "#2bb3d1" : "#94a3b8";
+/* 15 ต.ค. ผู้ใช้ว่าแผนที่ต่างประเทศจืด → ระบายสีประเทศที่มีคลัง (พื้นพาสเทล OSF · สีชิป/แถบ OSC) */
+const OSID = k => /อินเดีย|India/i.test(k) ? 356 : /ฟิลิป|Philipp/i.test(k) ? 608 : /มาเล|Malaysia/i.test(k) ? 458 : /กัมพู|Cambod/i.test(k) ? 116 : /พม่า|เมียน|Myanmar/i.test(k) ? 104 : 0;
+const OSF = { 356: "#ffbf8a", 608: "#cdb4f7", 458: "#86e3bb", 116: "#ffd96e", 104: "#ffaec4" };
+const OSC = { 356: "#f08a3e", 608: "#9061e0", 458: "#22b07a", 116: "#e0a106", 104: "#e8507c" };
+const regCol = k => OSC[OSID(k)] || (/WHA/.test(k) ? "#2563eb" : /กรุงเทพ/.test(k) ? "#f0806a" : /เหนือ/.test(k) ? "#5cc95a" : /อีสาน/.test(k) ? "#f5b82e" : /ใต้/.test(k) ? "#2fbf86" : /กลาง/.test(k) ? "#2bb3d1" : "#94a3b8");
 /* เน้นภาคที่เลือก: หมุดภาคอื่นจาง · จังหวัดนอกภาคจาง (ภาคเมือง/WHA = เฉพาะจังหวัดที่มีคลัง · ภาคอื่น = ภาคภูมิศาสตร์ของคลังในภาคนั้น) */
 function applyReg() {
   const el = document.getElementById("map"); if (!el) return;
@@ -506,7 +514,7 @@ function applyReg() {
     const geo = new Set(provs.features.filter(f => pr.has(f.properties.p)).map(f => f.properties.r));
     keep = /กรุงเทพ|WHA/.test(SELR) ? (p, r) => pr.has(p) : (p, r) => geo.has(r);
   }
-  el.querySelectorAll("path.prov").forEach(n => n.classList.toggle("dim", !!keep && !keep(n.dataset.p, n.dataset.r)));
+  el.querySelectorAll("path.prov").forEach(n => n.classList.toggle("dim", n.dataset.rg ? !!SELR && n.dataset.rg !== SELR : !!keep && !keep(n.dataset.p, n.dataset.r)));
 }
 /* แผนที่ลูกค้า: ตัวเลขสรุปมุมซ้ายบน + การ์ดรายละเอียดลอยมุมขวาเมื่อชี้/กดหมุด */
 function pubFloat() {
