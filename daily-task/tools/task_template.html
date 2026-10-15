@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Daily Task · PCG Project Team</title>
+<title>งานที่ต้องทำประจำวันแผนกโครงการ · PCG</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Archivo:wght@600;800&display=swap" rel="stylesheet">
 <style>
@@ -350,7 +350,7 @@
     <div class="hrow">
       <a class="home" href="../index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>หน้าหลัก</a>
       <div class="logo"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="url(#lg)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#10b981"/><stop offset="1" stop-color="#0891b2"/></linearGradient></defs><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><b class="aib">AI</b></div>
-      <div class="ttl"><small>PCG · แผนกโครงการ · PROJECT TEAM</small><h1>Daily Task Dashboard</h1><div class="sub" id="asof"></div></div>
+      <div class="ttl"><small>PCG · PROJECT TEAM · DAILY TASK</small><h1>งานที่ต้องทำประจำวันแผนกโครงการ</h1><div class="sub" id="asof"></div></div>
       <div class="hbtns">
         <span style="display:grid;justify-items:end;gap:2px"><span class="live"><i></i>LIVE</span><span class="clock" id="clock"></span></span>
         <span class="sync" id="syncSt"></span>
@@ -865,7 +865,7 @@ async function exportX() {
   const head = ["NO.", "งาน", "ผู้รับผิดชอบ", "ความสำคัญ", "Start date", "Target", "Progress", "สถานะ", "วันที่เสร็จจริง", "Notes"];
   const L = live().filter(t => !t.parent).sort((a, b) => String(a.no).localeCompare(String(b.no), undefined, { numeric: true })).flatMap(t => [t, ...kidsOf(t.id)]);
   const D = s => s ? new Date(s + "T00:00:00") : "";
-  const aoa = [["PCG Project Team · Daily Task · " + BD().n], ["Export " + fmtD(TODAY)], head].concat(L.map(t => [t.parent ? "" : t.no, (t.parent ? "   • " : "") + t.title, t.owner, PRI[t.pri || "M"], D(t.start), D(t.target), t.cancel ? "-" : (progOf(t) || 0) / 100, ST[stOf(t)].t, D(t.doneAt), t.note || ""]));
+  const aoa = [["งานที่ต้องทำประจำวันแผนกโครงการ · " + BD().n], ["Export " + fmtD(TODAY)], head].concat(L.map(t => [t.parent ? "" : t.no, (t.parent ? "   • " : "") + t.title, t.owner, PRI[t.pri || "M"], D(t.start), D(t.target), t.cancel ? "-" : (progOf(t) || 0) / 100, ST[stOf(t)].t, D(t.doneAt), t.note || ""]));
   const ws = XLSX.utils.aoa_to_sheet(aoa, { cellDates: true });
   ws["!cols"] = [6, 52, 16, 10, 12, 12, 10, 12, 14, 40].map(w => ({ wch: w }));
   const hs = { font: { bold: true, color: { rgb: "FFFFFF" } }, fill: { fgColor: { rgb: "2E1A6B" } }, alignment: { horizontal: "center" } };
