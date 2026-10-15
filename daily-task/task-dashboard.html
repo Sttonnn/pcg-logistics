@@ -459,6 +459,48 @@
     .panel { padding: 13px !important; border-radius: 18px !important; } .panel h2 { font-size: 15px; }
     .g2 { gap: 10px !important; } .hint { font-size: 12px; }
   }
+
+  /* ===== 16 ต.ค. หน้าผู้จัดการ · รายเดือน · มาตรฐาน ===== */
+  .scope { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; } .scope > span { font-size: 13px; color: var(--mut); font-weight: 700; margin-right: 4px; }
+  .scope button { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 7px 14px; font-weight: 700; font-size: 13px; color: var(--ink2); }
+  .scope button.on { background: linear-gradient(135deg, #059669, #047857); color: #fff; border-color: transparent; box-shadow: inset 0 -3px 0 #facc15; }
+  .mgcs { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin: 12px 0; }
+  .mgc { text-align: left; border: 1px solid var(--line); border-left: 5px solid var(--fc); background: #fff; border-radius: 14px; padding: 10px 12px; display: grid; gap: 2px; }
+  .mgc b { font-size: 26px; color: var(--fc); line-height: 1.1; } .mgc span { font-size: 12px; color: var(--ink2); font-weight: 600; } .mgc.sel { outline: 3px solid var(--fc); }
+  .mgl { display: grid; gap: 8px; max-height: 640px; overflow: auto; }
+  .mgr { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: start; text-align: left; border: 1px solid var(--line); background: #fff; border-radius: 14px; padding: 10px 12px; }
+  .mgr:hover { border-color: #34d399; } .mgr-t { display: grid; gap: 4px; } .mgr-t > b { font-size: 15px; } .mgr-t small { color: var(--mut); font-size: 12.5px; } .mgr-d { color: var(--ink2) !important; }
+  .mgr-f { display: flex; flex-wrap: wrap; gap: 4px; }
+  .flg { font-size: 11.5px; font-weight: 700; color: var(--fc); background: color-mix(in srgb, var(--fc) 12%, #fff); border: 1px solid color-mix(in srgb, var(--fc) 35%, #fff); border-radius: 999px; padding: 2px 8px; white-space: nowrap; }
+  .tc-f { display: flex; flex-wrap: wrap; gap: 4px; } .tc-st { font-size: 12px; color: var(--mut); margin-top: -4px; } .tc-st b { color: var(--ink2); }
+  .tc-q button { flex-direction: column; gap: 0; line-height: 1.15; } .tc-q button b { font-size: 13px; display: inline-flex; align-items: center; gap: 3px; } .tc-q button span { font-size: 10.5px; font-weight: 600; opacity: .8; }
+  .tc-q button.on { background: #e3f6ec; border-color: #a7e3c4; color: #047857; }
+  .tc-q { grid-template-columns: repeat(4, 1fr) !important; } .tc-q button[data-pp$="|25"] { display: inline-flex !important; }
+  .moc { height: 210px !important; padding-top: 16px; } .mob > b { margin-top: -2px; }
+  .wkc, .moc { display: flex; gap: 8px; align-items: flex-end; height: 190px; margin-top: 10px; padding-bottom: 4px; }
+  .wkb, .mob { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; min-width: 0; } .mob > b { font-size: 12px; color: var(--ink2); }
+  .wkbars { flex: 1; width: 100%; display: flex; gap: 3px; align-items: flex-end; justify-content: center; } .wkbars span { width: 42%; max-width: 26px; border-radius: 6px 6px 0 0; min-height: 2px; position: relative; }
+  .wkbars i { position: absolute; top: -17px; left: 50%; transform: translateX(-50%); font-style: normal; font-size: 11px; font-weight: 700; color: var(--ink2); }
+  .wkb small, .mob small { font-size: 11px; color: var(--mut); white-space: nowrap; }
+  .ageb { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; } .ageb div { border-radius: 12px; padding: 10px; border: 1px solid var(--line); border-top: 4px solid var(--ac); background: #fff; display: grid; }
+  .ageb b { font-size: 24px; color: var(--ac); } .ageb span { font-size: 12px; color: var(--ink2); }
+  table.wl td, table.mot td { text-align: center; } table.wl td:first-child, table.mot td:first-child { text-align: left; white-space: nowrap; }
+  td.bad { color: #b91c1c; font-weight: 800; } td.good { color: #047857; font-weight: 800; } td.mid { color: #b45309; font-weight: 800; }
+  table.mot tr[data-mm] { cursor: pointer; } table.mot tr.on td { background: #fef9c3 !important; }
+  td i.up { color: #047857; font-style: normal; font-size: 11px; } td i.dn { color: #b91c1c; font-style: normal; font-size: 11px; }
+  .stdg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; } .stdg div { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; background: #fff; display: grid; gap: 3px; } .stdg span { font-size: 12.5px; color: var(--ink2); }
+  @media (max-width: 1300px) { .mgcs { grid-template-columns: repeat(4, 1fr); } }
+  @media (max-width: 760px) {
+    .mgcs { grid-template-columns: repeat(2, 1fr); gap: 6px; } .mgc { padding: 8px 10px; } .mgc b { font-size: 22px; }
+    .mgr { grid-template-columns: 1fr; } .mgr > .pill { display: none; } .stdg { grid-template-columns: 1fr; } .wkc, .moc { height: 150px; gap: 4px; } .wkb small, .mob small { font-size: 9.5px; }
+    .tv-r .btn { flex: 1; justify-content: center; } table.wl, table.mot { font-size: 12.5px; }
+    .tc-q button span { font-size: 9.5px; }
+  }
+  @media print {
+    body { background: #fff !important; } header.top .hbtns, nav.tabs, #filters, .side, #fab, .tv-r, .scope, .hint { display: none !important; }
+    .lay { display: block !important; } .panel { box-shadow: none !important; border: 1px solid #ddd !important; break-inside: avoid; } .mgl { max-height: none; overflow: visible; }
+    header.top { background: #047857 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
 </style>
 </head>
 <body>
@@ -546,7 +588,7 @@
 </script>
 <script>
 const DATA0 = [{"title":"ผังห้อง Training คลัง 32 + รายการราคาใหม่","owner":"K.ศุภณัฐ","start":"2026-01-02","target":"2026-01-06","prog":100,"cancel":false,"note":"","id":"T1","no":1},{"title":"4 Way shuttle (Org.)","owner":"K.ศุภณัฐ","start":"2026-01-08","target":"2026-01-09","prog":100,"cancel":false,"note":"","id":"T2","no":2},{"title":"4 Way Presentation","owner":"K.ศุภณัฐ","start":"2026-01-12","target":"2026-06-30","prog":100,"cancel":false,"note":"","id":"T3","no":3},{"title":"วาง Layout ใหม่คลัง 32","owner":"K.ศุภณัฐ","start":"2026-01-09","target":"2026-01-13","prog":100,"cancel":false,"note":"","id":"T4","no":4},{"title":"เป้า Robot ใหม่ เทียบกับคน","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-09","prog":100,"cancel":false,"note":"ส่งรายละเอียดให้ ปรางเรียบร้อย","id":"T5","no":5},{"title":"Iot Project ภาพรวมทั้งปี","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-15","prog":100,"cancel":false,"note":"P ดำเนินการ","id":"T6","no":6},{"title":"Requirement Forklift Project 2026","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-15","prog":100,"cancel":false,"note":"","id":"T7","no":7},{"title":"Location คลังสินค้า 3 คลัง ส่งพี่เต้ย","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-15","prog":100,"cancel":false,"note":"","id":"T8","no":8},{"title":"Application การชาร์ตแบต ของรถ Forklift ที่เป็น Lithium","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-15","prog":0,"cancel":false,"note":"","id":"T9","no":9},{"title":"งานเพิ่มเครื่องอัดขยะ","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-15","prog":100,"cancel":false,"note":"เริ่มเข้างาน 07-08 Feb 26","id":"T10","no":10},{"title":"งานเพิ่ม Platform telescopics","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-30","prog":100,"cancel":false,"note":"ส่งให้ บุยธรรมแล้ว","id":"T11","no":11},{"title":"TOR เครื่องอัดขยะ ทาง Supplier Sign","owner":"K.ศุภณัฐ","start":"2026-01-23","target":"2026-01-25","prog":100,"cancel":false,"note":"ส่งตัวปรับแก้ไปแล้ว 27 Jan","id":"T12","no":12},{"title":"สัญญา ส่งให้ทาง Supplier","owner":"K.ศุภณัฐ","start":"2026-01-23","target":"2026-01-30","prog":null,"cancel":true,"note":"รอพี่ไพ Review","id":"T13","no":13},{"title":"ส่ง Questionnair ให้ทาง Cainiao","owner":"K.ศุภณัฐ","start":"2026-01-23","target":"2026-01-23","prog":100,"cancel":false,"note":"ส่งภายในวันนี้ 23","id":"T14","no":14},{"title":"งาน Renovate คลังราชบุรี Phase 2","owner":"K.ศุภณัฐ","start":"2026-01-27","target":"2026-01-30","prog":25,"cancel":false,"note":"","id":"T15","no":15},{"title":"งาน โต๊ะ Furniture ห้องประชุมใหม่","owner":"K.ศุภณัฐ","start":"2026-02-05","target":"2026-02-06","prog":100,"cancel":false,"note":"","id":"T16","no":16},{"title":"งานต่อเติม Flowrack คลัง WHA 05","owner":"K.ศุภณัฐ","start":"2026-02-05","target":"2026-02-06","prog":100,"cancel":false,"note":"รอใบเสนอราคา","id":"T17","no":17},{"title":"งานปรับปรุง กำแพง Robot และประตู","owner":"K.ศุภณัฐ","start":"2026-02-05","target":"2026-02-06","prog":100,"cancel":false,"note":"รอใบเสนอราคา","id":"T18","no":18},{"title":"งานส่งต่อรองของ น้ำมัน เครื่องจักร ของเครื่องอัดขยะ","owner":"K.ศุภณัฐ","start":"2026-02-05","target":"2026-02-06","prog":100,"cancel":false,"note":"รอเขียนบันทึก","id":"T19","no":19},{"title":"งาน Renovate คลังพิษณุโลก (HighBay)","owner":"K.ศุภณัฐ","start":"2026-02-05","target":"2026-09-30","prog":null,"cancel":true,"note":"Concept","id":"T20","no":20},{"title":"งานออกแบบ Design 2 ชั้นห้องตู้ปลา","owner":"K.ศุภณัฐ","start":"2026-02-06","target":"2026-02-12","prog":100,"cancel":false,"note":"เหลือประเมินราคาให้พี่แต้ม","id":"T21","no":21},{"title":"GPS Tacking Forklift","owner":"K.ศุภณัฐ","start":"2026-02-06","target":"2026-02-12","prog":null,"cancel":true,"note":"","id":"T22","no":22},{"title":"E-Com Desing","owner":"K.ศุภณัฐ","start":"2026-02-25","target":"2026-02-26","prog":100,"cancel":false,"note":"","id":"T23","no":23},{"title":"แบบคลังสินค้า โคราช ที่มี","owner":"K.ศุภณัฐ","start":"2026-02-25","target":"2026-02-26","prog":100,"cancel":false,"note":"","id":"T24","no":24},{"title":"พัดลมเป่าในตู้ Load คลัง 32","owner":"K.ศุภณัฐ","start":"2026-02-25","target":"2026-02-26","prog":null,"cancel":true,"note":"","id":"T25","no":25},{"title":"Drawing Korat WH Rev. 2","owner":"K.ศุภณัฐ","start":"2026-03-02","target":"2026-03-04","prog":100,"cancel":false,"note":"ปรับแก้ขนาด คลังสินค้า","id":"T26","no":26},{"title":"Action Plan ละเอียดสำหรับ การก่อสร้างคลัง","owner":"K.ศุภณัฐ","start":"2026-03-02","target":"2026-03-10","prog":100,"cancel":false,"note":"","id":"T27","no":27},{"title":"ปากเกร็ด Drawing","owner":"K.ศุภณัฐ","start":"2026-03-04","target":"2026-03-10","prog":100,"cancel":false,"note":"","id":"T28","no":28},{"title":"บันทึกงานเก้าอี้ ห้องประชุม","owner":"K.ศุภณัฐ","start":"2026-03-04","target":"2026-03-10","prog":100,"cancel":false,"note":"","id":"T29","no":29},{"title":"Dashboard BI ของ Axons MA","owner":"K.ศุภณัฐ","start":"2026-03-04","target":"2026-03-08","prog":100,"cancel":false,"note":"","id":"T30","no":30},{"title":"Plant Meeting Mar 2026","owner":"K.ศุภณัฐ","start":"2026-03-04","target":"2026-03-13","prog":100,"cancel":false,"note":"","id":"T31","no":31},{"title":"Checklist BT Forklift","owner":"K.วัฒนา","start":"2026-03-04","target":"2026-03-13","prog":0,"cancel":false,"note":"","id":"T32","no":32},{"title":"Stock Rack ด้านหลังคลังสินค้า","owner":"K.ศุภณัฐ","start":"2026-03-04","target":"2026-03-13","prog":100,"cancel":false,"note":"","id":"T33","no":33},{"title":"เขียนบันทึกงาน เปลี่ยนบัว Training Room","owner":"K.ศุภณัฐ","start":"2026-03-16","target":"2026-03-18","prog":100,"cancel":false,"note":"","id":"T34","no":34},{"title":"แบบสำรวจ Height Selection ของคลัง RDC","owner":"K.ศุภณัฐ","start":"2026-03-16","target":"2026-03-18","prog":100,"cancel":false,"note":"มีข้อมูลแล้วรอดำเนินการ","id":"T35","no":35},{"title":"ใบ ขอ ช่างซ่อมบำรุง / ผู้จัดการแผนกโครงการ Automate","owner":"K.ศุภณัฐ","start":"2026-03-16","target":"2026-03-20","prog":100,"cancel":false,"note":"","id":"T36","no":36},{"title":"งาน Memo งานซื้อ Robot","owner":"K.ศุภณัฐ","start":"2026-03-26","target":"2026-03-28","prog":100,"cancel":false,"note":"","id":"T37","no":37},{"title":"งาน TOR งานซื้อ Robot","owner":"K.ศุภณัฐ","start":"2026-03-26","target":"2026-03-28","prog":100,"cancel":false,"note":"","id":"T38","no":38},{"title":"Famework งาน 4-Way Shuttle","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-10","prog":100,"cancel":false,"note":"นำเสนอพี่แต้มแล้ว","id":"T39","no":39},{"title":"Famework งาน AGV/AMR","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-10","prog":50,"cancel":false,"note":"","id":"T40","no":40},{"title":"เปรียบเทียบ Soalr Cell คลังสินค้า สุราษรฏ์","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-24","prog":100,"cancel":false,"note":"","id":"T41","no":41},{"title":"Robot Improve ขา 7 / 10","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-10","prog":100,"cancel":false,"note":"","id":"T42","no":42},{"title":"Plant Meeting Presentation Axons Maintenance","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-23","prog":100,"cancel":false,"note":"","id":"T43","no":43},{"title":"ปรับ Weekly Report","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-20","prog":100,"cancel":false,"note":"","id":"T44","no":44},{"title":"Action Plan รายละเอียดแต่ละโครงการ","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-28","prog":96,"cancel":false,"note":"","id":"T45","no":45},{"title":"4 Way shuttle","owner":"K.ศุภณัฐ","start":"2026-04-24","target":"2026-04-28","prog":100,"cancel":false,"note":"","id":"T45-1","no":"45.1","parent":"T45"},{"title":"AGV Project","owner":"K.ศุภณัฐ","start":"2026-04-24","target":"2026-04-28","prog":75,"cancel":false,"note":"","id":"T45-2","no":"45.2","parent":"T45"},{"title":"Robot Arm","owner":"K.ศุภณัฐ","start":"2026-04-24","target":"2026-04-28","prog":100,"cancel":false,"note":"","id":"T45-3","no":"45.3","parent":"T45"},{"title":"Camera sensor","owner":"K.ศุภณัฐ","start":"2026-04-24","target":"2026-04-28","prog":100,"cancel":false,"note":"","id":"T45-4","no":"45.4","parent":"T45"},{"title":"IOT Phase 2","owner":"K.ศุภณัฐ","start":"2026-04-24","target":"2026-04-28","prog":100,"cancel":false,"note":"","id":"T45-5","no":"45.5","parent":"T45"},{"title":"Robot Cleaning","owner":"K.ศุภณัฐ","start":"2026-04-24","target":"2026-04-28","prog":100,"cancel":false,"note":"","id":"T45-6","no":"45.6","parent":"T45"},{"title":"กรอกรายละเอียด ของ Domino","owner":"K.ศุภณัฐ","start":"2026-04-23","target":"2026-04-24","prog":100,"cancel":false,"note":"","id":"T46","no":46},{"title":"MHE นัด Supplier ดู นวัตกรรใหม่","owner":"K.ศุภณัฐ","start":"2026-04-27","target":"2026-04-30","prog":0,"cancel":false,"note":"","id":"T47","no":47},{"title":"Lighting Layout คลังโคราช","owner":"K.ศุภณัฐ","start":"2026-04-27","target":"2026-04-30","prog":100,"cancel":false,"note":"","id":"T48","no":48},{"title":"List รายการ IOT ว่าทำอะไรแล้วบ้าง","owner":"K.ศุภณัฐ","start":"2026-05-05","target":"2026-05-10","prog":100,"cancel":false,"note":"","id":"T49","no":49},{"title":"List รายการ Roobot ว่าทำอะไรแล้วบ้าง","owner":"K.ศุภณัฐ","start":"2026-05-05","target":"2026-05-10","prog":100,"cancel":false,"note":"","id":"T50","no":50},{"title":"บันทึกขออนุมัติ งานทาสีฝ้า","owner":"K.ศุภณัฐ","start":"2026-05-05","target":"2026-05-10","prog":100,"cancel":false,"note":"","id":"T51","no":51},{"title":"บันทึกขออนุมัติ งานซ่อมพื้นหน้า Dock Load","owner":"K.ศุภณัฐ","start":"2026-05-05","target":"2026-05-10","prog":100,"cancel":false,"note":"","id":"T52","no":52},{"title":"งานหินคลุกด้านข้างคลังสินค้า","owner":"K.ศุภณัฐ","start":"2026-07-13","target":"2026-07-14","prog":100,"cancel":false,"note":"","id":"T53","no":53},{"title":"Presentation สำหรับเพิ่มพื้นที่การจัดเก็บสินค้า","owner":"K.ศุภณัฐ","start":"2026-07-13","target":"2026-07-14","prog":100,"cancel":false,"note":"","id":"T54","no":54},{"title":"งานต่อเติม โรงอาคาร คลัง 5 (แบบประเมินราคา)","owner":"K.ศุภณัฐ","start":"2026-07-13","target":"2026-07-14","prog":100,"cancel":false,"note":"","id":"T55","no":55},{"title":"งานสำนักงาน Operatin คลัง 5","owner":"K.ศุภณัฐ","start":"2026-07-13","target":"2026-07-14","prog":null,"cancel":true,"note":"","id":"T56","no":56},{"title":"ต่อสัญญา MHE ประจำปี 2570","owner":"K.ศุภณัฐ","start":"2026-07-01","target":"2026-07-31","prog":0,"cancel":false,"note":"","id":"T57","no":57},{"title":"สรุป ตรวจสอบ Racking - RDC ทั่วประเทศ","owner":"K.ศุภณัฐ","start":"2026-07-01","target":"2026-07-31","prog":100,"cancel":false,"note":"","id":"T58","no":58},{"title":"CEO Presentation","owner":"K.ศุภณัฐ","start":"2026-07-01","target":"2026-08-08","prog":100,"cancel":false,"note":"","id":"T59","no":59},{"title":"งบประมาณย้ายคลังสินค้า โคราช","owner":"K.ศุภณัฐ","start":"2026-07-01","target":"2026-08-08","prog":100,"cancel":false,"note":"","id":"T60","no":60},{"title":"เขียนแบบก่อสร้างคลังสินค้า 3 คลัง","owner":"K.ศุภณัฐ","start":"","target":"","prog":null,"cancel":false,"note":"","id":"T61","no":61},{"title":"งบประมาณคลังสินค้า SCX A1","owner":"K.ศุภณัฐ","start":"","target":"","prog":null,"cancel":false,"note":"","id":"T62","no":62},{"title":"โครงการ 4Way Shuttle ที่คลังสินค้าใหม่","owner":"K.ศุภณัฐ","start":"","target":"","prog":null,"cancel":false,"note":"","id":"T63","no":63}];
-const ASOF0 = "2026-10-15T15:35";
+const ASOF0 = "2026-10-15T15:42";
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const ls = { get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } } };
@@ -590,7 +632,7 @@ const bdOf = t => t.bd || "ton";
 const BD = () => BOARDS.find(b => b.k === S.bd) || BOARDS[0];
 const liveAll = () => DATA.filter(t => !t.del);
 const live = () => liveAll().filter(t => bdOf(t) === S.bd);
-const kidsOf = id => live().filter(t => t.parent === id);
+const kidsOf = id => liveAll().filter(t => t.parent === id);
 /* ความคืบหน้า: งานที่มีงานย่อยและไม่ได้กรอกเอง = เฉลี่ยงานย่อย (ไม่นับที่ยกเลิก) */
 function progOf(t) {
   if (t.cancel) return null;
@@ -613,7 +655,7 @@ const leftDays = t => t.target ? days(TODAY, t.target) : null;
 const onTime = t => !t.doneAt || !t.target || t.doneAt <= t.target;
 
 /* ---------- state ---------- */
-const S = Object.assign({ bd: (() => { const q = new URLSearchParams(location.search).get("u"); if (BOARDS.some(b => b.k === q)) return q; try { return localStorage.getItem("pcg-task-bd") || "ton"; } catch (e) { return "ton"; } })(), view: "list", sd: false, lv: (() => { try { return localStorage.getItem("pcg-task-lv") || "card"; } catch (e) { return "card"; } })(), td: "", fo: false, sort: "new", st: "all", own: "all", pri: "all", mon: "all", q: "", open: {}, cx: false }, (() => { const h = location.hash.slice(1); return ["ov", "list", "tl", "kpi", "guide"].includes(h) ? { view: h } : {}; })());
+const S = Object.assign({ bd: (() => { const q = new URLSearchParams(location.search).get("u"); if (BOARDS.some(b => b.k === q)) return q; try { return localStorage.getItem("pcg-task-bd") || "ton"; } catch (e) { return "ton"; } })(), view: "list", sd: false, lv: (() => { try { return localStorage.getItem("pcg-task-lv") || "card"; } catch (e) { return "card"; } })(), td: "", fo: false, sort: "new", st: "all", own: "all", pri: "all", mon: "all", q: "", open: {}, cx: false }, (() => { const h = location.hash.slice(1); return ["ov", "list", "mg", "mo", "tl", "kpi", "guide"].includes(h) ? { view: h } : {}; })(), { ms: "team", mx: "", mm: "" });
 const owners = () => [...new Set(live().map(t => t.owner).filter(Boolean))].sort();
 const months = () => [...new Set(live().map(t => (t.target || "").slice(0, 7)).filter(Boolean))].sort();
 function tops(f) { return live().filter(t => !t.parent).filter(t => (S.cx || !t.cancel || S.st === "cancel") && (S.own === "all" || t.owner === S.own || kidsOf(t.id).some(k => k.owner === S.own)) && (S.pri === "all" || (t.pri || "M") === S.pri) && (S.mon === "all" || (t.target || "").startsWith(S.mon)) && (!f || f(t))); }
@@ -621,6 +663,8 @@ function stat(L) { const c = { n: 0, done: 0, wait: 0, prog: 0, delay: 0, cancel
 
 /* ---------- ไอคอน ---------- */
 const IC = {
+  mg: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z M9 12l2 2 4-4", mo: "M8 2v4 M16 2v4 M3 10h18 M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M8 14h2 M14 14h2 M8 18h2",
+  print: "M6 9V2h12v7 M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2 M6 14h12v8H6z", xl: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 M7 10l5 5 5-5 M12 15V3",
   user: "M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2 M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z", flag: "M4 22V4 M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1",
   cal: "M8 2v4 M16 2v4 M3 10h18 M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z", target: "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12z M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4z",
   gauge: "M12 14l4-4 M3.34 19a10 10 0 1 1 17.32 0", note: "M15.5 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3z M15 3v6h6 M8 13h8 M8 17h5",
@@ -645,11 +689,11 @@ const dueTxt = t => { const s = stOf(t); if (s === "delay") return `<span style=
 /* ---------- แท็บ + ตัวกรอง ---------- */
 function renderTabs() {
   const d = stat(tops()).delay;
-  $("tabs").innerHTML = [["list", "ตาราง Task"], ["ov", "ภาพรวม"], ["tl", "Timeline"], ["kpi", "KPI ผู้รับผิดชอบ"], ["guide", "คู่มือ"]]
+  $("tabs").innerHTML = [["list", "ตาราง Task"], ["mg", "ผู้จัดการ"], ["mo", "รายเดือน"], ["ov", "ภาพรวม"], ["tl", "Timeline"], ["kpi", "KPI ผู้รับผิดชอบ"], ["guide", "คู่มือ"]]
     .map(([k, l]) => `<button type="button" class="${S.view === k ? "on" : ""}" data-view="${k}">${sv(IC[k])}${l}${k === "list" && d ? ` <span class="cnt">Delay ${d}</span>` : ""}</button>`).join("");
 }
 function renderFilters() {
-  const f = $("filters"); if (S.view === "guide") { f.style.display = "none"; return; } f.style.display = "";
+  const f = $("filters"); if (["guide", "mg", "mo"].includes(S.view)) { f.style.display = "none"; return; } f.style.display = "";
   const L = tops(), c = stat(L);
   const chip = (k, l, n, col) => `<button type="button" class="chip ${S.st === k ? "on" : ""}" data-st="${k}">${col ? `<i style="background:${col}"></i>` : ""}${l} <b>${n}</b></button>`;
   f.innerHTML = `<div class="chips">${chip("all", "ทั้งหมด", c.n)}${ORDER.map(k => chip(k, ST[k].t, c[k], ST[k].c)).join("")}${chip("cancel", "ยกเลิก", stat(live().filter(t => !t.parent && t.cancel)).cancel, ST.cancel.c)}</div>
@@ -764,7 +808,10 @@ function renderOv() {
 
 /* ---------- ตาราง Task (16 ต.ค. ผู้ใช้สั่ง: ไม่กรอก Excel แล้ว · ทีมกรอกบนเว็บ แก้ในตารางได้ทันที) ---------- */
 const PSTEPS = [0, 5, 10, 20, 25, 30, 40, 50, 60, 70, 75, 80, 90, 95, 100];
-const pSel = (v, attrs) => { const o = PSTEPS.includes(v) ? PSTEPS : PSTEPS.concat(v).sort((a, b) => a - b); return `<select class="ci cp" ${attrs}>${o.map(x => `<option value="${x}" ${x === v ? "selected" : ""}>${x}%</option>`).join("")}</select>`; };
+/* 16 ต.ค. มาตรฐาน % ของแผนก (ผู้ใช้สั่งทำตามข้อเสนอ) */
+const STG = { 0: "ยังไม่เริ่ม", 25: "วางแผน/ขอราคา", 50: "อนุมัติ/สั่งซื้อ", 75: "ดำเนินการ", 100: "ส่งมอบ/ปิดงาน" };
+const stageOf = p => STG[[100, 75, 50, 25, 0].find(x => (p || 0) >= x)];
+const pSel = (v, attrs) => { const o = PSTEPS.includes(v) ? PSTEPS : PSTEPS.concat(v).sort((a, b) => a - b); return `<select class="ci cp" ${attrs}>${o.map(x => `<option value="${x}" ${x === v ? "selected" : ""}>${x}%${STG[x] ? " · " + STG[x] : ""}</option>`).join("")}</select>`; };
 function rowHtml(t, kid) {
   const s = stOf(t), k = kid ? [] : kidsOf(t.id), op = S.open[t.id], auto = k.length > 0, p = progOf(t), id = t.id;
   const f = (n, v, ty, w) => `<input class="ci" data-id="${id}" data-f="${n}" type="${ty || "text"}" value="${esc(v || "")}" ${w ? `style="width:${w}"` : ""}>`;
@@ -818,8 +865,9 @@ function cardHtml(t) {
     <div class="tc-h">${pill(s)}${prio(t.pri)}<span class="tc-no">#${esc(t.no || "")}</span><button type="button" class="tc-more" data-edit="${id}" title="แก้ไขรายละเอียด">${sv(IC.note, 16)}</button></div>
     <h3 data-edit="${id}">${esc(t.title)}</h3>
     <div class="tc-m"><span>${sv(IC.user, 14)}${esc(t.owner || "–")}</span><span>${sv(IC.target, 14)}${fmtD(t.target)}</span>${s === "cancel" ? "" : `<span class="tc-d">${dueTxt(t)}</span>`}</div>
-    <div class="tc-p"><div class="pbar"><span style="width:${p}%;background:${ST[s].c}"></span></div><b class="num">${p}%</b></div>
-    ${s === "cancel" || s === "done" ? "" : auto ? `<div class="tc-auto">% เฉลี่ยจากงานย่อย ${k.length} งาน · กดชื่องานเพื่ออัปเดต</div>` : `<div class="tc-q">${step(-10)}${step(10)}${step(25)}<button type="button" class="ok" data-pp="${id}|=100">${sv(IC.done, 14)}เสร็จ</button></div>`}
+    <div class="tc-p"><div class="pbar"><span style="width:${p}%;background:${ST[s].c}"></span></div><b class="num">${p}%</b></div><div class="tc-st">ขั้น: <b>${stageOf(p)}</b>${(t.tchg || []).length ? ` · เลื่อน Target ${t.tchg.length} ครั้ง (เดิม ${fmtD(t.base)})` : ""}</div>
+    ${s === "cancel" || s === "done" ? "" : auto ? `<div class="tc-auto">% เฉลี่ยจากงานย่อย ${k.length} งาน · กดชื่องานเพื่ออัปเดต</div>` : `<div class="tc-q">${[25, 50, 75].map(v => `<button type="button" class="${p >= v ? "on" : ""}" data-pp="${id}|=${v}"><b>${v}%</b><span>${STG[v].split("/")[0]}</span></button>`).join("")}<button type="button" class="ok" data-pp="${id}|=100"><b>${sv(IC.done, 14)}100%</b><span>ปิดงาน</span></button></div>`}
+    ${(() => { const f = flagsOf(t).filter(x => !["delay", "nowhy", "soon"].includes(x)); return f.length ? `<div class="tc-f">${f.map(flagChip).join("")}</div>` : ""; })()}
     ${s === "delay" ? `<textarea class="ci ta why ${t.why ? "" : "need"}" rows="1" data-id="${id}" data-f="why" placeholder="ใส่เหตุผลที่ล่าช้า…">${esc(t.why || "")}</textarea>` : ""}
     ${t.note ? `<p class="tc-n">${esc(t.note)}</p>` : ""}
     ${auto ? `<div class="tc-k">${k.map(x => `<button type="button" data-edit="${x.id}"><i style="background:${ST[stOf(x)].c}"></i>${esc(x.title)}<b class="num">${progOf(x) || 0}%</b></button>`).join("")}</div>` : ""}
@@ -878,6 +926,148 @@ function quickAdd() {
   t.hist = [{ at, from: null, p: t.prog }]; if (t.prog >= 100) t.doneAt = TODAY;
   DATA.push(t); persist([t]); const keep = { o: $("nO").value, s: $("nS").value }; S.sort = S.sort || "new"; render();
   if ($("nT")) { $("nO").value = keep.o; $("nS").value = keep.s; $("nT").focus(); }
+}
+
+/* ===== 16 ต.ค. ผู้ใช้สั่ง "ทำทั้งหมด": มาตรฐานงาน · หน้าผู้จัดการ (ข้อยกเว้น + รายสัปดาห์) · ประวัติรายเดือน (ปิดเดือนอัตโนมัติ) · รายงาน ===== */
+function tgtPatch(t, v) {
+  if (!v || !t.target || v === t.target) return { target: v, base: t.base || v || undefined };
+  const why = prompt(`เลื่อน Target: ${t.title}\n${fmtD(t.target)} → ${fmtD(v)}\n\nใส่เหตุผลที่เลื่อน (มาตรฐานแผนก):`);
+  if (!why || !why.trim()) return null;
+  return { target: v, base: t.base || t.target, tchg: (t.tchg || []).concat({ at: nowIso(), from: t.target, to: v, why: clean(why.trim()) }).slice(-20) };
+}
+const lastUpd = t => [t.created, ...(t.hist || []).map(h => h.at), ...(t.tchg || []).map(c => c.at)].filter(Boolean).sort().pop() || t.u || "";
+const FL = { nowhy: { t: "Delay ยังไม่ใส่เหตุผล", c: "#b91c1c" }, delay: { t: "Delay (มีเหตุผลแล้ว)", c: "#dc2626" }, risk: { t: "เสี่ยงล่าช้า", c: "#ea580c" }, stale: { t: "ไม่อัปเดต > 7 วัน", c: "#64748b" }, inc: { t: "ข้อมูลไม่ครบ", c: "#a16207" }, moved: { t: "เลื่อน Target ≥ 2 ครั้ง", c: "#0e7490" }, soon: { t: "ครบกำหนดใน 7 วัน", c: "#2563eb" } };
+const FLO = ["nowhy", "delay", "risk", "stale", "inc", "moved", "soon"];
+const flagChip = k => `<span class="flg" style="--fc:${FL[k].c}">${FL[k].t}</span>`;
+const riskOf = t => { if (!t.start || !t.target || t.target <= t.start || TODAY < t.start) return null; const e = Math.min(1, days(t.start, TODAY) / days(t.start, t.target)); return { e: Math.round(e * 100), p: progOf(t) || 0 }; };
+function flagsOf(t) {
+  const s = stOf(t), f = []; if (s === "cancel" || s === "done") return f;
+  if (s === "delay") f.push(t.why ? "delay" : "nowhy");
+  const r = riskOf(t); if (s !== "delay" && r && r.e >= 50 && r.p < r.e * 0.6) f.push("risk");
+  if (!(t.start && TODAY < t.start)) { const lu = lastUpd(t).slice(0, 10); if (lu && days(lu, TODAY) > 7) f.push("stale"); }
+  if (!t.owner || !t.target || !t.start) f.push("inc");
+  if ((t.tchg || []).length >= 2) f.push("moved");
+  const l = leftDays(t); if (s !== "delay" && l != null && l >= 0 && l <= 7) f.push("soon");
+  return f;
+}
+const scopeL = () => S.ms === "team" ? liveAll() : liveAll().filter(t => bdOf(t) === S.ms);
+const leaves = L => L.filter(t => !L.some(k => k.parent === t.id));
+const scopeName = () => S.ms === "team" ? "ทั้งทีม" : (BOARDS.find(b => b.k === S.ms) || {}).n;
+const scopeBar = () => `<div class="scope"><span>ขอบเขต</span>${[["team", "ทั้งทีม"], ...BOARDS.map(b => [b.k, b.n])].map(([k, n]) => `<button type="button" class="${S.ms === k ? "on" : ""}" data-ms="${k}">${esc(n)}</button>`).join("")}</div>`;
+const wkStart = d => { const x = new Date(d + "T00:00:00Z"); x.setUTCDate(x.getUTCDate() - ((x.getUTCDay() + 6) % 7)); return x.toISOString().slice(0, 10); };
+const addD = (d, n) => { const x = new Date(d + "T00:00:00Z"); x.setUTCDate(x.getUTCDate() + n); return x.toISOString().slice(0, 10); };
+const createdOf = t => (t.created || "").slice(0, 10) || t.start || t.target || "";
+const doneOn = t => t.doneAt || ((progOf(t) || 0) >= 100 ? (t.target || null) : null);
+function renderMg() {
+  const L = leaves(scopeL()).filter(t => !t.cancel), rows = L.map(t => ({ t, f: flagsOf(t) })).filter(x => x.f.length);
+  const cnt = k => rows.filter(x => x.f.includes(k)).length;
+  const sel = S.mx ? rows.filter(x => x.f.includes(S.mx)) : rows.filter(x => x.f.some(k => k !== "soon"));
+  const rank = x => Math.min(...x.f.map(k => FLO.indexOf(k)));
+  sel.sort((a, b) => rank(a) - rank(b) || (b.t.stDelay || 0) - (a.t.stDelay || 0) || lateDays(b.t) - lateDays(a.t));
+  const ws = wkStart(TODAY), we = addD(ws, 6), inW = (d, a) => d && d >= a && d <= addD(a, 6);
+  const weeks = Array.from({ length: 8 }, (_, i) => addD(ws, -7 * (7 - i)));
+  const wk = weeks.map(a => ({ a, add: L.filter(t => inW(createdOf(t), a)).length, done: L.filter(t => inW(doneOn(t), a)).length }));
+  const mx = Math.max(1, ...wk.map(w => Math.max(w.add, w.done)));
+  const own = [...new Set(L.map(t => t.owner || "ไม่ระบุ"))].sort();
+  const open = L.filter(t => ["prog", "wait", "delay"].includes(stOf(t)));
+  const ageB = [[0, 30, "0–30 วัน"], [31, 90, "31–90 วัน"], [91, 1e9, "เกิน 90 วัน"]].map(([a, b, l]) => ({ l, n: open.filter(t => { const g = days(createdOf(t) || TODAY, TODAY); return g >= a && g <= b; }).length }));
+  const card = (k, n) => `<button type="button" class="mgc ${S.mx === k ? "sel" : ""}" data-mx="${k}" style="--fc:${FL[k].c}"><b class="num">${n}</b><span>${FL[k].t}</span></button>`;
+  const ln = x => { const t = x.t, s = stOf(t), r = riskOf(t), lu = lastUpd(t).slice(0, 10);
+    return `<button type="button" class="mgr" data-edit="${t.id}"><span class="mgr-t"><b>${esc(t.title)}</b><small>${esc(t.owner || "ไม่ระบุผู้รับผิดชอบ")}${S.ms === "team" ? " · " + esc((BOARDS.find(b => b.k === bdOf(t)) || {}).n) : ""} · Target ${fmtD(t.target)} · ${progOf(t) || 0}% (${stageOf(progOf(t))})</small>
+      <span class="mgr-f">${x.f.map(flagChip).join("")}</span>
+      <small class="mgr-d">${s === "delay" ? `ช้า ${lateDays(t)} วัน · ${t.why ? "เหตุผล: " + esc(t.why) : "<b style='color:#b91c1c'>ยังไม่ใส่เหตุผล</b>"}` : r && x.f.includes("risk") ? `ใช้เวลาไปแล้ว ${r.e}% แต่งานได้ ${r.p}%` : ""}${x.f.includes("stale") ? ` · อัปเดตล่าสุด ${fmtD(lu)} (${days(lu, TODAY)} วัน)` : ""}${x.f.includes("inc") ? ` · ขาด ${[!t.owner && "ผู้รับผิดชอบ", !t.start && "วันเริ่ม", !t.target && "Target"].filter(Boolean).join(", ")}` : ""}${x.f.includes("moved") ? ` · เลื่อน ${t.tchg.length} ครั้ง (เดิม ${fmtD(t.base)})` : ""}</small></span>${pill(s)}</button>`; };
+  $("view").innerHTML = `${scopeBar()}
+  <section class="panel"><h2>${ib("mg", "linear-gradient(135deg,#34d399,#047857)")}ต้องจัดการวันนี้ · ${esc(scopeName())} <span class="tag">${rows.filter(x => x.f.some(k => k !== "soon")).length} งาน</span>
+    <span class="tv-r"><button type="button" class="btn line sm" data-rep="wk">${sv(IC.xl, 15)}Export รายงานสัปดาห์</button><button type="button" class="btn line sm" data-print="1">${sv(IC.print, 15)}พิมพ์ / PDF</button></span></h2>
+    <p class="hint">ดูเฉพาะข้อยกเว้นตามมาตรฐานแผนก · กดการ์ดเพื่อกรอง · กดงานเพื่อแก้ไข</p>
+    <div class="mgcs">${FLO.map(k => card(k, cnt(k))).join("")}</div>
+    <div class="mgl">${sel.slice(0, 60).map(ln).join("") || `<div class="ok">✓ ไม่มีงานที่ต้องจัดการ${S.mx ? "ในหมวดนี้" : ""}</div>`}</div></section>
+  <div class="g2" style="margin-top:16px">
+    <section class="panel"><h2>${ib("mo", "linear-gradient(135deg,#38bdf8,#2563eb)")}งานเข้า vs งานปิด · 8 สัปดาห์</h2><p class="hint">ทีมทำทันไหม: แท่งปิด (เขียว) ควรสูงกว่าหรือเท่าแท่งเข้า (ฟ้า) · สัปดาห์ จ.–อา.</p>
+      <div class="wkc">${wk.map(w => `<div class="wkb" title="สัปดาห์ ${fmtD(w.a)} · เข้า ${w.add} · ปิด ${w.done}"><div class="wkbars"><span style="height:${w.add / mx * 100}%;background:#60a5fa"><i>${w.add || ""}</i></span><span style="height:${w.done / mx * 100}%;background:${ST.done.c}"><i>${w.done || ""}</i></span></div><small>${fmtD(w.a).replace(/ \d+$/, "")}</small></div>`).join("")}</div>
+      <div class="legend"><span><i style="background:#60a5fa"></i>งานเข้า</span><span><i style="background:${ST.done.c}"></i>งานปิด</span></div>
+      ${wk.every(w => !w.add && !w.done) ? `<div class="note" style="margin-top:8px">8 สัปดาห์นี้ยังไม่มีงานเข้า/ปิด · ตัวเลขจะขึ้นเมื่อทีมเพิ่มงานและปรับ % บนเว็บ</div>` : ""}
+      <h2 style="font-size:15px;margin-top:16px">อายุงานค้าง (นับจากวันสร้าง/วันเริ่ม)</h2>
+      <div class="ageb">${ageB.map((b, i) => `<div style="--ac:${["#0f9a6e", "#d97706", "#dc2626"][i]}"><b class="num">${b.n}</b><span>${b.l}</span></div>`).join("")}</div></section>
+    <section class="panel"><h2>${ib("kpi", "linear-gradient(135deg,#fde047,#22c55e)")}ภาระงานรายคน · สัปดาห์นี้ (${fmtD(ws)} – ${fmtD(we)})</h2>
+      <div class="tbl"><table class="wl"><thead><tr><th>ผู้รับผิดชอบ</th><th>งานค้าง</th><th>ครบสัปดาห์นี้</th><th>Delay</th><th>เสี่ยง</th><th>ไม่อัปเดต</th><th>ปิดสัปดาห์นี้</th></tr></thead><tbody>
+      ${own.map(o => { const M = L.filter(t => (t.owner || "ไม่ระบุ") === o), F = M.map(flagsOf); return `<tr><td><b>${esc(o)}</b></td><td>${M.filter(t => ["prog", "wait", "delay"].includes(stOf(t))).length}</td><td>${M.filter(t => stOf(t) !== "done" && inW(t.target, ws)).length}</td><td class="${M.filter(t => stOf(t) === "delay").length ? "bad" : ""}">${M.filter(t => stOf(t) === "delay").length}</td><td>${F.filter(f => f.includes("risk")).length}</td><td>${F.filter(f => f.includes("stale")).length}</td><td>${M.filter(t => inW(doneOn(t), ws)).length}</td></tr>`; }).join("")}</tbody></table></div></section>
+  </div>
+  <section class="panel std" style="margin-top:16px"><h2>${ib("guide", "linear-gradient(135deg,#a3e635,#059669)")}มาตรฐานงานของแผนก</h2>
+    <div class="stdg"><div><b>1. ข้อมูลครบทุกงาน</b><span>ผู้รับผิดชอบ · วันเริ่ม · Target · ความสำคัญ (ขาด = "ข้อมูลไม่ครบ")</span></div>
+    <div><b>2. ความหมายของ %</b><span>${Object.entries(STG).map(([k, v]) => `${k}% ${v}`).join(" · ")}</span></div>
+    <div><b>3. อัปเดตอย่างน้อยสัปดาห์ละครั้ง</b><span>ไม่มีการปรับ % เกิน 7 วัน = "ไม่อัปเดต"</span></div>
+    <div><b>4. เลื่อน Target ต้องมีเหตุผล</b><span>ระบบเก็บ Target แรกและประวัติการเลื่อน · เลื่อน ≥ 2 ครั้ง = ผู้จัดการต้องดู</span></div>
+    <div><b>5. Delay ใส่เหตุผลภายใน 1 วัน</b><span>ที่หน้าตาราง Task ช่อง "เหตุผลที่ล่าช้า"</span></div>
+    <div><b>6. เตือนก่อนช้า</b><span>ใช้เวลาไปแล้ว ≥ 50% แต่ % งาน น้อยกว่า 60% ของเวลาที่ใช้ = "เสี่ยงล่าช้า"</span></div></div></section>`;
+}
+/* ประวัติรายเดือน: เดือนที่ผ่านไปแล้ว = ปิดเดือน (เก็บตัวเลขถาวร id SNAP:YYYY-MM ในตาราง daily_tasks) · เดือนนี้ = คำนวณสด */
+const SNK = "pcg-task-snap"; let SNAPS = ls.get(SNK, {});
+const monEnd = m => { const [y, mo] = m.split("-").map(Number); return new Date(Date.UTC(y, mo, 0)).toISOString().slice(0, 10); };
+function mStat(L0, m) {
+  const L = leaves(L0), e = monEnd(m), s = m + "-01", inM = d => d && d >= s && d <= e;
+  const closed = L.filter(t => !t.cancel && inM(doneOn(t))), onT = closed.filter(t => !t.target || doneOn(t) <= t.target).length;
+  const openEnd = L.filter(t => !t.cancel && createdOf(t) && createdOf(t) <= e).filter(t => { const d = doneOn(t); return !d || d > e; });
+  const dl = openEnd.filter(t => t.target && t.target < e);
+  return { add: L.filter(t => inM(createdOf(t))).length, closed: closed.length, onT, onPct: closed.length ? Math.round(onT / closed.length * 100) : null, open: openEnd.length, delay: dl.length,
+    avgLate: dl.length ? Math.round(dl.reduce((a, t) => a + days(t.target, e), 0) / dl.length) : 0, tchg: L.reduce((a, t) => a + (t.tchg || []).filter(c => inM((c.at || "").slice(0, 10))).length, 0) };
+}
+function allMonths() { const ds = liveAll().map(createdOf).filter(Boolean).sort(); const a = (ds[0] || TODAY).slice(0, 7), out = []; let m = a; while (m <= TODAY.slice(0, 7)) { out.push(m); const [y, mo] = m.split("-").map(Number); m = mo === 12 ? (y + 1) + "-01" : y + "-" + String(mo + 1).padStart(2, "0"); } return out; }
+function snapOf(m) {
+  const A = liveAll(), own = [...new Set(A.map(t => t.owner).filter(Boolean))];
+  return { id: "SNAP:" + m, snap: true, m, at: nowIso(), u: nowIso(), team: mStat(A, m), bd: Object.fromEntries(BOARDS.map(b => [b.k, mStat(A.filter(t => bdOf(t) === b.k), m)])), own: Object.fromEntries(own.map(o => [o, mStat(A.filter(t => t.owner === o), m)])) };
+}
+function closeMonths() {
+  const cur = TODAY.slice(0, 7), add = allMonths().filter(m => m < cur && !SNAPS[m]).map(snapOf);
+  if (!add.length) return; add.forEach(x => SNAPS[x.m] = x); ls.set(SNK, SNAPS); if (SBOK) sbUp(add).catch(e => console.warn(e));
+}
+function renderMo() {
+  closeMonths();
+  const ms = allMonths().reverse(), cur = TODAY.slice(0, 7), pick = x => S.ms === "team" ? x.team : (x.bd || {})[S.ms];
+  const live2 = m => mStat(scopeL(), m), rowOf = m => (SNAPS[m] && m < cur && pick(SNAPS[m])) || live2(m);
+  const R2 = ms.map(m => ({ m, r: rowOf(m), lock: !!(SNAPS[m] && m < cur) }));
+  if (!S.mm || !ms.includes(S.mm)) S.mm = ms[0];
+  const mx = Math.max(1, ...R2.map(x => Math.max(x.r.add, x.r.closed)));
+  const ch = R2.slice(0, 12).reverse();
+  const L = leaves(scopeL()), own = [...new Set(L.map(t => t.owner).filter(Boolean))].sort();
+  const so = SNAPS[S.mm] && S.mm < cur ? SNAPS[S.mm].own || {} : null;
+  const pc = v => v == null ? "–" : v + "%", cls = v => v == null ? "" : v >= 80 ? "good" : v >= 60 ? "mid" : "bad";
+  const prev = i => R2[i + 1] && R2[i + 1].r;
+  const arrow = (a, b, up) => b == null || a == null ? "" : a === b ? "" : `<i class="${(a > b) === up ? "up" : "dn"}">${a > b ? "▲" : "▼"}</i>`;
+  $("view").innerHTML = `${scopeBar()}
+  <section class="panel"><h2>${ib("mo", "linear-gradient(135deg,#34d399,#047857)")}ประวัติรายเดือน · ${esc(scopeName())}
+    <span class="tv-r"><button type="button" class="btn line sm" data-rep="mo">${sv(IC.xl, 15)}Export รายงานเดือน</button><button type="button" class="btn line sm" data-print="1">${sv(IC.print, 15)}พิมพ์ / PDF</button></span></h2>
+    <p class="hint">🔒 = ปิดเดือนแล้ว (บันทึกตัวเลขถาวรอัตโนมัติเมื่อขึ้นเดือนใหม่) · เดือนนี้คำนวณสด · ▲▼ เทียบเดือนก่อน (เขียว = ดีขึ้น) · งานเก่าจาก Excel ที่ไม่มีวันเสร็จจริง ใช้ Target เป็นวันปิดโดยประมาณ</p>
+    <div class="moc">${ch.map(x => `<div class="mob" title="${fmtM(x.m)} · เข้า ${x.r.add} · ปิด ${x.r.closed} · ตรงเวลา ${pc(x.r.onPct)}"><div class="wkbars"><span style="height:${x.r.add / mx * 100}%;background:#60a5fa"><i>${x.r.add || ""}</i></span><span style="height:${x.r.closed / mx * 100}%;background:${ST.done.c}"><i>${x.r.closed || ""}</i></span></div><small>${fmtM(x.m)}</small><b class="num">${pc(x.r.onPct)}</b></div>`).join("")}</div>
+    <div class="legend"><span><i style="background:#60a5fa"></i>งานเข้า</span><span><i style="background:${ST.done.c}"></i>งานปิด</span><span>ตัวเลขใต้เดือน = % ปิดตรงเวลา</span></div>
+    <div class="tbl" style="margin-top:12px"><table class="mot"><thead><tr><th>เดือน</th><th>งานเข้า</th><th>งานปิด</th><th>ปิดตรงเวลา</th><th>ค้างสิ้นเดือน</th><th>Delay สิ้นเดือน</th><th>เฉลี่ยช้า (วัน)</th><th>เลื่อน Target</th></tr></thead><tbody>
+    ${R2.map((x, i) => { const r = x.r, p = prev(i) || {}; return `<tr class="${S.mm === x.m ? "on" : ""}" data-mm="${x.m}"><td><b>${fmtM(x.m)}</b> ${x.lock ? "🔒" : `<span class="tag">เดือนนี้</span>`}</td><td>${r.add}</td><td>${r.closed}</td><td class="${cls(r.onPct)}">${pc(r.onPct)} ${arrow(r.onPct, p.onPct, true)}</td><td>${r.open}</td><td class="${r.delay ? "bad" : ""}">${r.delay} ${arrow(r.delay, p.delay, false)}</td><td>${r.avgLate}</td><td>${r.tchg}</td></tr>`; }).join("")}</tbody></table></div></section>
+  <section class="panel" style="margin-top:16px"><h2>${ib("kpi", "linear-gradient(135deg,#fde047,#22c55e)")}รายคน · ${fmtM(S.mm)} ${so ? "🔒" : ""}</h2><p class="hint">กดแถวเดือนด้านบนเพื่อเปลี่ยนเดือน</p>
+    <div class="tbl"><table class="wl"><thead><tr><th>ผู้รับผิดชอบ</th><th>งานเข้า</th><th>งานปิด</th><th>ปิดตรงเวลา</th><th>ค้างสิ้นเดือน</th><th>Delay สิ้นเดือน</th><th>เฉลี่ยช้า</th><th>เลื่อน Target</th></tr></thead><tbody>
+    ${own.map(o => { const r = (so && so[o]) || mStat(L.filter(t => t.owner === o), S.mm); return `<tr><td><b>${esc(o)}</b></td><td>${r.add}</td><td>${r.closed}</td><td class="${cls(r.onPct)}">${pc(r.onPct)}</td><td>${r.open}</td><td class="${r.delay ? "bad" : ""}">${r.delay}</td><td>${r.avgLate}</td><td>${r.tchg}</td></tr>`; }).join("")}</tbody></table></div></section>`;
+}
+async function exportRep(kind) {
+  try { await loadXLSX(); } catch (e) { alert("โหลดตัวสร้าง Excel ไม่ได้"); return; }
+  const wb = XLSX.utils.book_new(), L = leaves(scopeL()).filter(t => !t.cancel), add = (n, a) => XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(a), n);
+  const bn = t => (BOARDS.find(b => b.k === bdOf(t)) || {}).n;
+  if (kind === "wk") {
+    const ws = wkStart(TODAY), inW = d => d && d >= ws && d <= addD(ws, 6);
+    add("ต้องจัดการ", [["รายงานประจำสัปดาห์ " + fmtD(ws) + " – " + fmtD(addD(ws, 6)) + " · " + scopeName()], [], ["งาน", "บอร์ด", "ผู้รับผิดชอบ", "สถานะ", "%", "ขั้น", "Target", "ข้อยกเว้น", "เหตุผลล่าช้า", "อัปเดตล่าสุด"]]
+      .concat(L.map(t => ({ t, f: flagsOf(t) })).filter(x => x.f.length).map(({ t, f }) => [t.title, bn(t), t.owner || "", ST[stOf(t)].t, progOf(t) || 0, stageOf(progOf(t)), t.target || "", f.map(k => FL[k].t).join(", "), t.why || "", lastUpd(t).slice(0, 10)])));
+    const own = [...new Set(L.map(t => t.owner || "ไม่ระบุ"))].sort();
+    add("ภาระงาน", [["ผู้รับผิดชอบ", "งานค้าง", "ครบสัปดาห์นี้", "Delay", "เสี่ยง", "ไม่อัปเดต", "ปิดสัปดาห์นี้"]].concat(own.map(o => { const M = L.filter(t => (t.owner || "ไม่ระบุ") === o), F = M.map(flagsOf); return [o, M.filter(t => ["prog", "wait", "delay"].includes(stOf(t))).length, M.filter(t => stOf(t) !== "done" && inW(t.target)).length, M.filter(t => stOf(t) === "delay").length, F.filter(f => f.includes("risk")).length, F.filter(f => f.includes("stale")).length, M.filter(t => inW(doneOn(t))).length]; })));
+    add("ปิดสัปดาห์นี้", [["งาน", "ผู้รับผิดชอบ", "Target", "เสร็จจริง", "ตรงเวลา"]].concat(L.filter(t => inW(doneOn(t))).map(t => [t.title, t.owner || "", t.target || "", doneOn(t), !t.target || doneOn(t) <= t.target ? "ใช่" : "ไม่"])));
+    XLSX.writeFile(wb, "รายงานสัปดาห์_" + scopeName() + "_" + ws + ".xlsx");
+  } else {
+    closeMonths(); const cur = TODAY.slice(0, 7), pick = x => S.ms === "team" ? x.team : (x.bd || {})[S.ms];
+    add("รายเดือน", [["ประวัติรายเดือน · " + scopeName()], [], ["เดือน", "สถานะ", "งานเข้า", "งานปิด", "ปิดตรงเวลา %", "ค้างสิ้นเดือน", "Delay สิ้นเดือน", "เฉลี่ยช้า (วัน)", "เลื่อน Target"]]
+      .concat(allMonths().reverse().map(m => { const r = (SNAPS[m] && m < cur && pick(SNAPS[m])) || mStat(scopeL(), m); return [fmtM(m), SNAPS[m] && m < cur ? "ปิดเดือนแล้ว" : "เดือนนี้", r.add, r.closed, r.onPct == null ? "" : r.onPct, r.open, r.delay, r.avgLate, r.tchg]; })));
+    const m = S.mm || cur, s0 = m + "-01", e0 = monEnd(m), inM = d => d && d >= s0 && d <= e0;
+    const own = [...new Set(L.map(t => t.owner).filter(Boolean))].sort();
+    add("รายคน " + m, [["ผู้รับผิดชอบ", "งานเข้า", "งานปิด", "ปิดตรงเวลา %", "ค้างสิ้นเดือน", "Delay สิ้นเดือน", "เฉลี่ยช้า", "เลื่อน Target"]].concat(own.map(o => { const r = mStat(L.filter(t => t.owner === o), m); return [o, r.add, r.closed, r.onPct == null ? "" : r.onPct, r.open, r.delay, r.avgLate, r.tchg]; })));
+    add("ปิดในเดือน " + m, [["งาน", "ผู้รับผิดชอบ", "Target แรก", "Target", "เสร็จจริง", "ตรงเวลา", "เลื่อน Target (ครั้ง)"]].concat(L.filter(t => inM(doneOn(t))).map(t => [t.title, t.owner || "", t.base || t.target || "", t.target || "", doneOn(t), !t.target || doneOn(t) <= t.target ? "ใช่" : "ไม่", (t.tchg || []).length])));
+    XLSX.writeFile(wb, "รายงานเดือน_" + scopeName() + "_" + m + ".xlsx");
+  }
 }
 
 /* ---------- Timeline ---------- */
@@ -958,7 +1148,7 @@ function renderSide() {
 function render() {
   location.hash = S.view; renderSide(); renderTabs(); renderFilters();
   document.body.classList.toggle("v-list", S.view === "list");
-  ({ ov: renderOv, list: renderList, tl: renderTl, kpi: renderKpi, guide: renderGuide })[S.view](); if (S.view === "list") growAll();
+  ({ ov: renderOv, list: renderList, mg: renderMg, mo: renderMo, tl: renderTl, kpi: renderKpi, guide: renderGuide })[S.view](); if (S.view === "list") growAll();
   $("asof").textContent = `งานของ ${BD().n} · ข้อมูล ณ ${fmtD(TODAY)} · ${live().filter(t => !t.parent).length} งาน · ${live().filter(t => t.parent).length} งานย่อย · สถานะคำนวณจากวันนี้`;
 }
 
@@ -984,6 +1174,7 @@ function openEdit(id, parent) {
     ${!t.isNew && !t.parent ? `<div class="fl">งานย่อย (${k.length})<div class="rows">${k.map(x => `<button type="button" class="irow" data-edit="${x.id}"><span>${pill(stOf(x))}</span><span><div class="t">${esc(x.title)}</div><div class="m">${esc(x.owner)} · Target ${fmtD(x.target)}</div></span><b class="num">${progOf(x)}%</b></button>`).join("")}</div>
       <button type="button" class="btn line sm" data-addkid="${t.id}" style="justify-self:start">＋ เพิ่มงานย่อย</button></div>` : ""}
     ${t.hist && t.hist.length ? `<div class="fl">ประวัติความคืบหน้า<div class="hist">${t.hist.slice(-8).reverse().map(h => `<div>${new Date(h.at).toLocaleString("th-TH", { dateStyle: "medium", timeStyle: "short" })} · ${h.from == null ? "" : h.from + "% → "}<b>${h.p}%</b></div>`).join("")}</div></div>` : ""}
+    ${(t.tchg || []).length ? `<div class="fl">ประวัติเลื่อน Target (เดิม ${fmtD(t.base)})<div class="hist">${t.tchg.slice().reverse().map(c => `<div>${new Date(c.at).toLocaleDateString("th-TH", { dateStyle: "medium" })} · ${fmtD(c.from)} → <b>${fmtD(c.to)}</b> · ${esc(c.why)}</div>`).join("")}</div></div>` : ""}
     ${t.doneAt ? `<div class="hist">เสร็จจริง ${fmtD(t.doneAt)} ${onTime(t) ? "· ตรงเวลา" : "· เกินกำหนด " + days(t.target, t.doneAt) + " วัน"}</div>` : ""}
   </div>
   <div class="df">${t.isNew ? "" : `<button type="button" class="btn red" id="eDel" style="margin-right:auto">ลบงาน</button>`}<button type="button" class="btn line" data-close="1">ยกเลิก</button><button type="button" class="btn pri" id="eSave">บันทึก</button></div>`;
@@ -994,6 +1185,8 @@ function saveEdit() {
   const title = $("eT").value.trim(); if (!title) { $("eT").focus(); return; }
   const old = byId(ED.id), t = old || ED, auto = !ED.isNew && kidsOf(t.id).length > 0;
   const p0 = old ? progOf(old) : null;
+  const tp = old ? tgtPatch(old, $("eG").value) : { target: $("eG").value, base: $("eG").value || undefined }; if (!tp) return;
+  Object.assign(t, tp);
   Object.assign(t, { title: clean(title), owner: clean($("eO").value.trim()), pri: $("eP").value, start: $("eS").value, target: $("eG").value, cancel: $("eC").checked, note: clean($("eN").value.trim()), u: nowIso() });
   if (!auto) t.prog = +$("eR").value;
   delete t.isNew;
@@ -1022,7 +1215,10 @@ function syncLabel() { const el = $("syncSt"); el.textContent = SBOK === null ? 
 async function sbSync() {
   if (location.protocol === "file:") { SBOK = false; syncLabel(); return; }
   try {
-    const rem = (await sbAll()).map(x => x.rec).filter(r => r && typeof r.id === "string" && typeof r.title === "string").map(norm);
+    const raw = (await sbAll()).map(x => x.rec);
+    raw.filter(r => r && r.snap && typeof r.m === "string" && /^\d{4}-\d{2}$/.test(r.m)).forEach(r => { if (!SNAPS[r.m]) SNAPS[r.m] = r; });
+    const locSn = Object.values(SNAPS).filter(x => !raw.some(r => r && r.id === x.id)); if (locSn.length) sbUp(locSn).catch(() => {}); ls.set(SNK, SNAPS);
+    const rem = raw.filter(r => r && !r.snap && typeof r.id === "string" && typeof r.title === "string").map(norm);
     const mp = new Map(DATA.map(t => [t.id, t])), up = [];
     if (!rem.length) up.push(...DATA);
     else {
@@ -1032,7 +1228,7 @@ async function sbSync() {
       DATA = [...mp.values()];
     }
     if (up.length) await sbUp(up);
-    ls.set(DBK, DATA); SBOK = true;
+    ls.set(DBK, DATA); SBOK = true; closeMonths();
   } catch (e) { SBOK = false; console.warn("task sync", e); }
   syncLabel(); render();
 }
@@ -1090,9 +1286,14 @@ async function exportX() {
 
 /* ---------- events ---------- */
 document.addEventListener("click", e => {
-  const x = e.target.closest("[data-pp],[data-lv],[data-td],[data-fo],[data-sd],#fab");
+  const x = e.target.closest("[data-pp],[data-lv],[data-td],[data-fo],[data-sd],[data-ms],[data-mx],[data-mm],[data-rep],[data-print],#fab");
   if (x) {
     if (x.id === "fab") { if (S.view !== "list") { S.view = "list"; render(); } const n = $("nT"); if (n) { n.scrollIntoView({ behavior: "smooth", block: "center" }); setTimeout(() => n.focus(), 250); } return; }
+    if (x.dataset.ms) { S.ms = x.dataset.ms; S.mx = ""; render(); return; }
+    if (x.dataset.mx) { S.mx = S.mx === x.dataset.mx ? "" : x.dataset.mx; render(); return; }
+    if (x.dataset.mm) { S.mm = x.dataset.mm; const y = window.scrollY; render(); window.scrollTo(0, y); return; }
+    if (x.dataset.rep) { exportRep(x.dataset.rep); return; }
+    if (x.dataset.print) { window.print(); return; }
     if (x.dataset.sd) { S.sd = !S.sd; const y = window.scrollY; render(); window.scrollTo(0, y); return; }
     if (x.dataset.fo) { S.fo = !S.fo; renderFilters(); return; }
     if (x.dataset.td) { S.td = x.dataset.td; refreshTodo(); return; }
@@ -1126,6 +1327,7 @@ document.addEventListener("change", e => {
   const el = e.target; if (!el.dataset || !el.dataset.f || !el.dataset.id) return;
   const t = byId(el.dataset.id); if (!t) return; let v = el.value;
   if (el.dataset.f === "title" && !v.trim()) { el.value = t.title; return; }
+  if (el.dataset.f === "target") { const tp = tgtPatch(t, v); if (!tp) { el.value = t.target || ""; return; } const ids = patchTask(t, tp).map(x => x.id); redrawRows(ids); return; }
   v = el.dataset.f === "prog" ? +v : clean(v.trim());
   const ids = patchTask(t, { [el.dataset.f]: v }).map(x => x.id); redrawRows(ids);
   const n = document.querySelector(`tr[data-row="${t.id}"] [data-f="${el.dataset.f}"]`); if (n) { n.classList.add("saved"); setTimeout(() => n.classList.remove("saved"), 700); }
@@ -1151,7 +1353,7 @@ const tip = $("tip");
 document.addEventListener("mousemove", e => { const c = e.target.closest(".mcol"); if (!c) { tip.style.display = "none"; return; } const d = JSON.parse(c.dataset.tip);
   tip.innerHTML = `<b>Target ${fmtM(d.m)}</b>` + ORDER.filter(k => d.v[k]).map(k => `<div><span><i style="background:${ST[k].c}"></i>${ST[k].t}</span><b style="display:inline">${d.v[k]}</b></div>`).join("") + `<div style="border-top:1px solid rgba(255,255,255,.2);margin-top:4px;padding-top:4px"><span>รวม</span><b style="display:inline">${ORDER.reduce((a, k) => a + d.v[k], 0)}</b></div>`;
   tip.style.display = "block"; tip.style.left = Math.min(e.clientX + 14, innerWidth - tip.offsetWidth - 10) + "px"; tip.style.top = (e.clientY + 14) + "px"; });
-window.addEventListener("hashchange", () => { const h = location.hash.slice(1); if (h !== S.view && ["ov", "list", "tl", "kpi", "guide"].includes(h)) { S.view = h; render(); } });
+window.addEventListener("hashchange", () => { const h = location.hash.slice(1); if (h !== S.view && ["ov", "list", "mg", "mo", "tl", "kpi", "guide"].includes(h)) { S.view = h; render(); } });
 applyTheme();
 $("bTheme").onclick = () => { DT = !DT; try { localStorage.setItem("pcg-task-theme", DT ? "dark" : "light"); } catch (e) {} applyTheme(); render(); };
 const tick = () => { $("clock").textContent = new Date().toLocaleString("th-TH", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", second: "2-digit" }); }; tick(); setInterval(tick, 1000);
