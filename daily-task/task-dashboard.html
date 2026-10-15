@@ -8,8 +8,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Prompt:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #fbf6ef; --card: #fff; --ink: #2a1215; --ink2: #5a3a36; --mut: #8c6f66; --line: #eedfd0;
-    --acc: #991b1b; --acc2: #6b0f1a; --tint: #fbeee0;
+    --bg: #eef7f2; --card: #fff; --ink: #0f241c; --ink2: #35524a; --mut: #6b8a80; --line: #d9ebe2;
+    --acc: #047857; --acc2: #064e3b; --tint: #e3f6ec;
     --done: #0f9a6e; --wait: #d97706; --prog: #2563eb; --delay: #dc2626; --cancel: #a3acbd;
     --r: 22px; --sh: 0 10px 30px -14px rgba(60, 30, 140, .28);
   }
@@ -18,7 +18,7 @@
   button, input, select, textarea { font: inherit; color: inherit; }
   button { cursor: pointer; }
   .wrap { max-width: 1440px; margin: 0 auto; padding: 0 22px 60px; }
-  header.top { background: linear-gradient(120deg, #6b0f1a 0%, #991b1b 55%, #e0a526 100%); color: #fff; border-radius: 0 0 34px 34px; padding: 22px 0 26px; margin-bottom: 18px; box-shadow: var(--sh); position: relative; overflow: hidden; }
+  header.top { background: linear-gradient(120deg, #064e3b 0%, #047857 55%, #2dd4bf 100%); color: #fff; border-radius: 0 0 34px 34px; padding: 22px 0 26px; margin-bottom: 18px; box-shadow: var(--sh); position: relative; overflow: hidden; }
   header.top::after { content: ""; position: absolute; right: -80px; top: -120px; width: 380px; height: 380px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,.18), transparent 70%); }
   .hrow { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; position: relative; z-index: 1; }
   .home { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 999px; background: rgba(255,255,255,.16); color: #fff; text-decoration: none; font-weight: 700; border: 1px solid rgba(255,255,255,.25); }
@@ -27,18 +27,18 @@
   .ttl h1 { margin: 2px 0 0; font-size: 28px; line-height: 1.15; font-family: "Plus Jakarta Sans", "Anuphan", "Anuphan"; }
   .ttl .sub { font-size: 13px; opacity: .85; margin-top: 4px; }
   .hbtns { margin-left: auto; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-  .btn { border: 0; border-radius: 14px; padding: 11px 16px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; background: var(--card); color: var(--acc2); box-shadow: 0 6px 16px -10px rgba(74,10,15,.5); }
-  .btn.pri { background: linear-gradient(135deg, #b91c1c, #6b0f1a); color: #fff; }
+  .btn { border: 0; border-radius: 14px; padding: 11px 16px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; background: var(--card); color: var(--acc2); box-shadow: 0 6px 16px -10px rgba(6,60,45,.5); }
+  .btn.pri { background: linear-gradient(135deg, #059669, #064e3b); color: #fff; }
   .btn.ghost { background: rgba(255,255,255,.14); color: #fff; border: 1px solid rgba(255,255,255,.3); box-shadow: none; }
   .btn.sm { padding: 7px 12px; font-size: 13px; border-radius: 10px; }
   .btn.line { background: #fff; border: 1px solid var(--line); box-shadow: none; color: var(--ink2); }
   .btn.red { background: #fde8e8; color: #a51d1d; box-shadow: none; }
   .sync { font-size: 12px; opacity: .9; }
   nav.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 14px; }
-  nav.tabs button { border: 0; background: #fff; border-radius: 14px; padding: 11px 18px; font-weight: 700; color: var(--ink2); display: inline-flex; gap: 8px; align-items: center; box-shadow: 0 4px 12px -8px rgba(74,10,15,.35); }
+  nav.tabs button { border: 0; background: #fff; border-radius: 14px; padding: 11px 18px; font-weight: 700; color: var(--ink2); display: inline-flex; gap: 8px; align-items: center; box-shadow: 0 4px 12px -8px rgba(6,60,45,.35); }
   nav.tabs button.on { background: var(--ink); color: #fff; }
   nav.tabs .cnt { background: #fde2e2; color: #a51d1d; border-radius: 999px; padding: 1px 8px; font-size: 12px; }
-  .filters { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; background: #fff; border-radius: 18px; padding: 10px 12px; margin-bottom: 16px; box-shadow: 0 4px 14px -10px rgba(74,10,15,.3); }
+  .filters { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; background: #fff; border-radius: 18px; padding: 10px 12px; margin-bottom: 16px; box-shadow: 0 4px 14px -10px rgba(6,60,45,.3); }
   .filters label { font-size: 13px; color: var(--mut); display: inline-flex; gap: 6px; align-items: center; }
   .filters select, .filters input[type=search] { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; background: #fff; min-width: 120px; }
   .filters input[type=search] { min-width: 220px; flex: 1; }
@@ -73,7 +73,7 @@
   .mcol .tot { position: absolute; font-size: 12px; font-weight: 700; color: var(--ink2); }
   .mcol:hover .seg { filter: brightness(1.08); }
   .mlab { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(34px, 1fr); gap: 8px; font-size: 12px; color: var(--mut); text-align: center; padding: 6px 4px 0; }
-  .tip { position: fixed; z-index: 50; background: #2a1215; color: #fff; padding: 9px 12px; border-radius: 12px; font-size: 13px; pointer-events: none; box-shadow: 0 10px 24px -10px rgba(0,0,0,.5); display: none; min-width: 150px; }
+  .tip { position: fixed; z-index: 50; background: #0f241c; color: #fff; padding: 9px 12px; border-radius: 12px; font-size: 13px; pointer-events: none; box-shadow: 0 10px 24px -10px rgba(0,0,0,.5); display: none; min-width: 150px; }
   .tip b { display: block; margin-bottom: 4px; }
   .tip div { display: flex; justify-content: space-between; gap: 14px; }
   .tip i { width: 9px; height: 9px; border-radius: 2px; display: inline-block; margin-right: 6px; }
@@ -81,7 +81,7 @@
   .sbar { display: flex; gap: 2px; height: 16px; border-radius: 8px; overflow: hidden; background: #f1f0f7; }
   .sbar span { display: block; }
   .rows { display: grid; gap: 8px; }
-  .irow { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 14px; background: #fdfaf5; border: 1px solid var(--line); cursor: pointer; text-align: left; width: 100%; }
+  .irow { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 14px; background: #f6fbf8; border: 1px solid var(--line); cursor: pointer; text-align: left; width: 100%; }
   .irow:hover { border-color: #c9bdf3; }
   .irow .t { font-weight: 600; font-size: 14px; }
   .irow .m { font-size: 12px; color: var(--mut); }
@@ -90,10 +90,10 @@
   .pill i { width: 7px; height: 7px; border-radius: 50%; }
   .prio { font-size: 12px; font-weight: 700; border-radius: 8px; padding: 2px 8px; }
   .prio.H { background: #fde8e8; color: #a51d1d; } .prio.M { background: #fff3db; color: #8a5300; } .prio.L { background: #e8f1ff; color: #1e4fb0; }
-  .pbar { height: 8px; border-radius: 6px; background: #f3e6d6; overflow: hidden; min-width: 70px; }
+  .pbar { height: 8px; border-radius: 6px; background: #e2f1e9; overflow: hidden; min-width: 70px; }
   .pbar span { display: block; height: 100%; border-radius: 6px; }
   table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; }
-  th { text-align: left; font-size: 12px; color: #fff; background: #7f1d1d; padding: 11px 10px; font-weight: 600; white-space: nowrap; position: sticky; top: 0; z-index: 1; }
+  th { text-align: left; font-size: 12px; color: #fff; background: #065f46; padding: 11px 10px; font-weight: 600; white-space: nowrap; position: sticky; top: 0; z-index: 1; }
   th:first-child { border-radius: 12px 0 0 0; } th:last-child { border-radius: 0 12px 0 0; }
   td { padding: 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
   tr.r { cursor: pointer; } tr.r:hover td { background: #faf8ff; }
@@ -106,9 +106,9 @@
   /* Timeline */
   .tl { overflow: auto; max-height: 76vh; border: 1px solid var(--line); border-radius: 14px; }
   .tlg { display: grid; min-width: 1100px; position: relative; }
-  .tlh { position: sticky; top: 0; z-index: 3; display: grid; background: #7f1d1d; color: #fff; font-size: 12px; }
+  .tlh { position: sticky; top: 0; z-index: 3; display: grid; background: #065f46; color: #fff; font-size: 12px; }
   .tlh div { padding: 9px 6px; border-left: 1px solid rgba(255,255,255,.12); text-align: center; }
-  .tlh div:first-child { text-align: left; position: sticky; left: 0; background: #7f1d1d; z-index: 4; border: 0; padding-left: 12px; }
+  .tlh div:first-child { text-align: left; position: sticky; left: 0; background: #065f46; z-index: 4; border: 0; padding-left: 12px; }
   .tlr { display: grid; align-items: center; border-bottom: 1px solid var(--line); min-height: 40px; }
   .tlr .nm { position: sticky; left: 0; background: #fff; z-index: 2; padding: 7px 12px; font-size: 13px; border-right: 1px solid var(--line); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; height: 100%; display: flex; align-items: center; gap: 6px; }
   .tlr.kid .nm { padding-left: 30px; color: var(--ink2); }
@@ -123,20 +123,20 @@
   .owners { align-items: start; display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }
   .own { background: #fff; border-radius: var(--r); padding: 18px; box-shadow: var(--sh); display: grid; gap: 14px; }
   .own .hd { display: flex; gap: 14px; align-items: center; }
-  .av { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #e0a526, #6b0f1a); color: #fff; display: grid; place-items: center; font-weight: 800; font-size: 18px; flex: none; }
+  .av { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #2dd4bf, #064e3b); color: #fff; display: grid; place-items: center; font-weight: 800; font-size: 18px; flex: none; }
   .own .nm { font-size: 18px; font-weight: 700; }
   .ring { margin-left: auto; position: relative; width: 84px; height: 84px; flex: none; }
   .ring b { position: absolute; inset: -10px 0 0; display: grid; place-items: center; font-family: "Plus Jakarta Sans", "Anuphan"; font-size: 22px; }
   .ring small { position: absolute; bottom: 12px; left: 0; right: 0; text-align: center; font-size: 10px; color: var(--mut); }
   .mets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-  .met { background: #fdfaf5; border: 1px solid var(--line); border-radius: 12px; padding: 9px 10px; }
+  .met { background: #f6fbf8; border: 1px solid var(--line); border-radius: 12px; padding: 9px 10px; }
   .met b { display: block; font-family: "Plus Jakarta Sans", "Anuphan"; font-size: 20px; }
   .met span { font-size: 12px; color: var(--mut); }
   .grade { font-weight: 800; border-radius: 10px; padding: 3px 10px; font-size: 14px; }
   /* dialog */
   dialog { border: 0; border-radius: 22px; padding: 0; width: min(720px, 94vw); box-shadow: 0 30px 80px -20px rgba(20,0,60,.5); }
   dialog::backdrop { background: rgba(25,10,60,.45); }
-  .dh { padding: 18px 22px; background: linear-gradient(120deg, #6b0f1a, #b91c1c); color: #fff; display: flex; align-items: center; gap: 10px; }
+  .dh { padding: 18px 22px; background: linear-gradient(120deg, #064e3b, #059669); color: #fff; display: flex; align-items: center; gap: 10px; }
   .dh h3 { margin: 0; font-size: 18px; flex: 1; }
   .dh button { background: rgba(255,255,255,.18); color: #fff; border: 0; border-radius: 10px; width: 34px; height: 34px; font-size: 18px; }
   .db { padding: 18px 22px; display: grid; gap: 12px; max-height: 70vh; overflow: auto; }
@@ -154,31 +154,31 @@
   .guide h4 { margin: 10px 0 4px; }
   .guide p, .guide li { font-size: 14px; color: var(--ink2); line-height: 1.6; }
   .ci { border: 1px solid transparent; background: transparent; border-radius: 8px; padding: 6px 7px; font-size: 13.5px; width: 100%; min-width: 0; color: var(--ink); }
-  .ci:hover { border-color: var(--line); background: #fff; } .ci:focus { outline: 0; border-color: #f2c14e; background: #fff; box-shadow: 0 0 0 3px #fde7c4; }
+  .ci:hover { border-color: var(--line); background: #fff; } .ci:focus { outline: 0; border-color: #34d399; background: #fff; box-shadow: 0 0 0 3px #d1fae5; }
   input.ci[type=date] { width: 132px; } select.ci { width: auto; cursor: pointer; } .ci.cp { font-weight: 700; }
   .sheet td { padding: 6px 6px; } .sheet td.tt .ci { font-weight: 600; }
-  tr.add td { background: #fff7ed; border-bottom: 2px solid #f6d79a; position: sticky; top: 41px; z-index: 1; } tr.add .ci { background: #fff; border-color: #f6d79a; }
-  .saved { outline: 2px solid #f2c14e !important; transition: outline .6s; }
+  tr.add td { background: #ecfdf5; border-bottom: 2px solid #bbf7d0; position: sticky; top: 41px; z-index: 1; } tr.add .ci { background: #fff; border-color: #bbf7d0; }
+  .saved { outline: 2px solid #34d399 !important; transition: outline .6s; }
   /* แถบซ้าย: แยกงานรายคน (15 ต.ค.) */
   .lay { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 18px; align-items: start; }
   .side { position: sticky; top: 14px; display: grid; gap: 10px; background: #fff; border-radius: var(--r); padding: 14px; box-shadow: var(--sh); }
   .side h4 { margin: 2px 4px 2px; font-size: 12px; letter-spacing: .1em; color: var(--mut); text-transform: uppercase; }
-  .pb { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center; border: 1px solid var(--line); background: #fdfaf5; border-radius: 16px; padding: 12px; text-align: left; width: 100%; }
+  .pb { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center; border: 1px solid var(--line); background: #f6fbf8; border-radius: 16px; padding: 12px; text-align: left; width: 100%; }
   .pb .av { width: 42px; height: 42px; font-size: 16px; }
   .pb b { display: block; font-size: 16px; }
   .pb small { display: block; font-size: 12px; color: var(--mut); margin-top: 2px; }
   .pb .mini { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
   .pb .mini span { font-size: 11px; font-weight: 700; border-radius: 999px; padding: 2px 8px; background: #fff; border: 1px solid var(--line); }
-  .pb.on { background: linear-gradient(135deg, #991b1b, #6b0f1a); border-color: transparent; color: #fff; box-shadow: 0 10px 22px -12px rgba(107,15,26,.8); }
+  .pb.on { background: linear-gradient(135deg, #047857, #064e3b); border-color: transparent; color: #fff; box-shadow: 0 10px 22px -12px rgba(6,78,59,.8); }
   .pb.on small { color: rgba(255,255,255,.8); } .pb.on .mini span { background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.25); color: #fff; }
-  .pb.on .av { background: #fff; color: #6b0f1a; }
+  .pb.on .av { background: #fff; color: #064e3b; }
   @media (max-width: 1000px) { .lay { grid-template-columns: 1fr; } .side { position: static; grid-template-columns: repeat(2, 1fr); } .side h4 { grid-column: 1 / -1; } }
   @media (max-width: 1200px) { .kpis { grid-template-columns: repeat(3, 1fr); } .g2, .g3 { grid-template-columns: 1fr; } }
   @media (max-width: 640px) { .wrap { padding: 0 12px 50px; } .kpis { grid-template-columns: repeat(2, 1fr); } .ttl h1 { font-size: 22px; } .fr { grid-template-columns: 1fr; } .hbtns { margin-left: 0; } .owners { grid-template-columns: 1fr; } .mets { grid-template-columns: repeat(2, 1fr); } .kpi .v { font-size: 30px; } }
   /* ===== Digital Twin / Mission Control (16 ต.ค. ผู้ใช้ขอ: สวยและ Digital twin กว่านี้) · body.dt = ธีมมืด (ค่าเริ่ม) · ปุ่มสลับแบบสว่างที่หัว ===== */
   .clock { font-family: "Plus Jakarta Sans", "Anuphan", monospace; font-variant-numeric: tabular-nums; font-size: 13px; letter-spacing: .06em; opacity: .9; }
-  .live { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; letter-spacing: .14em; color: #f2c14e; }
-  .live i { width: 8px; height: 8px; border-radius: 50%; background: #f2c14e; box-shadow: 0 0 10px #f2c14e; animation: blink 1.6s infinite; }
+  .live { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; letter-spacing: .14em; color: #34d399; }
+  .live i { width: 8px; height: 8px; border-radius: 50%; background: #34d399; box-shadow: 0 0 10px #34d399; animation: blink 1.6s infinite; }
   @keyframes blink { 50% { opacity: .25; } }
   .mc { display: grid; grid-template-columns: 300px 1fr 260px; gap: 16px; margin-bottom: 16px; }
   .mc .panel { position: relative; overflow: hidden; min-width: 0; } .g2 > * { min-width: 0; }
@@ -211,55 +211,55 @@
   .owng { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
   .og { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center; padding: 12px; border-radius: 16px; border: 1px solid var(--line); background: var(--card2); cursor: pointer; text-align: left; color: var(--ink); width: 100%; }
   .og .ring { width: 70px; height: 70px; } .og .ring svg { width: 70px; height: 70px; } .og .ring b { font-size: 18px; inset: -6px 0 0; }
-  :root { --card2: #fdfaf5; --hz: #f3e6d6; --prog: #2563eb; --delay: #dc2626; }
-  body.dt { --bg: #050a1c; --card: rgba(14, 22, 54, .78); --card2: rgba(25, 36, 82, .55); --ink: #e8ecff; --ink2: #aeb7e2; --mut: #7480b6; --line: rgba(129, 148, 255, .16); --tint: rgba(185,28,28, .22); --acc: #f2c14e; --acc2: #fcd34d; --hz: rgba(129, 148, 255, .08); --prog: #3b82f6; --delay: #ef4444;
+  :root { --card2: #f6fbf8; --hz: #e2f1e9; --prog: #2563eb; --delay: #dc2626; }
+  body.dt { --bg: #050a1c; --card: rgba(14, 22, 54, .78); --card2: rgba(25, 36, 82, .55); --ink: #e8ecff; --ink2: #aeb7e2; --mut: #7480b6; --line: rgba(129, 148, 255, .16); --tint: rgba(5,150,105, .22); --acc: #34d399; --acc2: #fcd34d; --hz: rgba(129, 148, 255, .08); --prog: #3b82f6; --delay: #ef4444;
     --sh: 0 0 0 1px rgba(129,148,255,.14), 0 18px 40px -20px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.05);
-    background: radial-gradient(1100px 600px at 85% -10%, rgba(185,28,28,.28), transparent 60%), radial-gradient(900px 500px at -10% 30%, rgba(34,211,238,.14), transparent 60%),
+    background: radial-gradient(1100px 600px at 85% -10%, rgba(5,150,105,.28), transparent 60%), radial-gradient(900px 500px at -10% 30%, rgba(34,211,238,.14), transparent 60%),
       linear-gradient(rgba(129,148,255,.05) 1px, transparent 1px) 0 0 / 44px 44px, linear-gradient(90deg, rgba(129,148,255,.05) 1px, transparent 1px) 0 0 / 44px 44px, #050a1c; background-attachment: fixed; }
-  body.dt header.top { background: linear-gradient(120deg, rgba(10,16,44,.95), rgba(107,15,26,.9) 55%, rgba(14,116,144,.85)); border-bottom: 1px solid rgba(129,148,255,.25); box-shadow: 0 0 40px -10px rgba(185,28,28,.6); }
-  body.dt header.top::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: linear-gradient(90deg, transparent, #22d3ee, #f2c14e, transparent); }
-  body.dt .logo { background: linear-gradient(135deg, #22d3ee, #b91c1c); box-shadow: 0 0 24px rgba(34,211,238,.55); } body.dt .logo svg { stroke: #fff; }
+  body.dt header.top { background: linear-gradient(120deg, rgba(10,16,44,.95), rgba(6,78,59,.9) 55%, rgba(14,116,144,.85)); border-bottom: 1px solid rgba(129,148,255,.25); box-shadow: 0 0 40px -10px rgba(5,150,105,.6); }
+  body.dt header.top::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: linear-gradient(90deg, transparent, #22d3ee, #34d399, transparent); }
+  body.dt .logo { background: linear-gradient(135deg, #22d3ee, #059669); box-shadow: 0 0 24px rgba(34,211,238,.55); } body.dt .logo svg { stroke: #fff; }
   body.dt .ttl h1 { background: linear-gradient(90deg, #fff, #a5f3fc 60%, #fcd34d); -webkit-background-clip: text; background-clip: text; color: transparent; }
   body.dt .btn { background: rgba(255,255,255,.08); color: #e8ecff; border: 1px solid rgba(255,255,255,.2); box-shadow: none; }
-  body.dt .btn.pri, body.dt #bAdd { background: linear-gradient(135deg, #22d3ee, #b91c1c); border: 0; color: #fff; box-shadow: 0 0 18px rgba(185,28,28,.55); }
+  body.dt .btn.pri, body.dt #bAdd { background: linear-gradient(135deg, #22d3ee, #059669); border: 0; color: #fff; box-shadow: 0 0 18px rgba(5,150,105,.55); }
   body.dt .btn.line { background: rgba(255,255,255,.05); border-color: var(--line); color: var(--ink2); }
   body.dt .btn.red { background: rgba(239,68,68,.16); color: #fca5a5; }
   body.dt .panel, body.dt .kpi, body.dt .side, body.dt .filters, body.dt .own { background: var(--card); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
   body.dt .kpi .v { text-shadow: 0 0 18px color-mix(in srgb, var(--c) 70%, transparent); }
   body.dt .kpi::before { box-shadow: 0 0 14px var(--c); }
   body.dt nav.tabs button { background: var(--card); color: var(--ink2); box-shadow: var(--sh); }
-  body.dt nav.tabs button.on { background: linear-gradient(135deg, rgba(34,211,238,.25), rgba(185,28,28,.45)); color: #fff; box-shadow: 0 0 0 1px rgba(242,193,78,.6), 0 0 20px rgba(185,28,28,.45); }
-  body.dt .chip { background: rgba(255,255,255,.04); border-color: var(--line); color: var(--ink2); } body.dt .chip.on { background: linear-gradient(135deg, #0891b2, #991b1b); border-color: transparent; color: #fff; }
+  body.dt nav.tabs button.on { background: linear-gradient(135deg, rgba(34,211,238,.25), rgba(5,150,105,.45)); color: #fff; box-shadow: 0 0 0 1px rgba(52,211,153,.6), 0 0 20px rgba(5,150,105,.45); }
+  body.dt .chip { background: rgba(255,255,255,.04); border-color: var(--line); color: var(--ink2); } body.dt .chip.on { background: linear-gradient(135deg, #0891b2, #047857); border-color: transparent; color: #fff; }
   body.dt select, body.dt input, body.dt textarea { color-scheme: dark; }
   body.dt .filters select, body.dt .filters input[type=search], body.dt .fl input, body.dt .fl select, body.dt .fl textarea, body.dt #fSort { background: rgba(5,10,28,.6) !important; border-color: var(--line) !important; color: var(--ink) !important; }
   body.dt .pb .mini span { background: rgba(255,255,255,.06); border-color: var(--line); color: var(--ink2); }
   body.dt .irow, body.dt .met, body.dt .pb { background: var(--card2); border-color: var(--line); color: var(--ink); }
-  body.dt .pb.on { background: linear-gradient(135deg, rgba(34,211,238,.35), rgba(185,28,28,.7)); box-shadow: 0 0 22px rgba(185,28,28,.5); }
+  body.dt .pb.on { background: linear-gradient(135deg, rgba(34,211,238,.35), rgba(5,150,105,.7)); box-shadow: 0 0 22px rgba(5,150,105,.5); }
   body.dt th, body.dt .tlh, body.dt .tlh div:first-child { background: #121c45; color: #a5f3fc; border-bottom: 1px solid rgba(34,211,238,.35); }
-  body.dt td { border-bottom-color: var(--line); } body.dt tr.r:hover td { background: rgba(185,28,28,.1); } body.dt tr.kid td { background: rgba(255,255,255,.02); }
-  body.dt .ci { color: var(--ink); } body.dt .ci:hover, body.dt .ci:focus { background: rgba(5,10,28,.7); border-color: rgba(242,193,78,.6); box-shadow: 0 0 0 3px rgba(185,28,28,.25); }
-  body.dt tr.add td { background: #0b2a22; border-bottom-color: rgba(242,193,78,.45); } body.dt tr.add .ci { background: rgba(5,10,28,.7); border-color: rgba(242,193,78,.35); }
+  body.dt td { border-bottom-color: var(--line); } body.dt tr.r:hover td { background: rgba(5,150,105,.1); } body.dt tr.kid td { background: rgba(255,255,255,.02); }
+  body.dt .ci { color: var(--ink); } body.dt .ci:hover, body.dt .ci:focus { background: rgba(5,10,28,.7); border-color: rgba(52,211,153,.6); box-shadow: 0 0 0 3px rgba(5,150,105,.25); }
+  body.dt tr.add td { background: #0b2a22; border-bottom-color: rgba(52,211,153,.45); } body.dt tr.add .ci { background: rgba(5,10,28,.7); border-color: rgba(52,211,153,.35); }
   body.dt .pbar, body.dt .sbar { background: rgba(255,255,255,.08); }
   body.dt .tl { border-color: var(--line); } body.dt .tlr { border-bottom-color: var(--line); } body.dt .tlr .nm { background: #0b1233; border-right-color: var(--line); } body.dt .mgrid { background: rgba(129,148,255,.08); }
-  body.dt dialog { background: #0b1233; color: var(--ink); border: 1px solid rgba(129,148,255,.3); } body.dt .dh { background: linear-gradient(120deg, #7f1d1d, #991b1b); } body.dt .df { border-top-color: var(--line); }
-  body.dt .note { background: rgba(217,119,6,.12); border-color: rgba(217,119,6,.35); color: #fcd34d; } body.dt .ok { background: rgba(212,160,23,.12); border-color: rgba(212,160,23,.35); color: #fcd34d; }
-  body.dt .tag { background: rgba(242,193,78,.16); color: #fcd34d; } body.dt .mlab, body.dt .mcol .tot { color: var(--ink2); } body.dt .mchart { border-bottom-color: var(--line); }
-  body.dt .tog { background: rgba(242,193,78,.2); color: #fde68a; }
+  body.dt dialog { background: #0b1233; color: var(--ink); border: 1px solid rgba(129,148,255,.3); } body.dt .dh { background: linear-gradient(120deg, #065f46, #047857); } body.dt .df { border-top-color: var(--line); }
+  body.dt .note { background: rgba(217,119,6,.12); border-color: rgba(217,119,6,.35); color: #fcd34d; } body.dt .ok { background: rgba(16,185,129,.12); border-color: rgba(16,185,129,.35); color: #fcd34d; }
+  body.dt .tag { background: rgba(52,211,153,.16); color: #fcd34d; } body.dt .mlab, body.dt .mcol .tot { color: var(--ink2); } body.dt .mchart { border-bottom-color: var(--line); }
+  body.dt .tog { background: rgba(52,211,153,.2); color: #fde68a; }
   body.dt .grade, body.dt .prio, body.dt .pill { filter: saturate(1.1); }
   body.dt .prio.H { background: rgba(239,68,68,.18); color: #fca5a5; } body.dt .prio.M { background: rgba(217,119,6,.2); color: #fcd34d; } body.dt .prio.L { background: rgba(59,130,246,.2); color: #93c5fd; }
   @media (max-width: 1200px) { .mc { grid-template-columns: 1fr 1fr; } .mc > :nth-child(2) { grid-column: 1 / -1; order: -1; } }
   @media (max-width: 640px) { .mc { grid-template-columns: 1fr; } .pipe, .pipe2 { grid-template-columns: 1fr 26px 1fr 26px 1fr; } .node .o { width: 64px; height: 64px; font-size: 22px; } }
   /* ===== 16 ต.ค. ผู้ใช้สั่ง: หน้ากรอก Task กว้าง ตัวใหญ่ อ่านชัด · ธีมสว่างมีมิติ (ค่าเริ่ม) ===== */
-  body:not(.dt) { --bg: #fbf3e8; --line: #eedfd0;
-    background: radial-gradient(900px 520px at 100% -5%, rgba(242,193,78,.30), transparent 62%), radial-gradient(800px 480px at -8% 18%, rgba(251,146,60,.20), transparent 60%), radial-gradient(700px 500px at 60% 110%, rgba(244,114,182,.14), transparent 60%),
-      linear-gradient(rgba(153,27,27,.035) 1px, transparent 1px) 0 0 / 36px 36px, linear-gradient(90deg, rgba(153,27,27,.035) 1px, transparent 1px) 0 0 / 36px 36px, linear-gradient(180deg, #fdf8f1, #eef4fd);
+  body:not(.dt) { --bg: #eef8f3; --line: #d9ebe2;
+    background: radial-gradient(900px 520px at 100% -5%, rgba(52,211,153,.30), transparent 62%), radial-gradient(800px 480px at -8% 18%, rgba(56,189,248,.20), transparent 60%), radial-gradient(700px 500px at 60% 110%, rgba(244,114,182,.14), transparent 60%),
+      linear-gradient(rgba(4,120,87,.035) 1px, transparent 1px) 0 0 / 36px 36px, linear-gradient(90deg, rgba(4,120,87,.035) 1px, transparent 1px) 0 0 / 36px 36px, linear-gradient(180deg, #f4fbf7, #eef4fd);
     background-attachment: fixed; }
   body:not(.dt) .panel, body:not(.dt) .kpi, body:not(.dt) .side, body:not(.dt) .filters, body:not(.dt) .own, body:not(.dt) nav.tabs button { background: rgba(255,255,255,.86); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,.9);
-    box-shadow: 0 1px 0 rgba(255,255,255,.9) inset, 0 1px 2px rgba(74,10,15,.06), 0 14px 34px -16px rgba(107,15,26,.28); }
-  body:not(.dt) nav.tabs button.on { background: linear-gradient(135deg, #b91c1c, #6b0f1a); color: #fff; box-shadow: 0 10px 24px -10px rgba(107,15,26,.7); }
-  body:not(.dt) header.top { background: linear-gradient(120deg, #6b0f1a 0%, #b91c1c 50%, #f59e0b 130%); box-shadow: 0 18px 40px -18px rgba(107,15,26,.6); }
-  body:not(.dt) th { background: linear-gradient(180deg, #fdf7ee, #f8e7cf); color: #7f1d1d; border-bottom: 2px solid #ecc98a; font-size: 13px; }
-  body:not(.dt) tr.add td { background: linear-gradient(180deg, #fffaf0, #fdf0d8); }
+    box-shadow: 0 1px 0 rgba(255,255,255,.9) inset, 0 1px 2px rgba(6,60,45,.06), 0 14px 34px -16px rgba(6,78,59,.28); }
+  body:not(.dt) nav.tabs button.on { background: linear-gradient(135deg, #059669, #064e3b); color: #fff; box-shadow: 0 10px 24px -10px rgba(6,78,59,.7); }
+  body:not(.dt) header.top { background: linear-gradient(120deg, #064e3b 0%, #059669 50%, #38bdf8 130%); box-shadow: 0 18px 40px -18px rgba(6,78,59,.6); }
+  body:not(.dt) th { background: linear-gradient(180deg, #f3fbf7, #e0f4ea); color: #065f46; border-bottom: 2px solid #bfe6d3; font-size: 13px; }
+  body:not(.dt) tr.add td { background: linear-gradient(180deg, #f2fcf6, #e6f8ee); }
   body.v-list .wrap { max-width: 1840px; }
   .todo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 14px; margin-bottom: 14px; align-items: start; }
   .todo .panel { margin: 0; } .tdo h2 { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -268,16 +268,16 @@
   .tdo.late { border-top: 4px solid #dc2626; } .tdo:not(.late) { border-top: 4px solid #2563eb; }
   .tdl { max-height: 420px; overflow: auto; border-radius: 12px; }
   .tdl table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
-  .tdl th { position: sticky; top: 0; z-index: 1; text-align: left; font-size: 12.5px; color: var(--mut); background: #fbf3e8; padding: 8px 10px; }
+  .tdl th { position: sticky; top: 0; z-index: 1; text-align: left; font-size: 12.5px; color: var(--mut); background: #eef8f3; padding: 8px 10px; }
   .tdl td { padding: 9px 10px; border-top: 1px solid var(--line); vertical-align: top; }
-  .tdl tr:nth-child(even) td { background: rgba(185,28,28,.03); }
+  .tdl tr:nth-child(even) td { background: rgba(5,150,105,.03); }
   .tdl td.tn { font-weight: 650; line-height: 1.35; } .tdl .pn { color: var(--mut); font-weight: 500; }
   .tdl .sm2 { font-size: 12px; color: var(--mut); font-weight: 500; margin-top: 2px; }
   .tdl td.tl { white-space: nowrap; font-weight: 700; color: #1d4ed8; } .tdl td.tl.soon { color: #d97706; } .tdl td.tl.late { color: #dc2626; }
   .tdl td.tp { width: 92px; } .tdl td.tw { width: 46%; } .tdl textarea.why { width: 100%; min-height: 38px; }
   .tdl textarea.why.need { border-color: #fca5a5; background: #fff7f7; }
-  .whyt { font-size: 12px; color: #7f1d1d; margin-top: 4px; line-height: 1.3; } .whyt.no { color: #dc2626; font-weight: 700; }
-  body.dt .tdl th { background: #111a3a; } body.dt .tdl textarea.why.need { background: #2a0f16; border-color: #7f1d1d; } body.dt .whyt { color: #fca5a5; }
+  .whyt { font-size: 12px; color: #065f46; margin-top: 4px; line-height: 1.3; } .whyt.no { color: #dc2626; font-weight: 700; }
+  body.dt .tdl th { background: #111a3a; } body.dt .tdl textarea.why.need { background: #2a0f16; border-color: #065f46; } body.dt .whyt { color: #fca5a5; }
   @media (max-width: 1100px) { .todo { grid-template-columns: 1fr; } }
   /* หน้าตาราง: แถบเลือกคนย้ายขึ้นเป็นแถวบน ให้ตารางได้ความกว้างเต็ม */
   body.v-list .lay { grid-template-columns: minmax(0, 1fr); gap: 12px; }
@@ -300,47 +300,47 @@
   .sheet input.ci[type=date] { width: 138px; font-size: 14px; padding: 9px 6px; } .sheet select.ci { padding: 9px 8px; }
   .sheet .ci.cp { font-size: 15px; min-width: 84px; } .sheet .pbar { height: 9px; }
   .sheet td.stc { white-space: nowrap; padding-top: 14px; } .sheet td.stc .pill { font-size: 13px; padding: 5px 12px; } .sheet .due { font-size: 12.5px; margin-top: 6px; color: var(--ink2); }
-  .sheet tr.r td { border-bottom: 1px solid var(--line); } body:not(.dt) .sheet tr.r:nth-child(odd) td { background: rgba(185,28,28,.025); }
+  .sheet tr.r td { border-bottom: 1px solid var(--line); } body:not(.dt) .sheet tr.r:nth-child(odd) td { background: rgba(5,150,105,.025); }
   body:not(.dt) .sheet tr.r:hover td { background: #f5f0ff; }
   .sheet .ci.big { font-size: 16px; font-weight: 600; padding: 11px 12px; }
   .sheet tr.add td { padding: 12px 10px; top: 46px; }
   @media (max-width: 1000px) { body.v-list .lay { grid-template-columns: 1fr; } }
 
   /* ===== 16 ต.ค. ผู้ใช้สั่ง: ไม่เอาม่วง/Digital Twin → AI Modern โทนเขียว มีมิติ + ไอคอน ===== */
-  body:not(.dt) { --bg: #fbf6ef; --ink: #2a1215; --ink2: #5a3a36; --mut: #8c6f66; --line: #eedfd0; --acc: #b91c1c; --acc2: #7f1d1d; --tint: #fbeee0;
-    background: radial-gradient(900px 560px at 105% -8%, rgba(244,63,94,.30), transparent 60%), radial-gradient(760px 520px at -10% 14%, rgba(234,179,8,.18), transparent 60%),
-      radial-gradient(820px 560px at 55% 115%, rgba(251,146,60,.18), transparent 60%), radial-gradient(circle at 1px 1px, rgba(127,29,29,.14) 1px, transparent 1.4px) 0 0 / 22px 22px,
-      linear-gradient(180deg, #fdf9f2, #f7eee2); background-attachment: fixed; }
-  body:not(.dt) header.top { background: linear-gradient(115deg, #4a0a0f 0%, #991b1b 34%, #b45309 68%, #d4a017 110%); box-shadow: 0 22px 44px -22px rgba(153,27,27,.75); }
+  body:not(.dt) { --bg: #eef7f2; --ink: #0f241c; --ink2: #35524a; --mut: #6b8a80; --line: #d9ebe2; --acc: #059669; --acc2: #065f46; --tint: #e3f6ec;
+    background: radial-gradient(900px 560px at 105% -8%, rgba(45,212,191,.30), transparent 60%), radial-gradient(760px 520px at -10% 14%, rgba(234,179,8,.18), transparent 60%),
+      radial-gradient(820px 560px at 55% 115%, rgba(56,189,248,.18), transparent 60%), radial-gradient(circle at 1px 1px, rgba(6,95,70,.14) 1px, transparent 1.4px) 0 0 / 22px 22px,
+      linear-gradient(180deg, #f5fcf8, #e9f6f0); background-attachment: fixed; }
+  body:not(.dt) header.top { background: linear-gradient(115deg, #053d2f 0%, #047857 34%, #0d9488 68%, #22c55e 110%); box-shadow: 0 22px 44px -22px rgba(4,120,87,.75); }
   body:not(.dt) header.top::before { content: ""; position: absolute; inset: 0; pointer-events: none;
-    background: radial-gradient(420px 220px at 18% 0%, rgba(254,215,170,.35), transparent 70%), radial-gradient(520px 260px at 78% 110%, rgba(253,224,71,.35), transparent 70%),
+    background: radial-gradient(420px 220px at 18% 0%, rgba(167,243,208,.35), transparent 70%), radial-gradient(520px 260px at 78% 110%, rgba(253,224,71,.35), transparent 70%),
       linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px) 0 0 / 46px 46px; }
   body:not(.dt) header.top .wrap { position: relative; z-index: 1; }
-  .logo { position: relative; background: linear-gradient(145deg, #ffffff, #fff7ed); box-shadow: 0 0 0 4px rgba(255,255,255,.18), 0 10px 26px -8px rgba(0,0,0,.4); }
-  .logo .aib { position: absolute; right: -8px; bottom: -6px; font: 800 10px/1 "Plus Jakarta Sans", sans-serif; letter-spacing: .06em; color: #fff; padding: 4px 6px; border-radius: 8px; background: linear-gradient(135deg, #a3e635, #c81e1e 60%, #d4a017); box-shadow: 0 4px 12px -2px rgba(212,160,23,.7); }
-  body:not(.dt) .ttl h1 { background: linear-gradient(90deg, #ffffff, #fde7c4 55%, #a5f3fc); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: -.01em; }
+  .logo { position: relative; background: linear-gradient(145deg, #ffffff, #ecfdf5); box-shadow: 0 0 0 4px rgba(255,255,255,.18), 0 10px 26px -8px rgba(0,0,0,.4); }
+  .logo .aib { position: absolute; right: -8px; bottom: -6px; font: 800 10px/1 "Plus Jakarta Sans", sans-serif; letter-spacing: .06em; color: #fff; padding: 4px 6px; border-radius: 8px; background: linear-gradient(135deg, #a3e635, #10b981 60%, #22c55e); box-shadow: 0 4px 12px -2px rgba(16,185,129,.7); }
+  body:not(.dt) .ttl h1 { background: linear-gradient(90deg, #ffffff, #d1fae5 55%, #a5f3fc); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: -.01em; }
   body:not(.dt) .panel, body:not(.dt) .kpi, body:not(.dt) .side, body:not(.dt) .filters, body:not(.dt) .own, body:not(.dt) nav.tabs button {
     background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.78)); backdrop-filter: blur(14px) saturate(1.3); -webkit-backdrop-filter: blur(14px) saturate(1.3);
-    border: 1px solid rgba(255,255,255,.95); box-shadow: 0 1px 0 #fff inset, 0 0 0 1px rgba(212,160,23,.08), 0 2px 4px rgba(74,10,15,.05), 0 18px 40px -22px rgba(153,27,27,.40); }
+    border: 1px solid rgba(255,255,255,.95); box-shadow: 0 1px 0 #fff inset, 0 0 0 1px rgba(16,185,129,.08), 0 2px 4px rgba(6,60,45,.05), 0 18px 40px -22px rgba(4,120,87,.40); }
   body:not(.dt) .panel { border-radius: 22px; }
-  body:not(.dt) nav.tabs button svg { color: #b91c1c; }
-  body:not(.dt) nav.tabs button.on { background: linear-gradient(135deg, #c81e1e, #991b1b 60%, #7f1d1d); color: #fff; border-color: transparent; box-shadow: 0 0 0 1px rgba(255,255,255,.3) inset, 0 12px 26px -10px rgba(185,28,28,.75); }
+  body:not(.dt) nav.tabs button svg { color: #059669; }
+  body:not(.dt) nav.tabs button.on { background: linear-gradient(135deg, #10b981, #047857 60%, #065f46); color: #fff; border-color: transparent; box-shadow: 0 0 0 1px rgba(255,255,255,.3) inset, 0 12px 26px -10px rgba(5,150,105,.75); }
   body:not(.dt) nav.tabs button.on svg { color: #fff; }
-  body:not(.dt) .pb.on { background: linear-gradient(135deg, #c81e1e, #991b1b 60%, #7f1d1d); box-shadow: 0 14px 28px -14px rgba(185,28,28,.85); }
-  body:not(.dt) .chip.on { background: linear-gradient(135deg, #2a1215, #7f1d1d); color: #fff; }
-  body:not(.dt) #bAdd { background: #fff; color: #991b1b; box-shadow: 0 10px 24px -10px rgba(0,0,0,.35); }
-  body:not(.dt) .btn.pri { background: linear-gradient(135deg, #c81e1e, #991b1b); box-shadow: 0 8px 18px -8px rgba(185,28,28,.7); }
-  body:not(.dt) th { background: linear-gradient(180deg, #fdf7ee, #f8e7cf); color: #7f1d1d; border-bottom: 2px solid #ecc98a; }
-  body:not(.dt) tr.add td { background: linear-gradient(180deg, #fffaf0, #fdf0d8); border-bottom: 2px solid #f6d79a; }
-  body:not(.dt) .sheet tr.r:nth-child(odd) td { background: rgba(212,160,23,.03); } body:not(.dt) .sheet tr.r:hover td { background: rgba(212,160,23,.08); }
-  body:not(.dt) .ci:focus { border-color: #f2c14e; box-shadow: 0 0 0 3px rgba(242,193,78,.25); }
+  body:not(.dt) .pb.on { background: linear-gradient(135deg, #10b981, #047857 60%, #065f46); box-shadow: 0 14px 28px -14px rgba(5,150,105,.85); }
+  body:not(.dt) .chip.on { background: linear-gradient(135deg, #0f241c, #065f46); color: #fff; }
+  body:not(.dt) #bAdd { background: #fff; color: #047857; box-shadow: 0 10px 24px -10px rgba(0,0,0,.35); }
+  body:not(.dt) .btn.pri { background: linear-gradient(135deg, #10b981, #047857); box-shadow: 0 8px 18px -8px rgba(5,150,105,.7); }
+  body:not(.dt) th { background: linear-gradient(180deg, #f3fbf7, #e0f4ea); color: #065f46; border-bottom: 2px solid #bfe6d3; }
+  body:not(.dt) tr.add td { background: linear-gradient(180deg, #f2fcf6, #e6f8ee); border-bottom: 2px solid #bbf7d0; }
+  body:not(.dt) .sheet tr.r:nth-child(odd) td { background: rgba(16,185,129,.03); } body:not(.dt) .sheet tr.r:hover td { background: rgba(16,185,129,.08); }
+  body:not(.dt) .ci:focus { border-color: #34d399; box-shadow: 0 0 0 3px rgba(52,211,153,.25); }
   .thi { display: inline-flex; align-items: center; gap: 6px; } .thi svg { opacity: .75; flex: none; }
   .ib { width: 36px; height: 36px; border-radius: 12px; display: inline-grid; place-items: center; flex: none; color: #fff; background: var(--g);
     box-shadow: 0 1px 0 rgba(255,255,255,.45) inset, 0 8px 18px -8px rgba(5,80,60,.6); }
   .tdo.late, .tdo:not(.late) { border-top: 0 !important; position: relative; overflow: hidden; }
-  .tdo::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: linear-gradient(90deg, #f59e0b, #2563eb); }
+  .tdo::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: linear-gradient(90deg, #38bdf8, #2563eb); }
   .tdo.late::before { background: linear-gradient(90deg, #fb7185, #dc2626); }
-  .tdl th { background: linear-gradient(180deg, #fdf7ee, #faecd8) !important; color: #7f1d1d !important; } .tdl tr:nth-child(even) td { background: rgba(212,160,23,.035); }
+  .tdl th { background: linear-gradient(180deg, #f3fbf7, #e6f6ee) !important; color: #065f46 !important; } .tdl tr:nth-child(even) td { background: rgba(16,185,129,.035); }
   .kpi::before { background: linear-gradient(180deg, var(--c, var(--acc)), color-mix(in srgb, var(--c, var(--acc)) 55%, #fff)); }
 
   /* (สีเขียวเดิมถูกแทนเป็นแดง-ทองทั้งไฟล์ 16 ต.ค.) ===== 16 ต.ค. ผู้ใช้สั่ง: Font ทันสมัย (Anuphan เนื้อหา · Prompt หัวข้อ · Plus Jakarta Sans ตัวเลข) + เขียวตัดเหลือง ===== */
@@ -349,37 +349,116 @@
   .ttl h1, .panel h2, nav.tabs button, .pb b, .pb .nm, dialog .dh, .side h4 { font-family: "Prompt", "Anuphan", sans-serif; font-weight: 600; letter-spacing: 0; }
   .ttl h1 { font-size: 30px; }
   .sheet td.tt .ci { font-weight: 600; }
-  body:not(.dt) { background: radial-gradient(760px 480px at 102% -6%, rgba(250,204,21,.30), transparent 60%), radial-gradient(900px 560px at 70% -20%, rgba(244,63,94,.22), transparent 60%),
+  body:not(.dt) { background: radial-gradient(760px 480px at 102% -6%, rgba(250,204,21,.30), transparent 60%), radial-gradient(900px 560px at 70% -20%, rgba(45,212,191,.22), transparent 60%),
       radial-gradient(760px 520px at -10% 14%, rgba(234,179,8,.20), transparent 60%), radial-gradient(820px 560px at 55% 115%, rgba(253,224,71,.16), transparent 60%),
-      radial-gradient(circle at 1px 1px, rgba(127,29,29,.14) 1px, transparent 1.4px) 0 0 / 22px 22px, linear-gradient(180deg, #fdf9f2, #f8efe3); background-attachment: fixed; }
-  body:not(.dt) header.top { background: linear-gradient(115deg, #4a0a0f 0%, #991b1b 40%, #b91c1c 78%, #b8860b 112%); }
+      radial-gradient(circle at 1px 1px, rgba(6,95,70,.14) 1px, transparent 1.4px) 0 0 / 22px 22px, linear-gradient(180deg, #f5fcf8, #eef8ef); background-attachment: fixed; }
+  body:not(.dt) header.top { background: linear-gradient(115deg, #053d2f 0%, #047857 40%, #059669 78%, #65a30d 112%); }
   body:not(.dt) header.top::after { background: radial-gradient(circle, rgba(250,204,21,.55), rgba(250,204,21,0) 70%); right: -60px; top: -140px; width: 440px; height: 440px; }
   body:not(.dt) header.top .wrap::after { content: ""; position: absolute; left: 16px; right: 16px; bottom: -26px; height: 4px; border-radius: 4px; background: linear-gradient(90deg, transparent, #facc15 20%, #fde047 50%, #facc15 80%, transparent); opacity: .9; }
   body:not(.dt) .ttl small { color: #fde047; }
   body:not(.dt) .ttl h1 { background: linear-gradient(90deg, #ffffff, #fef9c3 60%, #fde047); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .logo .aib { background: linear-gradient(135deg, #fef08a, #facc15 60%, #eab308); color: #6b0f1a; box-shadow: 0 4px 12px -2px rgba(234,179,8,.8); }
-  body:not(.dt) #bAdd { background: linear-gradient(135deg, #fef08a, #facc15); color: #6b0f1a; font-weight: 800; box-shadow: 0 10px 24px -10px rgba(161,98,7,.7); }
-  body:not(.dt) nav.tabs button.on { background: linear-gradient(135deg, #b91c1c, #991b1b); box-shadow: inset 0 -4px 0 #facc15, 0 12px 26px -10px rgba(185,28,28,.75); }
+  .logo .aib { background: linear-gradient(135deg, #fef08a, #facc15 60%, #eab308); color: #064e3b; box-shadow: 0 4px 12px -2px rgba(234,179,8,.8); }
+  body:not(.dt) #bAdd { background: linear-gradient(135deg, #fef08a, #facc15); color: #064e3b; font-weight: 800; box-shadow: 0 10px 24px -10px rgba(161,98,7,.7); }
+  body:not(.dt) nav.tabs button.on { background: linear-gradient(135deg, #059669, #047857); box-shadow: inset 0 -4px 0 #facc15, 0 12px 26px -10px rgba(5,150,105,.75); }
   body:not(.dt) nav.tabs button.on .tag, body:not(.dt) nav.tabs button.on b { background: #fde047; color: #713f12; }
-  body:not(.dt) .pb.on { background: linear-gradient(135deg, #b91c1c, #991b1b); box-shadow: inset 5px 0 0 #facc15, 0 14px 28px -14px rgba(185,28,28,.85); }
-  body:not(.dt) .chip.on { background: linear-gradient(135deg, #6b0f1a, #991b1b); color: #fef08a; }
+  body:not(.dt) .pb.on { background: linear-gradient(135deg, #059669, #047857); box-shadow: inset 5px 0 0 #facc15, 0 14px 28px -14px rgba(5,150,105,.85); }
+  body:not(.dt) .chip.on { background: linear-gradient(135deg, #064e3b, #047857); color: #fef08a; }
   body:not(.dt) th { border-bottom: 2px solid #fde047; }
   body:not(.dt) tr.add td { background: linear-gradient(180deg, #fefce8, #fef9c3); border-bottom: 2px solid #fde047; } body:not(.dt) tr.add .ci { border-color: #fde68a; }
   body:not(.dt) .ci:focus { border-color: #facc15; box-shadow: 0 0 0 3px rgba(250,204,21,.3); }
   body:not(.dt) .sheet tr.r:hover td { background: rgba(250,204,21,.10); }
   body:not(.dt) .panel h2 .tag { background: #fef9c3; color: #854d0e; }
-  /* ===== 16 ต.ค. ผู้ใช้สั่ง: เปลี่ยนเขียว → แดง ทอง (สถานะงานยังใช้สีเดิม: เสร็จเขียว · Delay แดงสด) ===== */
-  body:not(.dt) header.top { background: linear-gradient(115deg, #3d0609 0%, #7f1d1d 38%, #a3141f 70%, #b8860b 118%); box-shadow: 0 22px 44px -22px rgba(127,29,29,.75); }
-  body:not(.dt) header.top::after { background: radial-gradient(circle, rgba(242,193,78,.55), rgba(242,193,78,0) 70%); }
-  body:not(.dt) .ttl small { color: #f6d27a; }
-  body:not(.dt) .ttl h1 { background: linear-gradient(90deg, #ffffff, #fbe7b0 55%, #f2c14e); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  body:not(.dt) #bAdd, .logo .aib { background: linear-gradient(135deg, #fbe7a1, #e8b923 55%, #c8961a); color: #4a0a0f; }
-  body:not(.dt) nav.tabs button.on, body:not(.dt) .pb.on { background: linear-gradient(135deg, #b91c1c, #7f1d1d); }
-  body:not(.dt) nav.tabs button.on { box-shadow: inset 0 -4px 0 #e8b923, 0 12px 26px -10px rgba(153,27,27,.7); }
-  body:not(.dt) .pb.on { box-shadow: inset 5px 0 0 #e8b923, 0 14px 28px -14px rgba(153,27,27,.8); }
-  body:not(.dt) .chip.on { background: linear-gradient(135deg, #5b0f14, #991b1b); color: #fbe7a1; }
-  body:not(.dt) th { border-bottom-color: #e8b923; }
-  body:not(.dt) tr.add td { background: linear-gradient(180deg, #fffaeb, #fdf0cf); border-bottom-color: #e8b923; }
+  /* ===== 16 ต.ค. ผู้ใช้สั่ง: ใช้บนมือถือง่าย ไม่ต้องเลื่อนเยอะ · การ์ดงาน · ความคืบหน้ารวมแบบใหม่ ===== */
+  .mp { display: grid; gap: 14px; margin-top: 10px; }
+  .mp-top { display: flex; align-items: center; gap: 14px; }
+  .mp-num { display: flex; align-items: flex-start; line-height: 1; background: linear-gradient(135deg, #059669, #65a30d); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .mp-num b { font-size: 64px; font-weight: 800; letter-spacing: -.03em; } .mp-num i { font-style: normal; font-size: 26px; font-weight: 800; margin-top: 6px; }
+  .mp-txt { display: grid; gap: 2px; } .mp-txt b { font-family: "Prompt", "Anuphan"; font-size: 16px; } .mp-txt span { color: var(--mut); font-size: 13px; }
+  .mp-bar { display: flex; height: 14px; border-radius: 999px; overflow: hidden; gap: 2px; background: var(--hz); box-shadow: inset 0 1px 2px rgba(0,0,0,.08); }
+  .mp-bar span { min-width: 6px; }
+  .mp-leg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .mp-leg button { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; padding: 9px 11px; border-radius: 12px; border: 1px solid var(--line); background: #fff; font-size: 13px; color: var(--ink2); text-align: left; }
+  .mp-leg i { width: 10px; height: 10px; border-radius: 3px; } .mp-leg b { font-size: 18px; color: var(--ink); }
+  .mp-on { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px; font-size: 13px; color: var(--ink2); padding: 10px 12px; border-radius: 12px; background: linear-gradient(90deg, #fff8e6, #fff); border: 1px solid #f3e0b0; }
+  .mp-ob { height: 8px; border-radius: 999px; background: #e2f1e9; overflow: hidden; } .mp-ob span { display: block; height: 100%; background: linear-gradient(90deg, #e8b923, #0f9a6e); border-radius: 999px; }
+  .mp-on b { font-size: 16px; color: var(--ink); }
+  @media (min-width: 1201px) { .mc { grid-template-columns: 320px 1fr 260px; } }
+  /* การ์ดงาน */
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; margin-top: 14px; }
+  .tc { position: relative; display: flex; flex-direction: column; gap: 10px; padding: 16px 16px 14px; border-radius: 18px; background: #fff; border: 1px solid var(--line);
+    box-shadow: 0 1px 2px rgba(6,60,45,.05), 0 12px 26px -18px rgba(6,95,70,.45); overflow: hidden; }
+  .tc::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--sc); }
+  .tc-h { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; } .tc-no { margin-left: auto; font-size: 12px; color: var(--mut); font-weight: 700; }
+  .tc-more { border: 1px solid var(--line); background: #fff; border-radius: 10px; width: 32px; height: 32px; display: grid; place-items: center; color: var(--ink2); }
+  .tc h3 { margin: 0; font-family: "Prompt", "Anuphan"; font-weight: 600; font-size: 17px; line-height: 1.35; cursor: pointer; }
+  .tc h3:hover { color: #047857; }
+  .tc-m { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--ink2); } .tc-m span { display: inline-flex; align-items: center; gap: 5px; } .tc-m svg { opacity: .6; }
+  .tc-p { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; } .tc-p .pbar { height: 10px; } .tc-p b { font-size: 18px; }
+  .tc-q { display: grid; grid-template-columns: repeat(3, 1fr) 1.3fr; gap: 6px; }
+  .tc-q button { border: 1px solid var(--line); background: #f4fbf7; border-radius: 10px; padding: 9px 0; font-weight: 700; font-size: 13px; color: var(--ink2); display: inline-flex; gap: 4px; align-items: center; justify-content: center; }
+  .tc-q button:active { transform: scale(.96); } .tc-q button.ok { background: linear-gradient(135deg, #12b07d, #0f9a6e); color: #fff; border: 0; }
+  .tc-auto { font-size: 12px; color: var(--mut); }
+  .tc .why { width: 100%; min-height: 40px; }
+  .tc-n { margin: 0; font-size: 13px; color: var(--ink2); background: #eef7f2; border-radius: 10px; padding: 8px 10px; white-space: pre-wrap; }
+  .tc-k { display: grid; gap: 4px; } .tc-k button { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; text-align: left; border: 0; background: #eef7f2; border-radius: 9px; padding: 7px 10px; font-size: 13px; color: var(--ink); }
+  .tc-k i { width: 8px; height: 8px; border-radius: 50%; }
+  .qadd { margin-top: 12px; padding: 14px; border-radius: 18px; background: linear-gradient(135deg, #fffaeb, #fdf0cf); border: 1.5px dashed #e8b923; display: grid; gap: 10px; }
+  .qa1 { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; }
+  .qa1 .ci { font-size: 16px; padding: 12px 14px; background: #fff; border: 1px solid #f1d58a; border-radius: 12px; width: 100%; }
+  .qa1 .btn { padding: 12px 18px; }
+  .qa2 { display: flex; flex-wrap: wrap; gap: 10px; } .qa2 label { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink2); }
+  .qa2 .ci { background: #fff; border: 1px solid #f1d58a; border-radius: 10px; padding: 8px 10px; }
+  .cardv h2 { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; } .tv-r { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+  .tv-r select { border: 1px solid var(--line); border-radius: 10px; padding: 7px 9px; font-size: 13px; background: #fff; }
+  .lvsw { display: inline-flex; background: #e2f1e9; border-radius: 10px; padding: 3px; } .lvsw button { border: 0; background: none; padding: 6px 10px; border-radius: 8px; font-size: 13px; font-weight: 700; color: var(--ink2); }
+  .lvsw button.on { background: #fff; color: #047857; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+  .tdsw { display: none; } .fq { display: contents; } .ftog { display: none; }
+  #fab { display: none; }
+  .sdone { margin-top: 14px; width: 100%; display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line); background: #f3fbf6; color: #0f7a57; font-weight: 700; font-size: 14px; }
+  .sdone span { margin-left: auto; color: var(--mut); font-weight: 600; }
+  @media (max-width: 760px) {
+    .wrap { padding: 0 10px 90px; }
+    header.top { border-radius: 0 0 22px 22px; padding: 12px 0 14px; margin-bottom: 10px; }
+    body:not(.dt) header.top .wrap::after { bottom: -14px; }
+    .hrow { gap: 10px; flex-wrap: nowrap; } .home { font-size: 0; padding: 10px; gap: 0; } .logo { width: 40px; height: 40px; border-radius: 12px; } .logo svg { width: 22px; height: 22px; }
+    .ttl { min-width: 0; flex: 1; } .ttl small, #asof, .live, .clock, #bExp, #bAdd { display: none !important; }
+    .ttl h1 { font-size: 17px !important; line-height: 1.3; }
+    .hbtns { margin-left: 0; flex: none; } .sync { font-size: 0 !important; } .sync::first-letter { font-size: 15px; }
+    .lay { gap: 8px !important; grid-template-columns: minmax(0, 1fr) !important; } .lay > * { min-width: 0; } .side { position: static !important; display: flex !important; gap: 8px; padding: 6px !important; overflow-x: auto; flex-wrap: nowrap !important; border-radius: 16px !important; }
+    .side h4 { display: none; } .pb { min-width: 0 !important; width: auto !important; flex: 1 0 auto; padding: 7px 10px !important; gap: 8px !important; border-radius: 12px !important; }
+    .pb .av { width: 30px !important; height: 30px !important; font-size: 13px !important; } .pb small { font-size: 11px; } .pb .mini { display: none !important; }
+    nav.tabs { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 6px; margin-bottom: 8px; scrollbar-width: none; } nav.tabs::-webkit-scrollbar { display: none; }
+    nav.tabs button { flex: none; padding: 8px 12px; font-size: 14px; border-radius: 12px; }
+    .filters { padding: 8px !important; gap: 8px !important; margin-bottom: 10px !important; border-radius: 16px !important; }
+    .filters .chips { display: flex; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; width: 100%; } .filters .chips::-webkit-scrollbar { display: none; }
+    .filters .chip { flex: none; padding: 6px 10px; font-size: 13px; }
+    .filters > label { display: none; } .filters.fo > label { display: flex; width: 100%; justify-content: space-between; } .filters.fo > label select { flex: 1; max-width: 62%; }
+    .fq { display: flex; gap: 8px; width: 100%; } .fq input { flex: 1; min-width: 0; } .ftog { display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--line); background: #fff; border-radius: 10px; padding: 0 12px; font-weight: 700; font-size: 13px; color: var(--ink2); white-space: nowrap; }
+    .filters.fo .ftog { background: #047857; color: #fff; border-color: transparent; }
+    .todo { grid-template-columns: 1fr !important; gap: 8px; margin-bottom: 10px; }
+    .tdsw { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; background: #e2f1e9; padding: 4px; border-radius: 14px; }
+    .tdsw button { border: 0; background: none; border-radius: 11px; padding: 9px 6px; font-weight: 700; font-size: 14px; color: var(--ink2); display: inline-flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; }
+    .tdsw button b { font-size: 15px; } .tdsw button i { font-style: normal; font-size: 10.5px; font-weight: 700; color: #fff; background: #dc2626; border-radius: 999px; padding: 1px 6px; }
+    .tdsw button.on { background: #fff; color: #047857; box-shadow: 0 2px 6px rgba(0,0,0,.1); }
+    .todo[data-td="today"] .tdo.late, .todo[data-td="late"] .tdo:not(.late) { display: none; }
+    .tdo { padding: 12px !important; } .tdo h2 { font-size: 15px; } .tdo .hs { display: none; } .tdo .ib { width: 30px; height: 30px; }
+    .tdl { max-height: 330px; } .tdl thead { display: none; } .tdl table, .tdl tbody { display: block; } .tdl tr { display: grid; grid-template-columns: 1fr auto; border-top: 1px solid var(--line); }
+    .tdl td { border: 0 !important; padding: 8px 6px !important; } .tdl td.tw, .tdl td.tp { grid-column: 1 / -1; width: auto !important; padding-top: 0 !important; }
+    .cardv { padding: 12px !important; } .cardv h2 { font-size: 15px; } .cardv .ib { width: 30px; height: 30px; } .tv-r { margin-left: 0; width: 100%; } .tv-r select { flex: 1; } .lvsw { display: none; }
+    .cards { grid-template-columns: 1fr; gap: 10px; margin-top: 10px; } .tc { padding: 13px 13px 12px; gap: 8px; border-radius: 16px; } .tc h3 { font-size: 16px; }
+    .qadd { padding: 10px; gap: 8px; } .qa1 { grid-template-columns: 1fr auto; } .qa1 .ib { display: none; } .qa1 .btn { padding: 11px 14px; }
+    .qa2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; } .qa2 label { display: grid; gap: 2px; font-size: 11.5px; } .qa2 label:last-of-type { grid-column: 1 / -1; } .qa2 .ci { width: 100%; padding: 8px; }
+    #fab { display: grid; place-items: center; position: fixed; right: 16px; bottom: 18px; z-index: 40; width: 58px; height: 58px; border-radius: 50%; border: 0; font-size: 30px; font-weight: 400; color: #053d2f;
+      background: linear-gradient(135deg, #fde68a, #e8b923 60%, #c8961a); box-shadow: 0 10px 24px -6px rgba(6,95,70,.55), 0 0 0 4px rgba(255,255,255,.7); }
+    .kpis { grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; margin-bottom: 10px !important; } .kpi { padding: 10px !important; border-radius: 14px !important; }
+    .kpi .l { font-size: 11.5px; gap: 4px; } .kpi .l svg { width: 13px; height: 13px; } .kpi .v { font-size: 24px !important; } .kpi .v small { font-size: 11px !important; } .kpi .d { display: none; }
+    .mc { gap: 10px !important; margin-bottom: 10px !important; } .mc > :nth-child(2) { order: 1 !important; } .mpp { order: 0; } .mc > :nth-child(3) { order: 2; }
+    .mp-num b { font-size: 52px; } .plsg { display: grid !important; grid-template-columns: 1fr 1fr; gap: 8px; } .pls { grid-template-columns: auto 1fr auto; gap: 6px; padding: 9px 10px; } .pls span { font-size: 11.5px; } .pls b { font-size: 20px; }
+    body:not(.v-list) .kpis { display: none !important; } .mc .hint { display: none; }
+    .tc-q { grid-template-columns: 1fr 1fr 1.4fr; } .tc-q button { padding: 8px 0; } .tc-q button[data-pp$="|25"] { display: none; }
+    .panel { padding: 13px !important; border-radius: 18px !important; } .panel h2 { font-size: 15px; }
+    .g2 { gap: 10px !important; } .hint { font-size: 12px; }
+  }
 </style>
 </head>
 <body>
@@ -387,7 +466,7 @@
   <div class="wrap" style="padding-bottom:0">
     <div class="hrow">
       <a class="home" href="../index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>หน้าหลัก</a>
-      <div class="logo"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="url(#lg)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c81e1e"/><stop offset="1" stop-color="#0891b2"/></linearGradient></defs><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><b class="aib">AI</b></div>
+      <div class="logo"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="url(#lg)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#10b981"/><stop offset="1" stop-color="#0891b2"/></linearGradient></defs><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><b class="aib">AI</b></div>
       <div class="ttl"><small>PCG · PROJECT TEAM · DAILY TASK</small><h1>งานที่ต้องทำประจำวันแผนกโครงการ</h1><div class="sub" id="asof"></div></div>
       <div class="hbtns">
         <span style="display:grid;justify-items:end;gap:2px"><span class="live"><i></i>LIVE</span><span class="clock" id="clock"></span></span>
@@ -407,6 +486,7 @@
     <nav class="tabs" id="tabs"></nav>
     <div class="filters" id="filters"></div>
     <main id="view"></main>
+    <button type="button" id="fab" aria-label="เพิ่มงาน">＋</button>
   </div>
 </div>
 <div class="tip" id="tip"></div>
@@ -466,7 +546,7 @@
 </script>
 <script>
 const DATA0 = [{"title":"ผังห้อง Training คลัง 32 + รายการราคาใหม่","owner":"K.ศุภณัฐ","start":"2026-01-02","target":"2026-01-06","prog":100,"cancel":false,"note":"","id":"T1","no":1},{"title":"4 Way shuttle (Org.)","owner":"K.ศุภณัฐ","start":"2026-01-08","target":"2026-01-09","prog":100,"cancel":false,"note":"","id":"T2","no":2},{"title":"4 Way Presentation","owner":"K.ศุภณัฐ","start":"2026-01-12","target":"2026-06-30","prog":100,"cancel":false,"note":"","id":"T3","no":3},{"title":"วาง Layout ใหม่คลัง 32","owner":"K.ศุภณัฐ","start":"2026-01-09","target":"2026-01-13","prog":100,"cancel":false,"note":"","id":"T4","no":4},{"title":"เป้า Robot ใหม่ เทียบกับคน","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-09","prog":100,"cancel":false,"note":"ส่งรายละเอียดให้ ปรางเรียบร้อย","id":"T5","no":5},{"title":"Iot Project ภาพรวมทั้งปี","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-15","prog":100,"cancel":false,"note":"P ดำเนินการ","id":"T6","no":6},{"title":"Requirement Forklift Project 2026","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-15","prog":100,"cancel":false,"note":"","id":"T7","no":7},{"title":"Location คลังสินค้า 3 คลัง ส่งพี่เต้ย","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-15","prog":100,"cancel":false,"note":"","id":"T8","no":8},{"title":"Application การชาร์ตแบต ของรถ Forklift ที่เป็น Lithium","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-15","prog":0,"cancel":false,"note":"","id":"T9","no":9},{"title":"งานเพิ่มเครื่องอัดขยะ","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-15","prog":100,"cancel":false,"note":"เริ่มเข้างาน 07-08 Feb 26","id":"T10","no":10},{"title":"งานเพิ่ม Platform telescopics","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-30","prog":100,"cancel":false,"note":"ส่งให้ บุยธรรมแล้ว","id":"T11","no":11},{"title":"TOR เครื่องอัดขยะ ทาง Supplier Sign","owner":"K.ศุภณัฐ","start":"2026-01-23","target":"2026-01-25","prog":100,"cancel":false,"note":"ส่งตัวปรับแก้ไปแล้ว 27 Jan","id":"T12","no":12},{"title":"สัญญา ส่งให้ทาง Supplier","owner":"K.ศุภณัฐ","start":"2026-01-23","target":"2026-01-30","prog":null,"cancel":true,"note":"รอพี่ไพ Review","id":"T13","no":13},{"title":"ส่ง Questionnair ให้ทาง Cainiao","owner":"K.ศุภณัฐ","start":"2026-01-23","target":"2026-01-23","prog":100,"cancel":false,"note":"ส่งภายในวันนี้ 23","id":"T14","no":14},{"title":"งาน Renovate คลังราชบุรี Phase 2","owner":"K.ศุภณัฐ","start":"2026-01-27","target":"2026-01-30","prog":25,"cancel":false,"note":"","id":"T15","no":15},{"title":"งาน โต๊ะ Furniture ห้องประชุมใหม่","owner":"K.ศุภณัฐ","start":"2026-02-05","target":"2026-02-06","prog":100,"cancel":false,"note":"","id":"T16","no":16},{"title":"งานต่อเติม Flowrack คลัง WHA 05","owner":"K.ศุภณัฐ","start":"2026-02-05","target":"2026-02-06","prog":100,"cancel":false,"note":"รอใบเสนอราคา","id":"T17","no":17},{"title":"งานปรับปรุง กำแพง Robot และประตู","owner":"K.ศุภณัฐ","start":"2026-02-05","target":"2026-02-06","prog":100,"cancel":false,"note":"รอใบเสนอราคา","id":"T18","no":18},{"title":"งานส่งต่อรองของ น้ำมัน เครื่องจักร ของเครื่องอัดขยะ","owner":"K.ศุภณัฐ","start":"2026-02-05","target":"2026-02-06","prog":100,"cancel":false,"note":"รอเขียนบันทึก","id":"T19","no":19},{"title":"งาน Renovate คลังพิษณุโลก (HighBay)","owner":"K.ศุภณัฐ","start":"2026-02-05","target":"2026-09-30","prog":null,"cancel":true,"note":"Concept","id":"T20","no":20},{"title":"งานออกแบบ Design 2 ชั้นห้องตู้ปลา","owner":"K.ศุภณัฐ","start":"2026-02-06","target":"2026-02-12","prog":100,"cancel":false,"note":"เหลือประเมินราคาให้พี่แต้ม","id":"T21","no":21},{"title":"GPS Tacking Forklift","owner":"K.ศุภณัฐ","start":"2026-02-06","target":"2026-02-12","prog":null,"cancel":true,"note":"","id":"T22","no":22},{"title":"E-Com Desing","owner":"K.ศุภณัฐ","start":"2026-02-25","target":"2026-02-26","prog":100,"cancel":false,"note":"","id":"T23","no":23},{"title":"แบบคลังสินค้า โคราช ที่มี","owner":"K.ศุภณัฐ","start":"2026-02-25","target":"2026-02-26","prog":100,"cancel":false,"note":"","id":"T24","no":24},{"title":"พัดลมเป่าในตู้ Load คลัง 32","owner":"K.ศุภณัฐ","start":"2026-02-25","target":"2026-02-26","prog":null,"cancel":true,"note":"","id":"T25","no":25},{"title":"Drawing Korat WH Rev. 2","owner":"K.ศุภณัฐ","start":"2026-03-02","target":"2026-03-04","prog":100,"cancel":false,"note":"ปรับแก้ขนาด คลังสินค้า","id":"T26","no":26},{"title":"Action Plan ละเอียดสำหรับ การก่อสร้างคลัง","owner":"K.ศุภณัฐ","start":"2026-03-02","target":"2026-03-10","prog":100,"cancel":false,"note":"","id":"T27","no":27},{"title":"ปากเกร็ด Drawing","owner":"K.ศุภณัฐ","start":"2026-03-04","target":"2026-03-10","prog":100,"cancel":false,"note":"","id":"T28","no":28},{"title":"บันทึกงานเก้าอี้ ห้องประชุม","owner":"K.ศุภณัฐ","start":"2026-03-04","target":"2026-03-10","prog":100,"cancel":false,"note":"","id":"T29","no":29},{"title":"Dashboard BI ของ Axons MA","owner":"K.ศุภณัฐ","start":"2026-03-04","target":"2026-03-08","prog":100,"cancel":false,"note":"","id":"T30","no":30},{"title":"Plant Meeting Mar 2026","owner":"K.ศุภณัฐ","start":"2026-03-04","target":"2026-03-13","prog":100,"cancel":false,"note":"","id":"T31","no":31},{"title":"Checklist BT Forklift","owner":"K.วัฒนา","start":"2026-03-04","target":"2026-03-13","prog":0,"cancel":false,"note":"","id":"T32","no":32},{"title":"Stock Rack ด้านหลังคลังสินค้า","owner":"K.ศุภณัฐ","start":"2026-03-04","target":"2026-03-13","prog":100,"cancel":false,"note":"","id":"T33","no":33},{"title":"เขียนบันทึกงาน เปลี่ยนบัว Training Room","owner":"K.ศุภณัฐ","start":"2026-03-16","target":"2026-03-18","prog":100,"cancel":false,"note":"","id":"T34","no":34},{"title":"แบบสำรวจ Height Selection ของคลัง RDC","owner":"K.ศุภณัฐ","start":"2026-03-16","target":"2026-03-18","prog":100,"cancel":false,"note":"มีข้อมูลแล้วรอดำเนินการ","id":"T35","no":35},{"title":"ใบ ขอ ช่างซ่อมบำรุง / ผู้จัดการแผนกโครงการ Automate","owner":"K.ศุภณัฐ","start":"2026-03-16","target":"2026-03-20","prog":100,"cancel":false,"note":"","id":"T36","no":36},{"title":"งาน Memo งานซื้อ Robot","owner":"K.ศุภณัฐ","start":"2026-03-26","target":"2026-03-28","prog":100,"cancel":false,"note":"","id":"T37","no":37},{"title":"งาน TOR งานซื้อ Robot","owner":"K.ศุภณัฐ","start":"2026-03-26","target":"2026-03-28","prog":100,"cancel":false,"note":"","id":"T38","no":38},{"title":"Famework งาน 4-Way Shuttle","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-10","prog":100,"cancel":false,"note":"นำเสนอพี่แต้มแล้ว","id":"T39","no":39},{"title":"Famework งาน AGV/AMR","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-10","prog":50,"cancel":false,"note":"","id":"T40","no":40},{"title":"เปรียบเทียบ Soalr Cell คลังสินค้า สุราษรฏ์","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-24","prog":100,"cancel":false,"note":"","id":"T41","no":41},{"title":"Robot Improve ขา 7 / 10","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-10","prog":100,"cancel":false,"note":"","id":"T42","no":42},{"title":"Plant Meeting Presentation Axons Maintenance","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-23","prog":100,"cancel":false,"note":"","id":"T43","no":43},{"title":"ปรับ Weekly Report","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-20","prog":100,"cancel":false,"note":"","id":"T44","no":44},{"title":"Action Plan รายละเอียดแต่ละโครงการ","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-28","prog":96,"cancel":false,"note":"","id":"T45","no":45},{"title":"4 Way shuttle","owner":"K.ศุภณัฐ","start":"2026-04-24","target":"2026-04-28","prog":100,"cancel":false,"note":"","id":"T45-1","no":"45.1","parent":"T45"},{"title":"AGV Project","owner":"K.ศุภณัฐ","start":"2026-04-24","target":"2026-04-28","prog":75,"cancel":false,"note":"","id":"T45-2","no":"45.2","parent":"T45"},{"title":"Robot Arm","owner":"K.ศุภณัฐ","start":"2026-04-24","target":"2026-04-28","prog":100,"cancel":false,"note":"","id":"T45-3","no":"45.3","parent":"T45"},{"title":"Camera sensor","owner":"K.ศุภณัฐ","start":"2026-04-24","target":"2026-04-28","prog":100,"cancel":false,"note":"","id":"T45-4","no":"45.4","parent":"T45"},{"title":"IOT Phase 2","owner":"K.ศุภณัฐ","start":"2026-04-24","target":"2026-04-28","prog":100,"cancel":false,"note":"","id":"T45-5","no":"45.5","parent":"T45"},{"title":"Robot Cleaning","owner":"K.ศุภณัฐ","start":"2026-04-24","target":"2026-04-28","prog":100,"cancel":false,"note":"","id":"T45-6","no":"45.6","parent":"T45"},{"title":"กรอกรายละเอียด ของ Domino","owner":"K.ศุภณัฐ","start":"2026-04-23","target":"2026-04-24","prog":100,"cancel":false,"note":"","id":"T46","no":46},{"title":"MHE นัด Supplier ดู นวัตกรรใหม่","owner":"K.ศุภณัฐ","start":"2026-04-27","target":"2026-04-30","prog":0,"cancel":false,"note":"","id":"T47","no":47},{"title":"Lighting Layout คลังโคราช","owner":"K.ศุภณัฐ","start":"2026-04-27","target":"2026-04-30","prog":100,"cancel":false,"note":"","id":"T48","no":48},{"title":"List รายการ IOT ว่าทำอะไรแล้วบ้าง","owner":"K.ศุภณัฐ","start":"2026-05-05","target":"2026-05-10","prog":100,"cancel":false,"note":"","id":"T49","no":49},{"title":"List รายการ Roobot ว่าทำอะไรแล้วบ้าง","owner":"K.ศุภณัฐ","start":"2026-05-05","target":"2026-05-10","prog":100,"cancel":false,"note":"","id":"T50","no":50},{"title":"บันทึกขออนุมัติ งานทาสีฝ้า","owner":"K.ศุภณัฐ","start":"2026-05-05","target":"2026-05-10","prog":100,"cancel":false,"note":"","id":"T51","no":51},{"title":"บันทึกขออนุมัติ งานซ่อมพื้นหน้า Dock Load","owner":"K.ศุภณัฐ","start":"2026-05-05","target":"2026-05-10","prog":100,"cancel":false,"note":"","id":"T52","no":52},{"title":"งานหินคลุกด้านข้างคลังสินค้า","owner":"K.ศุภณัฐ","start":"2026-07-13","target":"2026-07-14","prog":100,"cancel":false,"note":"","id":"T53","no":53},{"title":"Presentation สำหรับเพิ่มพื้นที่การจัดเก็บสินค้า","owner":"K.ศุภณัฐ","start":"2026-07-13","target":"2026-07-14","prog":100,"cancel":false,"note":"","id":"T54","no":54},{"title":"งานต่อเติม โรงอาคาร คลัง 5 (แบบประเมินราคา)","owner":"K.ศุภณัฐ","start":"2026-07-13","target":"2026-07-14","prog":100,"cancel":false,"note":"","id":"T55","no":55},{"title":"งานสำนักงาน Operatin คลัง 5","owner":"K.ศุภณัฐ","start":"2026-07-13","target":"2026-07-14","prog":null,"cancel":true,"note":"","id":"T56","no":56},{"title":"ต่อสัญญา MHE ประจำปี 2570","owner":"K.ศุภณัฐ","start":"2026-07-01","target":"2026-07-31","prog":0,"cancel":false,"note":"","id":"T57","no":57},{"title":"สรุป ตรวจสอบ Racking - RDC ทั่วประเทศ","owner":"K.ศุภณัฐ","start":"2026-07-01","target":"2026-07-31","prog":100,"cancel":false,"note":"","id":"T58","no":58},{"title":"CEO Presentation","owner":"K.ศุภณัฐ","start":"2026-07-01","target":"2026-08-08","prog":100,"cancel":false,"note":"","id":"T59","no":59},{"title":"งบประมาณย้ายคลังสินค้า โคราช","owner":"K.ศุภณัฐ","start":"2026-07-01","target":"2026-08-08","prog":100,"cancel":false,"note":"","id":"T60","no":60},{"title":"เขียนแบบก่อสร้างคลังสินค้า 3 คลัง","owner":"K.ศุภณัฐ","start":"","target":"","prog":null,"cancel":false,"note":"","id":"T61","no":61},{"title":"งบประมาณคลังสินค้า SCX A1","owner":"K.ศุภณัฐ","start":"","target":"","prog":null,"cancel":false,"note":"","id":"T62","no":62},{"title":"โครงการ 4Way Shuttle ที่คลังสินค้าใหม่","owner":"K.ศุภณัฐ","start":"","target":"","prog":null,"cancel":false,"note":"","id":"T63","no":63}];
-const ASOF0 = "2026-10-15T15:16";
+const ASOF0 = "2026-10-15T15:35";
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const ls = { get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } } };
@@ -533,7 +613,7 @@ const leftDays = t => t.target ? days(TODAY, t.target) : null;
 const onTime = t => !t.doneAt || !t.target || t.doneAt <= t.target;
 
 /* ---------- state ---------- */
-const S = Object.assign({ bd: (() => { const q = new URLSearchParams(location.search).get("u"); if (BOARDS.some(b => b.k === q)) return q; try { return localStorage.getItem("pcg-task-bd") || "ton"; } catch (e) { return "ton"; } })(), view: "list", sort: "new", st: "all", own: "all", pri: "all", mon: "all", q: "", open: {}, cx: false }, (() => { const h = location.hash.slice(1); return ["ov", "list", "tl", "kpi", "guide"].includes(h) ? { view: h } : {}; })());
+const S = Object.assign({ bd: (() => { const q = new URLSearchParams(location.search).get("u"); if (BOARDS.some(b => b.k === q)) return q; try { return localStorage.getItem("pcg-task-bd") || "ton"; } catch (e) { return "ton"; } })(), view: "list", sd: false, lv: (() => { try { return localStorage.getItem("pcg-task-lv") || "card"; } catch (e) { return "card"; } })(), td: "", fo: false, sort: "new", st: "all", own: "all", pri: "all", mon: "all", q: "", open: {}, cx: false }, (() => { const h = location.hash.slice(1); return ["ov", "list", "tl", "kpi", "guide"].includes(h) ? { view: h } : {}; })());
 const owners = () => [...new Set(live().map(t => t.owner).filter(Boolean))].sort();
 const months = () => [...new Set(live().map(t => (t.target || "").slice(0, 7)).filter(Boolean))].sort();
 function tops(f) { return live().filter(t => !t.parent).filter(t => (S.cx || !t.cancel || S.st === "cancel") && (S.own === "all" || t.owner === S.own || kidsOf(t.id).some(k => k.owner === S.own)) && (S.pri === "all" || (t.pri || "M") === S.pri) && (S.mon === "all" || (t.target || "").startsWith(S.mon)) && (!f || f(t))); }
@@ -555,6 +635,7 @@ const IC = {
 };
 const sv = (d, s = 18) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`;
 const hi = (k, t) => `<span class="thi">${sv(IC[k], 15)}${t}</span>`;
+const MOB = () => window.innerWidth <= 760;
 const ib = (k, g) => `<span class="ib" style="--g:${g}">${sv(IC[k], 19)}</span>`;
 const pill = s => `<span class="pill" style="background:${ST[s].bg};color:${ST[s].fg}"><i style="background:${ST[s].c}"></i>${ST[s].t}</span>`;
 const prio = p => `<span class="prio ${p || "M"}">${PRI[p || "M"]}</span>`;
@@ -575,19 +656,20 @@ function renderFilters() {
     <label>ผู้รับผิดชอบ <select id="fOwn"><option value="all">ทั้งหมด</option>${owners().map(o => `<option ${S.own === o ? "selected" : ""}>${esc(o)}</option>`).join("")}</select></label>
     <label>ความสำคัญ <select id="fPri"><option value="all">ทั้งหมด</option>${["H", "M", "L"].map(p => `<option value="${p}" ${S.pri === p ? "selected" : ""}>${PRI[p]}</option>`).join("")}</select></label>
     <label>เดือนที่ครบกำหนด <select id="fMon"><option value="all">ทุกเดือน</option>${months().map(m => `<option value="${m}" ${S.mon === m ? "selected" : ""}>${fmtM(m)}</option>`).join("")}</select></label>
-    <input type="search" id="fQ" placeholder="ค้นหาชื่องาน / หมายเหตุ" value="${esc(S.q)}">`;
+    <div class="fq"><input type="search" id="fQ" placeholder="ค้นหาชื่องาน / หมายเหตุ" value="${esc(S.q)}"><button type="button" class="ftog" data-fo="1">${sv(IC.flag, 15)}ตัวกรอง${S.own !== "all" || S.pri !== "all" || S.mon !== "all" ? " •" : ""}</button></div>`;
+  f.classList.toggle("fo", S.fo);
 }
 const filtered = () => tops(t => (S.st === "all" ? stOf(t) !== "cancel" : stOf(t) === S.st) && (!S.q || (t.title + " " + (t.note || "") + " " + kidsOf(t.id).map(k => k.title).join(" ")).toLowerCase().includes(S.q.toLowerCase())));
 
 /* ---------- ภาพรวม ---------- */
 function kpiCards(c) {
   const card = (k, col, ic, l, v, unit, d) => `<button type="button" class="kpi ${S.st === k ? "sel" : ""}" data-st="${k}" style="--c:${col}"><div class="l">${sv(ic, 17)}${l}</div><div class="v num">${v}<small>${unit}</small></div><div class="d">${d}</div></button>`;
-  return `<div class="kpis">${card("all", "#991b1b", IC.all, "งานทั้งหมด", c.n, "งาน", `ไม่นับยกเลิก ${live().filter(t => !t.parent && t.cancel).length} งาน`)}
+  return `<div class="kpis">${card("all", "#047857", IC.all, "งานทั้งหมด", c.n, "งาน", `ไม่นับยกเลิก ${live().filter(t => !t.parent && t.cancel).length} งาน`)}
     ${card("done", ST.done.c, IC.done, "สำเร็จแล้ว", c.done, "งาน", `ตรงเวลา ${c.onT} · เกินกำหนด ${c.done - c.onT}`)}
     ${card("prog", ST.prog.c, IC.prog, "On process", c.prog, "งาน", "อยู่ในกำหนด กำลังทำ")}
     ${card("delay", ST.delay.c, IC.delay, "Delay", c.delay, "งาน", "เลย Target ยังไม่เสร็จ")}
     ${card("wait", ST.wait.c, IC.wait, "ยังไม่เริ่ม", c.wait, "งาน", "ยังไม่ถึงวันเริ่ม / ยังไม่กำหนดวัน")}
-    ${card("pct", "#b8860b", IC.pct, "% สำเร็จ", c.pct, "%", `ส่งตรงเวลา ${c.onPct}% ของงานที่เสร็จ`)}</div>`;
+    ${card("pct", "#059669", IC.pct, "% สำเร็จ", c.pct, "%", `ส่งตรงเวลา ${c.onPct}% ของงานที่เสร็จ`)}</div>`;
 }
 function monthChart(L) {
   const by = {}; L.filter(t => t.target && stOf(t) !== "cancel").forEach(t => { const m = t.target.slice(0, 7); (by[m] = by[m] || { done: 0, wait: 0, prog: 0, delay: 0 })[stOf(t)]++; });
@@ -602,9 +684,17 @@ function irow(t) {
   const s = stOf(t);
   return `<button type="button" class="irow" data-edit="${t.id}"><span>${pill(s)}</span><span><div class="t">${esc(t.title)}</div><div class="m">${esc(t.owner || "ยังไม่ระบุผู้รับผิดชอบ")} · Target ${fmtD(t.target)} · ${progOf(t)}%</div></span><span style="font-size:13px;text-align:right">${dueTxt(t)}</span></button>`;
 }
+/* 16 ต.ค. ผู้ใช้ว่า Mission progress ไม่สวย → ตัวเลขใหญ่ + แถบสัดส่วนสถานะ + ส่งตรงเวลา (แทนวงแหวน) */
+function heroProg(c) {
+  const K = ["done", "prog", "wait", "delay"];
+  return `<div class="mp"><div class="mp-top"><div class="mp-num"><b class="num">${c.pct}</b><i>%</i></div><div class="mp-txt"><b>งานสำเร็จแล้ว</b><span>${c.done} จาก ${c.n} งาน</span></div></div>
+    <div class="mp-bar">${K.filter(k => c[k]).map(k => `<span style="flex:${c[k]};background:${ST[k].c}" title="${ST[k].t} ${c[k]}"></span>`).join("") || `<span style="flex:1;background:var(--hz)"></span>`}</div>
+    <div class="mp-leg">${K.map(k => `<button type="button" data-go="${k}"><i style="background:${ST[k].c}"></i><span>${ST[k].t}</span><b class="num">${c[k]}</b></button>`).join("")}</div>
+    <div class="mp-on"><span>ส่งตรงเวลา</span><div class="mp-ob"><span style="width:${c.onPct}%"></span></div><b class="num">${c.onPct}%</b></div></div>`;
+}
 function heroRing(pct, on) {
   const r = 70, C = 2 * Math.PI * r;
-  return `<svg width="180" height="180" viewBox="0 0 180 180"><defs><linearGradient id="rg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#b91c1c"/><stop offset="1" stop-color="#f2c14e"/></linearGradient><filter id="gl"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+  return `<svg width="180" height="180" viewBox="0 0 180 180"><defs><linearGradient id="rg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#059669"/><stop offset="1" stop-color="#34d399"/></linearGradient><filter id="gl"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
     <circle cx="90" cy="90" r="${r + 12}" fill="none" stroke="var(--line)" stroke-width="1" stroke-dasharray="2 5"/>
     <circle cx="90" cy="90" r="${r}" fill="none" stroke="var(--hz)" stroke-width="14"/>
     <circle cx="90" cy="90" r="${r}" fill="none" stroke="url(#rg)" stroke-width="14" stroke-linecap="round" stroke-dasharray="${C * pct / 100} ${C}" transform="rotate(-90 90 90)" filter="url(#gl)"/>
@@ -641,15 +731,13 @@ function renderOv() {
   const os = owners();
   $("view").innerHTML = `
   <div class="mc">
-    <section class="panel"><h2 style="font-size:15px;letter-spacing:.04em">MISSION PROGRESS <span class="tag">${esc(BD().n)}</span></h2>
-      <div class="hring">${heroRing(c.pct, c.onPct)}<div class="c"><b class="num">${c.pct}%</b><span>สำเร็จ ${c.done}/${c.n}</span><span style="color:#f2c14e">ตรงเวลา ${c.onPct}%</span></div></div>
-      <div class="legend" style="justify-content:center"><span><i style="background:linear-gradient(90deg,#b91c1c,#f2c14e)"></i>งานสำเร็จ</span><span><i style="background:#0ea371"></i>ส่งตรงเวลา</span></div></section>
+    <section class="panel mpp"><h2>${ib("pct", "linear-gradient(135deg,#34d399,#059669)")}ความคืบหน้ารวม <span class="tag">${esc(BD().n)}</span></h2>${heroProg(c)}</section>
     <section class="panel"><h2 style="font-size:15px;letter-spacing:.04em">TASK FLOW · สายงานตอนนี้ <span class="tag">${c.n} งาน · ยกเลิก ${live().filter(t => !t.parent && t.cancel).length}</span></h2>
       <p class="hint">งานไหลจาก ยังไม่เริ่ม → On process → เสร็จสิ้น · งานที่เลย Target หลุดลงไปเป็น Delay · กดวงกลมเพื่อดูรายการ</p>
       <div class="pipe">${node("wait", "รอเริ่ม")}${wire("wait", "prog")}${node("prog", "อยู่ในกำหนด")}${wire("prog", "done")}${node("done", `ตรงเวลา ${c.onT}`)}</div>
       <div class="pipe2"><div class="drop"><span class="v"></span>${node("delay", "เลย Target")}</div></div></section>
     <section class="panel"><h2 style="font-size:15px;letter-spacing:.04em">PULSE · 7 วันล่าสุด</h2>
-      <div class="stack" style="margin-top:12px">
+      <div class="stack plsg" style="margin-top:12px">
         <div class="pls"><span style="color:#22d3ee">${sv(IC.list, 20)}</span><span>งานเพิ่มใหม่</span><b class="num">${addWk}</b></div>
         <div class="pls"><span style="color:${ST.done.c}">${sv(IC.done, 20)}</span><span>ปิดงานสำเร็จ</span><b class="num">${doneWk}</b></div>
         <div class="pls"><span style="color:${ST.delay.c}">${sv(IC.delay, 20)}</span><span>Delay ตอนนี้</span><b class="num" style="color:${ST.delay.fg}">${c.delay}</b></div>
@@ -714,19 +802,56 @@ function todoHtml() {
   const rowD = t => `<tr data-dr="${t.id}"><td class="tn">${nm(t)}<div class="sm2">${esc(t.owner || "–")} · Target ${fmtD(t.target)} · ${progOf(t) || 0}%</div></td>
     <td class="tl late">ช้า ${lateDays(t)} วัน</td><td class="tw"><textarea class="ci ta why ${t.why ? "" : "need"}" rows="1" data-id="${t.id}" data-f="why" placeholder="ใส่เหตุผลที่ล่าช้า…">${esc(t.why || "")}</textarea></td></tr>`;
   const miss = D.filter(t => !t.why).length;
-  return `<section class="panel tdo"><h2>${ib("zap", "linear-gradient(135deg,#f59e0b,#2563eb)")}งานที่ต้องทำวันนี้ <span class="tag">${P.length} งาน</span><span class="hs">On process · ยังไม่เลย Target</span></h2>
+  const td = S.td || (P.length ? "today" : "late"); $("todo") && ($("todo").dataset.td = td);
+  return `<div class="tdsw"><button type="button" class="${td === "today" ? "on" : ""}" data-td="today">${sv(IC.zap, 16)}ทำวันนี้ <b>${P.length}</b></button><button type="button" class="${td === "late" ? "on" : ""}" data-td="late">${sv(IC.alarm, 16)}ล่าช้า <b>${D.length}</b>${miss ? `<i>ไม่มีเหตุผล ${miss}</i>` : ""}</button></div>
+    <section class="panel tdo"><h2>${ib("zap", "linear-gradient(135deg,#38bdf8,#2563eb)")}งานที่ต้องทำวันนี้ <span class="tag">${P.length} งาน</span><span class="hs">On process · ยังไม่เลย Target</span></h2>
       ${P.length ? `<div class="tdl"><table><thead><tr><th>${hi("task", "งาน")}</th><th>${hi("gauge", "Progress")}</th><th>${hi("cal", "เหลือเวลา")}</th></tr></thead><tbody>${P.map(rowP).join("")}</tbody></table></div>` : `<div class="empty">ไม่มีงานที่กำลังทำ</div>`}</section>
-    <section class="panel tdo late"><h2>${ib("alarm", "linear-gradient(135deg,#fb7185,#dc2626)")}งานที่ล่าช้าแล้ว <span class="tag" style="background:#fee2e2;color:#b91c1c">${D.length} งาน</span>${miss ? `<span class="hs" style="color:#b91c1c">ยังไม่ใส่เหตุผล ${miss} งาน</span>` : D.length ? `<span class="hs">ใส่เหตุผลครบแล้ว ✓</span>` : ""}</h2>
+    <section class="panel tdo late"><h2>${ib("alarm", "linear-gradient(135deg,#fb7185,#dc2626)")}งานที่ล่าช้าแล้ว <span class="tag" style="background:#fee2e2;color:#059669">${D.length} งาน</span>${miss ? `<span class="hs" style="color:#059669">ยังไม่ใส่เหตุผล ${miss} งาน</span>` : D.length ? `<span class="hs">ใส่เหตุผลครบแล้ว ✓</span>` : ""}</h2>
       ${D.length ? `<div class="tdl"><table><thead><tr><th>${hi("task", "งาน")}</th><th>${hi("alarm", "ล่าช้า")}</th><th>${hi("chat", "เหตุผลที่ล่าช้า")}</th></tr></thead><tbody>${D.map(rowD).join("")}</tbody></table></div>` : `<div class="empty">ไม่มีงานล่าช้า ✓</div>`}</section>`;
 }
-const refreshTodo = () => { const x = $("todo"); if (x) { x.innerHTML = todoHtml(); x.querySelectorAll("textarea.ta").forEach(grow); } };
+const refreshTodo = () => { const x = $("todo"); if (x) { x.innerHTML = todoHtml(); x.dataset.td = S.td || (x.querySelector('[data-td="today"].on') ? "today" : "late"); x.querySelectorAll("textarea.ta").forEach(grow); } };
+/* 16 ต.ค. ผู้ใช้ขอ: หน้าเพิ่ม Task ใช้ง่าย เป็นการ์ดสี่เหลี่ยม + ใช้บนมือถือง่าย → การ์ดงาน (ค่าเริ่ม) / ตาราง (สลับได้บนคอม) */
+function cardHtml(t) {
+  const s = stOf(t), p = progOf(t) || 0, k = kidsOf(t.id), auto = k.length > 0, id = t.id;
+  const step = d => `<button type="button" data-pp="${id}|${d}">${d > 0 ? "+" : ""}${d}%</button>`;
+  return `<article class="tc" style="--sc:${ST[s].c}">
+    <div class="tc-h">${pill(s)}${prio(t.pri)}<span class="tc-no">#${esc(t.no || "")}</span><button type="button" class="tc-more" data-edit="${id}" title="แก้ไขรายละเอียด">${sv(IC.note, 16)}</button></div>
+    <h3 data-edit="${id}">${esc(t.title)}</h3>
+    <div class="tc-m"><span>${sv(IC.user, 14)}${esc(t.owner || "–")}</span><span>${sv(IC.target, 14)}${fmtD(t.target)}</span>${s === "cancel" ? "" : `<span class="tc-d">${dueTxt(t)}</span>`}</div>
+    <div class="tc-p"><div class="pbar"><span style="width:${p}%;background:${ST[s].c}"></span></div><b class="num">${p}%</b></div>
+    ${s === "cancel" || s === "done" ? "" : auto ? `<div class="tc-auto">% เฉลี่ยจากงานย่อย ${k.length} งาน · กดชื่องานเพื่ออัปเดต</div>` : `<div class="tc-q">${step(-10)}${step(10)}${step(25)}<button type="button" class="ok" data-pp="${id}|=100">${sv(IC.done, 14)}เสร็จ</button></div>`}
+    ${s === "delay" ? `<textarea class="ci ta why ${t.why ? "" : "need"}" rows="1" data-id="${id}" data-f="why" placeholder="ใส่เหตุผลที่ล่าช้า…">${esc(t.why || "")}</textarea>` : ""}
+    ${t.note ? `<p class="tc-n">${esc(t.note)}</p>` : ""}
+    ${auto ? `<div class="tc-k">${k.map(x => `<button type="button" data-edit="${x.id}"><i style="background:${ST[stOf(x)].c}"></i>${esc(x.title)}<b class="num">${progOf(x) || 0}%</b></button>`).join("")}</div>` : ""}
+  </article>`;
+}
+function qaddHtml() {
+  return `<div class="qadd" id="qadd"><div class="qa1">${ib("task", "linear-gradient(135deg,#fde68a,#e8b923 55%,#0d9488)")}<input class="ci" id="nT" placeholder="พิมพ์ชื่องานใหม่ แล้วกด Enter" autocomplete="off"><button type="button" class="btn pri" id="nAdd">${sv("M12 5v14M5 12h14", 16)}เพิ่ม</button></div>
+    <div class="qa2"><label>${sv(IC.target, 14)}Target<input class="ci" id="nG" type="date"></label>
+      <label>${sv(IC.flag, 14)}ความสำคัญ<select class="ci" id="nP">${["H", "M", "L"].map(x => `<option value="${x}" ${x === "M" ? "selected" : ""}>${PRI[x]}</option>`).join("")}</select></label>
+      <label>${sv(IC.user, 14)}ผู้รับผิดชอบ<input class="ci" id="nO" list="ownL2" value="${esc(S.own !== "all" ? S.own : BD().own)}"></label>
+      <input type="hidden" id="nS" value="${TODAY}"><input type="hidden" id="nR" value="0"><input type="hidden" id="nN" value=""></div></div>`;
+}
 function renderList() {
   const order = { delay: 0, prog: 1, wait: 2, done: 3, cancel: 4 }, num = t => parseFloat(t.no) || 0;
   const srt = { new: (a, b) => (b.created || "").localeCompare(a.created || "") || num(b) - num(a), no: (a, b) => num(a) - num(b), st: (a, b) => order[stOf(a)] - order[stOf(b)] || (stOf(a) === "delay" ? lateDays(b) - lateDays(a) : (a.target || "9").localeCompare(b.target || "9")) || num(a) - num(b), due: (a, b) => (a.target || "9").localeCompare(b.target || "9") };
   const L = filtered().sort(srt[S.sort] || srt.new);
-  $("view").innerHTML = `<div id="todo" class="todo">${todoHtml()}</div><section class="panel"><h2>${ib("list", "linear-gradient(135deg,#fde047,#d4a017 70%,#7f1d1d)")}ตาราง Task · ${esc(BD().n)} <span class="tag">${L.length} งาน</span>
+  const lv = MOB() ? "card" : S.lv;
+  if (lv === "card") {
+    $("view").innerHTML = `<div id="todo" class="todo">${todoHtml()}</div><section class="panel cardv"><h2>${ib("list", "linear-gradient(135deg,#fde047,#e8b923 50%,#059669)")}งานทั้งหมด · ${esc(BD().n)} <span class="tag">${L.length} งาน</span>
+      <span class="tv-r"><select id="fSort">${[["new", "งานใหม่ล่าสุดก่อน"], ["st", "Delay ก่อน"], ["due", "Target ใกล้สุดก่อน"], ["no", "ตาม NO."]].map(([k, l]) => `<option value="${k}" ${(S.sort || "new") === k ? "selected" : ""}>${l}</option>`).join("")}</select>
+      <span class="lvsw"><button type="button" class="on" data-lv="card">▦ การ์ด</button><button type="button" data-lv="table">☰ ตาราง</button></span></span></h2>
+      <datalist id="ownL2">${[...new Set(owners().concat(BOARDS.map(b => b.own)))].map(o => `<option value="${esc(o)}">`).join("")}</datalist>
+      ${qaddHtml()}
+      ${(() => { const op = S.st === "all" ? L.filter(t => stOf(t) !== "done") : L, dn = S.st === "all" ? L.filter(t => stOf(t) === "done") : [];
+        return `<div class="cards">${op.map(cardHtml).join("") || `<div class="empty">${L.length ? "ไม่มีงานค้าง ✓" : "ยังไม่มีงาน · พิมพ์งานแรกในช่องด้านบน"}</div>`}</div>` +
+          (dn.length ? `<button type="button" class="sdone" data-sd="1">${sv(IC.done, 16)}งานที่เสร็จแล้ว ${dn.length} งาน <span>${S.sd ? "ซ่อน ▴" : "แสดง ▾"}</span></button>${S.sd ? `<div class="cards">${dn.map(cardHtml).join("")}</div>` : ""}` : ""); })()}</section>`;
+    $("todo").dataset.td = S.td || ($("todo").querySelector('[data-td="today"].on') ? "today" : "late");
+    return;
+  }
+  $("view").innerHTML = `<div id="todo" class="todo">${todoHtml()}</div><section class="panel"><h2>${ib("list", "linear-gradient(135deg,#fde047,#22c55e 70%,#065f46)")}ตาราง Task · ${esc(BD().n)} <span class="tag">${L.length} งาน</span>
       <span style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center"><label style="font-size:13px;color:var(--mut);display:inline-flex;gap:6px;align-items:center">เรียง <select id="fSort" style="border:1px solid var(--line);border-radius:10px;padding:6px 8px">${[["new", "งานใหม่ล่าสุดก่อน"], ["st", "Delay ก่อน (ตามสถานะ)"], ["due", "Target ใกล้สุดก่อน"], ["no", "ตาม NO."]].map(([k, l]) => `<option value="${k}" ${(S.sort || "new") === k ? "selected" : ""}>${l}</option>`).join("")}</select></label>
-      <label style="font-size:13px;color:var(--mut);display:inline-flex;gap:6px;align-items:center"><input type="checkbox" id="fCx" ${S.cx ? "checked" : ""}> แสดงงานที่ยกเลิก</label><button type="button" class="btn line sm" data-expand="1">${Object.keys(S.open).length ? "ย่องานย่อย" : "กางงานย่อยทั้งหมด"}</button></span></h2>
+      <span class="lvsw"><button type="button" data-lv="card">▦ การ์ด</button><button type="button" class="on" data-lv="table">☰ ตาราง</button></span><label style="font-size:13px;color:var(--mut);display:inline-flex;gap:6px;align-items:center"><input type="checkbox" id="fCx" ${S.cx ? "checked" : ""}> แสดงงานที่ยกเลิก</label><button type="button" class="btn line sm" data-expand="1">${Object.keys(S.open).length ? "ย่องานย่อย" : "กางงานย่อยทั้งหมด"}</button></span></h2>
     <p class="hint">พิมพ์งานใหม่ในแถวบนสุดแล้วกด Enter · แก้ชื่อ ผู้รับผิดชอบ ความสำคัญ วันที่ % หมายเหตุ ได้ในตารางเลย (บันทึกทันที) · <b>สถานะ</b> คำนวณอัตโนมัติจาก % และ Target · ปุ่ม ⋯ = รายละเอียด / ยกเลิกงาน / ลบ</p>
     <datalist id="ownL2">${[...new Set(owners().concat(BOARDS.map(b => b.own)))].map(o => `<option value="${esc(o)}">`).join("")}</datalist>
     <div class="tbl sheet"><table><thead><tr><th>${hi("hash", "NO.")}</th><th>${hi("task", "งาน")}</th><th>${hi("user", "ผู้รับผิดชอบ")}</th><th>${hi("flag", "ความสำคัญ")}</th><th>${hi("cal", "เริ่ม")}</th><th>${hi("target", "Target")}</th><th>${hi("gauge", "Progress")}</th><th>${hi("stt", "สถานะ · กำหนดส่ง")}</th><th>${hi("note", "หมายเหตุ")}</th><th></th></tr></thead>
@@ -742,6 +867,7 @@ function patchTask(t, patch) {
 }
 const growAll = () => document.querySelectorAll("textarea.ta").forEach(grow);
 function redrawRows(ids) {
+  if (!document.querySelector("tr[data-row]") && document.querySelector(".cards")) { const y = window.scrollY, f = document.activeElement && document.activeElement.dataset && document.activeElement.dataset.f; if (f !== "why") { render(); window.scrollTo(0, y); } else { renderSide(); renderTabs(); renderFilters(); refreshTodo(); } return; }
   ids.forEach(id => { const tr = document.querySelector(`tr[data-row="${id}"]`), t = byId(id); if (!tr || !t) return;
     const tmp = document.createElement("tbody"); const was = S.open[id]; if (!t.parent) S.open[id] = false; tmp.innerHTML = rowHtml(t, !!t.parent); if (!t.parent) S.open[id] = was; tr.replaceWith(tmp.firstElementChild); });
   renderSide(); renderTabs(); renderFilters(); refreshTodo(); growAll();
@@ -964,6 +1090,17 @@ async function exportX() {
 
 /* ---------- events ---------- */
 document.addEventListener("click", e => {
+  const x = e.target.closest("[data-pp],[data-lv],[data-td],[data-fo],[data-sd],#fab");
+  if (x) {
+    if (x.id === "fab") { if (S.view !== "list") { S.view = "list"; render(); } const n = $("nT"); if (n) { n.scrollIntoView({ behavior: "smooth", block: "center" }); setTimeout(() => n.focus(), 250); } return; }
+    if (x.dataset.sd) { S.sd = !S.sd; const y = window.scrollY; render(); window.scrollTo(0, y); return; }
+    if (x.dataset.fo) { S.fo = !S.fo; renderFilters(); return; }
+    if (x.dataset.td) { S.td = x.dataset.td; refreshTodo(); return; }
+    if (x.dataset.lv) { S.lv = x.dataset.lv; try { localStorage.setItem("pcg-task-lv", S.lv); } catch (e) {} render(); return; }
+    const [id, d] = x.dataset.pp.split("|"), t = byId(id); if (!t) return;
+    const p0 = progOf(t) || 0, v = d[0] === "=" ? +d.slice(1) : Math.max(0, Math.min(100, p0 + +d));
+    patchTask(t, { prog: v }); const y = window.scrollY; render(); window.scrollTo(0, y); return;
+  }
   const g = e.target.closest("[data-bd],[data-view],[data-st],[data-go],[data-tog],[data-expand],[data-edit],[data-addkid],[data-pq],[data-close],[data-own],[data-mon]");
   if (!g) return;
   if (g.dataset.close) { $("dlg").close(); return; }
@@ -993,7 +1130,7 @@ document.addEventListener("change", e => {
   const ids = patchTask(t, { [el.dataset.f]: v }).map(x => x.id); redrawRows(ids);
   const n = document.querySelector(`tr[data-row="${t.id}"] [data-f="${el.dataset.f}"]`); if (n) { n.classList.add("saved"); setTimeout(() => n.classList.remove("saved"), 700); }
 });
-document.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.closest && e.target.closest("tr.add")) { e.preventDefault(); quickAdd(); }
+document.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.closest && e.target.closest("tr.add, .qadd")) { e.preventDefault(); quickAdd(); }
   else if (e.key === "Enter" && !e.shiftKey && e.target.classList && e.target.classList.contains("ci") && /INPUT|TEXTAREA/.test(e.target.tagName)) { e.preventDefault(); e.target.blur(); } });
 /* ช่องชื่องาน/หมายเหตุ ขยายตามความยาวข้อความ */
 const grow = el => { el.style.height = "auto"; el.style.height = el.scrollHeight + 2 + "px"; };
