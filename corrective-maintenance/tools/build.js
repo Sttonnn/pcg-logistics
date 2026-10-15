@@ -17,5 +17,5 @@ t = t.replace("/*__CM_PARSE__*/", () => fs.readFileSync(path.join(dir, "cm_parse
 fs.writeFileSync(out, t);
 const st = { total: rows.length }; rows.forEach(r => st[r.g] = (st[r.g] || 0) + 1);
 const open = (st.wait || 0) + (st.prog || 0), valid = rows.length - (st.cancel || 0);
-fs.writeFileSync(path.join(dir, "..", "summary.json"), JSON.stringify({ asof, total: rows.length, open, perf: valid ? Math.round(((st.done || 0) + (st.review || 0)) / valid * 1000) / 10 : null }, null, 1));
+fs.writeFileSync(path.join(dir, "..", "summary.json"), JSON.stringify({ asof, total: valid, open, perf: valid ? Math.round(((st.done || 0) + (st.review || 0)) / valid * 1000) / 10 : null }, null, 1));
 console.log("เขียน", out, rows.length, "ใบงาน", st);

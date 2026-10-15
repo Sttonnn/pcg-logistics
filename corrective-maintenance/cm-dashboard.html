@@ -306,11 +306,11 @@ const DBK = "pcg-cm-db", LOGK = "pcg-cm-log";
 let DB = ls.get(DBK, null), DATA = DB && DB.asof >= ASOF0 ? DB.rows : DATA0, ASOF = DB && DB.asof >= ASOF0 ? DB.asof : ASOF0;
 let LOG = ls.get(LOGK, [{ at: ASOF0, file: "TrackingWorkOrderCompleted_14_10_2026_16_28.xlsx", asof: ASOF0, total: DATA0.length, added: DATA0.length, changed: 0, same: 0, kept: 0 }]);
 
-/* กลุ่มสถานะ · สีผ่านตัวตรวจสี (ลำดับ เสร็จ → รอตรวจรับ → รออนุมัติ → กำลังทำ) · ยกเลิก = เทากลาง */
-const G = [
-  { k: "done", t: "เสร็จสิ้น", c: "#0f9a6e" }, { k: "review", t: "รอตรวจรับงาน", c: "#7c3aed" },
-  { k: "wait", t: "รออนุมัติ", c: "#d97706" }, { k: "prog", t: "กำลังดำเนินการ", c: "#2563eb" }, { k: "cancel", t: "ยกเลิก / ไม่อนุมัติ", c: "#b8c0cf" }];
+/* กลุ่มสถานะ (15 ต.ค. ผู้ใช้สั่ง: รอตรวจรับ = เสร็จสิ้น · ยกเลิก/ไม่อนุมัติ ไม่นับ ตัดออกจากทุกตัวเลข) · ข้อมูลเก็บสถานะเดิมไว้ (g = review/cancel) แปลงตอนแสดงผลใน base() */
+const G = [{ k: "done", t: "เสร็จสิ้น", c: "#0f9a6e" }, { k: "wait", t: "รออนุมัติ", c: "#d97706" }, { k: "prog", t: "กำลังดำเนินการ", c: "#2563eb" }];
 const GM = Object.fromEntries(G.map(g => [g.k, g]));
+const GALL = ["done", "review", "wait", "prog", "cancel"];
+const gv = r => r.g === "review" ? "done" : r.g;
 const MTH = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
 const thd = s => { if (!s) return "–"; const [y, m, d] = s.slice(0, 10).split("-"); return `${+d} ${MTH[+m - 1]} ${(+y + 543) % 100}`; };
 const tht = s => s ? thd(s) + (s.length > 10 && s.slice(11, 16) !== "00:00" ? " " + s.slice(11, 16) : "") : "–";
@@ -326,14 +326,14 @@ if (!["ov", "an", "list", "log"].includes(S.view)) S.view = "ov";
 
 /* ตัวกรองหลัก (ทุกมุมมองใช้ร่วมกัน) */
 function base(noSite) {
-  return DATA.filter(r => (!S.plant || r.plant === S.plant) && (!S.pri || r.pri === S.pri) && (noSite || !S.site || r.site === S.site)
+  return DATA.filter(r => r.g !== "cancel").map(r => r.g === "review" ? Object.assign({}, r, { g: "done", rev: true }) : r).filter(r => (!S.plant || r.plant === S.plant) && (!S.pri || r.pri === S.pri) && (noSite || !S.site || r.site === S.site)
     && (!S.from || r.created.slice(0, 10) >= S.from) && (!S.to || r.created.slice(0, 10) <= S.to));
 }
 function stat(a) {
   const c = { n: a.length }; G.forEach(g => c[g.k] = 0); a.forEach(r => c[r.g]++);
-  c.fin = c.done + c.review; c.open = c.wait + c.prog; c.valid = c.n - c.cancel;
-  c.perf = pct(c.fin, c.valid); c.over = a.filter(r => r.g !== "cancel" && r.over).length; c.overP = pct(c.over, c.valid);
-  const t = a.filter(r => (r.g === "done" || r.g === "review") && r.closed).map(r => hrs(r.created, r.closed)).filter(x => x != null && x >= 0);
+  c.fin = c.done; c.open = c.wait + c.prog; c.valid = c.n;
+  c.perf = pct(c.fin, c.valid); c.over = a.filter(r => r.over).length; c.overP = pct(c.over, c.valid);
+  const t = a.filter(r => r.g === "done" && r.closed).map(r => hrs(r.created, r.closed)).filter(x => x != null && x >= 0);
   c.mttr = t.length ? t.reduce((s, x) => s + x, 0) / t.length : null;
   const sc = a.map(r => r.score).filter(x => x != null); c.score = sc.length ? sc.reduce((s, x) => s + x, 0) / sc.length : null; c.scN = sc.length;
   return c;
@@ -348,7 +348,7 @@ const IC = {
   an: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18 M7 15l4-4 3 3 5-6"/></svg>',
   log: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2 M3 12a9 9 0 1 0 3-6.7L3 8 M3 3v5h5"/></svg>'
 };
-const stPill = r => { const g = GM[r.g]; return `<span class="pill" style="background:${g.c}1f;color:${r.g === "cancel" ? "#5b6782" : g.c}"><i></i>${esc(r.st || g.t)}</span>`; };
+const stPill = r => { const g = GM[gv(r)] || { c: "#8a95ab", t: "ยกเลิก / ไม่อนุมัติ (ไม่นับ)" }; return `<span class="pill" style="background:${g.c}1f;color:${g.c}" title="${esc(r.st)}"><i></i>${esc(g.t)}</span>`; };
 const stackBar = c => `<div class="bar">${G.map(g => c[g.k] ? `<span style="width:${c[g.k] / c.n * 100}%;background:${g.c}"></span>` : "").join("")}</div>`;
 
 function renderSide() {
@@ -370,12 +370,12 @@ function renderStats() {
   const c = stat(base());
   const R = 34, L = Math.PI * R, p = Math.min(100, c.perf);
   const card = (col, ic, lbl, v, sub) => `<div class="card" style="--c:${col}"><span class="lbl"><i>${ic}</i>${lbl}</span><span class="val">${v}<small>รายการ</small></span><span class="sub">${sub}</span></div>`;
-  $("stats").innerHTML = card("#3b4a6b", IC.list, "งานแจ้งซ่อมทั้งหมด", c.n, `ยกเลิก / ไม่อนุมัติ ${c.cancel} · เกิน SLA ${c.over}`)
-    + card(GM.done.c, IC.ok, "ดำเนินการแล้วเสร็จ", c.fin, `ปิดงานแล้ว ${c.done} · รอตรวจรับ ${c.review}`)
+  $("stats").innerHTML = card("#3b4a6b", IC.list, "งานแจ้งซ่อมทั้งหมด", c.n, `ไม่นับยกเลิก / ไม่อนุมัติ · เกิน SLA ${c.over}`)
+    + card(GM.done.c, IC.ok, "ดำเนินการแล้วเสร็จ", c.fin, `รวมงานที่รอตรวจรับ ${base().filter(r => r.rev).length}`)
     + card(GM.prog.c, IC.prog, "กำลังดำเนินการ", c.prog, "มอบหมาย / ช่างกำลังซ่อม")
     + card(GM.wait.c, IC.wait, "รออนุมัติ", c.wait, "แจ้งแล้ว รอคลังอนุมัติ")
     + `<div class="card perf"><svg width="92" height="56" viewBox="0 0 84 50" aria-hidden="true" style="flex:none"><path d="M8 44a34 34 0 0 1 68 0" fill="none" stroke="#e7ebf2" stroke-width="9" stroke-linecap="round"/><path d="M8 44a34 34 0 0 1 68 0" fill="none" stroke="${p >= 90 ? GM.done.c : p >= 75 ? GM.wait.c : "#dc3b26"}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${L * p / 100} ${L}"/></svg>
-      <div class="pt"><span class="lbl" style="font-size:13.5px;font-weight:700;color:var(--ink2)">%Performance</span><span class="val num" style="font-size:34px;font-weight:900;line-height:1.1">${c.valid ? c.perf.toFixed(1) : "–"}<small style="font-size:16px">%</small></span><span class="sub">แล้วเสร็จ ÷ งานที่ไม่ยกเลิก</span></div></div>`;
+      <div class="pt"><span class="lbl" style="font-size:13.5px;font-weight:700;color:var(--ink2)">%Performance</span><span class="val num" style="font-size:34px;font-weight:900;line-height:1.1">${c.valid ? c.perf.toFixed(1) : "–"}<small style="font-size:16px">%</small></span><span class="sub">แล้วเสร็จ ÷ งานทั้งหมด</span></div></div>`;
 }
 
 /* กราฟรายเดือน (แท่งซ้อน) + hover */
@@ -473,12 +473,12 @@ function renderFilters() {
   const QK = [["all", "ทั้งหมด"], ["m", "เดือนนี้"], ["3m", "3 เดือน"], ["y", "ปีนี้"]];
   $("qk").innerHTML = QK.map(([k, t]) => `<button type="button" class="${S.qk === k ? "on" : ""}" data-qk="${k}">${t}</button>`).join("");
   const span = DATA.length ? DATA.map(r => r.created).sort() : [];
-  $("asof").textContent = `ข้อมูล ณ ${tht(ASOF)} · ใบแจ้งซ่อม ${DATA.length} รายการ` + (span.length ? ` (แจ้ง ${thd(span[0])} – ${thd(span[span.length - 1])})` : "");
+  $("asof").textContent = `ข้อมูล ณ ${tht(ASOF)} · ใบแจ้งซ่อม ${DATA.filter(r => r.g !== "cancel").length} รายการ (ไม่นับยกเลิก/ไม่อนุมัติ)` + (span.length ? ` (แจ้ง ${thd(span[0])} – ${thd(span[span.length - 1])})` : "");
 }
 function perfBig(c) {
   const p = Math.min(100, c.perf), col = p >= 90 ? GM.done.c : p >= 75 ? GM.wait.c : "#dc3b26", a = Math.PI * (1 - p / 100), nx = 100 + 62 * Math.cos(a), ny = 100 - 62 * Math.sin(a);
   return `<div class="gbig"><svg width="240" height="140" viewBox="0 0 200 116" aria-hidden="true"><path d="M20 100a80 80 0 0 1 160 0" fill="none" stroke="#e7ebf2" stroke-width="22" stroke-linecap="round"/><path d="M20 100a80 80 0 0 1 160 0" fill="none" stroke="${col}" stroke-width="22" stroke-linecap="round" stroke-dasharray="${251.3 * p / 100} 252"/><line x1="100" y1="100" x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}" stroke="#1a2a6c" stroke-width="5" stroke-linecap="round"/><circle cx="100" cy="100" r="9" fill="#1a2a6c"/></svg>
-    <b class="num" style="color:${col}">${c.valid ? c.perf.toFixed(1) : "–"}%</b><span class="muted">แล้วเสร็จ ${c.fin} จาก ${c.valid} งาน (ไม่นับยกเลิก ${c.cancel})</span></div>`;
+    <b class="num" style="color:${col}">${c.valid ? c.perf.toFixed(1) : "–"}%</b><span class="muted">แล้วเสร็จ ${c.fin} จาก ${c.valid} งาน </span></div>`;
 }
 function renderTnav() {
   const sites = [...new Set(base(true).map(r => r.site))].sort();
@@ -506,8 +506,8 @@ function openWO(id) {
 }
 function guide() {
   $("dlg").innerHTML = `<div class="dlg"><div style="display:flex;align-items:center"><h3>📖 คู่มือการอ่าน</h3><button class="btn" data-close style="margin-left:auto">ปิด</button></div>
-    <div class="kv" style="grid-template-columns:170px 1fr">${G.map(g => `<span><span class="pill" style="background:${g.c}1f;color:${g.k === "cancel" ? "#5b6782" : g.c}"><i></i>${g.t}</span></span><span style="color:var(--ink)">${{ done: "ปิดงานแล้ว (Completed / CLOSE)", review: "ช่างซ่อมเสร็จ รอผู้แจ้ง/คลังตรวจรับ (Send to Review) · นับเป็นแล้วเสร็จ", wait: "แจ้งแล้ว รอคลังอนุมัติ", prog: "อนุมัติแล้ว มอบหมาย/ช่างกำลังซ่อม (Assignment ฯลฯ)", cancel: "ยกเลิก (Cancelled) / ไม่อนุมัติ (Reject) · ไม่นับใน %Performance" }[g.k]}</span>`).join("")}</div>
-    <p style="margin:0;font-size:13.5px;line-height:1.7"><b>%Performance</b> = (ปิดงาน + รอตรวจรับ) ÷ (งานทั้งหมด − ยกเลิก/ไม่อนุมัติ) · เขียว ≥ 90% · ส้ม 75–89% · แดง &lt; 75%<br><b>เกิน SLA</b> = ตามช่อง "เกิน SLA" ในระบบแจ้งซ่อม · <b>อาคาร</b> = จากรหัสสถานที่ (WHA05-<b>32</b>-001 → WH32)<br>
+    <div class="kv" style="grid-template-columns:170px 1fr">${G.map(g => `<span><span class="pill" style="background:${g.c}1f;color:${g.c}"><i></i>${g.t}</span></span><span style="color:var(--ink)">${{ done: "ปิดงานแล้ว (Completed / CLOSE) + ซ่อมเสร็จรอตรวจรับ (Send to Review)", wait: "แจ้งแล้ว รอคลังอนุมัติ", prog: "อนุมัติแล้ว มอบหมาย/ช่างกำลังซ่อม (Assignment ฯลฯ)", cancel: "ยกเลิก (Cancelled) / ไม่อนุมัติ (Reject) · ไม่นับใน %Performance" }[g.k]}</span>`).join("")}</div>
+    <p style="margin:0;font-size:13.5px;line-height:1.7">งานที่ <b>ยกเลิก / ไม่อนุมัติ</b> (Cancelled / Reject) ไม่นับในทุกตัวเลข<br><b>%Performance</b> = เสร็จสิ้น ÷ งานทั้งหมด · เขียว ≥ 90% · ส้ม 75–89% · แดง &lt; 75%<br><b>เกิน SLA</b> = ตามช่อง "เกิน SLA" ในระบบแจ้งซ่อม · <b>อาคาร</b> = จากรหัสสถานที่ (WHA05-<b>32</b>-001 → WH32)<br>
     <b>อัปโหลด</b>: Export ไฟล์ TrackingWorkOrder (ชีต Report) จากระบบ → ปุ่ม "อัปโหลด Excel แจ้งซ่อม" → ตรวจสรุปแล้วกดบันทึก · รวมกับของเดิม ไม่ลบใบงานเดิม · ไม่เก็บชื่อพนักงาน</p></div>`;
   $("dlg").showModal();
 }
@@ -593,7 +593,7 @@ async function sbSync() {
     const [w, l] = await Promise.all(["cm_work_orders", "cm_upload_log"].map(sbAll));
     const rl = new Map(l.map(x => [x.id, x.rec])), pushLog = LOG.filter(x => !rl.has(logId(x))); pushLog.forEach(x => rl.set(logId(x), x));
     LOG = [...rl.values()].sort((a, b) => a.at.localeCompare(b.at)).slice(-60);
-    const rAsof = LOG.filter(x => !x.older).map(x => x.asof).sort().pop() || "", rRows = w.map(x => x.rec).filter(r => r && typeof r.id === "string" && typeof r.created === "string" && Array.isArray(r.sym) && GM[r.g]);
+    const rAsof = LOG.filter(x => !x.older).map(x => x.asof).sort().pop() || "", rRows = w.map(x => x.rec).filter(r => r && typeof r.id === "string" && typeof r.created === "string" && Array.isArray(r.sym) && GALL.includes(r.g));
     if (!rRows.length || ASOF > rAsof) { const mp = new Map(rRows.map(r => [r.id, r])); DATA.forEach(r => mp.set(r.id, r)); DATA = [...mp.values()]; await sbUp("cm_work_orders", DATA.map(r => ({ id: r.id, rec: r }))); }
     else { DATA = rRows; ASOF = rAsof; }
     if (pushLog.length) await sbUp("cm_upload_log", pushLog.map(x => ({ id: logId(x), rec: x })));
