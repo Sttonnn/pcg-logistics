@@ -1,0 +1,21 @@
+name: Daily task digest
+# จันทร์–ศุกร์ 07:45 เวลาไทย: สรุปงานที่ต้องจัดการ (Delay / ไม่มีเหตุผล / ติดปัญหา / เสี่ยง / ครบใน 7 วัน) ของหน้า "งานที่ต้องทำประจำวันแผนกโครงการ"
+# ส่งอีเมลเมื่อมี secrets GMAIL_USER + GMAIL_APP_PASSWORD + DIGEST_TO (ไม่มี = แสดงในหน้าสรุปของ Actions อย่างเดียว) · กด Run workflow เองได้
+on:
+  schedule:
+    - cron: "45 0 * * 1-5"
+  workflow_dispatch:
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/task-digest.mjs
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          DIGEST_TO: ${{ secrets.DIGEST_TO }}
