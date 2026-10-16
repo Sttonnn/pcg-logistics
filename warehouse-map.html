@@ -152,7 +152,7 @@ const GEO = {
   "พนมเปญ":[11.56,104.92], "Phnom Penh":[11.56,104.92], "Meanchey":[11.52,104.93], "Siem Reap":[13.36,103.86],
   "Yangon":[16.84,96.17], "vanlenzula":[14.70,120.98], "Cebu":[10.32,123.89], "Davao":[7.19,125.46],
   "Laguna":[14.21,121.16], "Pagasinan":[16.04,120.33], "Gr.Noida":[28.47,77.50], "Kolkata":[22.57,88.36],
-  "Indore":[22.72,75.86], "Alam Impian":[3.01,101.52]
+  "Indore":[22.72,75.86], "Coimbatore":[11.02,76.96], "Hyderabad":[17.24,78.43], "Alam Impian":[3.01,101.52]
 };
 const COUNTRY = { "Phnom Penh":"กัมพูชา" };
 const C = { ok:"#17803d", soon:"#b8760a", exp:"#c03a1c", own:"#0d7d7d", pub:"#1d5fd0" };
@@ -481,6 +481,16 @@ const ico = (k, c, sz) => '<svg width="' + (sz || 16) + '" height="' + (sz || 16
 const badge = (k, c, bg, sz) => '<span style="width:' + (sz || 34) + 'px;height:' + (sz || 34) + 'px;border-radius:10px;background:' + bg + ';display:inline-flex;align-items:center;justify-content:center;flex:none">' + ico(k, c, Math.round((sz || 34) * 0.5)) + '</span>';
 const kvRow = (k, label, val, col) => '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid rgba(32,30,29,0.07)">' + badge(k, "#6b6a68", "#f1f1f2", 28) + '<span style="flex:1;font-size:12.5px;color:#6b6a68">' + label + '</span><b style="font-size:13px;font-variant-numeric:tabular-nums;text-align:right;color:' + (col || "#201e1d") + '">' + val + '</b></div>';
 
+/* 16 ต.ค. ผู้ใช้ส่งไฟล์ WH Oversea: รายละเอียดสัญญาเพิ่ม (ผู้ให้เช่า ที่อยู่ ค่าเช่า/เงินประกันตามไฟล์ รหัส UL หมายเหตุ) */
+const escH = v => String(v == null ? "" : v).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+function moreInfo(w) {
+  const L = [["ผู้ให้เช่า", w.lessor], ["ที่อยู่", w.address], ["ค่าเช่าตามไฟล์/เดือน", w.rentLocal && w.rentLocal !== w.rentRaw ? w.rentLocal : ""], ["ค่าเช่าตามไฟล์/ตร.ม.", w.rateLocal], ["เงินประกัน", w.depositLocal || (w.deposit ? fmt(w.deposit, 0) + " บาท" : "")],
+    ["ช่วงสัญญา", w.period], ["อัตราค่าเช่าแต่ละช่วง", w.steps], ["รหัส", w.siteCode], ["Tax ID", w.taxId], ["UL", w.ul], ["หมายเหตุ", w.note]].filter(x => x[1] != null && String(x[1]).trim() !== "");
+  if (!L.length) return "";
+  return '<div style="display:grid;gap:6px;padding:10px 12px;border-radius:12px;background:#f7f8fb;border:1px solid rgba(32,30,29,0.07)"><b style="font-size:12px;color:#1d5fd0">รายละเอียดสัญญา</b>' +
+    L.map(x => '<div style="display:grid;grid-template-columns:118px minmax(0,1fr);gap:8px;font-size:12px;line-height:1.45"><span style="color:#6b6a68">' + x[0] + '</span><span style="color:#201e1d;font-weight:600;overflow-wrap:anywhere">' + escH(x[1]) + '</span></div>').join("") + '</div>';
+}
+
 function contractCard(w) {
   return '<div class="card" style="gap:12px">' +
     '<div style="display:flex;gap:12px;align-items:flex-start">' + badge(w.st === "own" ? "own" : "wh", C[w.st], TINT[w.st], 42) +
@@ -493,7 +503,7 @@ function contractCard(w) {
       kvRow("rate", "ค่าเช่า/ตร.ม.", rateTxt(w)) +
       kvRow("cal", "วันหมดสัญญา", thDate(w.end)) +
       (w.plan ? kvRow("plan", "แผนดำเนินการ", w.plan, "#1d5fd0") : '') +
-    '</div></div>';
+    '</div>' + moreInfo(w) + '</div>';
 }
 
 let HOV = null, SELR = null;
