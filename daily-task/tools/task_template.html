@@ -517,6 +517,24 @@
   .tag.est { background: #f1f5f9 !important; color: #64748b !important; } .mob.est .wkbars span { opacity: .35; } .mob.est > b { color: var(--mut); font-weight: 600; font-size: 10.5px; }
   .rvbtn { white-space: nowrap; }
   @media (max-width: 760px) { .btn.me { font-size: 0; padding: 9px; gap: 0; } .rvst { grid-template-columns: repeat(3, 1fr); } .rvbtn { order: -1; width: 100%; justify-content: center; } }
+  /* การ์ดหน้าผู้จัดการแบบ 3 กลุ่ม */
+  .mgh { display: flex; gap: 12px; align-items: center; border-radius: 14px; padding: 12px 16px; margin: 12px 0 10px; }
+  .mgh b { display: block; font-family: Prompt, Anuphan; font-size: 17px; } .mgh span { font-size: 13px; opacity: .85; }
+  .mgh.ok { background: linear-gradient(90deg, #e7f8ef, #f5fcf8); color: #065f46; border: 1px solid #bfe6d3; } .mgh.bad { background: linear-gradient(90deg, #fee2e2, #fff5f5); color: #991b1b; border: 1px solid #fecaca; }
+  .mgg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 14px; }
+  .mggc { border-radius: 16px; background: #fff; border: 1px solid var(--line); border-top: 4px solid var(--gc); overflow: hidden; }
+  .mggh { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; background: var(--gb); border-bottom: 1px solid var(--line); }
+  .mggh b { display: block; color: var(--gc); font-family: Prompt, Anuphan; font-size: 15px; } .mggh small { color: var(--mut); font-size: 12px; }
+  .mggh em { font-style: normal; font-weight: 800; font-size: 13px; color: #fff; background: var(--gc); border-radius: 999px; padding: 3px 10px; white-space: nowrap; } .mggh em.z { background: #e3f6ec; color: #047857; }
+  .mgi { width: 100%; display: grid; grid-template-columns: 30px 1fr auto; align-items: center; gap: 10px; padding: 10px 14px; border: 0; border-bottom: 1px solid var(--line); background: #fff; text-align: left; font-size: 14px; color: var(--ink); cursor: pointer; }
+  .mgi:last-child { border-bottom: 0; } .mgi:hover { background: #f8fbf9; }
+  .mgi i { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; color: var(--fc); background: color-mix(in srgb, var(--fc) 12%, #fff); }
+  .mgi b { font-size: 22px; color: var(--fc); min-width: 28px; text-align: right; }
+  .mgi.z { color: var(--mut); } .mgi.z i { color: #b6c2bc; background: #f3f6f4; } .mgi.z b { color: #c3cdc8; font-size: 18px; }
+  .mgi.sel { background: color-mix(in srgb, var(--fc) 9%, #fff); box-shadow: inset 4px 0 0 var(--fc); }
+  @media (max-width: 1000px) { .mgg { grid-template-columns: 1fr; } }
+  @media (max-width: 760px) { .tv-r { flex-wrap: wrap; } .tv-r .btn { white-space: nowrap; font-size: 12.5px; padding: 8px 10px; } .tv-r .btn[data-rv] { flex-basis: 100%; } .mgh b { font-size: 15px; } }
+  @media print { .mgg { grid-template-columns: repeat(3, 1fr); } }
 </style>
 </head>
 <body>
@@ -947,6 +965,19 @@ const wkStart = d => { const x = new Date(d + "T00:00:00Z"); x.setUTCDate(x.getU
 const addD = (d, n) => { const x = new Date(d + "T00:00:00Z"); x.setUTCDate(x.getUTCDate() + n); return x.toISOString().slice(0, 10); };
 const createdOf = t => (t.created || "").slice(0, 10) || t.start || t.target || "";
 const doneOn = t => t.doneAt || ((progOf(t) || 0) >= 100 ? (t.target || null) : null);
+/* 16 ต.ค. ผู้ใช้ว่าการ์ด 9 ใบดูยาก → แบ่ง 3 กลุ่มตามความเร่งด่วน · ป้ายสั้น · ตัวเลข 0 จางลง ตัวเลขที่มีค่าเด่น */
+const MGG = [
+  { k: "now", t: "ต้องแก้ทันที", d: "ผู้จัดการต้องลงมือวันนี้", c: "#b91c1c", bg: "#fef2f2", items: [["nowhy", "Delay ยังไม่มีเหตุผล", "chat"], ["block", "ติดปัญหา · ขอความช่วยเหลือ", "flag"], ["over", "ใช้เกินงบ", "pct"]] },
+  { k: "watch", t: "เฝ้าระวัง", d: "ติดตามให้ไม่ช้าเพิ่ม", c: "#c2410c", bg: "#fff7ed", items: [["delay", "Delay (มีเหตุผลแล้ว)", "alarm"], ["risk", "เสี่ยงล่าช้า", "delay"], ["soon", "ครบกำหนดใน 7 วัน", "cal"]] },
+  { k: "disc", t: "วินัยการอัปเดต", d: "ข้อมูลครบและเป็นปัจจุบัน", c: "#475569", bg: "#f8fafc", items: [["stale", "ไม่อัปเดตเกิน 7 วัน", "wait"], ["inc", "ข้อมูลไม่ครบ", "note"], ["moved", "เลื่อน Target ≥ 2 ครั้ง", "target"]] }];
+function mgGroups(cnt) {
+  const tot = g => g.items.reduce((a, [k]) => a + cnt(k), 0), urgent = tot(MGG[0]) + cnt("delay") + cnt("risk");
+  const head = urgent ? `<div class="mgh bad">${sv(IC.delay, 22)}<div><b>มี ${urgent} เรื่องที่ต้องจัดการ</b><span>เริ่มจากกลุ่ม "ต้องแก้ทันที" ด้านซ้าย · กดแต่ละแถวเพื่อดูรายการงาน</span></div></div>`
+    : `<div class="mgh ok">${sv(IC.done, 22)}<div><b>ทุกงานอยู่ในเกณฑ์ปกติ</b><span>ไม่มีงาน Delay · ติดปัญหา · เกินงบ หรือเสี่ยงล่าช้า${cnt("soon") ? ` · มีงานครบกำหนดใน 7 วัน ${cnt("soon")} งาน` : ""}</span></div></div>`;
+  return head + `<div class="mgg">${MGG.map(g => { const n = tot(g); return `<div class="mggc" style="--gc:${g.c};--gb:${g.bg}">
+    <div class="mggh"><span><b>${g.t}</b><small>${g.d}</small></span><em class="${n ? "" : "z"}">${n ? n + " งาน" : "✓ ปกติ"}</em></div>
+    ${g.items.map(([k, l, ic]) => { const v = cnt(k); return `<button type="button" class="mgi ${v ? "" : "z"} ${S.mx === k ? "sel" : ""}" data-mx="${k}" style="--fc:${FL[k].c}"><i>${sv(IC[ic] || IC.delay, 16)}</i><span>${l}</span><b class="num">${v}</b></button>`; }).join("")}</div>`; }).join("")}</div>`;
+}
 function renderMg() {
   const L = leaves(scopeL()).filter(t => !t.cancel), rows = L.map(t => ({ t, f: flagsOf(t) })).filter(x => x.f.length);
   const cnt = k => rows.filter(x => x.f.includes(k)).length;
@@ -969,7 +1000,7 @@ function renderMg() {
   <section class="panel"><h2>${ib("mg", "linear-gradient(135deg,#34d399,#047857)")}ต้องจัดการวันนี้ · ${esc(scopeName())} <span class="tag">${rows.filter(x => x.f.some(k => k !== "soon")).length} งาน</span>
     <span class="tv-r"><button type="button" class="btn pri sm" data-rv="1">${sv(IC.done, 15)}อัปเดตประจำสัปดาห์</button><button type="button" class="btn line sm" data-rep="wk">${sv(IC.xl, 15)}Export รายงานสัปดาห์</button><button type="button" class="btn line sm" data-print="1">${sv(IC.print, 15)}พิมพ์ / PDF</button></span></h2>
     <p class="hint">ดูเฉพาะข้อยกเว้นตามมาตรฐานแผนก · กดการ์ดเพื่อกรอง · กดงานเพื่อแก้ไข</p>
-    <div class="mgcs">${FLO.map(k => card(k, cnt(k))).join("")}</div>
+    ${mgGroups(cnt)}
     <div class="mgl">${sel.slice(0, 60).map(ln).join("") || `<div class="ok">✓ ไม่มีงานที่ต้องจัดการ${S.mx ? "ในหมวดนี้" : ""}</div>`}</div></section>
   <div class="g2" style="margin-top:16px">
     <section class="panel"><h2>${ib("mo", "linear-gradient(135deg,#38bdf8,#2563eb)")}งานเข้า vs งานปิด · 8 สัปดาห์</h2><p class="hint">ทีมทำทันไหม: แท่งปิด (เขียว) ควรสูงกว่าหรือเท่าแท่งเข้า (ฟ้า) · สัปดาห์ จ.–อา.</p>
