@@ -421,7 +421,7 @@
     header.top { border-radius: 0 0 22px 22px; padding: 12px 0 14px; margin-bottom: 10px; }
     body:not(.dt) header.top .wrap::after { bottom: -14px; }
     .hrow { gap: 10px; flex-wrap: nowrap; } .home { font-size: 0; padding: 10px; gap: 0; } .logo { width: 40px; height: 40px; border-radius: 12px; } .logo svg { width: 22px; height: 22px; }
-    .ttl { min-width: 0; flex: 1; } .ttl small, #asof, .live, .clock, #bExp, #bAdd { display: none !important; }
+    .ttl { min-width: 0; flex: 1; } .ttl small, #asof, .live, .clock, #bExp, #bAdd, #bImp { display: none !important; }
     .ttl h1 { font-size: 17px !important; line-height: 1.3; }
     .hbtns { margin-left: 0; flex: none; } .sync { font-size: 0 !important; } .sync::first-letter { font-size: 15px; }
     .lay { gap: 8px !important; grid-template-columns: minmax(0, 1fr) !important; } .lay > * { min-width: 0; } .side { position: static !important; display: flex !important; gap: 8px; padding: 6px !important; overflow-x: auto; flex-wrap: nowrap !important; border-radius: 16px !important; }
@@ -535,6 +535,12 @@
   @media (max-width: 1000px) { .mgg { grid-template-columns: 1fr; } }
   @media (max-width: 760px) { .tv-r { flex-wrap: wrap; } .tv-r .btn { white-space: nowrap; font-size: 12.5px; padding: 8px 10px; } .tv-r .btn[data-rv] { flex-basis: 100%; } .mgh b { font-size: 15px; } }
   @media print { .mgg { grid-template-columns: repeat(3, 1fr); } }
+  .pbadd { width: 100%; display: flex; align-items: center; justify-content: center; gap: 7px; border: 1.5px dashed #a7d8bf; background: #f4fbf7; color: #047857; border-radius: 14px; padding: 10px; font-weight: 700; font-size: 13.5px; cursor: pointer; }
+  .pbadd:hover { background: #e7f8ef; }
+  .tmt { display: grid; gap: 6px; } .tmh, .tmr { display: grid; grid-template-columns: 1fr 1.2fr 1.2fr 74px; gap: 6px; align-items: center; } .tmh span { font-size: 12px; color: var(--mut); font-weight: 700; }
+  .tmr .ci { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; background: #fff; } .tmr small { color: var(--mut); text-align: center; font-size: 12px; }
+  .tmr.new { padding-top: 8px; border-top: 1px dashed var(--line); } .tmr.new .ci { background: #fffbeb; border-color: #fde68a; }
+  @media (max-width: 760px) { body.v-list .pbadd { width: auto; flex: none; padding: 8px 12px; } .tmh { display: none; } .tmr { grid-template-columns: 1fr 1fr; } .tmr .ci[data-tm="sub"], #tmS { grid-column: 1 / -1; } }
 </style>
 </head>
 <body>
@@ -548,7 +554,7 @@
         <span style="display:grid;justify-items:end;gap:2px"><span class="live"><i></i>LIVE</span><span class="clock" id="clock"></span></span>
         <button type="button" class="btn ghost me" id="bMe"></button><span class="sync" id="syncSt"></span>
         <button class="btn ghost" id="bTheme" style="display:none"></button>
-        <button class="btn ghost" id="bImp" style="display:none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg>นำเข้า Excel</button>
+        <button class="btn ghost" id="bImp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg>นำเข้า Excel</button>
         <button class="btn ghost" id="bExp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>Export Excel</button>
         <button class="btn" id="bAdd"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>เพิ่มงาน (ฟอร์ม)</button>
         <input type="file" id="file" accept=".xlsx,.xls" hidden>
@@ -622,7 +628,7 @@
 </script>
 <script>
 const DATA0 = [{"title":"ผังห้อง Training คลัง 32 + รายการราคาใหม่","owner":"K.ศุภณัฐ","start":"2026-01-02","target":"2026-01-06","prog":100,"cancel":false,"note":"","id":"T1","no":1},{"title":"4 Way shuttle (Org.)","owner":"K.ศุภณัฐ","start":"2026-01-08","target":"2026-01-09","prog":100,"cancel":false,"note":"","id":"T2","no":2},{"title":"4 Way Presentation","owner":"K.ศุภณัฐ","start":"2026-01-12","target":"2026-06-30","prog":100,"cancel":false,"note":"","id":"T3","no":3},{"title":"วาง Layout ใหม่คลัง 32","owner":"K.ศุภณัฐ","start":"2026-01-09","target":"2026-01-13","prog":100,"cancel":false,"note":"","id":"T4","no":4},{"title":"เป้า Robot ใหม่ เทียบกับคน","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-09","prog":100,"cancel":false,"note":"ส่งรายละเอียดให้ ปรางเรียบร้อย","id":"T5","no":5},{"title":"Iot Project ภาพรวมทั้งปี","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-15","prog":100,"cancel":false,"note":"P ดำเนินการ","id":"T6","no":6},{"title":"Requirement Forklift Project 2026","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-15","prog":100,"cancel":false,"note":"","id":"T7","no":7},{"title":"Location คลังสินค้า 3 คลัง ส่งพี่เต้ย","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-15","prog":100,"cancel":false,"note":"","id":"T8","no":8},{"title":"Application การชาร์ตแบต ของรถ Forklift ที่เป็น Lithium","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-15","prog":0,"cancel":false,"note":"","id":"T9","no":9},{"title":"งานเพิ่มเครื่องอัดขยะ","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-15","prog":100,"cancel":false,"note":"เริ่มเข้างาน 07-08 Feb 26","id":"T10","no":10},{"title":"งานเพิ่ม Platform telescopics","owner":"K.ศุภณัฐ","start":"2026-01-06","target":"2026-01-30","prog":100,"cancel":false,"note":"ส่งให้ บุยธรรมแล้ว","id":"T11","no":11},{"title":"TOR เครื่องอัดขยะ ทาง Supplier Sign","owner":"K.ศุภณัฐ","start":"2026-01-23","target":"2026-01-25","prog":100,"cancel":false,"note":"ส่งตัวปรับแก้ไปแล้ว 27 Jan","id":"T12","no":12},{"title":"สัญญา ส่งให้ทาง Supplier","owner":"K.ศุภณัฐ","start":"2026-01-23","target":"2026-01-30","prog":null,"cancel":true,"note":"รอพี่ไพ Review","id":"T13","no":13},{"title":"ส่ง Questionnair ให้ทาง Cainiao","owner":"K.ศุภณัฐ","start":"2026-01-23","target":"2026-01-23","prog":100,"cancel":false,"note":"ส่งภายในวันนี้ 23","id":"T14","no":14},{"title":"งาน Renovate คลังราชบุรี Phase 2","owner":"K.ศุภณัฐ","start":"2026-01-27","target":"2026-01-30","prog":25,"cancel":false,"note":"","id":"T15","no":15},{"title":"งาน โต๊ะ Furniture ห้องประชุมใหม่","owner":"K.ศุภณัฐ","start":"2026-02-05","target":"2026-02-06","prog":100,"cancel":false,"note":"","id":"T16","no":16},{"title":"งานต่อเติม Flowrack คลัง WHA 05","owner":"K.ศุภณัฐ","start":"2026-02-05","target":"2026-02-06","prog":100,"cancel":false,"note":"รอใบเสนอราคา","id":"T17","no":17},{"title":"งานปรับปรุง กำแพง Robot และประตู","owner":"K.ศุภณัฐ","start":"2026-02-05","target":"2026-02-06","prog":100,"cancel":false,"note":"รอใบเสนอราคา","id":"T18","no":18},{"title":"งานส่งต่อรองของ น้ำมัน เครื่องจักร ของเครื่องอัดขยะ","owner":"K.ศุภณัฐ","start":"2026-02-05","target":"2026-02-06","prog":100,"cancel":false,"note":"รอเขียนบันทึก","id":"T19","no":19},{"title":"งาน Renovate คลังพิษณุโลก (HighBay)","owner":"K.ศุภณัฐ","start":"2026-02-05","target":"2026-09-30","prog":null,"cancel":true,"note":"Concept","id":"T20","no":20},{"title":"งานออกแบบ Design 2 ชั้นห้องตู้ปลา","owner":"K.ศุภณัฐ","start":"2026-02-06","target":"2026-02-12","prog":100,"cancel":false,"note":"เหลือประเมินราคาให้พี่แต้ม","id":"T21","no":21},{"title":"GPS Tacking Forklift","owner":"K.ศุภณัฐ","start":"2026-02-06","target":"2026-02-12","prog":null,"cancel":true,"note":"","id":"T22","no":22},{"title":"E-Com Desing","owner":"K.ศุภณัฐ","start":"2026-02-25","target":"2026-02-26","prog":100,"cancel":false,"note":"","id":"T23","no":23},{"title":"แบบคลังสินค้า โคราช ที่มี","owner":"K.ศุภณัฐ","start":"2026-02-25","target":"2026-02-26","prog":100,"cancel":false,"note":"","id":"T24","no":24},{"title":"พัดลมเป่าในตู้ Load คลัง 32","owner":"K.ศุภณัฐ","start":"2026-02-25","target":"2026-02-26","prog":null,"cancel":true,"note":"","id":"T25","no":25},{"title":"Drawing Korat WH Rev. 2","owner":"K.ศุภณัฐ","start":"2026-03-02","target":"2026-03-04","prog":100,"cancel":false,"note":"ปรับแก้ขนาด คลังสินค้า","id":"T26","no":26},{"title":"Action Plan ละเอียดสำหรับ การก่อสร้างคลัง","owner":"K.ศุภณัฐ","start":"2026-03-02","target":"2026-03-10","prog":100,"cancel":false,"note":"","id":"T27","no":27},{"title":"ปากเกร็ด Drawing","owner":"K.ศุภณัฐ","start":"2026-03-04","target":"2026-03-10","prog":100,"cancel":false,"note":"","id":"T28","no":28},{"title":"บันทึกงานเก้าอี้ ห้องประชุม","owner":"K.ศุภณัฐ","start":"2026-03-04","target":"2026-03-10","prog":100,"cancel":false,"note":"","id":"T29","no":29},{"title":"Dashboard BI ของ Axons MA","owner":"K.ศุภณัฐ","start":"2026-03-04","target":"2026-03-08","prog":100,"cancel":false,"note":"","id":"T30","no":30},{"title":"Plant Meeting Mar 2026","owner":"K.ศุภณัฐ","start":"2026-03-04","target":"2026-03-13","prog":100,"cancel":false,"note":"","id":"T31","no":31},{"title":"Checklist BT Forklift","owner":"K.วัฒนา","start":"2026-03-04","target":"2026-03-13","prog":0,"cancel":false,"note":"","id":"T32","no":32},{"title":"Stock Rack ด้านหลังคลังสินค้า","owner":"K.ศุภณัฐ","start":"2026-03-04","target":"2026-03-13","prog":100,"cancel":false,"note":"","id":"T33","no":33},{"title":"เขียนบันทึกงาน เปลี่ยนบัว Training Room","owner":"K.ศุภณัฐ","start":"2026-03-16","target":"2026-03-18","prog":100,"cancel":false,"note":"","id":"T34","no":34},{"title":"แบบสำรวจ Height Selection ของคลัง RDC","owner":"K.ศุภณัฐ","start":"2026-03-16","target":"2026-03-18","prog":100,"cancel":false,"note":"มีข้อมูลแล้วรอดำเนินการ","id":"T35","no":35},{"title":"ใบ ขอ ช่างซ่อมบำรุง / ผู้จัดการแผนกโครงการ Automate","owner":"K.ศุภณัฐ","start":"2026-03-16","target":"2026-03-20","prog":100,"cancel":false,"note":"","id":"T36","no":36},{"title":"งาน Memo งานซื้อ Robot","owner":"K.ศุภณัฐ","start":"2026-03-26","target":"2026-03-28","prog":100,"cancel":false,"note":"","id":"T37","no":37},{"title":"งาน TOR งานซื้อ Robot","owner":"K.ศุภณัฐ","start":"2026-03-26","target":"2026-03-28","prog":100,"cancel":false,"note":"","id":"T38","no":38},{"title":"Famework งาน 4-Way Shuttle","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-10","prog":100,"cancel":false,"note":"นำเสนอพี่แต้มแล้ว","id":"T39","no":39},{"title":"Famework งาน AGV/AMR","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-10","prog":50,"cancel":false,"note":"","id":"T40","no":40},{"title":"เปรียบเทียบ Soalr Cell คลังสินค้า สุราษรฏ์","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-24","prog":100,"cancel":false,"note":"","id":"T41","no":41},{"title":"Robot Improve ขา 7 / 10","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-10","prog":100,"cancel":false,"note":"","id":"T42","no":42},{"title":"Plant Meeting Presentation Axons Maintenance","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-23","prog":100,"cancel":false,"note":"","id":"T43","no":43},{"title":"ปรับ Weekly Report","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-20","prog":100,"cancel":false,"note":"","id":"T44","no":44},{"title":"Action Plan รายละเอียดแต่ละโครงการ","owner":"K.ศุภณัฐ","start":"2026-04-07","target":"2026-04-28","prog":96,"cancel":false,"note":"","id":"T45","no":45},{"title":"4 Way shuttle","owner":"K.ศุภณัฐ","start":"2026-04-24","target":"2026-04-28","prog":100,"cancel":false,"note":"","id":"T45-1","no":"45.1","parent":"T45"},{"title":"AGV Project","owner":"K.ศุภณัฐ","start":"2026-04-24","target":"2026-04-28","prog":75,"cancel":false,"note":"","id":"T45-2","no":"45.2","parent":"T45"},{"title":"Robot Arm","owner":"K.ศุภณัฐ","start":"2026-04-24","target":"2026-04-28","prog":100,"cancel":false,"note":"","id":"T45-3","no":"45.3","parent":"T45"},{"title":"Camera sensor","owner":"K.ศุภณัฐ","start":"2026-04-24","target":"2026-04-28","prog":100,"cancel":false,"note":"","id":"T45-4","no":"45.4","parent":"T45"},{"title":"IOT Phase 2","owner":"K.ศุภณัฐ","start":"2026-04-24","target":"2026-04-28","prog":100,"cancel":false,"note":"","id":"T45-5","no":"45.5","parent":"T45"},{"title":"Robot Cleaning","owner":"K.ศุภณัฐ","start":"2026-04-24","target":"2026-04-28","prog":100,"cancel":false,"note":"","id":"T45-6","no":"45.6","parent":"T45"},{"title":"กรอกรายละเอียด ของ Domino","owner":"K.ศุภณัฐ","start":"2026-04-23","target":"2026-04-24","prog":100,"cancel":false,"note":"","id":"T46","no":46},{"title":"MHE นัด Supplier ดู นวัตกรรใหม่","owner":"K.ศุภณัฐ","start":"2026-04-27","target":"2026-04-30","prog":0,"cancel":false,"note":"","id":"T47","no":47},{"title":"Lighting Layout คลังโคราช","owner":"K.ศุภณัฐ","start":"2026-04-27","target":"2026-04-30","prog":100,"cancel":false,"note":"","id":"T48","no":48},{"title":"List รายการ IOT ว่าทำอะไรแล้วบ้าง","owner":"K.ศุภณัฐ","start":"2026-05-05","target":"2026-05-10","prog":100,"cancel":false,"note":"","id":"T49","no":49},{"title":"List รายการ Roobot ว่าทำอะไรแล้วบ้าง","owner":"K.ศุภณัฐ","start":"2026-05-05","target":"2026-05-10","prog":100,"cancel":false,"note":"","id":"T50","no":50},{"title":"บันทึกขออนุมัติ งานทาสีฝ้า","owner":"K.ศุภณัฐ","start":"2026-05-05","target":"2026-05-10","prog":100,"cancel":false,"note":"","id":"T51","no":51},{"title":"บันทึกขออนุมัติ งานซ่อมพื้นหน้า Dock Load","owner":"K.ศุภณัฐ","start":"2026-05-05","target":"2026-05-10","prog":100,"cancel":false,"note":"","id":"T52","no":52},{"title":"งานหินคลุกด้านข้างคลังสินค้า","owner":"K.ศุภณัฐ","start":"2026-07-13","target":"2026-07-14","prog":100,"cancel":false,"note":"","id":"T53","no":53},{"title":"Presentation สำหรับเพิ่มพื้นที่การจัดเก็บสินค้า","owner":"K.ศุภณัฐ","start":"2026-07-13","target":"2026-07-14","prog":100,"cancel":false,"note":"","id":"T54","no":54},{"title":"งานต่อเติม โรงอาคาร คลัง 5 (แบบประเมินราคา)","owner":"K.ศุภณัฐ","start":"2026-07-13","target":"2026-07-14","prog":100,"cancel":false,"note":"","id":"T55","no":55},{"title":"งานสำนักงาน Operatin คลัง 5","owner":"K.ศุภณัฐ","start":"2026-07-13","target":"2026-07-14","prog":null,"cancel":true,"note":"","id":"T56","no":56},{"title":"ต่อสัญญา MHE ประจำปี 2570","owner":"K.ศุภณัฐ","start":"2026-07-01","target":"2026-07-31","prog":0,"cancel":false,"note":"","id":"T57","no":57},{"title":"สรุป ตรวจสอบ Racking - RDC ทั่วประเทศ","owner":"K.ศุภณัฐ","start":"2026-07-01","target":"2026-07-31","prog":100,"cancel":false,"note":"","id":"T58","no":58},{"title":"CEO Presentation","owner":"K.ศุภณัฐ","start":"2026-07-01","target":"2026-08-08","prog":100,"cancel":false,"note":"","id":"T59","no":59},{"title":"งบประมาณย้ายคลังสินค้า โคราช","owner":"K.ศุภณัฐ","start":"2026-07-01","target":"2026-08-08","prog":100,"cancel":false,"note":"","id":"T60","no":60},{"title":"เขียนแบบก่อสร้างคลังสินค้า 3 คลัง","owner":"K.ศุภณัฐ","start":"","target":"","prog":null,"cancel":false,"note":"","id":"T61","no":61},{"title":"งบประมาณคลังสินค้า SCX A1","owner":"K.ศุภณัฐ","start":"","target":"","prog":null,"cancel":false,"note":"","id":"T62","no":62},{"title":"โครงการ 4Way Shuttle ที่คลังสินค้าใหม่","owner":"K.ศุภณัฐ","start":"","target":"","prog":null,"cancel":false,"note":"","id":"T63","no":63}];
-const ASOF0 = "2026-10-16T02:07";
+const ASOF0 = "2026-10-16T02:15";
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const ls = { get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } } };
@@ -661,7 +667,16 @@ let DATA = (ls.get(DBK, null) || seed()).map(norm);
 let SBOK = null;
 const byId = id => DATA.find(t => t.id === id);
 /* 15 ต.ค. ผู้ใช้สั่ง: แยกงานรายคน (แถบซ้าย) ไม่ปนกัน · งานจากไฟล์เดิม = ของตั๋น · bd ว่าง = ton */
-const BOARDS = [{ k: "ton", n: "ตั๋น", sub: "K.ศุภณัฐ", own: "K.ศุภณัฐ" }, { k: "mink", n: "Mink", sub: "มิ้งค์", own: "Mink" }];
+/* 16 ต.ค. ผู้ใช้ขอ: เพิ่มทีมงานได้ · รายชื่อเก็บ Supabase แถว id CFG:team (ตาราง daily_tasks เดิม) + localStorage pcg-task-team */
+const TEAM0 = [{ k: "ton", n: "ตั๋น", sub: "K.ศุภณัฐ", own: "K.ศุภณัฐ" }, { k: "mink", n: "Mink", sub: "มิ้งค์", own: "Mink" }];
+const TEAMK = "pcg-task-team";
+let TEAMU = "", BOARDS = (() => { try { const x = JSON.parse(localStorage.getItem(TEAMK) || "null"); if (x && Array.isArray(x.members) && x.members.length) { TEAMU = x.u || ""; return x.members; } } catch (e) {} return TEAM0.slice(); })();
+function setTeam(members, u, push) {
+  BOARDS = members; TEAMU = u || new Date().toISOString();
+  try { localStorage.setItem(TEAMK, JSON.stringify({ members, u: TEAMU })); } catch (e) {}
+  if (!BOARDS.some(b => b.k === S.bd)) S.bd = BOARDS[0].k;
+  if (push && SBOK) sbUp([{ id: "CFG:team", cfg: "team", members, u: TEAMU }]).catch(e => console.warn(e));
+}
 const bdOf = t => t.bd || "ton";
 const BD = () => BOARDS.find(b => b.k === S.bd) || BOARDS[0];
 const liveAll = () => DATA.filter(t => !t.del);
@@ -1282,7 +1297,27 @@ function renderGuide() {
 function renderSide() {
   $("side").innerHTML = `<h4>งานของ</h4>` + BOARDS.map(b => { const L = liveAll().filter(t => bdOf(t) === b.k && !t.parent), c = stat(L);
     return `<button type="button" class="pb ${S.bd === b.k ? "on" : ""}" data-bd="${b.k}"><span class="av">${esc(b.n.slice(0, 1))}</span><span><b>${esc(b.n)}</b><small>${esc(b.sub)} · ${c.n} งาน</small>
-      <span class="mini"><span>เสร็จ ${c.pct}%</span>${c.delay ? `<span style="${S.bd === b.k ? "" : "color:#a51d1d"}">Delay ${c.delay}</span>` : ""}${c.prog ? `<span>กำลังทำ ${c.prog}</span>` : ""}</span></span></button>`; }).join("");
+      <span class="mini"><span>เสร็จ ${c.pct}%</span>${c.delay ? `<span style="${S.bd === b.k ? "" : "color:#a51d1d"}">Delay ${c.delay}</span>` : ""}${c.prog ? `<span>กำลังทำ ${c.prog}</span>` : ""}</span></span></button>`; }).join("") + `<button type="button" class="pbadd" data-team="1">${sv("M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M19 8v6 M22 11h-6", 17)}เพิ่ม / แก้ไขทีมงาน</button>`;
+}
+function teamDlg(msg) {
+  const cnt = k => liveAll().filter(t => bdOf(t) === k && !t.parent).length;
+  $("dlgf").innerHTML = `<div class="dh"><h3>ทีมงาน · ใครเป็นใคร</h3><button type="button" data-close="1">×</button></div><div class="db">
+    <p class="hint" style="margin:0">แต่ละคนมีบอร์ดงานของตัวเองที่แถบซ้าย · "ชื่อในช่องผู้รับผิดชอบ" = ชื่อที่ใช้ในงานและ KPI (แก้แล้วงานในบอร์ดนั้นเปลี่ยนชื่อตามให้) · ลบได้เฉพาะคนที่ยังไม่มีงาน</p>
+    ${msg ? `<div class="note">${msg}</div>` : ""}
+    <div class="tmt"><div class="tmh"><span>ชื่อเรียก (แถบซ้าย)</span><span>ชื่อในช่องผู้รับผิดชอบ</span><span>ตำแหน่ง / หมายเหตุ</span><span></span></div>
+    ${BOARDS.map(b => `<div class="tmr" data-k="${esc(b.k)}"><input class="ci" data-tm="n" value="${esc(b.n)}"><input class="ci" data-tm="own" value="${esc(b.own)}"><input class="ci" data-tm="sub" value="${esc(b.sub || "")}">
+      ${cnt(b.k) ? `<small title="มีงานอยู่ ลบไม่ได้">มี ${cnt(b.k)} งาน</small>` : `<button type="button" class="btn line sm" data-tmdel="${esc(b.k)}">ลบ</button>`}</div>`).join("")}
+    <div class="tmr new"><input class="ci" id="tmN" placeholder="เช่น บอส"><input class="ci" id="tmO" placeholder="เช่น K.สมชาย"><input class="ci" id="tmS" placeholder="เช่น Project Engineer"><button type="button" class="btn pri sm" id="tmAdd">＋ เพิ่ม</button></div></div></div>
+    <div class="df"><button type="button" class="btn line" data-close="1">ปิด</button><button type="button" class="btn pri" id="tmSave">บันทึก</button></div>`;
+  if (!$("dlg").open) $("dlg").showModal();
+}
+function teamRead() {
+  return [...document.querySelectorAll(".tmr[data-k]")].map(r => { const g = f => clean(r.querySelector(`[data-tm="${f}"]`).value.trim()); const o = BOARDS.find(b => b.k === r.dataset.k) || {}; return { k: r.dataset.k, n: g("n") || o.n, own: g("own") || o.own, sub: g("sub") }; });
+}
+function teamSave(list) {
+  const touched = [];
+  list.forEach(m => { const o = BOARDS.find(b => b.k === m.k); if (o && o.own && m.own !== o.own) liveAll().filter(t => bdOf(t) === m.k && t.owner === o.own).forEach(t => { t.owner = m.own; t.u = nowIso(); touched.push(t); }); });
+  setTeam(list, null, true); if (touched.length) persist(touched); render();
 }
 function render() {
   location.hash = S.view; renderSide(); renderTabs(); renderFilters();
@@ -1365,7 +1400,10 @@ async function sbSync() {
     const raw = (await sbAll()).map(x => x.rec);
     raw.filter(r => r && r.snap && typeof r.m === "string" && /^\d{4}-\d{2}$/.test(r.m)).forEach(r => { if (!SNAPS[r.m]) SNAPS[r.m] = r; });
     const locSn = Object.values(SNAPS).filter(x => !raw.some(r => r && r.id === x.id)); if (locSn.length) sbUp(locSn).catch(() => {}); ls.set(SNK, SNAPS);
-    const rem = raw.filter(r => r && !r.snap && !r.file && typeof r.id === "string" && typeof r.title === "string").map(norm);
+    const tm = raw.find(r => r && r.id === "CFG:team" && Array.isArray(r.members) && r.members.length);
+    if (tm && (tm.u || "") > TEAMU) setTeam(tm.members.map(m => ({ k: clean(m.k), n: clean(m.n), own: clean(m.own), sub: clean(m.sub || "") })), tm.u);
+    else if (!tm && TEAMU) sbUp([{ id: "CFG:team", cfg: "team", members: BOARDS, u: TEAMU }]).catch(() => {});
+    const rem = raw.filter(r => r && !r.snap && !r.file && !r.cfg && typeof r.id === "string" && typeof r.title === "string").map(norm);
     const mp = new Map(DATA.map(t => [t.id, t])), up = [];
     if (!rem.length) up.push(...DATA);
     else {
@@ -1409,7 +1447,7 @@ async function importFile(f) {
 }
 function applyImport() {
   const { plan } = IMP, touched = [], at = nowIso();
-  plan.add.forEach(r => { const o = byId(r.id); const t = Object.assign(o || {}, r, { src: srcOf(r), u: at, del: false, hist: [{ at, from: null, p: r.prog || 0 }] }); if (r.prog >= 100) t.doneAt = TODAY; if (!o) DATA.push(t); touched.push(t); });
+  plan.add.forEach(r => { const o = byId(r.id); const t = Object.assign(o || {}, r, { src: srcOf(r), u: at, created: (o && o.created) || at, by: byMe(), del: false, hist: [{ at, from: null, p: r.prog || 0, by: byMe() }] }); if (r.prog >= 100) t.doneAt = TODAY; if (!o) DATA.push(t); touched.push(t); });
   plan.upd.forEach(({ o, r, ch }) => { const p0 = progOf(o); ch.forEach(k => { o[k] = r[k]; }); o.src = srcOf(r); o.u = at; const p1 = progOf(o); if (p0 !== p1) { o.hist = (o.hist || []).concat({ at, from: p0, p: p1 }).slice(-30); if (p1 >= 100 && !o.doneAt) o.doneAt = TODAY; if (p1 < 100) delete o.doneAt; } touched.push(o); });
   persist(touched); $("dlg").close(); IMP = null; render();
 }
@@ -1433,10 +1471,17 @@ async function exportX() {
 
 /* ---------- events ---------- */
 document.addEventListener("click", e => {
-  const x = e.target.closest("[data-pp],[data-lv],[data-td],[data-fo],[data-sd],[data-ms],[data-mx],[data-mm],[data-rep],[data-print],[data-me],[data-rv],[data-rvp],[data-rvgo],[data-fget],[data-fdel],#fab,#bMe,#meOk,#meSkip");
+  const x = e.target.closest("[data-pp],[data-lv],[data-td],[data-fo],[data-sd],[data-ms],[data-mx],[data-mm],[data-rep],[data-print],[data-me],[data-rv],[data-rvp],[data-rvgo],[data-fget],[data-fdel],[data-team],[data-tmdel],[data-imp],#fab,#bMe,#meOk,#meSkip,#tmAdd,#tmSave");
   if (x) {
     if (x.id === "fab") { if (S.view !== "list") { S.view = "list"; render(); } const n = $("nT"); if (n) { n.scrollIntoView({ behavior: "smooth", block: "center" }); setTimeout(() => n.focus(), 250); } return; }
     if (x.id === "bMe") { askMe(true); return; }
+    if (x.dataset.team) { teamDlg(); return; }
+    if (x.id === "tmAdd") { const n = clean($("tmN").value.trim()), o = clean($("tmO").value.trim()) || n; if (!n) { $("tmN").focus(); return; }
+      if (BOARDS.some(b => b.n === n || b.own === o)) { teamDlg("มีชื่อนี้อยู่แล้ว"); return; }
+      const list = teamRead().concat({ k: "m" + Date.now().toString(36), n, own: o, sub: clean($("tmS").value.trim()) }); teamSave(list); teamDlg("✓ เพิ่ม " + esc(n) + " แล้ว · ดูบอร์ดที่แถบซ้าย"); return; }
+    if (x.id === "tmSave") { teamSave(teamRead()); $("dlg").close(); return; }
+    if (x.dataset.tmdel) { if (liveAll().some(t => bdOf(t) === x.dataset.tmdel)) return; if (BOARDS.length < 2) { teamDlg("ต้องมีอย่างน้อย 1 คน"); return; } teamSave(teamRead().filter(m => m.k !== x.dataset.tmdel)); teamDlg("ลบแล้ว"); return; }
+    if (x.dataset.imp) { if (x.dataset.imp === "file") { $("dlg").close(); $("file").click(); } else tmplX(); return; }
     if (x.id === "meSkip") { try { sessionStorage.setItem("pcg-task-me-skip", "1"); } catch (e) {} $("dlg").close(); return; }
     if (x.id === "meOk") { const on = document.querySelector("[data-me].on"); setMe($("meIn").value || (on && on.dataset.me)); return; }
     if (x.dataset.me) { setMe(x.dataset.me); return; }
@@ -1502,7 +1547,22 @@ document.addEventListener("change", e => { if (e.target.id === "fSort") { S.sort
 const busy = () => $("dlg").open || (document.activeElement && /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName) && document.activeElement.id !== "fQ");
 setInterval(() => { if (!document.hidden && SBOK && !busy()) sbSync(); }, 60000);
 document.addEventListener("visibilitychange", () => { if (!document.hidden && SBOK && !busy()) sbSync(); });
-$("bImp").onclick = () => $("file").click();
+$("bImp").onclick = () => {
+  $("dlgf").innerHTML = `<div class="dh"><h3>นำเข้างานจาก Excel · บอร์ด ${esc(BD().n)}</h3><button type="button" data-close="1">×</button></div><div class="db">
+    <p style="margin:0">ไฟล์ต้องมีแถวหัวตารางที่มีคอลัมน์ <b>ผู้รับผิดชอบ</b> · คอลัมน์ที่อ่านได้: NO. · งาน · ผู้รับผิดชอบ · ความสำคัญ (สูง/กลาง/ต่ำ) · Start date · Target · Progress (0–100% · "-" = ยกเลิก) · ประเภท · หมายเหตุ · แถวที่ไม่มี NO. ใต้งาน = งานย่อย</p>
+    <div class="note">นำเข้าเข้าบอร์ดที่เลือกอยู่ (<b>${esc(BD().n)}</b>) · ระบบแสดงตัวอย่างก่อนบันทึก · <b>รวมกับงานเดิม</b> ไม่ลบงานที่ไม่อยู่ในไฟล์ · ค่าที่แก้บนเว็บไม่ถูกทับ (อัปเดตเฉพาะช่องที่ในไฟล์เปลี่ยน)</div></div>
+    <div class="df"><button type="button" class="btn line" data-imp="tmpl" style="margin-right:auto">${sv(IC.xl, 15)}ดาวน์โหลดแบบฟอร์ม</button><button type="button" class="btn pri" data-imp="file">เลือกไฟล์ Excel…</button></div>`;
+  $("dlg").showModal();
+};
+async function tmplX() {
+  try { await loadXLSX(); } catch (e) { alert(e.message); return; }
+  const head = ["NO.", "งาน", "ผู้รับผิดชอบ", "ความสำคัญ", "Start date", "Target", "Progress", "ประเภท", "หมายเหตุ"];
+  const ws = XLSX.utils.aoa_to_sheet([["แบบฟอร์มนำเข้างาน · งานที่ต้องทำประจำวันแผนกโครงการ"], ["ความสำคัญ: สูง / กลาง / ต่ำ · Progress: 0–100% (\"-\" = ยกเลิก) · แถวที่เว้น NO. ใต้งาน = งานย่อย"], head,
+    [1, "ตัวอย่าง: ขอใบเสนอราคาซ่อมหลังคา WH5", BD().own, "สูง", new Date(TODAY + "T00:00:00"), "", "25%", "Renovate / ปรับปรุงคลัง", ""],
+    ["", "ตัวอย่างงานย่อย: เทียบราคา 3 ราย", BD().own, "กลาง", "", "", "0%", "", ""]], { cellDates: true });
+  ws["!cols"] = [6, 46, 16, 10, 12, 12, 10, 22, 30].map(w => ({ wch: w }));
+  const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Tasks"); XLSX.writeFile(wb, "แบบฟอร์มนำเข้างาน.xlsx");
+}
 $("file").onchange = e => { const f = e.target.files[0]; e.target.value = ""; if (f) importFile(f); };
 $("bExp").onclick = exportX;
 /* tooltip กราฟรายเดือน */
