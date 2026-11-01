@@ -28,19 +28,21 @@ const split = l => { const out = []; let cur = "", q = false;
 const lines = text.split(/\r?\n/).filter(Boolean);
 const head = split(lines[0]).map(h => h.toLowerCase().replace(/\s+/g, ""));
 const at = n => head.indexOf(n.toLowerCase().replace(/\s+/g, ""));
-const I = { d: at("วันที่โหลด"), c: at("ตู้ที่"), s: at("สายส่ง"), k: at("รหัสอาหาร"), l: at("lot"), q: at("qty"), p: at("จำนวนพาเลท"), w: at("น้ำหนัก") };
+const I = { d: at("วันที่โหลด"), c: at("ตู้ที่"), s: at("สายส่ง"), k: at("รหัสอาหาร"), l: at("lot"), q: at("qty"), p: at("จำนวนพาเลท"), w: at("น้ำหนัก"), id: at("ItemInternalId") };
 const toIso = v => { const s = parseFloat(v); if (s > 20000) return new Date(Date.UTC(1899, 11, 30) + Math.round(s) * 864e5).toISOString().slice(0, 10);
   const m = String(v || "").match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})/); if (m) { let y = +m[3]; if (y > 2400) y -= 543; return y + "-" + String(+m[2]).padStart(2, "0") + "-" + String(+m[1]).padStart(2, "0"); }
   return null; };
-const days = {}, seen = new Set();
+const days = {}, seen = new Map();
 for (const l of lines.slice(1)) {
   const c = split(l), d = toIso(c[I.d]); if (!d) continue;
   const ship = (c[I.s] || "").trim() || "#" + (c[I.c] || "");
   const rk = [d, ship, c[I.k], c[I.l], c[I.q], c[I.p], c[I.w]].join("|");
   const D = days[d] || (days[d] = {});
-  const ct = D[ship] || (D[ship] = { ship, rows: 0, dup: 0 });
-  if (seen.has(rk)) { ct.dup++; continue; }
-  seen.add(rk); ct.rows++;
+  const ct = D[ship] || (D[ship] = { ship, rows: 0, dup: 0, flow: 0, kc: {} });
+  const id = I.id > -1 ? c[I.id] || "" : "";
+  // 1 สายส่ง = 1 ตู้ → รวมทุกแถว ตัดเฉพาะแถวที่ Flow ส่งซ้ำ (ItemInternalId เดียวกัน)
+  if (id && seen.has(rk) && seen.get(rk).has(id)) { ct.flow++; continue; }
+  if (!seen.has(rk)) seen.set(rk, new Set()); seen.get(rk).add(id); ct.rows++; ct.kc[rk] = (ct.kc[rk] || 0) + 1;
 }
 const dates = Object.keys(days).sort();
 const last = dates[dates.length - 1] || "";
@@ -71,7 +73,8 @@ for (const d of DD) {
   const cs = listOf(d), n = cs.length, p = parseInt((E[d + "#PLAN"] || {}).start_time, 10);
   if (d < T0 && p > 0 && n < p) out.push({ lv: 2, tag: "ตู้ไม่ครบ", msg: `${thd(d)}: แผน ${p} ตู้ แต่ robot.csv มี ${n} ตู้ · ตรวจ Excel ว่ากรอกครบ วันที่ถูก และแถวอยู่ในตาราง` });
   for (const c of cs) {
-    if (c.dup) out.push({ lv: 1, tag: "แถวซ้ำ", msg: `สายส่ง ${c.ship} (${thd(d)}) มีแถวซ้ำ ${c.dup} แถว · Clear contents แถวซ้ำใน Excel` });
+    if (c.flow) out.push({ lv: 1, tag: "Flow ส่งแถวซ้ำ", msg: `สายส่ง ${c.ship} (${thd(d)}) robot.csv มีแถวเดิมจาก Excel ซ้ำ ${c.flow} แถว (Flow อ่านซ้ำ ไม่ใช่ Excel กรอกซ้ำ) · ตรวจ List rows ใน Flow` });
+    { const v = Object.values(c.kc); if (v.length && v.every(x => x >= 2)) out.push({ lv: 1, tag: "ทั้งตู้ซ้ำ", msg: `สายส่ง ${c.ship} (${thd(d)}) ทุกแถวมี ${Math.min(...v)} ชุดเหมือนกัน · น้ำหนักอาจเกินจริง · ตรวจ Excel` }); }
     const e = E[d + "#S" + c.ship] || {};
     if (key && d < Y1 && !(e.start_time && e.finish_time)) out.push({ lv: 1, tag: "ยังไม่กรอกเวลา", msg: `สายส่ง ${c.ship} (${thd(d)}) ยังไม่มีเวลาเริ่ม/เสร็จบนเว็บ` });
   }
