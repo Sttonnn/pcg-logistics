@@ -38,10 +38,11 @@ for (const l of lines.slice(1)) {
   const ship = (c[I.s] || "").trim() || "#" + (c[I.c] || "");
   const rk = [d, ship, c[I.k], c[I.l], c[I.q], c[I.p], c[I.w]].join("|");
   const D = days[d] || (days[d] = {});
-  const ct = D[ship] || (D[ship] = { ship, rows: 0, dup: 0, flow: 0 });
+  const ct = D[ship] || (D[ship] = { ship, rows: 0, dup: 0, flow: 0, kc: {} });
   const id = I.id > -1 ? c[I.id] || "" : "";
-  if (seen.has(rk)) { if (id && seen.get(rk).has(id)) ct.flow++; else ct.dup++; seen.get(rk).add(id); continue; }
-  seen.set(rk, new Set([id])); ct.rows++;
+  // 1 สายส่ง = 1 ตู้ → รวมทุกแถว ตัดเฉพาะแถวที่ Flow ส่งซ้ำ (ItemInternalId เดียวกัน)
+  if (id && seen.has(rk) && seen.get(rk).has(id)) { ct.flow++; continue; }
+  if (!seen.has(rk)) seen.set(rk, new Set()); seen.get(rk).add(id); ct.rows++; ct.kc[rk] = (ct.kc[rk] || 0) + 1;
 }
 const dates = Object.keys(days).sort();
 const last = dates[dates.length - 1] || "";
@@ -73,7 +74,7 @@ for (const d of DD) {
   if (d < T0 && p > 0 && n < p) out.push({ lv: 2, tag: "ตู้ไม่ครบ", msg: `${thd(d)}: แผน ${p} ตู้ แต่ robot.csv มี ${n} ตู้ · ตรวจ Excel ว่ากรอกครบ วันที่ถูก และแถวอยู่ในตาราง` });
   for (const c of cs) {
     if (c.flow) out.push({ lv: 1, tag: "Flow ส่งแถวซ้ำ", msg: `สายส่ง ${c.ship} (${thd(d)}) robot.csv มีแถวเดิมจาก Excel ซ้ำ ${c.flow} แถว (Flow อ่านซ้ำ ไม่ใช่ Excel กรอกซ้ำ) · ตรวจ List rows ใน Flow` });
-    if (c.dup) out.push({ lv: 1, tag: "แถวซ้ำใน Excel", msg: `สายส่ง ${c.ship} (${thd(d)}) Excel มี ${c.dup} แถวที่ข้อมูลเหมือนกันทุกช่อง · ถ้ากรอกซ้ำจริง Clear contents แถวที่เกิน` });
+    { const v = Object.values(c.kc); if (v.length && v.every(x => x >= 2)) out.push({ lv: 1, tag: "ทั้งตู้ซ้ำ", msg: `สายส่ง ${c.ship} (${thd(d)}) ทุกแถวมี ${Math.min(...v)} ชุดเหมือนกัน · น้ำหนักอาจเกินจริง · ตรวจ Excel` }); }
     const e = E[d + "#S" + c.ship] || {};
     if (key && d < Y1 && !(e.start_time && e.finish_time)) out.push({ lv: 1, tag: "ยังไม่กรอกเวลา", msg: `สายส่ง ${c.ship} (${thd(d)}) ยังไม่มีเวลาเริ่ม/เสร็จบนเว็บ` });
   }
