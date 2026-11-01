@@ -1,0 +1,17 @@
+name: Robot data check
+# ทุกวัน 07:53 เวลาไทย: ตรวจ robot.csv + robot_entries (ข้อมูลค้าง · ตู้ไม่ครบตามแผน · วันที่โหลดอาจผิด · แถวซ้ำ · ยังไม่กรอกเวลา)
+# พบปัญหาสำคัญ = job แดง → GitHub ส่งอีเมลแจ้ง · ดูรายละเอียดที่ Job summary · กด Run workflow เองได้
+on:
+  schedule:
+    - cron: "53 0 * * *"
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/robot-check.mjs
