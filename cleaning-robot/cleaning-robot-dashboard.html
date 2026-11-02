@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cleaning Robot Dashboard · PCG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page: #eef1f5; --card: #ffffff; --ink: #1b2430; --ink-2: #5b6573; --muted: #8b94a1;
+    --line: #e3e7ee; --axis: #c8ced8;
+    --side: #26313f; --side-2: #323e4e; --side-ink: #e8edf3; --side-muted: #9aa6b5;
+    --good: #0ca30c; --warning: #fab219; --warning-ink: #9a6a00; --critical: #d03b3b;
+    --blue-1: #1f63da; --blue-2: #1442a8; --blue-bg: #e8f1fe; --blue-bd: #bcd4fb;
+    --orange-1: #ea8a10; --orange-2: #c2620a; --orange-bg: #fff3e0; --orange-bd: #f5d29a;
+    --red-1: #ef4444; --red-2: #c81e1e; --red-bg: #ffecec; --red-bd: #f6c0c0;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--page); color: var(--ink); font: 15px/1.5 "Prompt", system-ui, sans-serif; }
+  button, select, input { font: inherit; }
+
+  /* ---------- sidebar ---------- */
+  .side { position: fixed; inset: 0 auto 0 0; width: 268px; background: var(--side); color: var(--side-ink);
+    display: flex; flex-direction: column; z-index: 30; transition: transform .2s; }
+  .side-top { padding: 18px 12px 12px; }
+  .logo { background: #fff; border-radius: 12px; height: 66px; display: flex; align-items: center; padding: 0 14px; }
+  .logo img { height: 50px; width: auto; display: block; }
+  .side h2 { font-size: 16px; line-height: 1.3; margin: 14px 0 2px; color: #fff; }
+  .side .tag { font-size: 11.5px; color: var(--side-muted); }
+  .nav { flex: 1; overflow-y: auto; padding: 8px 10px; }
+  .nav a { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; color: var(--side-ink);
+    text-decoration: none; margin-bottom: 6px; }
+  .nav a:hover { background: var(--side-2); }
+  .nav a.active { background: #3a4757; }
+  .nav .ic { width: 36px; height: 36px; border-radius: 10px; background: #3a4757; display: grid; place-items: center; flex: none; }
+  .nav a.active .ic { background: #fff; color: var(--side); }
+  .nav b { display: block; font-size: 14.5px; font-weight: 600; }
+  .nav small { display: block; font-size: 11.5px; color: var(--side-muted); margin-top: -2px; }
+  .side-foot { border-top: 1px solid #3a4757; padding: 12px; font-size: 12.5px; color: var(--side-muted); }
+  .side-foot button { width: 100%; margin-top: 10px; background: var(--side-2); color: #fff; border: 1px solid #4a5868;
+    border-radius: 10px; padding: 8px 12px; text-align: left; font-weight: 600; cursor: pointer; }
+  .side-foot button:hover { background: #3a4757; }
+  .scrim { display: none; }
+
+  /* ---------- main ---------- */
+  main { margin-left: 268px; padding: 26px 30px 60px; }
+  .hero { position: relative; overflow: hidden; border-radius: 22px; padding: 28px 32px; color: #fff;
+    background: linear-gradient(115deg, #1e3044 0%, #2b4a5d 55%, #3d7d88 100%); }
+  .hero::after { content: ""; position: absolute; width: 420px; height: 420px; right: -60px; top: -40px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.18); }
+  .hero h1 { margin: 0; font-size: 34px; line-height: 1.2; font-weight: 700; }
+  .hero p { margin: 6px 0 0; opacity: .85; }
+  .chips { position: absolute; right: 28px; top: 50%; transform: translateY(-50%); display: flex; gap: 10px; z-index: 1; }
+  .chip { border-radius: 999px; padding: 6px 16px; font-weight: 600; font-size: 14px; background: rgba(255,255,255,.14);
+    border: 1px solid rgba(255,255,255,.3); white-space: nowrap; }
+  .chip.solid { background: #fff; color: var(--ink); border-color: #fff; }
+  .menu-btn { display: none; }
+
+  .toolbar { background: var(--card); border-radius: 18px; padding: 14px 18px; margin: 22px 0; display: flex; flex-wrap: wrap;
+    align-items: center; gap: 14px 18px; }
+  .toolbar .lbl { font-weight: 600; color: var(--ink-2); font-size: 14px; }
+  .tabs { display: inline-flex; background: #f1f3f7; border-radius: 14px; padding: 5px; gap: 2px; }
+  .tabs button { border: 0; background: none; padding: 6px 18px; border-radius: 10px; cursor: pointer; color: var(--ink-2);
+    font-weight: 600; font-size: 14px; line-height: 1.3; }
+  .tabs button small { display: block; font-size: 10.5px; letter-spacing: 1px; font-weight: 500; color: var(--muted); }
+  .tabs button.on { background: #fff; color: var(--blue-1); box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  .tabs button.on small { color: var(--blue-1); }
+  .toolbar select { border: 1px solid var(--axis); border-radius: 12px; padding: 9px 14px; min-width: 210px; background: #fff;
+    color: var(--ink); font-size: 16px; }
+  .toolbar .info { margin-left: auto; color: var(--ink-2); font-size: 13.5px; }
+  .toolbar button.ghost { border: 1px solid var(--axis); background: #fff; border-radius: 12px; padding: 8px 14px; cursor: pointer; }
+  .toolbar button.ghost:hover { background: #f5f7fa; }
+
+  .notice { background: #fff8e1; border: 1px solid #f3dc95; color: #6d5200; border-radius: 12px; padding: 10px 14px; margin-bottom: 16px; }
+  .notice.err { background: var(--red-bg); border-color: var(--red-bd); color: #8a1d1d; }
+
+  .section { border-radius: 22px; padding: 16px; border: 1px solid; margin-bottom: 22px; scroll-margin-top: 16px; }
+  .section.blue { background: var(--blue-bg); border-color: var(--blue-bd); }
+  .section.orange { background: var(--orange-bg); border-color: var(--orange-bd); }
+  .section.red { background: var(--red-bg); border-color: var(--red-bd); }
+  .section.plain { background: var(--card); border-color: var(--line); }
+  .sec-head { display: flex; align-items: center; gap: 12px; color: #fff; border-radius: 16px; padding: 12px 18px; margin-bottom: 16px;
+    font-size: 20px; font-weight: 700; }
+  .blue .sec-head { background: linear-gradient(90deg, var(--blue-1), var(--blue-2)); }
+  .orange .sec-head { background: linear-gradient(90deg, var(--orange-1), var(--orange-2)); }
+  .red .sec-head { background: linear-gradient(90deg, var(--red-1), var(--red-2)); }
+  .plain .sec-head { background: linear-gradient(90deg, #33475b, #26313f); }
+  .sec-head .ic { width: 38px; height: 38px; border-radius: 10px; background: rgba(255,255,255,.2); display: grid; place-items: center; }
+  .sec-head .right { margin-left: auto; font-size: 13px; font-weight: 500; opacity: .9; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .pair > .section { margin-bottom: 0; }
+  .pair { margin-bottom: 22px; }
+
+  .kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .kpi { position: relative; overflow: hidden; background: var(--card); border-radius: 18px; padding: 18px 20px 16px;
+    border-left: 5px solid var(--kc, var(--blue-1)); min-height: 178px; }
+  .kpi::after { content: ""; position: absolute; width: 120px; height: 120px; border-radius: 50%; right: -30px; top: -40px;
+    background: var(--kb, #edf3fe); }
+  .kpi .t { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 16px; position: relative; z-index: 1; }
+  .kpi .t .dot { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; color: #fff; font-size: 15px; font-weight: 700; }
+  .kpi .v { font-size: 54px; font-weight: 700; line-height: 1.1; margin-top: 12px; }
+  .kpi .v small { font-size: 16px; font-weight: 600; color: var(--ink-2); margin-left: 6px; }
+  .kpi .pill { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; background: #f1f3f7; color: var(--ink-2);
+    border-radius: 999px; padding: 3px 12px; font-size: 13px; }
+  .kpi .pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+  .card { background: var(--card); border-radius: 18px; padding: 18px 20px; }
+  .card + .card { margin-top: 16px; }
+  .card h3 { margin: 0; font-size: 17px; }
+  .card .desc { color: var(--ink-2); font-size: 13.5px; margin-bottom: 10px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13.5px; color: var(--ink-2); margin: 6px 0 10px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .sw { width: 12px; height: 12px; border-radius: 3px; display: inline-block; flex: none; }
+  .sw.empty { outline: 1px dashed var(--axis); outline-offset: -1px; }
+  .chart svg { display: block; width: 100%; height: auto; }
+  .chart text { font-family: "Prompt", system-ui, sans-serif; }
+  .empty-msg { color: var(--muted); text-align: center; padding: 28px 0; }
+
+  .rounds { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .rcard { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; border-top: 4px solid var(--rc); }
+  .rcard .time { font-size: 22px; font-weight: 700; }
+  .rcard .who { color: var(--ink-2); font-size: 13px; }
+  .rcard .msg { font-size: 13px; color: var(--ink-2); margin-top: 6px; }
+  .rcard.missing { border-style: dashed; border-top: 4px dashed var(--axis); color: var(--muted); }
+
+  .status { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 2px 10px; font-size: 12.5px;
+    font-weight: 600; white-space: nowrap; background: #f1f3f7; }
+  .status i { width: 8px; height: 8px; border-radius: 50%; }
+
+  .tbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .seg { display: inline-flex; background: #f1f3f7; border-radius: 12px; padding: 4px; gap: 2px; }
+  .seg button { border: 0; background: none; border-radius: 9px; padding: 5px 14px; cursor: pointer; color: var(--ink-2); font-weight: 500; }
+  .seg button.on { background: #fff; color: var(--red-2); font-weight: 600; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  .tablewrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--ink-2); font-weight: 600; white-space: nowrap; background: #fafbfc; }
+  td.nw { white-space: nowrap; font-variant-numeric: tabular-nums; }
+  td.msg { min-width: 220px; }
+  td select, td input { border: 1px solid var(--axis); border-radius: 8px; padding: 5px 8px; background: #fff; color: var(--ink); }
+  td input { width: 100%; min-width: 150px; }
+  .save { border: 0; background: var(--red-2); color: #fff; border-radius: 8px; padding: 6px 14px; cursor: pointer; font-weight: 600; }
+  .save:disabled { opacity: .6; }
+  .saved { font-size: 12px; color: var(--good); }
+  .saved.err { color: var(--critical); }
+
+  .tip { position: fixed; pointer-events: none; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px;
+    font-size: 13px; box-shadow: 0 6px 20px rgba(0,0,0,.14); display: none; z-index: 50; max-width: 300px; }
+  .tip b { display: block; margin-bottom: 2px; }
+  .tip .r { display: flex; justify-content: space-between; gap: 18px; }
+
+  .modal { position: fixed; inset: 0; background: rgba(20,28,38,.55); display: none; place-items: center; z-index: 60; padding: 16px; }
+  .modal.show { display: grid; }
+  .modal .box { background: #fff; border-radius: 18px; padding: 24px; width: 100%; max-width: 380px; }
+  .modal h3 { margin: 0 0 6px; }
+  .modal p { margin: 0 0 14px; color: var(--ink-2); font-size: 14px; }
+  .modal input { width: 100%; border: 1px solid var(--axis); border-radius: 10px; padding: 10px 12px; }
+  .modal button { margin-top: 12px; width: 100%; border: 0; border-radius: 10px; padding: 10px; background: var(--blue-1); color: #fff;
+    font-weight: 600; cursor: pointer; }
+
+  @media (max-width: 1180px) { .pair { grid-template-columns: 1fr; } }
+  @media (max-width: 900px) {
+    .side { transform: translateX(-100%); }
+    .side.open { transform: none; }
+    .scrim.show { display: block; position: fixed; inset: 0; background: rgba(0,0,0,.35); z-index: 25; }
+    main { margin-left: 0; padding: 16px 16px 48px; }
+    .menu-btn { display: inline-grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; border: 1px solid rgba(255,255,255,.35);
+      background: rgba(255,255,255,.12); color: #fff; margin-bottom: 10px; cursor: pointer; }
+    .hero { padding: 20px; }
+    .hero h1 { font-size: 26px; }
+    .chips { position: static; transform: none; margin-top: 14px; flex-wrap: wrap; }
+    .toolbar .info { margin-left: 0; }
+    .kpi .v { font-size: 42px; }
+  }
+  @media (max-width: 520px) {
+    .kpis { grid-template-columns: 1fr; }
+    .toolbar select { min-width: 0; width: 100%; }
+    .tabs { display: grid; grid-template-columns: repeat(4, 1fr); width: 100%; }
+    .tabs button { padding: 6px 2px; font-size: 13px; white-space: nowrap; }
+    .tabs button small { font-size: 9.5px; letter-spacing: .5px; }
+  }
+  @media print {
+    .side, .menu-btn, .toolbar button.ghost, .seg, .save { display: none !important; }
+    main { margin: 0; padding: 0; }
+    body { background: #fff; }
+    .section, .card { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<aside class="side" id="side">
+  <div class="side-top">
+    <div class="logo"><img alt="PCG" src="data:image/png;base64,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"></div>
+    <h2>Cleaning Robot<br>Status Dashboard</h2>
+    <div class="tag">รายงานจากกลุ่มไลน์ · PCG LOGISTICS</div>
+  </div>
+  <nav class="nav" id="nav">
+    <a href="#overview" class="active"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></span><span><b>ภาพรวม</b><small>Overview</small></span></a>
+    <a href="#trend"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg></span><span><b>แนวโน้มสถานะ</b><small>Status trend</small></span></a>
+    <a href="#rounds"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></span><span><b>สถานะรายรอบ</b><small>Round status</small></span></a>
+    <a href="#issues"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.01"/></svg></span><span><b>ติดตามปัญหา</b><small>Issue tracking</small></span></a>
+    <a href="#reports"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></span><span><b>รายงานทั้งหมด</b><small>All reports</small></span></a>
+  </nav>
+  <div class="side-foot">
+    <div id="dataRange">กำลังโหลดข้อมูล…</div>
+    <button id="print">พิมพ์ / PDF</button>
+  </div>
+</aside>
+<div class="scrim" id="scrim"></div>
+
+<main>
+  <section class="hero" id="overview">
+    <button class="menu-btn" id="menuBtn" aria-label="เมนู"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    <h1>สถานะหุ่นยนต์ทำความสะอาด</h1>
+    <p>รายงานแต่ละรอบจากกลุ่มไลน์ · ตัดวันที่ 08:00 – 07:59 ของวันถัดไป</p>
+    <div class="chips"><span class="chip" id="chipUpdated">–</span><span class="chip solid" id="chipDate">–</span></div>
+  </section>
+
+  <div class="toolbar">
+    <span class="lbl">ช่วงเวลา</span>
+    <div class="tabs" id="tabs">
+      <button data-p="daily" class="on">รายวัน<small>DAILY</small></button>
+      <button data-p="weekly">รายสัปดาห์<small>WEEKLY</small></button>
+      <button data-p="monthly">รายเดือน<small>MONTHLY</small></button>
+      <button data-p="yearly">รายปี<small>YEARLY</small></button>
+    </div>
+    <select id="dateSel" aria-label="เลือกวันที่"></select>
+    <button class="ghost" id="refresh">รีเฟรช</button>
+    <span class="info" id="info"></span>
+  </div>
+  <div id="notice"></div>
+
+  <div class="pair">
+    <section class="section blue">
+      <div class="sec-head"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="5" y="7" width="14" height="11" rx="3"/><path d="M12 3v4M9 12h.01M15 12h.01M9 16h6"/></svg></span>สรุปสถานะรอบการทำงาน</div>
+      <div class="kpis" id="kpiStatus"></div>
+    </section>
+    <section class="section orange">
+      <div class="sec-head"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.01"/></svg></span>ปัญหาที่ได้รับรายงาน</div>
+      <div class="kpis" id="kpiIssue"></div>
+    </section>
+  </div>
+
+  <section class="section plain" id="trend">
+    <div class="sec-head"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg></span><span id="trendTitle">แนวโน้มสถานะ</span></div>
+    <div class="card">
+      <div class="desc" id="trendDesc"></div>
+      <div class="legend" id="legend1"></div>
+      <div class="chart" id="trendChart"></div>
+    </div>
+  </section>
+
+  <section class="section plain" id="rounds">
+    <div class="sec-head"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></span><span id="roundsTitle">สถานะรายรอบ</span></div>
+    <div class="card" id="gridCard">
+      <div class="desc" id="gridDesc"></div>
+      <div class="legend" id="legend2"></div>
+      <div class="chart" id="gridChart"></div>
+    </div>
+    <div class="card">
+      <h3>ปัญหาแยกตามรอบเวลา</h3>
+      <div class="desc">จำนวนครั้งที่ไม่ออก AUTO หรือผิดปกติ ในช่วงที่เลือก</div>
+      <div class="chart" id="byRound"></div>
+    </div>
+  </section>
+
+  <section class="section red" id="issues">
+    <div class="sec-head"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></span>ติดตามปัญหา<span class="right">บันทึกแล้วทุกเครื่องเห็นตรงกัน</span></div>
+    <div class="card">
+      <div class="tbar">
+        <div class="desc" style="margin:0">ตั้งสถานะการติดตามและหมายเหตุ แล้วกดบันทึก (เก็บในชีต Reports คอลัมน์ K–L)</div>
+        <div class="seg" id="tmode">
+          <button data-m="open" class="on">ยังไม่ปิด (ทั้งหมด)</button>
+          <button data-m="period">ปัญหาในช่วงนี้</button>
+        </div>
+      </div>
+      <div class="tablewrap" id="issueTable"></div>
+    </div>
+  </section>
+
+  <section class="section plain" id="reports">
+    <div class="sec-head"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></span>รายงานทั้งหมดในช่วงที่เลือก</div>
+    <div class="card"><div class="tablewrap" id="allTable"></div></div>
+  </section>
+</main>
+
+<div class="tip" id="tip"></div>
+<div class="modal" id="keyModal">
+  <div class="box">
+    <h3>ใส่รหัส Dashboard</h3>
+    <p>ใช้รหัสเดียวกับ DASHBOARD_KEY ใน Apps Script หรือเปิดจากปุ่มในการ์ด Dashboard ของบอทในกลุ่มไลน์</p>
+    <input id="keyInput" type="password" placeholder="DASHBOARD_KEY" autocomplete="off">
+    <button id="keyBtn">เปิด Dashboard</button>
+  </div>
+</div>
+
+<script>
+/* ===== ตั้งค่า: วาง Web app URL ของ Apps Script (ลงท้าย /exec) ระหว่างเครื่องหมาย ' ' ===== */
+var API_URL = 'https://script.google.com/macros/s/AKfycbywYBkNiUMqZ8GEHuLZODgMUY4LFcWq6ANnbqrutz4P-b8CjRUZ2ARFNrJFrnNM1DWZVw/exec';
+/* ถ้าเว้นว่าง หน้าเว็บจะแสดงข้อมูลจำลองไว้ดูหน้าตา */
+
+var KEY_STORE = 'cleaningRobotDashboardKey';
+var ST = { NORMAL: 'AUTO ปกติ', MANUAL: 'ไม่ออก AUTO (กด Manual)', ISSUE: 'ผิดปกติ' };
+var STYLE = {};
+STYLE[ST.NORMAL] = { short: 'AUTO ปกติ', color: 'var(--good)', ink: '#087a08', icon: '✓' };
+STYLE[ST.MANUAL] = { short: 'กด Manual', color: 'var(--warning)', ink: 'var(--warning-ink)', icon: '!' };
+STYLE[ST.ISSUE] = { short: 'ผิดปกติ', color: 'var(--critical)', ink: 'var(--critical)', icon: '✕' };
+var STACK = [ST.ISSUE, ST.MANUAL, ST.NORMAL]; // ปัญหาอยู่ติดฐาน เทียบกันง่าย
+var FOLLOW = ['รอดำเนินการ', 'กำลังแก้ไข', 'แก้ไขแล้ว'];
+var MONTHS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+var MONTHS_FULL = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+var PERIOD_LABEL = { daily: 'รายวัน', weekly: '7 วัน', monthly: 'รายเดือน', yearly: 'รายปี' };
+var ROUNDS = ['08:00', '16:00', '24:00']; // รอบปกติของหุ่นยนต์ (ตรงกับ ROUNDS ใน Parser.gs)
+
+var DATA = [], generatedAt = '';
+var state = { period: 'daily', day: null, tmode: 'open' };
+
+// ---------- key ----------
+function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return null; } }
+function takeKeyFromUrl() {
+  var u = new URL(location.href), k = u.searchParams.get('key');
+  if (k) {
+    store(KEY_STORE, k);
+    u.searchParams.delete('key');
+    history.replaceState(null, '', u.pathname + (u.search ? u.search : '') + u.hash);
+  }
+}
+var sessionKey = null;
+function getKey() { return store(KEY_STORE) || sessionKey; }
+function askKey(msg) {
+  document.querySelector('#keyModal p').textContent = msg ||
+    'ใช้รหัสเดียวกับ DASHBOARD_KEY ใน Apps Script หรือเปิดจากปุ่มในการ์ด Dashboard ของบอทในกลุ่มไลน์';
+  document.getElementById('keyModal').classList.add('show');
+  document.getElementById('keyInput').focus();
+}
+document.getElementById('keyBtn').addEventListener('click', function () {
+  var k = document.getElementById('keyInput').value.trim();
+  if (!k) return;
+  sessionKey = k; store(KEY_STORE, k);
+  document.getElementById('keyModal').classList.remove('show');
+  load();
+});
+document.getElementById('keyInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') document.getElementById('keyBtn').click(); });
+
+// ---------- data ----------
+function load() {
+  if (!API_URL) {
+    DATA = demoData().map(prep);
+    generatedAt = '';
+    notice('โหมดตัวอย่าง: แสดงข้อมูลจำลอง — วาง Web app URL ในตัวแปร API_URL ในไฟล์นี้เพื่อดูข้อมูลจริง');
+    ready();
+    return;
+  }
+  var key = getKey();
+  if (!key) { askKey(); return; }
+  notice('กำลังโหลดข้อมูล…');
+  fetch(API_URL + '?view=data&key=' + encodeURIComponent(key))
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (d.error) {
+        if (/key/i.test(d.error)) { store(KEY_STORE, null); sessionKey = null; notice(''); askKey('รหัสไม่ถูกต้อง ลองใส่ใหม่อีกครั้ง'); }
+        else notice('โหลดข้อมูลไม่สำเร็จ: ' + d.error, true);
+        return;
+      }
+      DATA = d.rows.map(prep);
+      generatedAt = d.generatedAt || '';
+      notice('');
+      ready();
+    })
+    .catch(function (e) { notice('เชื่อมต่อ Apps Script ไม่ได้: ' + e.message + ' (เช็ค API_URL และการ Deploy แบบ Anyone)', true); });
+}
+
+function prep(r) {
+  var p = r.date.split('/');
+  r.day = Date.UTC(+p[2], +p[1] - 1, +p[0]) / 864e5;
+  var t = r.round.split(':');
+  r.min = (+t[0]) * 60 + (+t[1]);
+  r.problem = r.status !== ST.NORMAL;
+  r.follow = r.follow || (r.problem ? 'รอดำเนินการ' : '');
+  return r;
+}
+
+function ready() {
+  var days = uniqueDays(), today = todayBiz();
+  if (days.indexOf(today) < 0) days.unshift(today);
+  var sel = document.getElementById('dateSel');
+  var keep = state.day;
+  sel.innerHTML = days.map(function (d) { return '<option value="' + d + '">' + dayLabel(d, true) + (d === today ? ' (วันนี้)' : '') + '</option>'; }).join('');
+  state.day = keep !== null && days.indexOf(keep) >= 0 ? keep : today;
+  sel.value = state.day;
+  if (DATA.length) {
+    var min = Math.min.apply(null, DATA.map(function (r) { return r.day; })), max = Math.max.apply(null, DATA.map(function (r) { return r.day; }));
+    document.getElementById('dataRange').textContent = 'ข้อมูล ' + dayLabel(min, true) + ' – ' + dayLabel(max, true);
+  } else document.getElementById('dataRange').textContent = 'ยังไม่มีข้อมูล';
+  render();
+}
+
+// ---------- dates ----------
+function todayBiz() { return Math.floor((Date.now() + 7 * 3600e3 - 8 * 3600e3) / 864e5); }
+function ymd(day) { var d = new Date(day * 864e5); return { y: d.getUTCFullYear(), m: d.getUTCMonth(), d: d.getUTCDate() }; }
+function dayLabel(day, withYear) { var x = ymd(day); return x.d + ' ' + MONTHS[x.m] + (withYear ? ' ' + (x.y + 543) : ''); }
+function roundKey(min) { return (min - 480 + 1440) % 1440; }
+function uniqueDays() {
+  var seen = {}, out = [];
+  DATA.forEach(function (r) { if (!seen[r.day]) { seen[r.day] = 1; out.push(r.day); } });
+  return out.sort(function (a, b) { return b - a; });
+}
+function range() {
+  var d = state.day, x = ymd(d);
+  if (state.period === 'daily') return { s: d, e: d, label: dayLabel(d, true) };
+  if (state.period === 'weekly') return { s: d - 6, e: d, label: dayLabel(d - 6) + ' – ' + dayLabel(d, true) };
+  if (state.period === 'monthly') return { s: Date.UTC(x.y, x.m, 1) / 864e5, e: d, label: MONTHS_FULL[x.m] + ' ' + (x.y + 543) };
+  return { s: Date.UTC(x.y, 0, 1) / 864e5, e: d, label: 'ปี ' + (x.y + 543) };
+}
+function inRange(rg) { return DATA.filter(function (r) { return r.day >= rg.s && r.day <= rg.e; }); }
+
+// ---------- render ----------
+function render() {
+  var rg = range(), rows = inRange(rg), days = rg.e - rg.s + 1;
+  document.getElementById('chipDate').textContent = rg.label;
+  document.getElementById('chipUpdated').textContent = generatedAt ? 'อัปเดต ' + generatedAt.split(' ')[1] : 'ข้อมูลตัวอย่าง';
+  document.getElementById('info').textContent = 'มีข้อมูล ' + uniqueDays().length + ' วัน · แสดง' + PERIOD_LABEL[state.period] + ' ' + rg.label +
+    (days > 1 ? ' (' + days + ' วัน)' : '');
+  renderKpis(rows);
+  renderLegends();
+  renderTrend(rg, rows);
+  renderGrid(rg, rows);
+  renderByRound(rows);
+  renderIssues(rows);
+  renderAll(rows);
+}
+
+function count(rows) {
+  var c = {}; c[ST.NORMAL] = 0; c[ST.MANUAL] = 0; c[ST.ISSUE] = 0;
+  rows.forEach(function (r) { if (r.status in c) c[r.status]++; });
+  return c;
+}
+function kpi(title, value, unit, pill, color, bg, icon, valueColor) {
+  return '<div class="kpi" style="--kc:' + color + ';--kb:' + bg + '"><div class="t"><span class="dot" style="background:' + color + '">' + icon +
+    '</span>' + title + '</div><div class="v" style="color:' + (valueColor || 'var(--ink)') + '">' + value + '<small>' + unit + '</small></div>' +
+    (pill ? '<span class="pill">' + pill + '</span>' : '') + '</div>';
+}
+function renderKpis(rows) {
+  var c = count(rows), n = rows.length, pct = n ? Math.round(c[ST.NORMAL] / n * 100) : 0;
+  document.getElementById('kpiStatus').innerHTML = [
+    kpi('รอบที่รายงาน', n, 'รอบ', range().s === range().e ? 'วันที่เลือก' : (range().e - range().s + 1) + ' วัน', 'var(--blue-1)', '#e8f0fe', '#'),
+    kpi('AUTO ปกติ', n ? pct + '%' : '–', '', c[ST.NORMAL] + ' รอบ', 'var(--good)', '#e5f6e5', '✓', '#087a08'),
+    kpi('ต้องกด Manual', c[ST.MANUAL], 'รอบ', n ? Math.round(c[ST.MANUAL] / n * 100) + '% ของรอบ' : '', 'var(--warning)', '#fff3d6', '!', 'var(--warning-ink)'),
+    kpi('ผิดปกติ', c[ST.ISSUE], 'รอบ', n ? Math.round(c[ST.ISSUE] / n * 100) + '% ของรอบ' : '', 'var(--critical)', '#fde6e6', '✕', 'var(--critical)'),
+  ].join('');
+
+  var open = DATA.filter(function (r) { return r.problem && r.follow === 'รอดำเนินการ'; }).length;
+  var doing = DATA.filter(function (r) { return r.problem && r.follow === 'กำลังแก้ไข'; }).length;
+  var probs = rows.filter(function (r) { return r.problem; });
+  var fixed = probs.filter(function (r) { return r.follow === 'แก้ไขแล้ว'; }).length;
+  var byR = {};
+  probs.forEach(function (r) { byR[r.round] = (byR[r.round] || 0) + 1; });
+  var top = Object.keys(byR).sort(function (a, b) { return byR[b] - byR[a]; })[0];
+  document.getElementById('kpiIssue').innerHTML = [
+    kpi('รอดำเนินการ', open, 'เรื่อง', 'ทุกช่วงเวลา', 'var(--critical)', '#fde6e6', '!', open ? 'var(--critical)' : 'var(--ink)'),
+    kpi('กำลังแก้ไข', doing, 'เรื่อง', 'ทุกช่วงเวลา', 'var(--orange-1)', '#ffecd2', '↻'),
+    kpi('แก้ไขแล้ว', fixed, '/ ' + probs.length, 'ปัญหาในช่วงนี้', 'var(--good)', '#e5f6e5', '✓'),
+    kpi('รอบที่มีปัญหาบ่อยสุด', top || '–', top ? byR[top] + ' ครั้ง' : '', 'ในช่วงนี้', 'var(--orange-2)', '#ffecd2', '⏱'),
+  ].join('');
+}
+
+function statusDot(s) { return '<span class="sw" style="background:' + STYLE[s].color + '"></span>'; }
+function statusPill(s) {
+  var st = STYLE[s] || { short: s, color: 'var(--muted)', ink: 'var(--ink-2)', icon: '?' };
+  return '<span class="status" style="color:' + st.ink + '" title="' + esc(s) + '"><i style="background:' + st.color + '"></i>' + st.icon + ' ' + esc(st.short) + '</span>';
+}
+function renderLegends() {
+  var items = STACK.slice().reverse().map(function (s) { return '<span>' + statusDot(s) + STYLE[s].icon + ' ' + STYLE[s].short + '</span>'; }).join('');
+  document.getElementById('legend1').innerHTML = items;
+  document.getElementById('legend2').innerHTML = items + '<span><span class="sw empty"></span>ไม่มีรายงาน</span>';
+}
+function width(id) { return Math.max(280, document.getElementById(id).clientWidth); }
+
+// trend: daily = round cards, weekly/monthly = bars per day, yearly = bars per month
+function renderTrend(rg, rows) {
+  var el = document.getElementById('trendChart'), legend = document.getElementById('legend1');
+  if (state.period === 'daily') {
+    document.getElementById('trendTitle').textContent = 'รายงานแต่ละรอบ · ' + rg.label;
+    document.getElementById('trendDesc').textContent = 'เรียงจากรอบแรกของวัน (08:00) ถึงรอบสุดท้ายก่อน 08:00 วันถัดไป';
+    legend.style.display = 'none';
+    var list = rows.slice().sort(function (a, b) { return roundKey(a.min) - roundKey(b.min); });
+    var have = {}; list.forEach(function (r) { have[r.round] = 1; });
+    var expected = commonRounds().filter(function (rd) { return !have[rd]; });
+    if (!list.length && !expected.length) { el.innerHTML = '<div class="empty-msg">ยังไม่มีรายงานในวันนี้</div>'; return; }
+    var cards = list.map(function (r) {
+      return { k: roundKey(r.min), h: '<div class="rcard" style="--rc:' + STYLE[r.status].color + '"><div class="time">' + r.round + '</div>' +
+        statusPill(r.status) + '<div class="who">' + (r.name ? 'โดย ' + esc(r.name) : '') + (r.reportedAt ? ' · ' + esc(r.reportedAt.split(' ')[1] || '') + ' น.' : '') +
+        '</div><div class="msg">' + esc(r.text) + '</div></div>' };
+    }).concat(expected.map(function (rd) {
+      var t = rd.split(':');
+      return { k: roundKey(+t[0] * 60 + +t[1]), h: '<div class="rcard missing"><div class="time">' + rd + '</div>ยังไม่มีรายงาน</div>' };
+    })).sort(function (a, b) { return a.k - b.k; });
+    el.innerHTML = '<div class="rounds">' + cards.map(function (c) { return c.h; }).join('') + '</div>';
+    return;
+  }
+  legend.style.display = '';
+  var buckets = [], key;
+  if (state.period === 'yearly') {
+    document.getElementById('trendTitle').textContent = 'แนวโน้มสถานะรายเดือน · ' + rg.label;
+    document.getElementById('trendDesc').textContent = 'จำนวนรอบที่รายงานในแต่ละเดือน แยกตามสถานะ';
+    var y = ymd(rg.e).y;
+    for (var m = 0; m <= ymd(rg.e).m; m++) buckets.push({ id: m, label: MONTHS[m], full: MONTHS_FULL[m] + ' ' + (y + 543) });
+    key = function (r) { return ymd(r.day).m; };
+  } else {
+    document.getElementById('trendTitle').textContent = 'แนวโน้มสถานะรายวัน · ' + rg.label;
+    document.getElementById('trendDesc').textContent = 'จำนวนรอบที่รายงานในแต่ละวัน แยกตามสถานะ';
+    for (var d = rg.s; d <= rg.e; d++) buckets.push({ id: d, label: dayLabel(d), full: dayLabel(d, true) });
+    key = function (r) { return r.day; };
+  }
+  var by = {};
+  buckets.forEach(function (b) { by[b.id] = count([]); });
+  rows.forEach(function (r) { var k = key(r); if (by[k] && r.status in by[k]) by[k][r.status]++; });
+  stackedBars(el, buckets, by);
+}
+
+function stackedBars(el, buckets, by) {
+  var tot = function (c) { return c[ST.NORMAL] + c[ST.MANUAL] + c[ST.ISSUE]; };
+  var max = Math.max.apply(null, [1].concat(buckets.map(function (b) { return tot(by[b.id]); })));
+  var ticks = niceTicks(max), top = ticks[ticks.length - 1];
+  var W = width('trendChart'), H = 260, L = 34, R = 8, T = 10, B = 28;
+  var pw = W - L - R, ph = H - T - B, step = pw / buckets.length, bw = Math.max(3, Math.min(34, step * 0.62));
+  var y = function (v) { return T + ph - v / top * ph; }, svg = '';
+  ticks.forEach(function (t) {
+    svg += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y(t) + '" y2="' + y(t) + '" stroke="var(--line)"/>' +
+      '<text x="' + (L - 8) + '" y="' + (y(t) + 4) + '" text-anchor="end" font-size="11.5" fill="var(--muted)">' + t + '</text>';
+  });
+  var every = Math.ceil(buckets.length / Math.max(2, Math.floor(pw / 60)));
+  buckets.forEach(function (b, i) {
+    var cx = L + step * i + step / 2, x = cx - bw / 2, base = 0, c = by[b.id];
+    var segs = STACK.filter(function (st) { return c[st] > 0; });
+    segs.forEach(function (st, k) {
+      var h = c[st] / top * ph;
+      svg += barPath(x, y(base + c[st]), bw, Math.max(0, h - (k > 0 ? 2 : 0)), k === segs.length - 1 ? Math.min(4, bw / 2) : 0, STYLE[st].color);
+      base += c[st];
+    });
+    if (i % every === 0) svg += '<text x="' + cx + '" y="' + (H - 8) + '" text-anchor="middle" font-size="11.5" fill="var(--muted)">' + b.label + '</text>';
+    svg += '<rect class="hit" data-i="' + i + '" x="' + (L + step * i) + '" y="' + T + '" width="' + step + '" height="' + ph + '" fill="transparent"/>';
+  });
+  svg += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + (T + ph) + '" y2="' + (T + ph) + '" stroke="var(--axis)"/>';
+  el.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="แนวโน้มสถานะ">' + svg + '</svg>';
+  hover(el, '.hit', function (t) {
+    var b = buckets[+t.getAttribute('data-i')], c = by[b.id];
+    return '<b>' + b.full + '</b>' + STACK.slice().reverse().map(function (st) {
+      return '<div class="r"><span>' + statusDot(st) + ' ' + STYLE[st].short + '</span><span>' + c[st] + '</span></div>';
+    }).join('') + '<div class="r"><span>รวม</span><span>' + tot(c) + '</span></div>';
+  }, function (t, on) { t.setAttribute('fill', on ? 'rgba(31,99,218,0.06)' : 'transparent'); });
+}
+
+function barPath(x, y, w, h, r, fill) {
+  if (h <= 0) return '';
+  r = Math.min(r, h);
+  return '<path d="M' + x + ' ' + (y + h) + 'V' + (y + r) + 'Q' + x + ' ' + y + ' ' + (x + r) + ' ' + y + 'H' + (x + w - r) + 'Q' + (x + w) + ' ' + y +
+    ' ' + (x + w) + ' ' + (y + r) + 'V' + (y + h) + 'Z" fill="' + fill + '"/>';
+}
+function niceTicks(max) {
+  var step = Math.pow(10, Math.floor(Math.log10(max)));
+  if (max / step > 5) step *= 2; else if (max / step < 2) step /= 2;
+  step = Math.max(1, step);
+  var out = [];
+  for (var v = 0; v < max + step; v += step) { out.push(Math.round(v)); if (v >= max) break; }
+  return out;
+}
+function commonRounds() { return ROUNDS; }
+function toMin(hhmm) { var t = hhmm.split(':'); return (+t[0]) * 60 + (+t[1]); }
+
+// round × day grid (weekly / monthly); yearly shows last 31 days of the range
+function renderGrid(rg, rows) {
+  var card = document.getElementById('gridCard'), el = document.getElementById('gridChart');
+  if (state.period === 'daily') { card.style.display = 'none'; document.getElementById('roundsTitle').textContent = 'สถานะรายรอบ'; return; }
+  card.style.display = '';
+  var s = Math.max(rg.s, rg.e - 30), days = [];
+  for (var d = s; d <= rg.e; d++) days.push(d);
+  document.getElementById('roundsTitle').textContent = 'สถานะรายรอบ';
+  document.getElementById('gridDesc').textContent = 'แต่ละช่อง = 1 รอบใน 1 วัน · ช่องเส้นประ = ไม่มีรายงาน' + (s > rg.s ? ' · แสดง 31 วันล่าสุดของช่วง' : '');
+  var mins = {}, cell = {};
+  ROUNDS.forEach(function (rd) { mins[rd] = toMin(rd); }); // แสดงรอบปกติเสมอ แม้ยังไม่มีรายงาน
+  rows.forEach(function (r) { if (r.day < s) return; mins[r.round] = r.min; cell[r.round + '|' + r.day] = r; });
+  var list = Object.keys(mins).sort(function (a, b) { return roundKey(mins[a]) - roundKey(mins[b]); });
+  if (!list.length) { el.innerHTML = '<div class="empty-msg">ยังไม่มีรายงานในช่วงนี้</div>'; return; }
+  var W = width('gridChart'), L = 52, R = 4, T = 4, B = 24, cw = (W - L - R) / days.length, ch = 26, gap = cw > 10 ? 3 : 1;
+  var H = T + list.length * ch + B, svg = '';
+  list.forEach(function (rd, i) {
+    var yy = T + i * ch;
+    svg += '<text x="' + (L - 10) + '" y="' + (yy + ch / 2 + 4) + '" text-anchor="end" font-size="12" fill="var(--ink-2)">' + rd + '</text>';
+    days.forEach(function (d, j) {
+      var r = cell[rd + '|' + d], x = L + j * cw;
+      svg += r
+        ? '<rect class="hc" data-k="' + rd + '|' + d + '" x="' + (x + gap / 2) + '" y="' + (yy + 2) + '" width="' + (cw - gap) + '" height="' + (ch - 4) + '" rx="4" fill="' + STYLE[r.status].color + '"/>'
+        : '<rect class="hc" data-k="' + rd + '|' + d + '" x="' + (x + gap / 2 + .5) + '" y="' + (yy + 2.5) + '" width="' + Math.max(0, cw - gap - 1) + '" height="' + (ch - 5) + '" rx="4" fill="transparent" stroke="var(--axis)" stroke-dasharray="3 2"/>';
+    });
+  });
+  var every = Math.ceil(days.length / Math.max(2, Math.floor((W - L) / 60)));
+  days.forEach(function (d, j) { if (j % every === 0) svg += '<text x="' + (L + j * cw + cw / 2) + '" y="' + (H - 6) + '" text-anchor="middle" font-size="11.5" fill="var(--muted)">' + dayLabel(d) + '</text>'; });
+  el.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="สถานะรายรอบ">' + svg + '</svg>';
+  hover(el, '.hc', function (t) {
+    var k = t.getAttribute('data-k'), p = k.split('|'), r = cell[k];
+    var head = '<b>' + dayLabel(+p[1], true) + ' · รอบ ' + p[0] + '</b>';
+    if (!r) return head + '<span style="color:var(--muted)">ไม่มีรายงาน</span>';
+    return head + statusPill(r.status) + (r.name ? '<div style="color:var(--ink-2)">โดย ' + esc(r.name) + '</div>' : '') +
+      '<div style="color:var(--ink-2)">' + esc(r.text) + '</div>';
+  }, function (t, on) { t.style.opacity = on ? 0.75 : 1; });
+}
+
+function renderByRound(rows) {
+  var el = document.getElementById('byRound'), by = {}, mins = {};
+  rows.forEach(function (r) { if (!r.problem) return; by[r.round] = by[r.round] || count([]); by[r.round][r.status]++; mins[r.round] = r.min; });
+  var list = Object.keys(by).sort(function (a, b) { return roundKey(mins[a]) - roundKey(mins[b]); });
+  if (!list.length) { el.innerHTML = '<div class="empty-msg">ไม่มีปัญหาในช่วงนี้ ✓</div>'; return; }
+  var max = Math.max.apply(null, list.map(function (k) { return by[k][ST.MANUAL] + by[k][ST.ISSUE]; }));
+  var W = width('byRound'), L = 52, R = 40, rowH = 32, bh = 18, H = list.length * rowH + 4, pw = W - L - R, svg = '';
+  list.forEach(function (k, i) {
+    var yy = 2 + i * rowH, x = L, c = by[k], y0 = yy + (rowH - bh) / 2;
+    svg += '<text x="' + (L - 10) + '" y="' + (yy + rowH / 2 + 4) + '" text-anchor="end" font-size="12" fill="var(--ink-2)">' + k + '</text>';
+    var segs = [ST.ISSUE, ST.MANUAL].filter(function (st) { return c[st] > 0; });
+    segs.forEach(function (st, j) {
+      if (j > 0) x += 2;
+      var w = c[st] / max * pw - (j > 0 ? 2 : 0), rr = j === segs.length - 1 ? Math.min(4, w / 2) : 0;
+      svg += '<path d="M' + x + ' ' + y0 + 'H' + (x + w - rr) + 'Q' + (x + w) + ' ' + y0 + ' ' + (x + w) + ' ' + (y0 + rr) + 'V' + (y0 + bh - rr) +
+        'Q' + (x + w) + ' ' + (y0 + bh) + ' ' + (x + w - rr) + ' ' + (y0 + bh) + 'H' + x + 'Z" fill="' + STYLE[st].color + '"/>';
+      x += w;
+    });
+    svg += '<text x="' + (x + 8) + '" y="' + (yy + rowH / 2 + 4) + '" font-size="12.5" font-weight="600" fill="var(--ink-2)">' + (c[ST.MANUAL] + c[ST.ISSUE]) + '</text>';
+    svg += '<rect class="hb" data-k="' + k + '" x="0" y="' + yy + '" width="' + W + '" height="' + rowH + '" fill="transparent"/>';
+  });
+  svg += '<line x1="' + L + '" x2="' + L + '" y1="0" y2="' + H + '" stroke="var(--axis)"/>';
+  el.innerHTML = '<div class="legend">' + [ST.MANUAL, ST.ISSUE].map(function (s) { return '<span>' + statusDot(s) + STYLE[s].icon + ' ' + STYLE[s].short + '</span>'; }).join('') +
+    '</div><svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="ปัญหาแยกตามรอบเวลา">' + svg + '</svg>';
+  hover(el, '.hb', function (t) {
+    var k = t.getAttribute('data-k'), c = by[k];
+    return '<b>รอบ ' + k + '</b>' + [ST.MANUAL, ST.ISSUE].map(function (st) {
+      return '<div class="r"><span>' + statusDot(st) + ' ' + STYLE[st].short + '</span><span>' + c[st] + '</span></div>';
+    }).join('');
+  }, function (t, on) { t.setAttribute('fill', on ? 'rgba(31,99,218,0.06)' : 'transparent'); });
+}
+
+// ---------- tables ----------
+function sortDesc(a, b) { return b.day - a.day || roundKey(b.min) - roundKey(a.min); }
+function renderIssues(rows) {
+  var el = document.getElementById('issueTable');
+  var list = (state.tmode === 'open' ? DATA.filter(function (r) { return r.problem && r.follow !== 'แก้ไขแล้ว'; })
+    : rows.filter(function (r) { return r.problem; })).slice().sort(sortDesc);
+  if (!list.length) { el.innerHTML = '<div class="empty-msg">' + (state.tmode === 'open' ? 'ไม่มีปัญหาค้าง ✓' : 'ไม่มีปัญหาในช่วงนี้ ✓') + '</div>'; return; }
+  var h = '<table><thead><tr><th>วันที่</th><th>รอบ</th><th>สถานะ</th><th>ผู้รายงาน</th><th>ข้อความ</th><th>การติดตาม</th><th>หมายเหตุ</th><th></th></tr></thead><tbody>';
+  list.slice(0, 300).forEach(function (r) {
+    h += '<tr><td class="nw">' + dayLabel(r.day, true) + '</td><td class="nw">' + r.round + '</td><td>' + statusPill(r.status) + '</td><td class="nw">' +
+      esc(r.name) + '</td><td class="msg">' + esc(r.text) + '</td><td><select data-row="' + r.row + '">' + FOLLOW.map(function (f) {
+        return '<option' + (f === r.follow ? ' selected' : '') + '>' + f + '</option>';
+      }).join('') + '</select></td><td><input type="text" data-row="' + r.row + '" value="' + esc(r.note) + '" placeholder="เช่น แจ้งช่างแล้ว"></td>' +
+      '<td class="nw"><button class="save" data-row="' + r.row + '">บันทึก</button><div class="saved" data-msg="' + r.row + '"></div></td></tr>';
+  });
+  el.innerHTML = h + '</tbody></table>' + (list.length > 300 ? '<div class="desc">แสดง 300 รายการล่าสุด จาก ' + list.length + '</div>' : '');
+}
+function renderAll(rows) {
+  var el = document.getElementById('allTable'), list = rows.slice().sort(sortDesc);
+  if (!list.length) { el.innerHTML = '<div class="empty-msg">ยังไม่มีรายงานในช่วงนี้</div>'; return; }
+  var h = '<table><thead><tr><th>วันที่</th><th>รอบ</th><th>สถานะ</th><th>ผู้รายงาน</th><th>ข้อความ</th><th>บันทึกเมื่อ</th><th>การติดตาม</th></tr></thead><tbody>';
+  list.slice(0, 500).forEach(function (r) {
+    h += '<tr><td class="nw">' + dayLabel(r.day, true) + '</td><td class="nw">' + r.round + '</td><td>' + statusPill(r.status) + '</td><td class="nw">' +
+      esc(r.name) + '</td><td class="msg">' + esc(r.text) + '</td><td class="nw">' + esc(r.reportedAt) + '</td><td class="nw">' + esc(r.problem ? r.follow : '') + '</td></tr>';
+  });
+  el.innerHTML = h + '</tbody></table>' + (list.length > 500 ? '<div class="desc">แสดง 500 รายการล่าสุด จาก ' + list.length + '</div>' : '');
+}
+
+document.getElementById('issueTable').addEventListener('click', function (ev) {
+  var b = ev.target.closest('button.save');
+  if (!b) return;
+  var row = +b.getAttribute('data-row'), r = DATA.filter(function (x) { return x.row === row; })[0];
+  var follow = document.querySelector('select[data-row="' + row + '"]').value;
+  var note = document.querySelector('input[data-row="' + row + '"]').value;
+  var msg = document.querySelector('[data-msg="' + row + '"]');
+  b.disabled = true; msg.className = 'saved'; msg.textContent = 'กำลังบันทึก…';
+  var done = function () { r.follow = follow; r.note = note; b.disabled = false; msg.textContent = 'บันทึกแล้ว'; renderKpis(inRange(range())); };
+  var fail = function (e) { b.disabled = false; msg.className = 'saved err'; msg.textContent = e; };
+  if (!API_URL) { done(); return; }
+  fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'followup', key: getKey(), row: row, msgId: r.msgId, follow: follow, note: note }) })
+    .then(function (res) { return res.json(); })
+    .then(function (d) { if (d.ok) done(); else fail(d.error || 'บันทึกไม่สำเร็จ'); })
+    .catch(function (e) { fail('บันทึกไม่สำเร็จ: ' + e.message); });
+});
+
+// ---------- hover ----------
+var tip = document.getElementById('tip');
+function hover(el, sel, html, highlight) {
+  el.querySelectorAll(sel).forEach(function (t) {
+    t.addEventListener('mouseenter', function () { tip.innerHTML = html(t); tip.style.display = 'block'; highlight(t, true); });
+    t.addEventListener('mousemove', function (e) {
+      var x = e.clientX + 14, y = e.clientY + 14;
+      if (x + tip.offsetWidth > innerWidth - 8) x = e.clientX - tip.offsetWidth - 14;
+      if (y + tip.offsetHeight > innerHeight - 8) y = e.clientY - tip.offsetHeight - 14;
+      tip.style.left = x + 'px'; tip.style.top = y + 'px';
+    });
+    t.addEventListener('mouseleave', function () { tip.style.display = 'none'; highlight(t, false); });
+  });
+}
+
+// ---------- controls ----------
+document.getElementById('tabs').addEventListener('click', function (e) {
+  var b = e.target.closest('button'); if (!b) return;
+  this.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
+  state.period = b.getAttribute('data-p'); render();
+});
+document.getElementById('tmode').addEventListener('click', function (e) {
+  var b = e.target.closest('button'); if (!b) return;
+  this.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
+  state.tmode = b.getAttribute('data-m'); renderIssues(inRange(range()));
+});
+document.getElementById('dateSel').addEventListener('change', function () { state.day = +this.value; render(); });
+document.getElementById('refresh').addEventListener('click', load);
+document.getElementById('print').addEventListener('click', function () { window.print(); });
+var side = document.getElementById('side'), scrim = document.getElementById('scrim');
+function menu(open) { side.classList.toggle('open', open); scrim.classList.toggle('show', open); }
+document.getElementById('menuBtn').addEventListener('click', function () { menu(true); });
+scrim.addEventListener('click', function () { menu(false); });
+document.getElementById('nav').addEventListener('click', function (e) {
+  var a = e.target.closest('a'); if (!a) return;
+  this.querySelectorAll('a').forEach(function (x) { x.classList.toggle('active', x === a); });
+  menu(false);
+});
+var rt;
+addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { if (state.day !== null) render(); }, 150); });
+
+function notice(msg, isErr) {
+  document.getElementById('notice').innerHTML = msg ? '<div class="notice' + (isErr ? ' err' : '') + '">' + esc(msg) + '</div>' : '';
+}
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
+}
+
+// ข้อมูลจำลอง ใช้เมื่อยังไม่ได้ตั้ง API_URL
+function demoData() {
+  var out = [], seed = 7, rnd = function () { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+  var rounds = ROUNDS, names = ['สมชาย', 'สมศรี', 'วิชัย'], t = todayBiz();
+  for (var d = t - 60; d <= t; d++) {
+    rounds.forEach(function (rd, i) {
+      if (d === t && i > 0) return;
+      var x = rnd(); if (x < 0.06) return;
+      var bias = rd === '08:00' ? 0.15 : 0;
+      var st = x < 0.14 + bias ? ST.MANUAL : x < 0.2 + bias ? ST.ISSUE : ST.NORMAL;
+      var dt = new Date(d * 864e5), date = dt.getUTCDate() + '/' + (dt.getUTCMonth() + 1) + '/' + dt.getUTCFullYear();
+      var txt = st === ST.NORMAL ? 'รอบ ' + rd + ' robot ทำงาน auto ปกติครับ' : st === ST.MANUAL ? 'รอบ ' + rd + ' robot ไม่ออก auto ต้องกด manual task ครับ' : 'รอบ ' + rd + ' robot ค้างกลางทาง ครับ';
+      out.push({ row: out.length + 2, reportedAt: date + ' ' + rd.replace(':00', ':05'), date: date, round: rd, status: st, name: names[Math.floor(rnd() * 3)],
+        text: txt, edited: '', msgId: 'demo' + out.length, follow: st === ST.NORMAL ? '' : d < t - 5 ? 'แก้ไขแล้ว' : d < t - 2 ? 'กำลังแก้ไข' : '', note: '' });
+    });
+  }
+  return out;
+}
+
+takeKeyFromUrl();
+load();
+</script>
+</body>
+</html>
