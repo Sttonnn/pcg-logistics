@@ -92,6 +92,25 @@
   td.c { position: relative; } td.c .ed { position: absolute; top: 4px; right: 3px; width: 6px; height: 6px; border-radius: 50%; background: #ff8a00; }
   .ebar { display: none; align-items: center; gap: 10px; flex-wrap: wrap; margin: -2px 0 12px; padding: 10px 12px; border-radius: 12px; background: var(--tint); color: var(--acc2); font-size: 13px; font-weight: 600; }
   .editing .ebar { display: flex; }
+  /* 3 พ.ย. เพิ่มเดือนเอง · ตั้งค่าพนักงาน · นำเข้า Excel */
+  .ibtn { background: #eaf1ff; color: #1d3f8f; } .xbtn + .ibtn, .ibtn + .ebtn, .ibtn + .ibtn { margin-left: 0; }
+  .newm { padding: 34px 18px; text-align: center; display: grid; gap: 12px; justify-items: center; color: var(--ink2); }
+  .newm b { font-size: 18px; color: var(--acc2); } .newm label { font-size: 13px; display: inline-flex; gap: 6px; align-items: center; }
+  .pbtn { border: 0; border-radius: 12px; padding: 11px 18px; font-weight: 800; font-size: 14px; cursor: pointer; background: linear-gradient(150deg, var(--acc), var(--acc2)); color: #fff; box-shadow: 0 8px 18px var(--accsh); }
+  .gbtn { border: 0; border-radius: 12px; padding: 10px 16px; font-weight: 700; font-size: 13.5px; cursor: pointer; background: #eef0f5; color: var(--ink); }
+  .dlg { position: fixed; inset: 0; z-index: 70; background: rgba(30,20,10,.42); display: none; align-items: flex-start; justify-content: center; padding: 4vh 12px; overflow: auto; }
+  .dlg.show { display: flex; }
+  .dbox { background: #fff; border-radius: 20px; box-shadow: 0 24px 60px rgba(0,0,0,.3); width: min(860px, 100%); padding: 18px; display: grid; gap: 12px; }
+  .dbox h3 { margin: 0; font-size: 18px; color: var(--acc2); } .dbox .note { line-height: 1.6; }
+  .dbox table { width: 100%; border-collapse: collapse; font-size: 13px; } .dbox th { text-align: left; padding: 6px; color: var(--ink2); font-size: 12px; border-bottom: 1px solid var(--line); }
+  .dbox td { text-align: left; padding: 4px; border-bottom: 1px solid var(--line); } .dbox td input { width: 100%; border: 1px solid var(--bd); border-radius: 8px; padding: 7px 8px; font: inherit; }
+  .dbox td.ac { white-space: nowrap; width: 1%; } .dbox td.ac button { border: 0; background: #f3eee8; border-radius: 7px; width: 28px; height: 28px; cursor: pointer; font-weight: 800; }
+  .dbox td.ac button.x { background: #fde3df; color: #b42318; }
+  .dbox .ft { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; align-items: center; }
+  .dbox .ft .sp { margin-right: auto; }
+  .imv td { padding: 7px 6px; } .imv .chg { color: #b45309; font-weight: 800; } .imv .new { color: #0a6b45; font-weight: 800; }
+  .derr { color: #b42318; font-size: 13px; font-weight: 700; }
+  @media (max-width: 760px) { .dbox td input { min-width: 90px; } .dbox .tw2 { overflow-x: auto; } }
   .pop { position: fixed; z-index: 50; background: #fff; border-radius: 16px; box-shadow: 0 18px 44px rgba(22,26,51,.28); padding: 12px; width: 268px; display: none; gap: 10px; }
   .pop.show { display: grid; }
   .pop .h { font-size: 13px; font-weight: 800; } .pop .h small { display: block; font-weight: 600; color: var(--ink2); }
@@ -162,17 +181,17 @@
     <div class="phead"><h2>ตารางปฏิบัติงาน <span id="pMonth" style="color:var(--acc)"></span></h2>
       <div class="legend" id="legend"></div>
       <button type="button" class="ebtn xbtn" id="xlsBtn" title="ดาวน์โหลดเป็นไฟล์ Excel รูปแบบเดียวกับต้นฉบับ (รวมที่แก้บนเว็บ)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 M7 10l5 5 5-5 M12 15V3"/></svg><span>Export Excel</span></button>
-      <button type="button" class="ebtn" id="editBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9 M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>แก้ไขตาราง</span></button></div>
+      <button type="button" class="ebtn ibtn" id="rosBtn" title="เพิ่ม/ลบ/แก้ชื่อพนักงานของเดือนนี้">👥 <span>พนักงาน</span></button><button type="button" class="ebtn ibtn" id="impBtn" title="นำเข้าไฟล์ Excel ตารางปฏิบัติงาน (รูปแบบเดียวกับต้นฉบับ/ไฟล์ที่ Export)">⇪ <span>นำเข้า Excel</span></button><input type="file" id="impFile" accept=".xlsx,.xls" hidden><button type="button" class="ebtn" id="editBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9 M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>แก้ไขตาราง</span></button></div>
     <div class="warn" id="warn"></div>
     <div class="ebar">กดช่องในตารางเพื่อเปลี่ยนกะ · บันทึกทันที ทุกคนเห็นตรงกัน · จุดส้ม = ช่องที่แก้บนเว็บ (ต่างจากไฟล์ Excel) <span id="ecount" style="margin-left:auto"></span></div>
     <div class="tw"><table id="tbl"></table></div>
     <p class="note" style="margin:10px 2px 0">กดที่วันที่ด้านบนตาราง เพื่อดูว่าวันนั้นใครเข้ากะไหน · กด "แก้ไขตาราง" เพื่อเปลี่ยนกะรายช่อง · 8 / 17 / 20 / 6 = เวลาเข้างาน (08:00 / 17:00 / 20:00 / 06:00) · กะเช้า = 8 · กะดึก = 17 หรือ 20 (ขึ้นกับว่ากะเช้าทำ OT ต่อไหม) · OFF = วันหยุดประจำสัปดาห์ · Flex = วันหยุดเพิ่มประจำสัปดาห์ · Hol = วันหยุดนักขัตฤกษ์</p>
   </section>
-  <p class="note">ข้อมูลจากไฟล์ "ตารางปฏิบัติงาน" แผนกโครงการ · อัปเดตโดยส่งไฟล์ Excel ใหม่ให้โชยุ</p>
+  <p class="note">ข้อมูลจากไฟล์ "ตารางปฏิบัติงาน" แผนกโครงการ + ที่แก้/เพิ่มบนเว็บ · กด ▶ ไปเดือนถัดไปเพื่อสร้างตารางเดือนใหม่ได้เรื่อยๆ · อัปเดตทั้งไฟล์ด้วยปุ่ม "นำเข้า Excel"</p>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
-<div class="pop" id="pop"></div><div class="toast" id="toast"></div>
+<div class="dlg" id="dlg"><div class="dbox" id="dbox"></div></div><div class="pop" id="pop"></div><div class="toast" id="toast"></div>
 <script>
 const DATA = {"2026":[{"m":3,"days":31,"rows":[{"id":"0000013","n":"คุณไพทูรย์ ป้องกันภัย","dept":"คลังสินค้า 5","pos":"ผู้ช่วยกรรมการผู้จัดการ","c":["OFF","8","Hol","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8"]},{"id":"0015487","n":"คุณศุภณัฐ ธรรมสอน","dept":"คลังสินค้า 5","pos":"ผู้จัดการฝ่ายบริหารโครงการ","c":["OFF","8","Hol","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8"]},{"id":"0009449","n":"คุณวัฒนา เทศเอม","dept":"คลังสินค้า 5","pos":"เจ้าหน้าที่งานโครงการ","c":["OFF","8","Hol","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OT","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8"]},{"id":"0000057","n":"คุณอภิชัย ชิณะแขว","dept":"คลังสินค้า 5","pos":"พนักงานจัดเตรียมสินค้า","c":["OFF","8","Hol","8","8","8","8","OFF","8","8","8","8","8","8","OFF","8","8","8","8","8","8","OFF","8","8","8","8","8","8","OFF","8","8"]},{"id":"0019955","n":"คุณพีรณัฐ ควรบุบผา","dept":"คลังสินค้า 5","pos":"ผู้จัดการแผนก","c":["OFF","8","Hol","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8"]},{"id":"0012970","n":"คุณเอกศักดิ์ ด่านนอก","dept":"คลังสินค้า 8","pos":"ช่างไฟฟ้า","c":["OFF","8","Hol","8","8","8","8","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","8","OFF","8","8","8","8","8","OFF","OFF","8","8"]}]},{"m":4,"days":30,"rows":[{"id":"0000013","n":"คุณไพทูรย์ ป้องกันภัย","dept":"คลังสินค้า 5","pos":"ผู้ช่วยกรรมการผู้จัดการ","c":["8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","Hol","Hol","Hol","Hol","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8"]},{"id":"0015487","n":"คุณศุภณัฐ ธรรมสอน","dept":"คลังสินค้า 5","pos":"ผู้จัดการฝ่ายบริหารโครงการ","c":["8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","Hol","Hol","Hol","Hol","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8"]},{"id":"0009449","n":"คุณวัฒนา เทศเอม","dept":"คลังสินค้า 5","pos":"เจ้าหน้าที่งานโครงการ","c":["8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","Hol","Hol","Hol","Hol","8","OFF","OFF","8","8","8","8","8","8","OFF","8","8","ลา","ลา"]},{"id":"0019955","n":"คุณพีรณัฐ ควรบุบผา","dept":"คลังสินค้า 5","pos":"ผู้จัดการแผนก","c":["8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","","","","","","","","","","","","","","","","","",""]},{"id":"0000057","n":"คุณอภิชัย ชิณะแขว","dept":"คลังสินค้า 5","pos":"พนักงานจัดเตรียมสินค้า","c":["8","8","8","OFF","OFF","ขาดงาน","8","8","8","8","8","OFF","Hol","Hol","Hol","Hol","ลา","OFF","OFF","8","8","8","8","8","8","OFF","8","8","8","8"]},{"id":"0012970","n":"คุณเอกศักดิ์ ด่านนอก","dept":"คลังสินค้า 32","pos":"ช่างไฟฟ้า","c":["8","ลา","8","8","OFF","OFF","8","ลา","8","8","8","OFF","Hol","Hol","Hol","Hol","8","8","OFF","OFF","8","8","ลา","8","8","OFF","8","8","8","8"]}]},{"m":5,"days":31,"rows":[{"id":"0000013","n":"คุณไพทูรย์ ป้องกันภัย","dept":"คลังสินค้า 5","pos":"ผู้ช่วยกรรมการผู้จัดการ","c":["Hol","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF"]},{"id":"0015487","n":"คุณศุภณัฐ ธรรมสอน","dept":"คลังสินค้า 5","pos":"ผู้จัดการฝ่ายบริหารโครงการ","c":["Hol","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF"]},{"id":"0009449","n":"คุณวัฒนา เทศเอม","dept":"คลังสินค้า 5","pos":"เจ้าหน้าที่งานโครงการ","c":["Hol","OFF","OFF","8","8","8","8","8","OFF","OFF","ลา","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OT","8","8","8","8","8","OFF","OFF"]},{"id":"0000057","n":"คุณอภิชัย ชิณะแขว","dept":"คลังสินค้า 5","pos":"พนักงานจัดเตรียมสินค้า","c":["Hol","OFF","OFF","8","8","8","8","8","8","OFF","ลา","8","8","8","8","OFF","OT","8","8","8","8","8","8","OT","8","8","ลา","8","8","OFF","OFF"]},{"id":"0012970","n":"คุณเอกศักดิ์ ด่านนอก","dept":"คลังสินค้า 32","pos":"ช่างไฟฟ้า","c":["Hol","8","OFF","OFF","8","8","8","8","8","OFF","8","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","8","ลา","8","8","8","8","OFF"]}]},{"m":6,"days":30,"rows":[{"id":"0000013","n":"คุณไพทูรย์ ป้องกันภัย","dept":"คลังสินค้า 5","pos":"ผู้ช่วยกรรมการผู้จัดการ","c":["8","8","Hol","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8"]},{"id":"0015487","n":"คุณศุภณัฐ ธรรมสอน","dept":"คลังสินค้า 5","pos":"ผู้จัดการฝ่ายบริหารโครงการ","c":["8","8","Hol","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8"]},{"id":"0009449","n":"คุณวัฒนา เทศเอม","dept":"คลังสินค้า 5","pos":"เจ้าหน้าที่งานโครงการ","c":["8","8","Hol","ลา","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8"]},{"id":"0000057","n":"คุณอภิชัย ชิณะแขว","dept":"คลังสินค้า 5","pos":"พนักงานจัดเตรียมสินค้า","c":["OFF","8","Hol","8","8","8","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","8","OFF","ขาดงาน","","","8","8","OFF","OFF","ลา","ลา"]},{"id":"0012970","n":"คุณเอกศักดิ์ ด่านนอก","dept":"คลังสินค้า 32","pos":"ช่างไฟฟ้า","c":["OFF","ลา","Hol","8","8","8","OFF","8","8","8","8","8","8","OFF","OFF","17","17","17","17","17","OFF","17","17","17","17","17","17","OFF","OFF","17"]},{"id":"0022154","n":"คุณพานุวัช คำจันทร์สา","dept":"คลังสินค้า 5","pos":"ช่างซ่อมบำรุง","c":["","","","","","","","","","","","","","","","8","8","8","8","8","OFF","8","8","8","8","8","8","OFF","8","8"]}]},{"m":7,"days":31,"rows":[{"id":"0000013","n":"คุณไพทูรย์ ป้องกันภัย","dept":"คลังสินค้า 5","pos":"ผู้ช่วยกรรมการผู้จัดการ","c":["8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","Hol","Hol","8","8"]},{"id":"0015487","n":"คุณศุภณัฐ ธรรมสอน","dept":"คลังสินค้า 5","pos":"ผู้จัดการฝ่ายบริหารโครงการ","c":["8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","ลา","Hol","Hol","8","8"]},{"id":"0009449","n":"คุณวัฒนา เทศเอม","dept":"คลังสินค้า 5","pos":"เจ้าหน้าที่งานโครงการ","c":["8","8","8","OFF","OT","8","8","ลา","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","ลา","8","ลา","8","8","OFF","OFF","8","Hol","Hol","8","8"]},{"id":"0012970","n":"คุณเอกศักดิ์ ด่านนอก","dept":"คลังสินค้า 32","pos":"ช่างไฟฟ้า","c":["17","17","17","17","OFF","8","8","8","8","8","8","OFF","OFF","8","8","ลา","ลา","8","OFF","8","8","8","ลา","8","8","OFF","OFF","Hol","Hol","17","17"]},{"id":"0022154","n":"คุณพานุวัช คำจันทร์สา","dept":"คลังสินค้า 5","pos":"ช่างซ่อมบำรุง","c":["8","8","8","8","OT","8","8","8","8","8","8","OFF","17","17","17","17","17","17","OFF","17","17","17","17","17","17","OFF","8","Hol","Hol","8","8"]}]},{"m":8,"days":31,"rows":[{"id":"0000013","n":"คุณไพทูรย์ ป้องกันภัย","dept":"คลังสินค้า 5","pos":"ผู้ช่วยกรรมการผู้จัดการ","c":["OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","Hol","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8"]},{"id":"0015487","n":"คุณศุภณัฐ ธรรมสอน","dept":"คลังสินค้า 5","pos":"ผู้จัดการฝ่ายบริหารโครงการ","c":["OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","Hol","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8"]},{"id":"0009449","n":"คุณวัฒนา เทศเอม","dept":"คลังสินค้า 5","pos":"เจ้าหน้าที่งานโครงการ","c":["OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","8","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8"]},{"id":"0012970","n":"คุณเอกศักดิ์ ด่านนอก","dept":"คลังสินค้า 32","pos":"ช่างไฟฟ้า","c":["17","OFF","17","17","17","17","17","17","OFF","OFF","17","Hol","17","17","17","OFF","8","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","20"]},{"id":"0022154","n":"คุณพานุวัช คำจันทร์สา","dept":"คลังสินค้า 5","pos":"ช่างซ่อมบำรุง","c":["8","OFF","8","8","8","8","8","8","OFF","8","8","Hol","8","8","8","OFF","20","20","20","20","20","20","OFF","20","20","20","20","20","20","OFF","8"]}]},{"m":9,"days":30,"rows":[{"id":"0000013","n":"คุณไพทูรย์ ป้องกันภัย","dept":"คลังสินค้า 5","pos":"ผู้ช่วยกรรมการผู้จัดการ","c":["8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8"]},{"id":"0015487","n":"คุณศุภณัฐ ธรรมสอน","dept":"คลังสินค้า 5","pos":"ผู้จัดการฝ่ายบริหารโครงการ","c":["8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8"]},{"id":"0009449","n":"คุณวัฒนา เทศเอม","dept":"คลังสินค้า 5","pos":"เจ้าหน้าที่งานโครงการ","c":["8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","8","8","8","8","ลา","8","OFF","OFF","8","8","8"]},{"id":"0012970","n":"คุณเอกศักดิ์ ด่านนอก","dept":"คลังสินค้า 32","pos":"ช่างไฟฟ้า","c":["20","20","20","20","20","OFF","OFF","20","20","20","20","20","OFF","8","8","8","8","8","8","OFF","OFF","8","8","8","8","8","OFF","20","20","20"]},{"id":"0022154","n":"คุณพานุวัช คำจันทร์สา","dept":"คลังสินค้า 5","pos":"ช่างซ่อมบำรุง","c":["8","8","8","8","8","OFF","6","8","8","8","8","8","OFF","20","20","20","20","20","20","OFF","20","20","20","20","20","20","OFF","8","8","8"]}]},{"m":10,"days":30,"rows":[{"id":"0000013","n":"คุณไพทูรย์ ป้องกันภัย","dept":"คลังสินค้า 5","pos":"ผู้ช่วยกรรมการผู้จัดการ","c":["8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","Hol","Hol","8","8","8","OFF","OFF","8","8","8","8","Hol","OFF","OFF","8","8","8","8","8"]},{"id":"0015487","n":"คุณศุภณัฐ ธรรมสอน","dept":"คลังสินค้า 5","pos":"ผู้จัดการฝ่ายบริหารโครงการ","c":["8","8","OFF","OFF","8","8","8","8","8","OFF","OFF","Hol","Hol","8","8","8","OFF","OFF","8","8","8","8","Hol","OFF","OFF","8","8","8","8","8"]},{"id":"0009449","n":"คุณวัฒนา เทศเอม","dept":"คลังสินค้า 5","pos":"เจ้าหน้าที่งานโครงการ","c":["8","8","OFF","8","8","8","8","8","8","OFF","OFF","Hol","Hol","8","8","8","OFF","OFF","8","8","8","8","Hol","OFF","OFF","8","8","8","8","8"]},{"id":"0012970","n":"คุณเอกศักดิ์ ด่านนอก","dept":"คลังสินค้า 32","pos":"ช่างไฟฟ้า","c":["20","20","20","OFF","OFF","20","20","20","20","20","OFF","Hol","Hol","8","8","8","8","OFF","OFF","8","8","8","Hol","8","OFF","20","20","20","20","20"]},{"id":"0022154","n":"คุณพานุวัช คำจันทร์สา","dept":"คลังสินค้า 5","pos":"ช่างซ่อมบำรุง","c":["8","8","8","OFF","8","8","8","8","8","8","OFF","Hol","Hol","20","20","20","20","OFF","20","20","20","20","Hol","20","OFF","OFF","8","8","8","8"]}]}]};
 const ASOF = "5 ต.ค. 2569";
@@ -196,16 +215,24 @@ const CODE = {
 const SB = "https://mgnshovnibcmiptoxdfe.supabase.co/rest/v1/shift_edits", SBK = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1nbnNob3ZuaWJjbWlwdG94ZGZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzNzI1NDIsImV4cCI6MjEwNDk0ODU0Mn0.UoPu-i6ODMEgyuqoO6oKHf0JIqFKpWkSpBkOKrpITwQ";
 const LSK = "pcg-shift-edits";
 let EDITS = {}, SB_OK = null;
+/* 3 พ.ย. รายชื่อพนักงานต่อเดือน (เดือนที่สร้าง/ตั้งค่าบนเว็บ) เก็บในตาราง shift_edits เดิม: emp_id = "CFG:roster", work_date = วันที่ 1 ของเดือน, code = JSON {rows:[{id,n,dept,pos}]} (ไม่ต้องสร้างตารางใหม่) */
+const RK = "CFG:roster", LSR = "pcg-shift-roster";
+let ROST = {};
 /* 10 ต.ค. ความปลอดภัย: ข้อมูลจากระบบกลาง/เครื่อง แทนอักขระที่ใช้แทรกโค้ด HTML (< > " ' `) ด้วยตัวหน้าตาคล้าย ก่อนนำไปแสดง (กัน Stored XSS) */
 const clean = v => typeof v === "string" ? v.replace(/[<>"'`]/g, c => ({ "<": "‹", ">": "›", '"': "″", "'": "′", "`": "′" })[c]) : Array.isArray(v) ? v.map(clean) : v && typeof v === "object" ? Object.fromEntries(Object.entries(v).map(([k, x]) => [clean(k), clean(x)])) : v;
 try { EDITS = clean(JSON.parse(localStorage.getItem(LSK) || "{}")); } catch (e) {}
+try { ROST = clean(JSON.parse(localStorage.getItem(LSR) || "{}")); } catch (e) {}
+const lsSave = () => { try { localStorage.setItem(LSK, JSON.stringify(EDITS)); localStorage.setItem(LSR, JSON.stringify(ROST)); } catch (e) {} };
 const ekey = (id, y, m, d) => id + "|" + y + "-" + String(m).padStart(2, "0") + "-" + String(d).padStart(2, "0");
 const hdrs = () => Object.assign({ "Content-Type": "application/json" }, window.PCGAuth ? PCGAuth.headers(SBK) : { apikey: SBK, Authorization: "Bearer " + SBK });
 async function sbLoad() {
   if (window.PCGAuth) await PCGAuth.whenIn();   /* ต้อง Login ก่อน (6 ต.ค.) */
   try { const r = await fetch(SB + "?select=emp_id,work_date,code", { headers: hdrs() });
     if (!r.ok) throw new Error(r.status);
-    const rows = clean(await r.json()); EDITS = {}; rows.forEach(x => { EDITS[x.emp_id + "|" + x.work_date] = x.code == null ? "" : x.code; }); SB_OK = true;
+    const rows = await r.json(); EDITS = {}; ROST = {};
+    rows.forEach(x => { if (x.emp_id === RK) { try { const o = clean(JSON.parse(x.code)); if (o && Array.isArray(o.rows)) ROST[x.work_date.slice(0, 7)] = o; } catch (e) {} return; }
+      EDITS[clean(x.emp_id) + "|" + x.work_date] = x.code == null ? "" : clean(x.code); });
+    SB_OK = true; lsSave();
   } catch (e) { SB_OK = false; }
   warn(); render();
 }
@@ -215,34 +242,68 @@ async function sbSave(k, code) {
       body: JSON.stringify([{ emp_id: id, work_date: dt, code: code, updated_at: new Date().toISOString() }]) });
     if (!r.ok) throw new Error(r.status); SB_OK = true; return true; } catch (e) { SB_OK = false; warn(); return false; }
 }
+/* บันทึกหลายช่องพร้อมกัน (สร้างเดือน / นำเข้า Excel) · list = [[emp_id, work_date, code], …] */
+async function sbMany(list) {
+  try { for (let i = 0; i < list.length; i += 400) {
+      const r = await fetch(SB + "?on_conflict=emp_id,work_date", { method: "POST", headers: Object.assign({ Prefer: "resolution=merge-duplicates" }, hdrs()),
+        body: JSON.stringify(list.slice(i, i + 400).map(([id, dt, code]) => ({ emp_id: id, work_date: dt, code: code, updated_at: new Date().toISOString() }))) });
+      if (!r.ok) throw new Error(r.status); }
+    SB_OK = true; return true; } catch (e) { SB_OK = false; warn(); return false; }
+}
 async function sbDel(k) { const [id, dt] = k.split("|");
   try { const r = await fetch(SB + "?emp_id=eq." + id + "&work_date=eq." + dt, { method: "DELETE", headers: hdrs() }); return r.ok; } catch (e) { return false; } }
 function warn() { const w = document.getElementById("warn"); if (!w) return;
   w.style.display = SB_OK === false ? "block" : "none";
   w.innerHTML = 'ยังบันทึกลงระบบกลางไม่ได้ (ยังไม่มีตาราง <code>shift_edits</code> ใน Supabase) · ตอนนี้การแก้ไขเก็บในเบราว์เซอร์นี้เท่านั้น เครื่องอื่นจะไม่เห็น · ให้โชยุส่ง SQL สร้างตาราง'; }
-const cellVal = (r, d) => { const k = ekey(r.id, S.y, S.m, d); return k in EDITS ? EDITS[k] : (r.c[d - 1] || ""); };
-const isEdited = (r, d) => { const k = ekey(r.id, S.y, S.m, d); return k in EDITS && EDITS[k] !== (r.c[d - 1] || ""); };
+const cvAt = (r, y, m, d) => { const k = ekey(r.id, y, m, d); return k in EDITS ? EDITS[k] : (r.c[d - 1] || ""); };
+const cellVal = (r, d) => cvAt(r, S.y, S.m, d);
+const isEdited = (r, d) => { if (S.web) return false; const k = ekey(r.id, S.y, S.m, d); return k in EDITS && EDITS[k] !== (r.c[d - 1] || ""); };
 const codeOf = v => CODE[v] || (v ? { bg: "#eef0f5", fg: "#333", lbl: v, grp: /^\d+$/.test(v) ? "day" : "other" } : null);
 const short = v => v === "ขาดงาน" ? "ขาด" : v;
 const now = new Date(), TODAY = { y: now.getFullYear(), m: now.getMonth() + 1, d: now.getDate() };
-const years = Object.keys(DATA).map(Number).sort();
-const S = { y: null, m: null, sel: null, edit: false };
+/* 3 พ.ย. เดือนที่ใช้ = เดือนจากไฟล์ (DATA) หรือเดือนที่สร้างบนเว็บ (ROST) · ROST ของเดือนไหนมี = ใช้รายชื่อนั้นแทน (ค่าช่องจากไฟล์ยังใช้ต่อตามรหัสพนักงาน) */
+const ym = (y, m) => y + "-" + String(m).padStart(2, "0");
+const dim = (y, m) => new Date(y, m, 0).getDate();
+const baseM = (y, m) => (DATA[y] || []).find(x => x.m === m);
+function monthAt(y, m) {
+  const b = baseM(y, m), R = ROST[ym(y, m)];
+  if (!b && !R) return null;
+  const days = Math.max(b ? b.days : 0, dim(y, m));
+  if (!R) return Object.assign({}, b, { days });
+  const bc = {}; (b ? b.rows : []).forEach(r => bc[r.id] = r.c);
+  return { m, days, web: !b, rows: R.rows.map(r => ({ id: r.id, n: r.n || "", dept: r.dept || "", pos: r.pos || "", c: bc[r.id] || [] })) };
+}
+function allYM() { const s = new Set(); Object.keys(DATA).forEach(y => DATA[y].forEach(x => s.add(ym(+y, x.m)))); Object.keys(ROST).forEach(k => s.add(k)); return [...s].sort(); }
+const FIRST = () => allYM()[0] || ym(TODAY.y, TODAY.m);
+const S = { y: null, m: null, sel: null, edit: false, fill: true };
 (function init() {
-  const y = DATA[TODAY.y] ? TODAY.y : years[years.length - 1], ms = DATA[y];
-  S.y = y; S.m = (ms.find(x => x.m === TODAY.m) || ms[ms.length - 1]).m;
+  const all = allYM(), cur = ym(TODAY.y, TODAY.m), pick = all.includes(cur) ? cur : (all.filter(k => k <= cur).pop() || all[all.length - 1] || cur);
+  S.y = +pick.slice(0, 4); S.m = +pick.slice(5);
   S.sel = (S.y === TODAY.y && S.m === TODAY.m) ? TODAY.d : 1;
 })();
-const monthObj = () => (DATA[S.y] || []).find(x => x.m === S.m);
+const monthObj = () => monthAt(S.y, S.m);
+/* เดือนล่าสุดที่มีตารางก่อนเดือน y-m (ใช้คัดลอกรายชื่อ/รูปแบบกะ) */
+function prevMonth(y, m) { const k = allYM().filter(x => x < ym(y, m)).pop(); return k ? { y: +k.slice(0, 4), m: +k.slice(5) } : null; }
 const wd = d => new Date(S.y, S.m - 1, d).getDay();
 
 function render() {
   const M = monthObj();
-  $("year").innerHTML = years.map(y => `<option value="${y}" ${y === S.y ? "selected" : ""}>${y + 543}</option>`).join("");
+  const y0 = +FIRST().slice(0, 4), y1 = Math.max(+allYM().slice(-1)[0]?.slice(0, 4) || TODAY.y, TODAY.y, S.y) + 1;
+  $("year").innerHTML = Array.from({ length: y1 - y0 + 1 }, (_, i) => y0 + i).map(y => `<option value="${y}" ${y === S.y ? "selected" : ""}>${y + 543}</option>`).join("");
   $("mLabel").textContent = TH_M[S.m - 1] + " " + (S.y + 543);
   $("pMonth").textContent = "· " + TH_M[S.m - 1] + " " + (S.y + 543);
   $("asof").textContent = ASOF ? "ข้อมูลจากไฟล์ ณ " + ASOF : "";
   $("legend").innerHTML = ["8", "17", "20", "OFF", "Flex", "Hol", "ลา", "OT", "ขาดงาน"].map(k => `<span><i style="background:${CODE[k].bg};color:${CODE[k].fg}">${short(k)}</i>${CODE[k].lbl}</span>`).join("");
-  if (!M) { $("tbl").innerHTML = `<tr><td class="empty">ไม่มีข้อมูลเดือนนี้</td></tr>`; $("today").innerHTML = ""; $("dayhd").innerHTML = ""; return; }
+  $("rosBtn").style.display = M ? "" : "none"; $("editBtn").style.display = M ? "" : "none";
+  if (!M) { const P = prevMonth(S.y, S.m), PM = P && monthAt(P.y, P.m);
+    $("tbl").innerHTML = `<tr><td><div class="newm"><b>ยังไม่มีตารางเดือน${TH_M[S.m - 1]} ${S.y + 543}</b>
+      ${PM ? `<span>สร้างตารางใหม่ โดยคัดลอกรายชื่อพนักงาน ${PM.rows.length} คน จากเดือน${TH_M[P.m - 1]} ${P.y + 543}</span>
+      <label><input type="checkbox" id="fillChk" ${S.fill ? "checked" : ""}> เติมกะให้อัตโนมัติตามวันในสัปดาห์ของเดือนก่อน (แก้ทีหลังได้ · ไม่คัดลอกวันหยุดนักขัตฤกษ์/ลา/OT)</label>` : `<span>สร้างตารางเปล่า แล้วเพิ่มพนักงานเอง</span>`}
+      <button type="button" class="pbtn" id="newMBtn">＋ สร้างตารางเดือน${TH_M[S.m - 1]} ${S.y + 543}</button>
+      <span class="note">หรือกด "นำเข้า Excel" ถ้ามีไฟล์ตารางเดือนนี้แล้ว</span></div></td></tr>`;
+    $("today").innerHTML = ""; $("dayhd").innerHTML = ""; $("kp").innerHTML = ""; $("cov").innerHTML = ""; $("ps").innerHTML = "";
+    $("sMonth").textContent = "· " + TH_M[S.m - 1] + " " + (S.y + 543); document.body.classList.remove("editing"); S.edit = false; $("ecount").textContent = ""; return; }
+  S.web = !!M.web;   /* เดือนที่สร้างบนเว็บ ไม่มีไฟล์ให้เทียบ → ไม่แสดงจุดส้ม */
   if (S.sel > M.days) S.sel = M.days;
   const isNow = S.y === TODAY.y && S.m === TODAY.m;
   const days = Array.from({ length: M.days }, (_, i) => i + 1);
@@ -310,7 +371,7 @@ const XFILL = { "OFF": "FF0000", "Hol": "00B0F0", "20": "0070C0", "ลา": "FFF
 const XFONT = { "20": "FFFFFF", "OFF": "FFFFFF", "Hol": "000000" };
 function exportXlsx() {
   if (!window.XLSX) { toast("โหลดตัวสร้าง Excel ไม่สำเร็จ ลองรีเฟรชหน้า"); return; }
-  const y = S.y, ms = DATA[y] || [], ws = {}, merges = [];
+  const y = S.y, ms = Array.from({ length: 12 }, (_, i) => monthAt(y, i + 1)).filter(Boolean), ws = {}, merges = [];
   const thin = { style: "thin", color: { rgb: "000000" } }, med = { style: "medium", color: { rgb: "000000" } };
   const bd = { top: thin, bottom: thin, left: thin, right: thin };
   const col = n => { let s = ""; n++; while (n) { const m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = Math.floor((n - 1) / 26); } return s; };
@@ -355,17 +416,12 @@ function exportXlsx() {
   toast("ดาวน์โหลด Excel แล้ว");
 }
 document.getElementById("xlsBtn").onclick = exportXlsx;
-const months = () => (DATA[S.y] || []).map(x => x.m);
-function shift(n) {
-  let ms = months(), i = ms.indexOf(S.m) + n;
-  if (i < 0 && DATA[S.y - 1]) { S.y--; ms = months(); i = ms.length - 1; }
-  else if (i >= ms.length && DATA[S.y + 1]) { S.y++; ms = months(); i = 0; }
-  if (i < 0 || i >= ms.length) return;
-  S.m = ms[i]; S.sel = (S.y === TODAY.y && S.m === TODAY.m) ? TODAY.d : 1; render();
-}
+function goM(y, m) { if (ym(y, m) < FIRST()) { const f = FIRST(); y = +f.slice(0, 4); m = +f.slice(5); }
+  S.y = y; S.m = m; S.sel = (y === TODAY.y && m === TODAY.m) ? TODAY.d : 1; pop.classList.remove("show"); render(); }
+function shift(n) { const t = new Date(S.y, S.m - 1 + n, 1); goM(t.getFullYear(), t.getMonth() + 1); }
 $("mPrev").onclick = () => shift(-1); $("mNext").onclick = () => shift(1);
-$("mNow").onclick = () => { if (DATA[TODAY.y] && DATA[TODAY.y].some(x => x.m === TODAY.m)) { S.y = TODAY.y; S.m = TODAY.m; S.sel = TODAY.d; render(); } };
-$("year").onchange = e => { S.y = +e.target.value; S.m = months().includes(S.m) ? S.m : months()[0]; S.sel = 1; render(); };
+$("mNow").onclick = () => goM(TODAY.y, TODAY.m);
+$("year").onchange = e => goM(+e.target.value, S.m);
 const pop = document.getElementById("pop"); let PK = null;
 const toast = t => { const el = document.getElementById("toast"); el.textContent = t; el.style.display = "block"; clearTimeout(toast.t); toast.t = setTimeout(() => el.style.display = "none", 1800); };
 function openPop(td) {
@@ -382,16 +438,125 @@ function openPop(td) {
 async function setCode(v, reset) {
   const k = ekey(PK.id, S.y, S.m, PK.d); pop.classList.remove("show");
   if (reset || v === PK.orig) { delete EDITS[k]; } else EDITS[k] = v;
-  try { localStorage.setItem(LSK, JSON.stringify(EDITS)); } catch (e) {}
+  lsSave();
   render();
   const ok = (reset || v === PK.orig) ? await sbDel(k) : await sbSave(k, v);
   toast(ok ? "บันทึกแล้ว" : "บันทึกในเครื่องนี้แล้ว (ยังไม่ขึ้นระบบกลาง)");
 }
 document.getElementById("editBtn").onclick = () => { S.edit = !S.edit; pop.classList.remove("show"); render(); };
+/* ---- 3 พ.ย. สร้างเดือนใหม่ (ผู้ใช้ขอ: เพิ่มได้ทุกเดือนไปเรื่อยๆ) ---- */
+const NOFILL = ["Hol", "ลา", "ขาดงาน", "OT", ""];
+async function createMonth() {
+  const y = S.y, m = S.m, P = prevMonth(y, m), PM = P && monthAt(P.y, P.m), fill = !!(document.getElementById("fillChk") || {}).checked;
+  S.fill = fill;
+  const rows = PM ? PM.rows.map(r => ({ id: r.id, n: r.n, dept: r.dept, pos: r.pos })) : [];
+  ROST[ym(y, m)] = { rows };
+  const list = [[RK, ym(y, m) + "-01", JSON.stringify({ rows })]];
+  if (fill && PM) PM.rows.forEach(r => {
+    const by = {}; for (let d = 1; d <= PM.days; d++) { const v = cvAt(r, P.y, P.m, d); if (NOFILL.includes(v)) continue;
+      const w = new Date(P.y, P.m - 1, d).getDay(); (by[w] = by[w] || {})[v] = (by[w][v] || 0) + 1; }
+    for (let d = 1; d <= dim(y, m); d++) { const c = by[new Date(y, m - 1, d).getDay()]; if (!c) continue;
+      const v = Object.entries(c).sort((a, b) => b[1] - a[1])[0][0], k = ekey(r.id, y, m, d); EDITS[k] = v; list.push([r.id, k.split("|")[1], v]); }
+  });
+  lsSave(); render();
+  toast(await sbMany(list) ? "สร้างตารางเดือน" + TH_M[m - 1] + " แล้ว" : "สร้างในเครื่องนี้แล้ว (ยังไม่ขึ้นระบบกลาง)");
+}
+/* ---- ตั้งค่าพนักงานของเดือนนี้ ---- */
+const dlg = document.getElementById("dlg"), dbox = document.getElementById("dbox");
+const closeDlg = () => dlg.classList.remove("show");
+const esc = v => String(v == null ? "" : v).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const rosRow = r => `<tr><td><input data-f="id" value="${esc(r.id)}" placeholder="รหัส (ว่าง = สร้างให้)"></td><td><input data-f="n" value="${esc(r.n)}" placeholder="ชื่อ-นามสกุล"></td>
+  <td><input data-f="dept" value="${esc(r.dept)}" placeholder="แผนก"></td><td><input data-f="pos" value="${esc(r.pos)}" placeholder="ตำแหน่ง"></td>
+  <td class="ac"><button type="button" data-mv="-1" title="ขึ้น">↑</button> <button type="button" data-mv="1" title="ลง">↓</button> <button type="button" class="x" data-rm="1" title="ลบออกจากเดือนนี้">✕</button></td></tr>`;
+function openRoster() {
+  const M = monthObj(); if (!M) return;
+  dbox.innerHTML = `<h3>👥 พนักงาน · ${TH_M[S.m - 1]} ${S.y + 543}</h3>
+    <div class="note">เพิ่ม / ลบ / แก้ชื่อ / เรียงลำดับ พนักงานของเดือนนี้ · ลบออก = ไม่แสดงในเดือนนี้ (กะที่เคยกรอกยังเก็บไว้ ใส่รหัสเดิมกลับมาก็เห็น) · เดือนใหม่ที่สร้างหลังจากนี้จะคัดลอกรายชื่อจากเดือนล่าสุด</div>
+    <div class="tw2"><table><thead><tr><th>รหัส</th><th>ชื่อ-นามสกุล</th><th>แผนก</th><th>ตำแหน่ง</th><th></th></tr></thead><tbody id="rosT">${M.rows.map(rosRow).join("")}</tbody></table></div>
+    <div><button type="button" class="gbtn" id="rosAdd">＋ เพิ่มพนักงาน</button></div>
+    <label class="note" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="rosNext"> ใช้รายชื่อนี้กับเดือนถัดไปที่สร้างไว้แล้วด้วย</label>
+    <div class="derr" id="rosErr"></div>
+    <div class="ft"><button type="button" class="gbtn" data-dclose="1">ยกเลิก</button><button type="button" class="pbtn" id="rosSave">บันทึก</button></div>`;
+  dlg.classList.add("show");
+}
+async function saveRoster() {
+  const rows = [...document.querySelectorAll("#rosT tr")].map(tr => { const o = {}; tr.querySelectorAll("input[data-f]").forEach(i => o[i.dataset.f] = clean(i.value.replace(/[|]/g, "").replace(/\s+/g, " ").trim())); return o; })
+    .filter(r => r.id || r.n);
+  const err = document.getElementById("rosErr"), seen = new Set();
+  for (const r of rows) { if (!r.id) r.id = "99" + String(Date.now()).slice(-5) + seen.size; if (!r.n) { err.textContent = "กรอกชื่อพนักงานรหัส " + r.id; return; }
+    if (seen.has(r.id)) { err.textContent = "รหัส " + r.id + " ซ้ำ"; return; } seen.add(r.id); }
+  const keys = [ym(S.y, S.m)];
+  if (document.getElementById("rosNext").checked) allYM().filter(k => k > ym(S.y, S.m)).forEach(k => keys.push(k));
+  const list = keys.map(k => { ROST[k] = { rows }; return [RK, k + "-01", JSON.stringify({ rows })]; });
+  lsSave(); closeDlg(); render();
+  toast(await sbMany(list) ? "บันทึกรายชื่อพนักงานแล้ว" : "บันทึกในเครื่องนี้แล้ว (ยังไม่ขึ้นระบบกลาง)");
+}
+/* ---- นำเข้า Excel (กฎเดียวกับ tools/shift_extract.py) ---- */
+const START_YM = "2026-03";
+function parseXlsx(buf) {
+  const wb = XLSX.read(buf, { type: "array" }), out = [];
+  wb.SheetNames.forEach(sn => { const mt = sn.match(/(20\d\d)/); if (!mt) return; const year = +mt[1];
+    const A = XLSX.utils.sheet_to_json(wb.Sheets[sn], { header: 1, raw: true, defval: null }); let cur = null;
+    A.forEach(row => { const at = c => row[c - 1], h = at(8);
+      if (typeof h === "string" && TH_M.includes(h.trim()) && at(9) == 1) {
+        let days = 0; for (let c = 9; c <= 40; c++) if (typeof at(c) === "number") days = Math.max(days, c - 8);
+        cur = { y: year, m: TH_M.indexOf(h.trim()) + 1, days, rows: [] }; out.push(cur); return; }
+      const code = at(2);
+      if (cur && code != null && /^\d+$/.test(String(code).trim())) {
+        const c = []; for (let d = 1; d <= cur.days; d++) { const v = at(8 + d); c.push(v == null ? "" : typeof v === "number" ? String(Math.trunc(v)) : String(v).trim()); }
+        cur.rows.push({ id: String(code).trim(), n: String(at(3) || "").replace(/\s+/g, " ").trim(), dept: String(at(6) || "").trim(), pos: String(at(7) || "").trim(), c: clean(c) });
+        cur.rows[cur.rows.length - 1] = clean(cur.rows[cur.rows.length - 1]); }
+    }); });
+  return out.filter(M => ym(M.y, M.m) >= START_YM && M.rows.length);
+}
+let IMP = null;
+function diffImport(F) {
+  const cur = monthAt(F.y, F.m), ids = cur ? cur.rows.map(r => r.id + "|" + r.n + "|" + r.dept + "|" + r.pos).join(";") : "";
+  const ros = !cur || ids !== F.rows.map(r => r.id + "|" + r.n + "|" + r.dept + "|" + r.pos).join(";");
+  const known = new Set(cur ? cur.rows.map(r => r.id) : []), bc = {}; (baseM(F.y, F.m) || { rows: [] }).rows.forEach(r => bc[r.id] = r.c);
+  const cells = [];
+  F.rows.forEach(r => { const R = { id: r.id, c: bc[r.id] || [] };
+    for (let d = 1; d <= F.days; d++) { const v = r.c[d - 1] || ""; if (cvAt(R, F.y, F.m, d) !== v) cells.push([r.id, ekey(r.id, F.y, F.m, d).split("|")[1], v]); } });
+  return { F, ros, cells, nNew: F.rows.filter(r => !known.has(r.id)).length, isNew: !cur };
+}
+function showImport(name, list) {
+  IMP = list.map(diffImport);
+  const any = IMP.some(x => x.ros || x.cells.length);
+  dbox.innerHTML = `<h3>⇪ นำเข้า Excel · ตรวจก่อนบันทึก</h3><div class="note">ไฟล์ <b>${esc(name)}</b> · พบ ${IMP.length} เดือน (ตั้งแต่ มี.ค. 2569) · ค่าในไฟล์ทับค่าในเว็บเฉพาะเดือนที่ติ๊ก · เดือนที่ไม่อยู่ในไฟล์ไม่เปลี่ยน</div>
+    ${IMP.length ? `<div class="tw2"><table class="imv"><thead><tr><th></th><th>เดือน</th><th>พนักงาน</th><th>สิ่งที่จะเปลี่ยน</th></tr></thead><tbody>${IMP.map((x, i) => `<tr>
+      <td><input type="checkbox" data-imp="${i}" ${x.ros || x.cells.length ? "checked" : "disabled"}></td><td><b>${TH_M[x.F.m - 1]} ${x.F.y + 543}</b></td><td>${x.F.rows.length} คน${x.nNew && !x.isNew ? ` <span class="new">(ใหม่ ${x.nNew})</span>` : ""}</td>
+      <td>${x.isNew ? `<span class="new">เดือนใหม่</span> · ${x.cells.length} ช่อง` : x.cells.length || x.ros ? `<span class="chg">${x.cells.length ? "เปลี่ยน " + x.cells.length + " ช่อง" : ""}${x.ros ? (x.cells.length ? " · " : "") + "รายชื่อเปลี่ยน" : ""}</span>` : "เหมือนเดิม"}</td></tr>`).join("")}</tbody></table></div>`
+      : `<div class="derr">ไม่พบตารางในไฟล์ (ต้องมีชีตชื่อมีปี เช่น "ตารางปฏิบัติงาน 2026" · ชื่อเดือนคอลัมน์ H · วันที่ 1 คอลัมน์ I · รหัสพนักงานคอลัมน์ B)</div>`}
+    <div class="ft"><span class="sp note">${any ? "" : IMP.length ? "ข้อมูลในไฟล์ตรงกับเว็บแล้ว" : ""}</span><button type="button" class="gbtn" data-dclose="1">ยกเลิก</button>${any ? `<button type="button" class="pbtn" id="impSave">บันทึก</button>` : ""}</div>`;
+  dlg.classList.add("show");
+}
+async function saveImport() {
+  const pick = [...document.querySelectorAll("[data-imp]:checked")].map(i => IMP[+i.dataset.imp]); if (!pick.length) { closeDlg(); return; }
+  const list = [];
+  pick.forEach(x => { if (x.ros) { const rows = x.F.rows.map(r => ({ id: r.id, n: r.n, dept: r.dept, pos: r.pos })); ROST[ym(x.F.y, x.F.m)] = { rows }; list.push([RK, ym(x.F.y, x.F.m) + "-01", JSON.stringify({ rows })]); }
+    x.cells.forEach(([id, dt, v]) => { EDITS[id + "|" + dt] = v; list.push([id, dt, v]); }); });
+  lsSave(); closeDlg(); const f = pick[pick.length - 1].F; goM(f.y, f.m);
+  toast(await sbMany(list) ? "นำเข้าแล้ว " + pick.length + " เดือน" : "นำเข้าในเครื่องนี้แล้ว (ยังไม่ขึ้นระบบกลาง)");
+}
+document.getElementById("rosBtn").onclick = openRoster;
+document.getElementById("impBtn").onclick = () => { if (!window.XLSX) { toast("โหลดตัวอ่าน Excel ไม่สำเร็จ ลองรีเฟรชหน้า"); return; } document.getElementById("impFile").click(); };
+document.getElementById("impFile").onchange = async e => { const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  try { showImport(f.name, parseXlsx(await f.arrayBuffer())); } catch (er) { toast("อ่านไฟล์ไม่ได้: " + er.message); } };
+dlg.addEventListener("click", e => {
+  if (e.target === dlg || e.target.closest("[data-dclose]")) { closeDlg(); return; }
+  if (e.target.closest("#rosAdd")) { document.getElementById("rosT").insertAdjacentHTML("beforeend", rosRow({ id: "", n: "", dept: "", pos: "" })); return; }
+  if (e.target.closest("#rosSave")) { saveRoster(); return; }
+  if (e.target.closest("#impSave")) { saveImport(); return; }
+  const rm = e.target.closest("[data-rm]"); if (rm) { rm.closest("tr").remove(); return; }
+  const mv = e.target.closest("[data-mv]"); if (mv) { const tr = mv.closest("tr"), o = mv.dataset.mv === "-1" ? tr.previousElementSibling : tr.nextElementSibling;
+    if (o) mv.dataset.mv === "-1" ? o.before(tr) : o.after(tr); }
+});
 document.addEventListener("click", e => {
   const st = e.target.closest("[data-set]"); if (st) { setCode(st.dataset.set); return; }
   if (e.target.closest("[data-reset]")) { setCode("", true); return; }
   if (e.target.closest("[data-close]")) { pop.classList.remove("show"); return; }
+  if (e.target.closest("#newMBtn")) { createMonth(); return; }
+  if (e.target.closest("#dlg")) return;
   if (S.edit) { const td = e.target.closest("td[data-e]"); if (td) { openPop(td); return; } }
   if (!e.target.closest("#pop")) pop.classList.remove("show");
   const t = e.target.closest("[data-d]"); if (t) { S.sel = +t.dataset.d; render(); }
