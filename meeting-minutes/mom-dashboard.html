@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>บันทึกการประชุม Project Weekly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+  /* 5 พ.ย. Weekly Meeting Minutes (MoM) · สไตล์ Portal (โค้ง ไล่สี เงา) · กรม→ฟ้า→เขียวอมฟ้า
+     เก็บ Supabase mom_meetings (id, rec jsonb) · ไม่มี AI (ผู้ใช้เลือก) · เสียง = วางข้อความถอดเสียง · ใส่รหัสก่อนเข้า · ส่ง Task เข้า Daily Task ด้วยปุ่ม */
+  :root {
+    --bg: #eef2f8; --card: #ffffff; --ink: #14213d; --ink2: #50607e; --ink3: #8a97ae; --line: #dfe5ef; --soft: #f5f7fb;
+    --navy: #0f2a5c; --navy2: #1d4fa8; --teal: #0e9f9a; --gold: #f2a516; --gold-soft: #fff4dc; --gold-ink: #8a5a00;
+    --ok: #0f9a6e; --ok-soft: #e3f6ee; --prog: #2563eb; --prog-soft: #e6eefe; --red: #d92d20; --red-soft: #fdeceb;
+    --shadow: 0 10px 28px rgba(15, 42, 92, .08);
+    --f-disp: "Prompt", "Anuphan", system-ui, sans-serif; --f-body: "Anuphan", system-ui, sans-serif; --f-mono: "IBM Plex Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.55; padding: 18px 16px 48px; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  h1, h2, h3 { font-family: var(--f-disp); margin: 0; }
+  .wrap { max-width: 1360px; margin: 0 auto; display: grid; gap: 18px; }
+
+  .hero { border-radius: 28px; padding: 22px 26px; color: #fff; background: linear-gradient(115deg, var(--navy) 0%, var(--navy2) 58%, var(--teal) 125%);
+    box-shadow: var(--shadow); display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  .back { display: inline-flex; align-items: center; gap: 6px; color: #fff; text-decoration: none; font-weight: 600; font-size: 14px; padding: 8px 14px; border-radius: 999px; background: rgba(255,255,255,.14); }
+  .hero .ic { width: 54px; height: 54px; border-radius: 16px; background: rgba(255,255,255,.14); display: grid; place-items: center; flex: none; }
+  .hero .t { flex: 1 1 300px; min-width: 0; }
+  .hero small { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; opacity: .8; font-weight: 600; }
+  .hero h1 { font-size: 26px; line-height: 1.2; }
+  .sync { font-size: 12.5px; font-weight: 600; padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.16); white-space: nowrap; }
+  .sync.bad { background: var(--gold); color: #2b1b00; }
+
+  .main { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 18px; align-items: start; }
+  .side { background: var(--card); border-radius: 22px; padding: 14px; box-shadow: var(--shadow); display: grid; gap: 8px; position: sticky; top: 10px; max-height: calc(100vh - 20px); overflow: auto; }
+  .side h3 { font-size: 12.5px; color: var(--ink3); letter-spacing: .06em; text-transform: uppercase; padding: 4px 6px 0; }
+  .pbtn { border: 0; border-radius: 14px; padding: 11px 14px; font-weight: 700; color: #fff; background: linear-gradient(135deg, var(--navy), var(--navy2)); box-shadow: 0 8px 18px rgba(29,79,168,.25); }
+  .gbtn { border: 1px solid var(--line); border-radius: 12px; padding: 9px 14px; font-weight: 600; background: var(--soft); }
+  .gbtn.sm { padding: 6px 10px; font-size: 13px; border-radius: 10px; }
+  .gbtn.danger { color: var(--red); } .gbtn.danger.arm { background: var(--red); color: #fff; border-color: var(--red); }
+  .srch { border: 1px solid var(--line); background: var(--soft); border-radius: 12px; padding: 8px 12px; width: 100%; }
+  .wk { display: grid; gap: 1px; text-align: left; border: 0; background: var(--soft); border-radius: 14px; padding: 9px 12px; }
+  .wk.on { background: linear-gradient(135deg, var(--navy), var(--navy2)); color: #fff; }
+  .wk b { font-family: var(--f-disp); font-size: 14.5px; } .wk small { font-size: 12px; opacity: .8; }
+  .wk .dr { color: var(--gold-ink); font-weight: 700; } .wk.on .dr { color: #ffd37a; }
+  .tip { padding: 10px 12px; border-radius: 14px; background: var(--gold-soft); color: var(--gold-ink); font-size: 13px; }
+  .tip b { display: block; font-size: 22px; font-family: var(--f-disp); }
+
+  .col { display: grid; gap: 18px; min-width: 0; }
+  .card { background: var(--card); border-radius: 24px; padding: 20px; box-shadow: var(--shadow); display: grid; gap: 14px; min-width: 0; }
+  .ch { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .ch .n { width: 32px; height: 32px; border-radius: 10px; background: linear-gradient(135deg, var(--navy), var(--navy2)); color: #fff; display: grid; place-items: center; font-family: var(--f-mono); flex: none; }
+  .ch h2 { font-size: 18.5px; flex: 1; min-width: 0; }
+  .hint { font-size: 13px; color: var(--ink2); }
+  .form { display: grid; grid-template-columns: 90px repeat(4, minmax(0, 1fr)); gap: 10px; }
+  .fld { display: grid; gap: 4px; min-width: 0; } .fld.w2 { grid-column: span 2; } .fld.w4 { grid-column: span 4; } .fld.all { grid-column: 1 / -1; }
+  .fld label { font-size: 12.5px; font-weight: 600; color: var(--ink2); }
+  .fld input, .fld textarea { border: 1px solid var(--line); background: var(--soft); border-radius: 12px; padding: 9px 12px; width: 100%; }
+  textarea { resize: vertical; }
+  #notes { min-height: 110px; }
+  details.box { border: 1px solid var(--line); border-radius: 16px; padding: 10px 14px; background: var(--soft); }
+  details.box summary { cursor: pointer; font-weight: 600; }
+  details.box ol { margin: 8px 0 0; padding-left: 20px; font-size: 13.5px; color: var(--ink2); }
+
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink2); }
+  .legend i { display: inline-block; width: 14px; height: 14px; border-radius: 4px; vertical-align: -2px; margin-right: 5px; }
+  .tw { overflow-x: auto; border-radius: 16px; border: 1px solid var(--line); }
+  table.rt { border-collapse: collapse; width: 100%; min-width: 980px; font-size: 14px; }
+  .rt th { background: var(--navy); color: #fff; text-align: left; font-weight: 600; padding: 9px 10px; font-size: 13px; white-space: nowrap; }
+  .rt td { border-top: 1px solid var(--line); padding: 6px 8px; vertical-align: top; }
+  .rt tr.carry td:first-child { box-shadow: inset 3px 0 0 var(--ink3); }
+  .rt textarea, .rt input[type=text], .rt input[type=date] { width: 100%; border: 1px solid transparent; background: transparent; border-radius: 8px; padding: 6px 8px; min-height: 36px; }
+  .rt textarea { overflow: hidden; line-height: 1.45; }
+  .rt textarea:hover, .rt input:hover { border-color: var(--line); } .rt textarea:focus, .rt input:focus { background: var(--prog-soft); border-color: var(--prog); outline: none; }
+  .rt tr.red textarea { color: var(--red); }
+  .tag { display: inline-block; font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px; white-space: nowrap; margin-top: 8px; }
+  .tag.carry { background: var(--soft); color: var(--ink2); } .tag.new { background: var(--prog-soft); color: var(--prog); } .tag.sent { background: var(--ok-soft); color: var(--ok); }
+  select.st { border: 0; border-radius: 999px; padding: 6px 10px; font-weight: 700; font-size: 12.5px; margin-top: 4px; }
+  select.st.done { background: var(--ok-soft); color: var(--ok); } select.st.prog { background: #fff7c2; color: #7a5b00; } select.st.todo { background: var(--soft); color: var(--ink2); }
+  .ac { white-space: nowrap; } .ac button { border: 0; background: var(--soft); border-radius: 8px; width: 28px; height: 28px; font-weight: 800; margin-top: 4px; }
+  .ac button.x { color: var(--red); } .ac button.x.arm { background: var(--red); color: #fff; }
+  .ac label { display: inline-flex; align-items: center; gap: 3px; font-size: 12px; color: var(--red); margin-left: 4px; }
+  .empty { padding: 26px; text-align: center; color: var(--ink3); }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+  .paper { background: #fff; color: #111; border-radius: 6px; box-shadow: 0 2px 14px rgba(0,0,0,.16); padding: 26px; max-width: 840px; margin: 0 auto; width: 100%; font-size: 13px; overflow-x: auto; }
+  .paper table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 13px; }
+  .paper th, .paper td { border: 1px solid #555; padding: 6px 8px; color: #111; vertical-align: top; }
+  .paper .lbl { font-weight: 700; width: 26%; }
+  .paper .ttl { text-align: center; font-weight: 700; font-size: 16px; }
+  .paper .nv { background: #002060; color: #fff; text-align: center; }
+  .paper .done { background: #00b050; } .paper .prog { background: #ffff00; }
+  .paper .redt td { color: #e00; }
+  .paper .sec { font-weight: 700; margin: 16px 0 6px; font-size: 15px; }
+  .paper .lg { display: flex; justify-content: flex-start; margin-bottom: 12px; } .paper .lg img { height: 46px; }
+
+  .dlg { position: fixed; inset: 0; z-index: 70; background: rgba(10, 20, 40, .45); display: flex; align-items: flex-start; justify-content: center; padding: 5vh 12px; overflow: auto; }
+  .dbox { background: var(--card); border-radius: 22px; box-shadow: 0 24px 60px rgba(0,0,0,.3); width: min(760px, 100%); padding: 20px; display: grid; gap: 12px; }
+  .dbox h3 { font-size: 18px; } .dbox table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .dbox th { text-align: left; font-size: 12.5px; color: var(--ink2); padding: 6px; border-bottom: 1px solid var(--line); } .dbox td { padding: 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .dbox select { border: 1px solid var(--line); border-radius: 8px; padding: 4px 6px; background: var(--soft); }
+  .ft { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; align-items: center; } .ft .sp { margin-right: auto; }
+  .err { color: var(--red); font-size: 13px; font-weight: 600; }
+  .toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 12px; font-weight: 600; z-index: 90; max-width: calc(100% - 32px); }
+
+  /* หน้ารหัส */
+  .gate { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 16px; background: linear-gradient(135deg, #0b1f47, #14408f 60%, #0b6f6b); }
+  .gbox { background: #fff; color: var(--ink); border-radius: 24px; width: min(400px, 100%); overflow: hidden; box-shadow: 0 30px 70px rgba(0,0,0,.35); }
+  .gbox .gh { background: linear-gradient(135deg, var(--navy), var(--navy2)); color: #fff; padding: 22px; display: flex; gap: 12px; align-items: center; }
+  .gbox .gh img { height: 38px; border-radius: 6px; background: #fff; padding: 2px; }
+  .gbox .gb { padding: 22px; display: grid; gap: 10px; }
+  .gbox input { border: 1px solid var(--line); border-radius: 12px; padding: 11px 14px; font-size: 16px; }
+
+  @media (max-width: 1000px) { .main { grid-template-columns: 1fr; } .side { position: static; max-height: none; } }
+  @media (max-width: 760px) { .form { grid-template-columns: 1fr 1fr; } .fld.w2, .fld.w4 { grid-column: 1 / -1; } .hero h1 { font-size: 21px; } .paper { padding: 14px; } .card { padding: 16px; } }
+</style>
+</head>
+<body>
+<div class="gate" id="gate">
+  <form class="gbox" id="gForm">
+    <div class="gh"><img src="data:image/png;base64,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" alt="PCG"><div><b style="font-family:var(--f-disp);font-size:18px">บันทึกการประชุม Project Weekly</b><div style="font-size:13px;opacity:.85">สำหรับทีมแผนกโครงการ</div></div></div>
+    <div class="gb">
+      <label for="gPw" style="font-weight:600">ใส่รหัสเพื่อเข้าใช้งาน</label>
+      <input id="gPw" type="password" autocomplete="current-password" placeholder="รหัส">
+      <div class="err" id="gErr"></div>
+      <div class="row" style="justify-content:space-between"><a href="../index.html" style="color:var(--ink2);font-size:14px">← หน้าหลัก</a><button type="submit" class="pbtn">เข้าใช้งาน →</button></div>
+    </div>
+  </form>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <a class="back" href="../index.html">← หน้าหลัก</a>
+    <span class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6a1 1 0 0 1 1 1v1H8V5a1 1 0 0 1 1-1z"/><path d="M8 5H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><path d="M8 12h8M8 16h5"/></svg></span>
+    <div class="t"><small>PCG · Project Team · Weekly Meeting</small><h1>บันทึกการประชุม Project Weekly</h1></div>
+    <span class="sync" id="sync">กำลังเชื่อมข้อมูล…</span>
+  </header>
+
+  <div class="main">
+    <aside class="side">
+      <button type="button" class="pbtn" id="newBtn">＋ ประชุมสัปดาห์ถัดไป</button>
+      <button type="button" class="gbtn" id="impBtn">⇪ นำเข้าไฟล์ Word เดิม</button>
+      <input type="file" id="impFile" accept=".docx" multiple hidden>
+      <input class="srch" id="q" type="search" placeholder="ค้นหาหัวข้อ / งาน / ชื่อ" aria-label="ค้นหา">
+      <h3>การประชุม</h3>
+      <div id="list" style="display:grid;gap:6px"></div>
+      <div class="tip" id="tip"></div>
+    </aside>
+    <div class="col" id="col"></div>
+  </div>
+</div>
+<div class="dlg" id="dlg" hidden><div class="dbox" id="dbox"></div></div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+const LOGO = "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";
+/* รหัสเดียวกับปุ่มหน้าหลักของหน้า Robot (SHA-256) · เปลี่ยนรหัส = แก้ค่านี้ */
+const GATE_HASH = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918";
+const SBU = "https://mgnshovnibcmiptoxdfe.supabase.co/rest/v1/", SBK = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1nbnNob3ZuaWJjbWlwdG94ZGZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzNzI1NDIsImV4cCI6MjEwNDk0ODU0Mn0.UoPu-i6ODMEgyuqoO6oKHf0JIqFKpWkSpBkOKrpITwQ";
+const TBL = "mom_meetings", LSK = "pcg-mom-db";
+const TH_M = ["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
+const TH_S = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
+const ST = { done: "เสร็จสิ้น", prog: "กำลังดำเนินการ", todo: "ยังไม่เริ่ม" };
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const clean = v => typeof v === "string" ? v.replace(/[<>"'`]/g, c => ({ "<": "‹", ">": "›", '"': "″", "'": "′", "`": "′" })[c]) : Array.isArray(v) ? v.map(clean) : v && typeof v === "object" ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, clean(x)])) : v;
+const toast = t => { const el = $("toast"); el.textContent = t; el.hidden = false; clearTimeout(toast.h); toast.h = setTimeout(() => el.hidden = true, 2800); };
+const nowIso = () => new Date().toISOString();
+const pad = n => String(n).padStart(2, "0");
+const ymd = d => d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+const TODAY = ymd(new Date());
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+const dLong = s => { if (!s) return ""; const [y, m, d] = s.split("-").map(Number); return d + " " + TH_M[m - 1] + " " + y; };          /* แบบในไฟล์ Word: 29 ตุลาคม 2026 */
+const dShort = s => { if (!s) return ""; const [y, m, d] = s.split("-").map(Number); return d + " " + TH_S[m - 1] + " " + (y + 543); };   /* บนจอ: 29 ต.ค. 2569 */
+
+/* ---------- หน้ารหัส (จำวันละครั้งในเครื่อง) ---------- */
+async function sha(t) { const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join(""); }
+function gateOk() { try { const g = JSON.parse(localStorage.getItem("pcg-mom-ok") || "null"); return g && g.h === GATE_HASH && g.day === TODAY; } catch (e) { return false; } }
+if (gateOk()) $("gate").hidden = true; else setTimeout(() => $("gPw").focus(), 50);
+$("gForm").onsubmit = async e => { e.preventDefault();
+  if (await sha($("gPw").value) === GATE_HASH) { try { localStorage.setItem("pcg-mom-ok", JSON.stringify({ h: GATE_HASH, day: TODAY })); } catch (er) {} $("gate").hidden = true; }
+  else { $("gErr").textContent = "รหัสไม่ถูกต้อง ลองอีกครั้ง"; $("gPw").select(); } };
+
+/* ---------- ข้อมูล ---------- */
+let DB = []; try { DB = clean(JSON.parse(localStorage.getItem(LSK) || "[]")); } catch (e) {}
+let SBOK = null, CUR = null;
+const sbH = x => Object.assign({ apikey: SBK, Authorization: "Bearer " + SBK, "Content-Type": "application/json" }, x || {});
+const live = () => DB.filter(m => !m.del).sort((a, b) => (b.date || "").localeCompare(a.date || "") || (b.no || 0) - (a.no || 0));
+const cur = () => DB.find(m => m.id === CUR);
+function syncLabel() { const el = $("sync"); el.className = "sync" + (SBOK === false ? " bad" : "");
+  el.textContent = SBOK === null ? "กำลังเชื่อมข้อมูล…" : SBOK ? "✓ เชื่อมทุกเครื่องแล้ว" : "⚠ ยังไม่เชื่อม: เก็บในเครื่องนี้"; }
+async function sbAll() { const r = await fetch(SBU + TBL + "?select=id,rec", { headers: sbH() }); if (!r.ok) throw new Error(r.status); return (await r.json()).map(x => clean(x.rec)); }
+async function sbUp(L) { const r = await fetch(SBU + TBL + "?on_conflict=id", { method: "POST", headers: sbH({ Prefer: "resolution=merge-duplicates,return=minimal" }),
+  body: JSON.stringify(L.map(m => ({ id: m.id, rec: m, updated_at: nowIso() }))) }); if (!r.ok) throw new Error(r.status); }
+function lsSave() { try { localStorage.setItem(LSK, JSON.stringify(DB)); } catch (e) {} }
+const PEND = new Set();
+function save(m, now) { m.u = nowIso(); lsSave(); PEND.add(m.id); clearTimeout(save.h); save.h = setTimeout(flush, now ? 0 : 700); }
+async function flush() { const L = DB.filter(m => PEND.has(m.id)); PEND.clear(); if (!L.length || location.protocol === "file:") return;
+  try { await sbUp(L); if (!SBOK) { SBOK = true; syncLabel(); } } catch (e) { SBOK = false; syncLabel(); L.forEach(m => PEND.add(m.id)); } }
+async function sbSync() {
+  if (location.protocol === "file:") { SBOK = false; syncLabel(); return; }
+  try { const rem = await sbAll(), mp = new Map(DB.map(m => [m.id, m])), up = [];
+    rem.forEach(r => { if (!r || typeof r.id !== "string") return; const l = mp.get(r.id); if (!l || (r.u || "") > (l.u || "")) mp.set(r.id, r); });
+    DB.forEach(l => { const r = rem.find(x => x && x.id === l.id); if (!r || (l.u || "") > (r.u || "")) up.push(l); });
+    DB = [...mp.values()]; lsSave(); if (up.length) await sbUp(up); SBOK = true;
+  } catch (e) { SBOK = false; }
+  syncLabel(); if (!CUR || !cur() || cur().del) CUR = (live()[0] || {}).id || null; render();
+}
+
+/* ---------- สร้างการประชุมใหม่: เติมจากครั้งก่อน + ยกงานที่ยังไม่เสร็จ ---------- */
+function newMeeting() {
+  const last = live()[0], d = new Date();
+  if (last && last.date) { const n = new Date(last.date + "T00:00:00"); n.setDate(n.getDate() + 7); if (ymd(n) > ymd(d)) d.setTime(n.getTime()); }
+  const m = { id: "M" + uid(), no: (last ? (+last.no || 0) : 0) + 1, date: ymd(d), att: last ? last.att : "PCG: ", by: last ? last.by : "", place: last ? last.place : "WH05",
+    t1: last ? last.t1 : "09:30", t2: last ? last.t2 : "11:30", notes: "", created: nowIso(),
+    rows: last ? last.rows.filter(r => r.s !== "done").map(r => Object.assign({}, r, { id: "R" + uid(), carry: (+r.carry || 0) + 1, from: r.id })) : [] };
+  DB.push(m); CUR = m.id; save(m, true); render(); toast(last ? "สร้าง W" + m.no + " แล้ว · ยกงานที่ยังไม่เสร็จมา " + m.rows.length + " งาน" : "สร้างการประชุมแล้ว");
+}
+$("newBtn").onclick = newMeeting;
+
+/* ---------- แถบรายการ ---------- */
+function renderList() {
+  const q = $("q").value.trim().toLowerCase();
+  const L = live().filter(m => !q || [m.att, m.notes, ...m.rows.map(r => r.p + " " + r.t + " " + r.o)].join(" ").toLowerCase().includes(q));
+  $("list").innerHTML = L.map(m => { const open = m.rows.filter(r => r.s !== "done").length;
+    return `<button type="button" class="wk ${m.id === CUR ? "on" : ""}" data-m="${m.id}"><b>W${esc(m.no)} · ${esc(dShort(m.date))}</b><small>${m.rows.length} งาน · ค้าง ${open}${m.final ? " · ✓ ปิดบันทึก" : ' · <span class="dr">ร่าง</span>'}</small></button>`; }).join("")
+    || `<div class="hint" style="padding:6px">${DB.length ? "ไม่พบ" : "ยังไม่มีบันทึก · กด \"ประชุมสัปดาห์ถัดไป\" หรือนำเข้าไฟล์ Word เดิม"}</div>`;
+  const c = live()[0], open = c ? c.rows.filter(r => r.s !== "done") : [], old = open.filter(r => (+r.carry || 0) >= 2);
+  $("tip").innerHTML = c ? `งานค้างล่าสุด (W${esc(c.no)})<b>${open.length} งาน</b>${old.length ? "ค้างตั้งแต่ 2 สัปดาห์ขึ้นไป " + old.length + " งาน" : "จะยกไปประชุมครั้งถัดไปอัตโนมัติ"}` : "ประชุมครั้งถัดไปจะยกงานที่ยังไม่เสร็จมาให้อัตโนมัติ";
+}
+$("list").onclick = e => { const b = e.target.closest("[data-m]"); if (b) { flush(); CUR = b.dataset.m; render(); scrollTo({ top: 0, behavior: "smooth" }); } };
+$("q").oninput = renderList;
+
+/* ---------- หน้าการประชุม ---------- */
+const fld = (k, l, cls, type) => { const m = cur(); return `<div class="fld ${cls || ""}"><label for="f-${k}">${l}</label><input id="f-${k}" data-f="${k}" type="${type || "text"}" value="${esc(m[k])}"></div>`; };
+function render() {
+  renderList(); const m = cur();
+  if (!m) { $("col").innerHTML = `<section class="card"><div class="empty">ยังไม่มีบันทึกการประชุม<br><br><button type="button" class="pbtn" onclick="newMeeting()">＋ เริ่มบันทึกการประชุมแรก</button></div></section>`; return; }
+  $("col").innerHTML = `
+  <section class="card">
+    <div class="ch"><span class="n">1</span><h2>ข้อมูลการประชุม</h2><span class="hint">เติมให้จากครั้งก่อน · แก้แล้วบันทึกเอง</span></div>
+    <div class="form">
+      ${fld("no", "ครั้งที่ (W)", "", "number")}${fld("date", "วันที่ประชุม", "", "date")}${fld("place", "สถานที่ประชุม")}${fld("t1", "เวลาเริ่มประชุม", "", "time")}${fld("t2", "เวลาเลิกประชุม", "", "time")}
+      ${fld("att", "ผู้เข้าร่วมประชุม", "all")}${fld("by", "ผู้จัดทำบันทึกการประชุม", "all")}
+    </div>
+  </section>
+  <section class="card">
+    <div class="ch"><span class="n">2</span><h2>โน้ต / ข้อความถอดเสียง</h2><span class="hint">เก็บไว้กับการประชุมนี้ ไม่ออกในรายงาน</span></div>
+    <details class="box"><summary>วิธีเอาข้อความจากคลิปเสียง (iPhone)</summary><ol>
+      <li>อัดเสียงด้วยแอป "บันทึกเสียง" (Voice Memos) ระหว่างประชุม</li><li>เปิดไฟล์เสียง → แตะ ⋯ → "คัดลอกข้อความถอดเสียง" (iOS 18 ขึ้นไป)</li>
+      <li>วางในช่องด้านล่าง แล้วไล่สรุปเป็นแถวในตารางข้อ 3</li><li>ประชุมใน Teams: เปิด Transcript แล้วดาวน์โหลด/คัดลอกมาวางได้เหมือนกัน</li></ol></details>
+    <div class="fld"><label for="notes">ข้อความ</label><textarea id="notes" data-f="notes" placeholder="วางข้อความถอดเสียง หรือจดโน้ตระหว่างประชุม">${esc(m.notes)}</textarea></div>
+  </section>
+  <section class="card">
+    <div class="ch"><span class="n">3</span><h2>สรุปประเด็นสำคัญจากการประชุม</h2>
+      <button type="button" class="gbtn sm" id="pasteBtn">วางจาก Excel</button><button type="button" class="pbtn" id="addRow" style="padding:8px 14px">＋ เพิ่มแถว</button></div>
+    <div class="legend"><span><i style="background:var(--soft);box-shadow:inset 3px 0 0 var(--ink3)"></i>ยกมาจากครั้งก่อน</span><span><i style="background:#fff7c2"></i>กำลังดำเนินการ</span><span><i style="background:var(--ok-soft)"></i>เสร็จสิ้น</span><span style="color:var(--red)">■ ตัวแดง = เน้นในรายงาน</span></div>
+    <div class="tw"><table class="rt"><thead><tr><th style="width:118px">ที่มา</th><th style="width:16%">หัวข้อโครงการ</th><th>งานที่ต้องทำ (Task)</th><th style="width:14%">ผู้รับผิดชอบ</th><th style="width:150px">กำหนดเสร็จ</th><th style="width:150px">สถานะ</th><th style="width:128px"></th></tr></thead>
+      <tbody id="tb">${rowsHtml(m)}</tbody></table></div>
+    <div class="hint">พิมพ์แล้วบันทึกเอง · งานที่ยังไม่ "เสร็จสิ้น" จะยกไปการประชุมครั้งถัดไป · กำหนดเสร็จว่างได้ (รายงานจะแสดงสถานะแทน)</div>
+  </section>
+  <section class="card">
+    <div class="ch"><span class="n">4</span><h2>รายงาน (แบบฟอร์มเดิม)</h2>
+      <button type="button" class="pbtn" id="wordBtn" style="padding:9px 16px">⬇ ดาวน์โหลด Word</button>
+      <button type="button" class="gbtn" id="taskBtn">→ ส่ง Task เข้า Daily Task</button></div>
+    <div class="paper" id="paper">${paperHtml(m)}</div>
+    <div class="row" style="justify-content:space-between">
+      <label class="hint" style="display:inline-flex;gap:6px;align-items:center"><input type="checkbox" id="finChk" ${m.final ? "checked" : ""}> ปิดบันทึก (ตรวจครบแล้ว)</label>
+      <button type="button" class="gbtn danger" id="delBtn">ลบการประชุมนี้</button></div>
+  </section>`;
+  fitAreas();
+}
+function rowsHtml(m) {
+  if (!m.rows.length) return `<tr><td colspan="7" class="empty">ยังไม่มีงาน · กด "＋ เพิ่มแถว"</td></tr>`;
+  return m.rows.map((r, i) => `<tr class="${r.carry ? "carry" : ""} ${r.red ? "red" : ""}" data-i="${i}">
+    <td>${r.carry ? `<span class="tag carry">ยกมา · ${r.carry} สัปดาห์</span>` : `<span class="tag new">ใหม่</span>`}${r.task ? `<br><span class="tag sent">✓ ส่ง Daily Task แล้ว</span>` : ""}</td>
+    <td><textarea rows="1" data-k="p" aria-label="หัวข้อโครงการ">${esc(r.p)}</textarea></td>
+    <td><textarea rows="1" data-k="t" aria-label="งานที่ต้องทำ">${esc(r.t)}</textarea></td>
+    <td><textarea rows="1" data-k="o" aria-label="ผู้รับผิดชอบ">${esc(r.o)}</textarea></td>
+    <td><input type="date" data-k="d" value="${esc(r.d)}" aria-label="กำหนดเสร็จ"></td>
+    <td><select class="st ${r.s}" data-k="s" aria-label="สถานะ">${Object.keys(ST).map(k => `<option value="${k}" ${k === r.s ? "selected" : ""}>${ST[k]}</option>`).join("")}</select></td>
+    <td class="ac"><button type="button" data-mv="-1" title="เลื่อนขึ้น">↑</button> <button type="button" data-mv="1" title="เลื่อนลง">↓</button> <button type="button" class="x" data-rm="1" title="ลบแถว (กดสองครั้ง)">✕</button><label title="ตัวแดงในรายงาน"><input type="checkbox" data-k="red" ${r.red ? "checked" : ""}>แดง</label></td></tr>`).join("");
+}
+const endTxt = r => r.s === "done" ? "เสร็จสิ้น" : r.d ? dLong(r.d) : ST[r.s];
+const tm = v => v ? v.replace(/^(\d{1,2}):(\d{2}).*$/, "$1:$2") + " น." : "";
+function paperHtml(m) {
+  return `<div class="lg"><img src="data:image/png;base64,${LOGO}" alt="PCG"></div>
+  <table><tr><td class="ttl" colspan="4">บันทึกการประชุม  Project Weekly</td></tr>
+    <tr><td class="lbl">ผู้เข้าร่วมประชุม</td><td colspan="3">${esc(m.att)}</td></tr>
+    <tr><td class="lbl">ผู้จัดทำบันทึกการประชุม</td><td colspan="3">${esc(m.by)}</td></tr>
+    <tr><td class="lbl">วันที่ประชุม</td><td>${esc(dLong(m.date))}</td><td class="lbl">สถานที่ประชุม</td><td>${esc(m.place)}</td></tr>
+    <tr><td class="lbl">เวลาเริ่มประชุม</td><td>${esc(tm(m.t1))}</td><td class="lbl">เวลาเลิกประชุม</td><td>${esc(tm(m.t2))}</td></tr></table>
+  <div class="sec">สรุปประเด็นสำคัญจากการประชุม</div>
+  <table><tr><td class="nv" colspan="4">ประจำวันที่ ${esc(dLong(m.date))}</td></tr>
+    <tr><td class="nv">หัวข้อโครงการ</td><td class="nv">งานที่ต้องทำ (Task)</td><td class="nv">ผู้รับผิดชอบ</td><td class="nv">กำหนดเสร็จ</td></tr>
+    ${m.rows.map(r => `<tr class="${r.red ? "redt" : ""}"><td>${esc(r.p)}</td><td>${esc(r.t)}</td><td>${esc(r.o)}</td><td class="${r.s === "done" ? "done" : r.s === "prog" ? "prog" : ""}">${esc(endTxt(r))}</td></tr>`).join("")}</table>`;
+}
+const fitAreas = () => document.querySelectorAll(".rt textarea").forEach(a => { a.style.height = "auto"; a.style.height = a.scrollHeight + "px"; });
+const repaint = () => { const m = cur(); if (m) $("paper").innerHTML = paperHtml(m); renderList(); };
+
+/* ---------- แก้ไข ---------- */
+document.addEventListener("input", e => {
+  const m = cur(); if (!m) return; const f = e.target.dataset.f, k = e.target.dataset.k;
+  if (f) { m[f] = f === "no" ? +e.target.value || 0 : clean(e.target.value); save(m); repaint(); return; }
+  if (k && e.target.closest("#tb")) { const tr = e.target.closest("tr"), r = m.rows[+tr.dataset.i];
+    if (k === "red") { r.red = e.target.checked; tr.classList.toggle("red", r.red); }
+    else if (k === "s") { r.s = e.target.value; e.target.className = "st " + r.s; }
+    else { r[k] = clean(e.target.value); if (e.target.tagName === "TEXTAREA") { e.target.style.height = "auto"; e.target.style.height = e.target.scrollHeight + "px"; } }
+    save(m); repaint(); }
+});
+document.addEventListener("change", e => { if (e.target.id === "finChk") { const m = cur(); m.final = e.target.checked; save(m, true); renderList(); } });
+let ARM = null;
+document.addEventListener("click", e => {
+  const m = cur(); const t = e.target;
+  if (t.id === "addRow") { m.rows.push({ id: "R" + uid(), p: "", t: "", o: "", d: "", s: "todo" }); save(m); render(); const a = document.querySelectorAll('#tb tr:last-child textarea')[0]; if (a) a.focus(); return; }
+  if (t.closest("[data-mv]")) { const i = +t.closest("tr").dataset.i, j = i + +t.closest("[data-mv]").dataset.mv; if (j < 0 || j >= m.rows.length) return; [m.rows[i], m.rows[j]] = [m.rows[j], m.rows[i]]; save(m); render(); return; }
+  if (t.closest("[data-rm]")) { const b = t.closest("[data-rm]"), i = +t.closest("tr").dataset.i;
+    if (ARM !== b) { document.querySelectorAll(".arm").forEach(x => x.classList.remove("arm")); ARM = b; b.classList.add("arm"); toast("กด ✕ อีกครั้งเพื่อลบแถว"); return; }
+    m.rows.splice(i, 1); ARM = null; save(m); render(); return; }
+  if (t.id === "delBtn") { if (ARM !== t) { ARM = t; t.classList.add("arm"); t.textContent = "กดอีกครั้งเพื่อลบ W" + m.no; return; }
+    m.del = true; ARM = null; save(m, true); CUR = (live()[0] || {}).id || null; render(); toast("ลบแล้ว"); return; }
+  if (t.id === "wordBtn") { exportWord(m); return; }
+  if (t.id === "taskBtn") { taskDlg(m); return; }
+  if (t.id === "pasteBtn") { pasteDlg(); return; }
+  if (ARM && !t.closest(".arm")) { ARM.classList.remove("arm"); if (ARM.id === "delBtn") ARM.textContent = "ลบการประชุมนี้"; ARM = null; }
+});
+
+/* ---------- วางจาก Excel (คัดลอกแถวจาก Excel/ตาราง Word: หัวข้อ · งาน · ผู้รับผิดชอบ · กำหนดเสร็จ) ---------- */
+const dlg = $("dlg"), dbox = $("dbox"); const closeDlg = () => dlg.hidden = true;
+dlg.addEventListener("click", e => { if (e.target === dlg || e.target.closest("[data-x]")) closeDlg(); });
+function parseDate(s) { s = (s || "").trim(); let m;
+  if ((m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/))) return m[1] + "-" + pad(m[2]) + "-" + pad(m[3]);
+  if ((m = s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/))) { let y = +m[3]; if (y < 100) y += 2000; if (y > 2400) y -= 543; return y + "-" + pad(m[2]) + "-" + pad(m[1]); }
+  const i = TH_M.findIndex(x => s.includes(x)), j = i < 0 ? TH_S.findIndex(x => s.includes(x)) : i;
+  if (j >= 0 && (m = s.match(/(\d{1,2})\D+(\d{4})/))) { let y = +m[2]; if (y > 2400) y -= 543; return y + "-" + pad(j + 1) + "-" + pad(m[1]); }
+  return ""; }
+const stOfTxt = s => /เสร็จ/.test(s) ? "done" : /กำลัง|ดำเนิน/.test(s) ? "prog" : "todo";
+function pasteDlg() {
+  dbox.innerHTML = `<h3>วางจาก Excel</h3><div class="hint">คัดลอกแถวจาก Excel (หรือตารางใน Word) ที่มีคอลัมน์ตามลำดับ <b>หัวข้อโครงการ · งานที่ต้องทำ · ผู้รับผิดชอบ · กำหนดเสร็จ</b> แล้ววางที่นี่ · คอลัมน์กำหนดเสร็จใส่วันที่หรือคำว่า เสร็จสิ้น/กำลังดำเนินการ ได้</div>
+    <textarea id="pTxt" style="min-height:160px;border:1px solid var(--line);border-radius:12px;padding:10px;width:100%" placeholder="วางที่นี่ (Ctrl+V)"></textarea>
+    <div class="ft"><span class="sp hint" id="pInfo"></span><button type="button" class="gbtn" data-x="1">ยกเลิก</button><button type="button" class="pbtn" id="pOk">เพิ่มแถว</button></div>`;
+  dlg.hidden = false; const ta = $("pTxt"); ta.focus();
+  const parse = () => ta.value.split(/\r?\n/).map(l => l.split("\t").map(x => x.trim())).filter(c => c.some(Boolean)).filter(c => !/หัวข้อโครงการ/.test(c[0] || ""));
+  ta.oninput = () => $("pInfo").textContent = parse().length + " แถว";
+  $("pOk").onclick = () => { const m = cur(), L = parse(); L.forEach(c => { const end = c[3] || "", d = parseDate(end);
+      m.rows.push({ id: "R" + uid(), p: clean(c[0] || ""), t: clean(c[1] || ""), o: clean(c[2] || ""), d, s: d ? "prog" : stOfTxt(end) }); });
+    save(m, true); closeDlg(); render(); toast("เพิ่ม " + L.length + " แถว"); };
+}
+
+/* ---------- นำเข้าไฟล์ Word เดิม (.docx ตามแบบฟอร์ม Project Weekly) ---------- */
+$("impBtn").onclick = () => { if (!window.JSZip) { toast("โหลดตัวอ่านไฟล์ไม่สำเร็จ ลองรีเฟรชหน้า"); return; } $("impFile").click(); };
+$("impFile").onchange = async e => { const fs = [...e.target.files]; e.target.value = ""; let n = 0, last = null;
+  for (const f of fs) { try { const m = await readDocx(f); const dup = live().find(x => x.date === m.date);
+      if (dup) { toast("มีการประชุมวันที่ " + dShort(m.date) + " อยู่แล้ว · ข้าม " + f.name); continue; }
+      DB.push(m); save(m, true); n++; last = m; } catch (er) { toast("อ่าน " + f.name + " ไม่ได้: " + er.message); } }
+  if (last) { CUR = last.id; render(); toast("นำเข้าแล้ว " + n + " ไฟล์"); } };
+async function readDocx(f) {
+  const z = await JSZip.loadAsync(await f.arrayBuffer()), xml = await z.file("word/document.xml").async("string");
+  const doc = new DOMParser().parseFromString(xml, "application/xml"), W = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+  const txt = el => [...el.getElementsByTagNameNS(W, "p")].map(p => [...p.getElementsByTagNameNS(W, "t")].map(t => t.textContent).join("")).join(" ").replace(/\s+/g, " ").trim();
+  const red = el => [...el.getElementsByTagNameNS(W, "color")].some(c => /^(EE0000|FF0000|C00000)$/i.test(c.getAttributeNS(W, "val") || ""));
+  const tables = [...doc.getElementsByTagNameNS(W, "tbl")];
+  const m = { id: "M" + uid(), no: 0, date: "", att: "", by: "", place: "", t1: "", t2: "", notes: "", rows: [], created: nowIso(), src: f.name, final: true };
+  const toTime = s => { const x = (s || "").match(/(\d{1,2})[:.](\d{2})/); return x ? pad(x[1]) + ":" + x[2] : ""; };
+  for (const tb of tables) {
+    const rows = [...tb.getElementsByTagNameNS(W, "tr")].map(tr => [...tr.getElementsByTagNameNS(W, "tc")].map(tc => ({ t: txt(tc), red: red(tc) })));
+    if (rows.some(r => r.some(c => /ผู้เข้าร่วมประชุม/.test(c.t)))) {
+      rows.forEach(r => r.forEach((c, i) => { const v = (r[i + 1] || {}).t || "";
+        if (/ผู้เข้าร่วมประชุม/.test(c.t)) m.att = v; else if (/ผู้จัดทำ/.test(c.t)) m.by = v; else if (/วันที่ประชุม/.test(c.t)) m.date = parseDate(v);
+        else if (/สถานที่/.test(c.t)) m.place = v; else if (/เวลาเริ่ม/.test(c.t)) m.t1 = toTime(v); else if (/เวลาเลิก/.test(c.t)) m.t2 = toTime(v); }));
+    } else if (rows.some(r => r.some(c => /หัวข้อโครงการ/.test(c.t)))) {
+      let go = false;
+      rows.forEach(r => { if (r.some(c => /หัวข้อโครงการ/.test(c.t))) { go = true; return; } if (!go || r.length < 4 || !r.some(c => c.t)) return;
+        const end = r[3].t, d = parseDate(end);
+        m.rows.push({ id: "R" + uid(), p: r[0].t, t: r[1].t, o: r[2].t, d, s: d ? "prog" : stOfTxt(end), red: r[1].red || r[2].red }); });
+      const dd = rows.map(r => r.map(c => c.t).join(" ")).find(s => /ประจำวันที่/.test(s)); if (!m.date && dd) m.date = parseDate(dd.replace(/.*ประจำวันที่/, ""));
+    }
+  }
+  const wn = f.name.match(/W\s*(\d+)/i); m.no = wn ? +wn[1] : 0;
+  if (!m.date) { const fd = f.name.match(/(\d{4})-(\d{2})-(\d{2})/); m.date = fd ? fd[0] : TODAY; }
+  if (!m.rows.length && !m.att) throw new Error("ไม่พบตารางแบบฟอร์ม Project Weekly");
+  return clean(m);
+}
+
+/* ---------- Export Word ตามแบบฟอร์มเดิม ---------- */
+async function exportWord(m) {
+  if (!window.docx) { toast("โหลดตัวสร้าง Word ไม่สำเร็จ ลองรีเฟรชหน้า"); return; }
+  const D = window.docx, FONT = "CPF Imm Sook";
+  const bd = { style: D.BorderStyle.SINGLE, size: 4, color: "000000" }, borders = { top: bd, bottom: bd, left: bd, right: bd };
+  const run = (t, o) => new D.TextRun(Object.assign({ text: t || "", font: FONT, size: 32 }, o || {}));
+  const cell = (t, o) => { o = o || {}; return new D.TableCell({ borders, columnSpan: o.span, width: o.w ? { size: o.w, type: D.WidthType.DXA } : undefined,
+    shading: o.fill ? { type: D.ShadingType.CLEAR, color: "auto", fill: o.fill } : undefined, verticalAlign: D.VerticalAlign.CENTER,
+    margins: { top: 40, bottom: 40, left: 90, right: 90 },
+    children: [new D.Paragraph({ alignment: o.center ? D.AlignmentType.CENTER : D.AlignmentType.LEFT, children: [run(t, { bold: o.b, color: o.color, size: o.size })] })] }); };
+  const W = 9072;  /* A4 หักขอบซ้าย-ขวาตามไฟล์ต้นฉบับ */
+  const head = new D.Table({ width: { size: W, type: D.WidthType.DXA }, columnWidths: [2899, 2353, 1767, 2053], rows: [
+    new D.TableRow({ children: [cell("บันทึกการประชุม  Project Weekly", { span: 4, b: true, center: true })] }),
+    new D.TableRow({ children: [cell("ผู้เข้าร่วมประชุม", { b: true, w: 2899 }), cell(m.att, { span: 3 })] }),
+    new D.TableRow({ children: [cell("ผู้จัดทำบันทึกการประชุม", { b: true }), cell(m.by, { span: 3 })] }),
+    new D.TableRow({ children: [cell("วันที่ประชุม", { b: true }), cell(dLong(m.date)), cell("สถานที่ประชุม", { b: true }), cell(m.place)] }),
+    new D.TableRow({ children: [cell("เวลาเริ่มประชุม", { b: true }), cell(tm(m.t1)), cell("เวลาเลิกประชุม", { b: true }), cell(tm(m.t2))] }) ] });
+  const nv = (t, o) => cell(t, Object.assign({ fill: "002060", color: "FFFFFF", center: true }, o || {}));
+  const body = new D.Table({ width: { size: W, type: D.WidthType.DXA }, columnWidths: [1745, 4100, 1667, 1560], rows: [
+    new D.TableRow({ children: [nv("ประจำวันที่ " + dLong(m.date), { span: 4, size: 28 })] }),
+    new D.TableRow({ tableHeader: true, children: [nv("หัวข้อโครงการ"), nv("งานที่ต้องทำ (Task)"), nv("ผู้รับผิดชอบ"), nv("กำหนดเสร็จ")] }),
+    ...m.rows.map(r => { const c = r.red ? "EE0000" : "000000";
+      return new D.TableRow({ children: [cell(r.p, { size: 28, color: c }), cell(r.t, { color: c }), cell(r.o, { color: c }),
+        cell(endTxt(r), { color: c, center: true, fill: r.s === "done" ? "00B050" : r.s === "prog" ? "FFFF00" : undefined })] }); }) ] });
+  const logo = Uint8Array.from(atob(LOGO), ch => ch.charCodeAt(0));
+  const doc = new D.Document({ sections: [{
+    properties: { page: { size: { width: 11906, height: 16838 }, margin: { top: 1134, right: 1416, bottom: 993, left: 1418, header: 708, footer: 708 } } },
+    headers: { default: new D.Header({ children: [new D.Paragraph({ children: [new D.ImageRun({ data: logo, transformation: { width: 144, height: 76 } })] })] }) },
+    children: [head, new D.Paragraph({ spacing: { before: 240, after: 120 }, children: [run("สรุปประเด็นสำคัญจากการประชุม", { bold: true })] }), body] }] });
+  const blob = await D.Packer.toBlob(doc), a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = m.date + "_Minute_meeting_Project_Weekly_W" + (m.no || "") + ".docx";
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  toast("ดาวน์โหลด Word แล้ว");
+}
+
+/* ---------- ส่ง Task เข้า Daily Task (ตาราง daily_tasks · ปุ่มกดเอง ตรวจก่อนส่ง) ---------- */
+const TEAM0 = [{ k: "ton", n: "ตั๋น", sub: "K.ศุภณัฐ", own: "K.ศุภณัฐ" }, { k: "mink", n: "Mink", sub: "มิ้งค์", own: "Mink" }];
+const norm = s => (s || "").toLowerCase().trim().replace(/^(พี่|น้อง|คุณ|k\.)\s*/, "").replace(/ค์$/, "").replace(/[่้๊๋์]/g, "").trim();
+function boardOf(owner, team) { const toks = (owner || "").split(/[,/&]| และ /).map(norm).filter(Boolean);
+  for (const t of toks) for (const b of team) { const ns = [b.n, b.sub, b.own].map(norm).filter(Boolean); if (ns.some(n => n.includes(t) || t.includes(n))) return b.k; }
+  return team[0].k; }
+async function taskDlg(m) {
+  if (location.protocol === "file:") { toast("ต้องเปิดจากเว็บจริงถึงจะส่งได้"); return; }
+  const L = m.rows.filter(r => r.s !== "done" && !r.task && (r.t || r.p));
+  if (!L.length) { toast("ไม่มีงานที่ต้องส่ง (ส่งเฉพาะงานที่ยังไม่เสร็จและยังไม่เคยส่ง)"); return; }
+  let team = TEAM0, nos = {};
+  try { const r = await fetch(SBU + "daily_tasks?select=id,bd:rec->>bd,no:rec->>no,members:rec->members&id=not.like.FILE:*", { headers: sbH() }); if (!r.ok) throw new Error(r.status);
+    const a = await r.json(); const tm = a.find(x => x.id === "CFG:team"); if (tm && Array.isArray(tm.members) && tm.members.length) team = clean(tm.members);
+    a.forEach(x => { if (x.bd !== undefined && x.no) { const b = x.bd || "ton"; nos[b] = Math.max(nos[b] || 0, +x.no || 0); } });
+  } catch (e) { toast("เชื่อม Daily Task ไม่ได้: " + e.message); return; }
+  dbox.innerHTML = `<h3>ส่ง Task เข้า Daily Task</h3><div class="hint">ส่งเฉพาะงานที่ยังไม่เสร็จและยังไม่เคยส่ง · เลือกบอร์ด (คน) ได้ · ส่งแล้วแก้ต่อที่หน้า Daily Task</div>
+    <div style="overflow-x:auto"><table><thead><tr><th><input type="checkbox" id="tAll" checked aria-label="เลือกทั้งหมด"></th><th>งาน</th><th>ผู้รับผิดชอบ</th><th>Target</th><th>บอร์ด</th></tr></thead><tbody>
+    ${L.map((r, i) => `<tr><td><input type="checkbox" data-ti="${i}" checked aria-label="เลือก"></td><td><b>${esc(r.p)}</b><br>${esc(r.t)}</td><td>${esc(r.o)}</td><td>${esc(r.d ? dShort(r.d) : "–")}</td>
+      <td><select data-tb="${i}" aria-label="บอร์ด">${team.map(b => `<option value="${esc(b.k)}" ${b.k === boardOf(r.o, team) ? "selected" : ""}>${esc(b.n)}</option>`).join("")}</select></td></tr>`).join("")}</tbody></table></div>
+    <div class="ft"><span class="sp hint">ความคืบหน้าเริ่มต้น: ยังไม่เริ่ม 0% · กำลังดำเนินการ 25%</span><button type="button" class="gbtn" data-x="1">ยกเลิก</button><button type="button" class="pbtn" id="tOk">ส่ง</button></div>`;
+  dlg.hidden = false;
+  $("tAll").onchange = e => dbox.querySelectorAll("[data-ti]").forEach(c => c.checked = e.target.checked);
+  $("tOk").onclick = async () => {
+    const at = nowIso(), out = [];
+    dbox.querySelectorAll("[data-ti]:checked").forEach(c => { const i = +c.dataset.ti, r = L[i], bd = dbox.querySelector(`[data-tb="${i}"]`).value;
+      nos[bd] = (nos[bd] || 0) + 1; const prog = r.s === "prog" ? 25 : 0, id = "MOM-" + r.id;
+      out.push({ r, t: { id, bd, no: nos[bd], title: clean((r.p ? r.p + " · " : "") + r.t), owner: clean(r.o), pri: "M", start: m.date, target: r.d || "", prog,
+        note: "จากบันทึกการประชุม Project Weekly W" + m.no + " (" + dShort(m.date) + ")", created: at, u: at, by: "MoM", hist: [{ at, from: null, p: prog, by: "MoM" }] } }); });
+    if (!out.length) { closeDlg(); return; }
+    try { const r = await fetch(SBU + "daily_tasks?on_conflict=id", { method: "POST", headers: sbH({ Prefer: "resolution=ignore-duplicates,return=minimal" }),
+        body: JSON.stringify(out.map(x => ({ id: x.t.id, rec: x.t, updated_at: at }))) }); if (!r.ok) throw new Error(r.status);
+      out.forEach(x => x.r.task = x.t.id); save(m, true); closeDlg(); render(); toast("ส่งเข้า Daily Task แล้ว " + out.length + " งาน");
+    } catch (e) { toast("ส่งไม่สำเร็จ: " + e.message); } };
+}
+
+syncLabel(); CUR = (live()[0] || {}).id || null; render(); sbSync();
+addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && !PEND.size && !document.activeElement.matches("input,textarea,select")) sbSync(); });
+addEventListener("beforeunload", () => { if (PEND.size) flush(); });
+</script>
+</body>
+</html>
