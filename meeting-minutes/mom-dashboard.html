@@ -115,6 +115,86 @@
   .gbox .gb { padding: 22px; display: grid; gap: 10px; }
   .gbox input { border: 1px solid var(--line); border-radius: 12px; padding: 11px 14px; font-size: 16px; }
 
+  /* ---- 5 พ.ย. รอบ 2: หน้ารายงาน (เลือก + นำเสนอ) แยกจากหน้าทำรายงาน · ผู้เข้าร่วมเลือกจากรายชื่อ · เวลาเป็นช่วง ---- */
+  .hbtn { border: 0; border-radius: 999px; padding: 8px 14px; font-weight: 600; font-size: 14px; color: #fff; background: rgba(255,255,255,.14); }
+  .hbtn.on { background: #fff; color: var(--navy); }
+  .tools { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .tools .srch { width: auto; flex: 1 1 220px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 16px; }
+  .mc { background: var(--card); border-radius: 22px; padding: 18px; box-shadow: var(--shadow); display: grid; gap: 12px; border: 2px solid transparent; }
+  .mc.latest { border-color: var(--navy2); }
+  .mc .top { display: flex; gap: 12px; align-items: center; }
+  .mc .wno { width: 62px; height: 62px; border-radius: 18px; background: linear-gradient(135deg, var(--navy), var(--navy2)); color: #fff; display: grid; place-items: center; font-family: var(--f-disp); font-size: 22px; font-weight: 700; flex: none; }
+  .mc h3 { font-size: 17px; } .mc .sub { font-size: 13px; color: var(--ink2); }
+  .mc .bar { display: flex; height: 10px; border-radius: 999px; overflow: hidden; background: var(--soft); }
+  .mc .bar i { display: block; height: 100%; }
+  .mc .nums { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13px; color: var(--ink2); } .mc .nums b { color: var(--ink); font-size: 15px; }
+  .mc .acts { display: flex; gap: 8px; flex-wrap: wrap; } .mc .acts .pbtn { flex: 1; }
+  .badge { font-size: 11.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: var(--gold-soft); color: var(--gold-ink); white-space: nowrap; }
+  .badge.ok { background: var(--ok-soft); color: var(--ok); }
+  .crumb { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .pick { display: flex; flex-wrap: wrap; gap: 8px; padding: 8px; border: 1px solid var(--line); border-radius: 14px; background: var(--soft); min-height: 48px; align-items: center; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 5px 6px 5px 12px; font-size: 13.5px; }
+  .chip small { color: var(--ink3); } .chip button { border: 0; background: var(--soft); border-radius: 50%; width: 22px; height: 22px; line-height: 1; color: var(--ink2); }
+  .addp { border: 1px dashed var(--navy2); background: transparent; color: var(--navy2); border-radius: 999px; padding: 6px 12px; font-weight: 600; font-size: 13.5px; }
+  .fld select { border: 1px solid var(--line); background: var(--soft); border-radius: 12px; padding: 9px 12px; width: 100%; }
+  .trange { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; } .trange select { width: auto; flex: 1 1 110px; }
+  .presets { display: flex; gap: 6px; flex-wrap: wrap; } .presets button { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 3px 10px; font-size: 12.5px; }
+  .presets button.on { background: var(--navy2); color: #fff; border-color: var(--navy2); }
+  .plist { display: grid; gap: 6px; max-height: 46vh; overflow: auto; }
+  .prow { display: flex; gap: 10px; align-items: center; padding: 8px 10px; border-radius: 12px; background: var(--soft); cursor: pointer; }
+  .prow input[type=checkbox] { width: 18px; height: 18px; } .prow small { color: var(--ink2); }
+  .pform { display: grid; grid-template-columns: 2fr 2fr 1fr auto; gap: 8px; align-items: end; padding: 10px; border: 1px dashed var(--line); border-radius: 14px; }
+  .pform input { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; width: 100%; background: var(--card); }
+  .ptbl input { border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; width: 100%; background: var(--card); }
+  .ac label.evp { color: var(--navy2); }
+  tr.evp td:first-child { box-shadow: inset 3px 0 0 var(--gold); }
+
+  /* โหมดนำเสนอ: เวที 1600×900 ย่อ/ขยายให้พอดีจอ */
+  .pres { position: fixed; inset: 0; z-index: 80; background: #0a1430; display: flex; flex-direction: column; }
+  .pres .bar2 { display: flex; gap: 8px; align-items: center; padding: 10px 14px; color: #cfd8ee; font-size: 13.5px; flex-wrap: wrap; }
+  .pres .bar2 button { border: 0; border-radius: 10px; padding: 7px 12px; background: rgba(255,255,255,.1); color: #fff; font-weight: 600; }
+  .pres .bar2 .sp { flex: 1; }
+  .pres .vp { flex: 1; position: relative; overflow: hidden; }
+  .stage { position: absolute; left: 50%; top: 50%; width: 1600px; height: 900px; transform-origin: center; }
+  .sl { position: absolute; inset: 0; border-radius: 18px; overflow: hidden; background: #f4f6fb; color: #14213d; font-family: var(--f-body); display: none; }
+  .sl.on { display: flex; flex-direction: column; }
+  .sl .sh { padding: 44px 64px 18px; display: flex; align-items: center; gap: 20px; }
+  .sl .sh h2 { font-size: 46px; color: #0f2a5c; flex: 1; line-height: 1.15; }
+  .sl .sh .k { font-size: 18px; font-weight: 600; color: #1d4fa8; letter-spacing: .08em; text-transform: uppercase; }
+  .sl .sh img { height: 54px; }
+  .sl .sb { flex: 1; padding: 6px 64px 30px; display: flex; flex-direction: column; gap: 18px; min-height: 0; }
+  .sl .sf { padding: 0 64px 22px; display: flex; justify-content: space-between; color: #8a97ae; font-size: 16px; }
+  .sl.cover { background: linear-gradient(120deg, #0b1f47 0%, #14408f 58%, #0e9f9a 130%); color: #fff; }
+  .cover .cv { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 70px 90px; gap: 22px; }
+  .cover .logo { background: #fff; border-radius: 14px; padding: 10px 14px; width: max-content; } .cover .logo img { height: 64px; display: block; }
+  .cover .kk { font-size: 24px; letter-spacing: .14em; text-transform: uppercase; opacity: .8; font-weight: 600; }
+  .cover h1 { font-size: 78px; line-height: 1.1; } .cover .wbig { font-family: var(--f-disp); font-size: 140px; line-height: 1; font-weight: 700; color: #ffd37a; }
+  .cover .meta { display: flex; gap: 40px; font-size: 28px; flex-wrap: wrap; } .cover .meta span { opacity: .75; font-size: 20px; display: block; }
+  .cover .who { display: flex; flex-wrap: wrap; gap: 10px; } .cover .who div { background: rgba(255,255,255,.14); border-radius: 999px; padding: 8px 18px; font-size: 20px; }
+  .cover .who small { opacity: .75; }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+  .kpi { background: #fff; border-radius: 24px; padding: 26px 28px; box-shadow: 0 10px 28px rgba(15,42,92,.08); display: grid; gap: 6px; border-top: 8px solid var(--c); }
+  .kpi .l { font-size: 22px; font-weight: 600; color: #50607e; } .kpi .v { font-family: var(--f-disp); font-size: 96px; line-height: 1; font-weight: 700; color: var(--c); }
+  .kpi .d { font-size: 19px; color: #50607e; }
+  .bigbar { display: flex; height: 40px; border-radius: 14px; overflow: hidden; background: #e5e9f2; }
+  .bigbar i { display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 18px; font-style: normal; }
+  .note2 { font-size: 22px; color: #50607e; background: #fff; border-radius: 18px; padding: 18px 24px; }
+  .items { display: grid; gap: 14px; }
+  .it { background: #fff; border-radius: 20px; padding: 18px 24px; display: grid; grid-template-columns: 1fr auto; gap: 6px 24px; box-shadow: 0 6px 18px rgba(15,42,92,.06); border-left: 10px solid var(--c, #1d4fa8); }
+  .it .p { font-size: 18px; font-weight: 700; color: #1d4fa8; } .it .t { font-size: 26px; font-weight: 600; line-height: 1.3; grid-column: 1; }
+  .it .r { grid-column: 2; grid-row: 1 / span 3; text-align: right; display: grid; gap: 8px; align-content: center; font-size: 20px; color: #50607e; min-width: 260px; }
+  .it .o { font-size: 20px; color: #50607e; }
+  .pill { display: inline-block; padding: 6px 16px; border-radius: 999px; font-weight: 700; font-size: 18px; justify-self: end; }
+  .pill.done { background: #d6f3e7; color: #0a7a56; } .pill.prog { background: #fff3b0; color: #6b5000; } .pill.todo { background: #e8ecf4; color: #50607e; }
+  .flag { display: inline-block; padding: 4px 12px; border-radius: 999px; font-weight: 700; font-size: 16px; background: #fde8e6; color: #b42318; margin-right: 6px; }
+  .flag.evp { background: #fff1d6; color: #8a5a00; }
+  .empty2 { flex: 1; display: grid; place-items: center; font-size: 30px; color: #8a97ae; background: #fff; border-radius: 24px; }
+  .stbl { width: 100%; border-collapse: collapse; font-size: 21px; background: #fff; border-radius: 18px; overflow: hidden; }
+  .stbl th { background: #002060; color: #fff; text-align: left; padding: 14px 16px; font-size: 19px; }
+  .stbl td { padding: 12px 16px; border-top: 1px solid #e3e8f1; vertical-align: top; }
+  .stbl td.done { background: #00b050; color: #fff; font-weight: 700; } .stbl td.prog { background: #ffff00; font-weight: 700; } .stbl tr.redt td { color: #d00; }
+  @media (max-width: 760px) { .pform { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 1000px) { .main { grid-template-columns: 1fr; } .side { position: static; max-height: none; } }
   @media (max-width: 760px) { .form { grid-template-columns: 1fr 1fr; } .fld.w2, .fld.w4 { grid-column: 1 / -1; } .hero h1 { font-size: 21px; } .paper { padding: 14px; } .card { padding: 16px; } }
 </style>
@@ -137,14 +217,16 @@
     <a class="back" href="../index.html">← หน้าหลัก</a>
     <span class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6a1 1 0 0 1 1 1v1H8V5a1 1 0 0 1 1-1z"/><path d="M8 5H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><path d="M8 12h8M8 16h5"/></svg></span>
     <div class="t"><small>PCG · Project Team · Weekly Meeting</small><h1>บันทึกการประชุม Project Weekly</h1></div>
+    <nav class="row" aria-label="มุมมอง"><button type="button" class="hbtn" data-go="home">📊 หน้ารายงาน</button><button type="button" class="hbtn" data-go="edit">✎ ทำ / แก้ไขรายงาน</button></nav>
     <span class="sync" id="sync">กำลังเชื่อมข้อมูล…</span>
   </header>
 
-  <div class="main">
+  <section id="vHome" class="col" hidden></section>
+  <div class="main" id="vEdit" hidden>
     <aside class="side">
       <button type="button" class="pbtn" id="newBtn">＋ ประชุมสัปดาห์ถัดไป</button>
-      <button type="button" class="gbtn" id="impBtn">⇪ นำเข้าไฟล์ Word เดิม</button>
-      <input type="file" id="impFile" accept=".docx" multiple hidden>
+      <button type="button" class="gbtn" data-imp="1">⇪ นำเข้าไฟล์ Word เดิม</button>
+      <button type="button" class="gbtn" data-people="1">👥 รายชื่อบุคคล</button>
       <input class="srch" id="q" type="search" placeholder="ค้นหาหัวข้อ / งาน / ชื่อ" aria-label="ค้นหา">
       <h3>การประชุม</h3>
       <div id="list" style="display:grid;gap:6px"></div>
@@ -152,6 +234,13 @@
     </aside>
     <div class="col" id="col"></div>
   </div>
+</div>
+<input type="file" id="impFile" accept=".docx" multiple hidden>
+<div class="pres" id="vPres" hidden>
+  <div class="bar2"><button type="button" id="pClose">✕ ปิด</button><span id="pTitle"></span><span class="sp"></span>
+    <button type="button" id="pPrev" aria-label="หน้าก่อน">◀</button><span id="pNo"></span><button type="button" id="pNext" aria-label="หน้าถัดไป">▶</button>
+    <button type="button" id="pFull">⛶ เต็มจอ</button></div>
+  <div class="vp" id="pVp"><div class="stage" id="stage"></div></div>
 </div>
 <div class="dlg" id="dlg" hidden><div class="dbox" id="dbox"></div></div>
 <div class="toast" id="toast" hidden></div>
@@ -191,7 +280,7 @@ $("gForm").onsubmit = async e => { e.preventDefault();
 let DB = []; try { DB = clean(JSON.parse(localStorage.getItem(LSK) || "[]")); } catch (e) {}
 let SBOK = null, CUR = null;
 const sbH = x => Object.assign({ apikey: SBK, Authorization: "Bearer " + SBK, "Content-Type": "application/json" }, x || {});
-const live = () => DB.filter(m => !m.del).sort((a, b) => (b.date || "").localeCompare(a.date || "") || (b.no || 0) - (a.no || 0));
+const live = () => DB.filter(m => !m.del && !m.cfg).sort((a, b) => (b.date || "").localeCompare(a.date || "") || (b.no || 0) - (a.no || 0));
 const cur = () => DB.find(m => m.id === CUR);
 function syncLabel() { const el = $("sync"); el.className = "sync" + (SBOK === false ? " bad" : "");
   el.textContent = SBOK === null ? "กำลังเชื่อมข้อมูล…" : SBOK ? "✓ เชื่อมทุกเครื่องแล้ว" : "⚠ ยังไม่เชื่อม: เก็บในเครื่องนี้"; }
@@ -210,17 +299,37 @@ async function sbSync() {
     DB.forEach(l => { const r = rem.find(x => x && x.id === l.id); if (!r || (l.u || "") > (r.u || "")) up.push(l); });
     DB = [...mp.values()]; lsSave(); if (up.length) await sbUp(up); SBOK = true;
   } catch (e) { SBOK = false; }
-  syncLabel(); if (!CUR || !cur() || cur().del) CUR = (live()[0] || {}).id || null; render();
+  syncLabel(); live().forEach(migrate); route();
 }
+
+/* ---------- รายชื่อบุคคล (แถว id CFG:people ในตาราง mom_meetings เดิม) ---------- */
+function PR() { let p = DB.find(m => m.id === "CFG:people"); if (!p) { p = { id: "CFG:people", cfg: "people", list: [] }; DB.push(p); } if (!Array.isArray(p.list)) p.list = []; return p; }
+const people = () => PR().list.filter(x => !x.del).sort((a, b) => (a.ord || 0) - (b.ord || 0) || a.name.localeCompare(b.name, "th"));
+const pById = id => PR().list.find(x => x.id === id);
+const bare = n => (n || "").replace(/^\s*(คุณ|k\.|K\.)\s*/, "").replace(/\s+/g, " ").trim();
+const khun = n => /^(คุณ|นาย|นาง|น\.ส\.|k\.|mr|ms|dr)/i.test(n) ? n : "คุณ" + n;
+function findOrAdd(name, pos) { const n = bare(name); if (!n) return null; const f = n.split(" ")[0];
+  let p = people().find(x => bare(x.name) === n) || people().find(x => { const xf = bare(x.name).split(" ")[0]; return xf === f && (!n.includes(" ") || !x.name.includes(" ")); });
+  if (p) { if (n.includes(" ") && !p.name.includes(" ")) p.name = n; return p.id; }
+  p = { id: "P" + uid(), name: n, pos: pos || "", org: "PCG", ord: PR().list.length + 1 }; PR().list.push(p); save(PR()); return p.id; }
+/* ข้อความผู้เข้าร่วมสำหรับรายงาน: PCG: คุณ…, คุณ… (แยกตามหน่วยงาน) */
+function attText(m) { if (!Array.isArray(m.attIds)) return m.att || "";
+  const g = {}; m.attIds.map(pById).filter(Boolean).forEach(p => (g[p.org || "PCG"] = g[p.org || "PCG"] || []).push(khun(p.name)));
+  return Object.entries(g).map(([o, L]) => o + ": " + L.join(", ")).join("   "); }
+const byText = m => { const p = m.byId && pById(m.byId); return p ? khun(p.name) : (m.by || ""); };
+/* การประชุมเดิม (ข้อความ) → เลือกจากรายชื่อ */
+function migrate(m) { if (Array.isArray(m.attIds)) return;
+  const txt = (m.att || "").replace(/^[^:]*:/, ""); m.attIds = txt.split(/[,，]/).map(x => findOrAdd(x)).filter(Boolean);
+  if (m.by && !m.byId) m.byId = findOrAdd(m.by); save(m); }
 
 /* ---------- สร้างการประชุมใหม่: เติมจากครั้งก่อน + ยกงานที่ยังไม่เสร็จ ---------- */
 function newMeeting() {
   const last = live()[0], d = new Date();
   if (last && last.date) { const n = new Date(last.date + "T00:00:00"); n.setDate(n.getDate() + 7); if (ymd(n) > ymd(d)) d.setTime(n.getTime()); }
-  const m = { id: "M" + uid(), no: (last ? (+last.no || 0) : 0) + 1, date: ymd(d), att: last ? last.att : "PCG: ", by: last ? last.by : "", place: last ? last.place : "WH05",
+  const m = { id: "M" + uid(), no: (last ? (+last.no || 0) : 0) + 1, date: ymd(d), attIds: last && last.attIds ? last.attIds.slice() : [], byId: last ? last.byId : "", att: "", by: "", place: last ? last.place : "WH05",
     t1: last ? last.t1 : "09:30", t2: last ? last.t2 : "11:30", notes: "", created: nowIso(),
     rows: last ? last.rows.filter(r => r.s !== "done").map(r => Object.assign({}, r, { id: "R" + uid(), carry: (+r.carry || 0) + 1, from: r.id })) : [] };
-  DB.push(m); CUR = m.id; save(m, true); render(); toast(last ? "สร้าง W" + m.no + " แล้ว · ยกงานที่ยังไม่เสร็จมา " + m.rows.length + " งาน" : "สร้างการประชุมแล้ว");
+  DB.push(m); CUR = m.id; save(m, true); go("edit", m.id); toast(last ? "สร้าง W" + m.no + " แล้ว · ยกงานที่ยังไม่เสร็จมา " + m.rows.length + " งาน" : "สร้างการประชุมแล้ว");
 }
 $("newBtn").onclick = newMeeting;
 
@@ -234,20 +343,66 @@ function renderList() {
   const c = live()[0], open = c ? c.rows.filter(r => r.s !== "done") : [], old = open.filter(r => (+r.carry || 0) >= 2);
   $("tip").innerHTML = c ? `งานค้างล่าสุด (W${esc(c.no)})<b>${open.length} งาน</b>${old.length ? "ค้างตั้งแต่ 2 สัปดาห์ขึ้นไป " + old.length + " งาน" : "จะยกไปประชุมครั้งถัดไปอัตโนมัติ"}` : "ประชุมครั้งถัดไปจะยกงานที่ยังไม่เสร็จมาให้อัตโนมัติ";
 }
-$("list").onclick = e => { const b = e.target.closest("[data-m]"); if (b) { flush(); CUR = b.dataset.m; render(); scrollTo({ top: 0, behavior: "smooth" }); } };
+$("list").onclick = e => { const b = e.target.closest("[data-m]"); if (b) { flush(); go("edit", b.dataset.m); scrollTo({ top: 0, behavior: "smooth" }); } };
 $("q").oninput = renderList;
+const searchTxt = m => [attText(m), m.notes, ...m.rows.map(r => r.p + " " + r.t + " " + r.o)].join(" ").toLowerCase();
+
+/* ---------- เส้นทาง: #home · #edit-<id> · #show-<id> ---------- */
+let VIEW = "home", LASTV = "home";
+function go(v, id) { const h = "#" + v + (id ? "-" + id : ""); if (location.hash !== h) location.hash = h; else route(); }
+function route() {
+  const h = location.hash.slice(1), mm = h.match(/^(home|edit|show)(?:-(.+))?$/), v = mm ? mm[1] : "home", id = mm && mm[2];
+  if (id && DB.some(m => m.id === id && !m.del)) CUR = id; if (!CUR || !cur() || cur().del || cur().cfg) CUR = (live()[0] || {}).id || null;
+  VIEW = v; if (v !== "show") LASTV = v; else PI = PI || 0; $("vHome").hidden = v !== "home"; $("vEdit").hidden = v !== "edit"; $("vPres").hidden = v !== "show";
+  document.querySelectorAll("[data-go]").forEach(b => b.classList.toggle("on", b.dataset.go === v || (v === "show" && b.dataset.go === "home")));
+  if (v === "show") { if (!cur()) { go("home"); return; } openPres(cur()); } else if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+  render();
+}
+addEventListener("hashchange", route);
+
+/* ---------- หน้ารายงาน (เลือกรายงาน → นำเสนอ / แก้ไข) ---------- */
+const cnt = m => { const c = { done: 0, prog: 0, todo: 0 }; m.rows.forEach(r => c[r.s] = (c[r.s] || 0) + 1); return c; };
+function renderHome() {
+  const q = ($("hq") || {}).value || "", L = live().filter(m => !q || searchTxt(m).includes(q.toLowerCase()));
+  const keep = document.activeElement && document.activeElement.id === "hq";
+  $("vHome").innerHTML = `<section class="card"><div class="ch"><h2>เลือกรายงานการประชุม</h2><span class="hint">กด ▶ นำเสนอ เพื่อเปิดแบบ Presentation (เต็มจอ)</span></div>
+    <div class="tools"><button type="button" class="pbtn" data-new="1">＋ ประชุมสัปดาห์ถัดไป</button><button type="button" class="gbtn" data-imp="1">⇪ นำเข้าไฟล์ Word เดิม</button>
+      <button type="button" class="gbtn" data-people="1">👥 รายชื่อบุคคล (${people().length})</button><input class="srch" id="hq" type="search" placeholder="ค้นหาหัวข้อ / งาน / ชื่อ" value="${esc(q)}" aria-label="ค้นหารายงาน"></div></section>
+    <div class="cards">${L.map((m, i) => { const c = cnt(m), n = m.rows.length || 1, old = m.rows.filter(r => r.s !== "done" && (+r.carry || 0) >= 2).length, ev = evpRows(m).length;
+      return `<article class="mc ${i === 0 && !q ? "latest" : ""}"><div class="top"><span class="wno">W${esc(m.no)}</span><div style="min-width:0"><h3>${esc(dLong(m.date))}</h3>
+        <div class="sub">${esc(m.place)} · ${esc(tRange(m))} · ${(m.attIds || []).length} คน</div></div></div>
+        <div class="row">${m.final ? '<span class="badge ok">✓ ปิดบันทึก</span>' : '<span class="badge">ร่าง</span>'}${ev ? `<span class="badge">ต้องติดตาม/ขอตัดสินใจ ${ev}</span>` : ""}${i === 0 && !q ? '<span class="badge ok">ล่าสุด</span>' : ""}</div>
+        <div class="bar"><i style="width:${c.done / n * 100}%;background:var(--ok)"></i><i style="width:${c.prog / n * 100}%;background:#f2c200"></i><i style="width:${c.todo / n * 100}%;background:#c3ccdc"></i></div>
+        <div class="nums"><span><b>${m.rows.length}</b> งาน</span><span><b>${c.done}</b> เสร็จสิ้น</span><span><b>${c.prog}</b> กำลังดำเนินการ</span><span><b>${old}</b> ค้าง ≥2 สัปดาห์</span></div>
+        <div class="acts"><button type="button" class="pbtn" data-show="${m.id}">▶ นำเสนอ</button><button type="button" class="gbtn" data-edit="${m.id}">✎ แก้ไข</button><button type="button" class="gbtn" data-word="${m.id}">⬇ Word</button></div></article>`; }).join("")
+      || `<section class="card"><div class="empty">${DB.some(m => !m.cfg) ? "ไม่พบรายงานที่ค้นหา" : 'ยังไม่มีรายงาน · กด "นำเข้าไฟล์ Word เดิม" หรือ "ประชุมสัปดาห์ถัดไป"'}</div></section>`}</div>`;
+  if (keep) { const h = $("hq"); h.focus(); h.setSelectionRange(h.value.length, h.value.length); }
+}
+document.addEventListener("input", e => { if (e.target.id === "hq") renderHome(); });
 
 /* ---------- หน้าการประชุม ---------- */
 const fld = (k, l, cls, type) => { const m = cur(); return `<div class="fld ${cls || ""}"><label for="f-${k}">${l}</label><input id="f-${k}" data-f="${k}" type="${type || "text"}" value="${esc(m[k])}"></div>`; };
+const TIMES = (() => { const a = []; for (let h = 6; h <= 21; h++) for (const mi of [0, 30]) a.push(pad(h) + ":" + pad(mi)); return a; })();
+const PRESETS = [["09:00", "10:00"], ["09:30", "11:30"], ["10:00", "12:00"], ["13:00", "14:00"], ["13:30", "15:30"]];
+const tRange = m => (m.t1 ? m.t1 + (m.t2 ? "–" + m.t2 : "") + " น." : "");
+const tSel = (k, v) => `<select id="f-${k}" data-f="${k}" aria-label="${k === "t1" ? "เวลาเริ่ม" : "เวลาเลิก"}"><option value="">--:--</option>${TIMES.concat(v && !TIMES.includes(v) ? [v] : []).map(x => `<option ${x === v ? "selected" : ""}>${x}</option>`).join("")}</select>`;
+function attHtml(m) { return (m.attIds || []).map(pById).filter(Boolean).map(p => `<span class="chip">${esc(khun(p.name))}${p.pos ? ` <small>${esc(p.pos)}</small>` : ""}<button type="button" data-unatt="${p.id}" aria-label="เอาออก">✕</button></span>`).join("")
+  + `<button type="button" class="addp" data-addatt="1">＋ เลือก / เพิ่มบุคคล</button>`; }
 function render() {
+  if (VIEW === "home") { renderHome(); return; }
+  if (VIEW === "show") return;
   renderList(); const m = cur();
   if (!m) { $("col").innerHTML = `<section class="card"><div class="empty">ยังไม่มีบันทึกการประชุม<br><br><button type="button" class="pbtn" onclick="newMeeting()">＋ เริ่มบันทึกการประชุมแรก</button></div></section>`; return; }
   $("col").innerHTML = `
   <section class="card">
+    <div class="crumb"><button type="button" class="gbtn sm" data-go="home">← หน้ารายงาน</button><span class="hint">กำลังแก้ W${esc(m.no)} · ${esc(dShort(m.date))}</span><span style="flex:1"></span><button type="button" class="pbtn" data-show="${m.id}" style="padding:8px 16px">▶ นำเสนอ</button></div>
     <div class="ch"><span class="n">1</span><h2>ข้อมูลการประชุม</h2><span class="hint">เติมให้จากครั้งก่อน · แก้แล้วบันทึกเอง</span></div>
     <div class="form">
-      ${fld("no", "ครั้งที่ (W)", "", "number")}${fld("date", "วันที่ประชุม", "", "date")}${fld("place", "สถานที่ประชุม")}${fld("t1", "เวลาเริ่มประชุม", "", "time")}${fld("t2", "เวลาเลิกประชุม", "", "time")}
-      ${fld("att", "ผู้เข้าร่วมประชุม", "all")}${fld("by", "ผู้จัดทำบันทึกการประชุม", "all")}
+      ${fld("no", "ครั้งที่ (W)", "", "number")}${fld("date", "วันที่ประชุม", "", "date")}${fld("place", "สถานที่ประชุม")}
+      <div class="fld w2"><label for="f-t1">ช่วงเวลาประชุม</label><div class="trange">${tSel("t1", m.t1)}<span>ถึง</span>${tSel("t2", m.t2)}</div>
+        <div class="presets">${PRESETS.map(([a, b]) => `<button type="button" data-tr="${a}|${b}" class="${m.t1 === a && m.t2 === b ? "on" : ""}">${a}–${b}</button>`).join("")}</div></div>
+      <div class="fld all"><label>ผู้เข้าร่วมประชุม (${(m.attIds || []).length} คน)</label><div class="pick" id="attPick">${attHtml(m)}</div></div>
+      <div class="fld all"><label for="f-byId">ผู้จัดทำบันทึกการประชุม</label><select id="f-byId" data-f="byId"><option value="">— เลือก —</option>${people().map(p => `<option value="${p.id}" ${p.id === m.byId ? "selected" : ""}>${esc(khun(p.name))}${p.pos ? " · " + esc(p.pos) : ""}</option>`).join("")}<option value="__new">＋ เพิ่มบุคคลใหม่…</option></select></div>
     </div>
   </section>
   <section class="card">
@@ -261,7 +416,7 @@ function render() {
     <div class="ch"><span class="n">3</span><h2>สรุปประเด็นสำคัญจากการประชุม</h2>
       <button type="button" class="gbtn sm" id="pasteBtn">วางจาก Excel</button><button type="button" class="pbtn" id="addRow" style="padding:8px 14px">＋ เพิ่มแถว</button></div>
     <div class="legend"><span><i style="background:var(--soft);box-shadow:inset 3px 0 0 var(--ink3)"></i>ยกมาจากครั้งก่อน</span><span><i style="background:#fff7c2"></i>กำลังดำเนินการ</span><span><i style="background:var(--ok-soft)"></i>เสร็จสิ้น</span><span style="color:var(--red)">■ ตัวแดง = เน้นในรายงาน</span></div>
-    <div class="tw"><table class="rt"><thead><tr><th style="width:118px">ที่มา</th><th style="width:16%">หัวข้อโครงการ</th><th>งานที่ต้องทำ (Task)</th><th style="width:14%">ผู้รับผิดชอบ</th><th style="width:150px">กำหนดเสร็จ</th><th style="width:150px">สถานะ</th><th style="width:128px"></th></tr></thead>
+    <div class="tw"><table class="rt"><thead><tr><th style="width:118px">ที่มา</th><th style="width:16%">หัวข้อโครงการ</th><th>งานที่ต้องทำ (Task)</th><th style="width:14%">ผู้รับผิดชอบ</th><th style="width:150px">กำหนดเสร็จ</th><th style="width:150px">สถานะ</th><th style="width:150px"></th></tr></thead>
       <tbody id="tb">${rowsHtml(m)}</tbody></table></div>
     <div class="hint">พิมพ์แล้วบันทึกเอง · งานที่ยังไม่ "เสร็จสิ้น" จะยกไปการประชุมครั้งถัดไป · กำหนดเสร็จว่างได้ (รายงานจะแสดงสถานะแทน)</div>
   </section>
@@ -278,22 +433,22 @@ function render() {
 }
 function rowsHtml(m) {
   if (!m.rows.length) return `<tr><td colspan="7" class="empty">ยังไม่มีงาน · กด "＋ เพิ่มแถว"</td></tr>`;
-  return m.rows.map((r, i) => `<tr class="${r.carry ? "carry" : ""} ${r.red ? "red" : ""}" data-i="${i}">
+  return m.rows.map((r, i) => `<tr class="${r.carry ? "carry" : ""} ${r.red ? "red" : ""} ${r.evp ? "evp" : ""}" data-i="${i}">
     <td>${r.carry ? `<span class="tag carry">ยกมา · ${r.carry} สัปดาห์</span>` : `<span class="tag new">ใหม่</span>`}${r.task ? `<br><span class="tag sent">✓ ส่ง Daily Task แล้ว</span>` : ""}</td>
     <td><textarea rows="1" data-k="p" aria-label="หัวข้อโครงการ">${esc(r.p)}</textarea></td>
     <td><textarea rows="1" data-k="t" aria-label="งานที่ต้องทำ">${esc(r.t)}</textarea></td>
     <td><textarea rows="1" data-k="o" aria-label="ผู้รับผิดชอบ">${esc(r.o)}</textarea></td>
     <td><input type="date" data-k="d" value="${esc(r.d)}" aria-label="กำหนดเสร็จ"></td>
     <td><select class="st ${r.s}" data-k="s" aria-label="สถานะ">${Object.keys(ST).map(k => `<option value="${k}" ${k === r.s ? "selected" : ""}>${ST[k]}</option>`).join("")}</select></td>
-    <td class="ac"><button type="button" data-mv="-1" title="เลื่อนขึ้น">↑</button> <button type="button" data-mv="1" title="เลื่อนลง">↓</button> <button type="button" class="x" data-rm="1" title="ลบแถว (กดสองครั้ง)">✕</button><label title="ตัวแดงในรายงาน"><input type="checkbox" data-k="red" ${r.red ? "checked" : ""}>แดง</label></td></tr>`).join("");
+    <td class="ac"><button type="button" data-mv="-1" title="เลื่อนขึ้น">↑</button> <button type="button" data-mv="1" title="เลื่อนลง">↓</button> <button type="button" class="x" data-rm="1" title="ลบแถว (กดสองครั้ง)">✕</button><label title="ตัวแดงในรายงาน"><input type="checkbox" data-k="red" ${r.red ? "checked" : ""}>แดง</label><br><label class="evp" title="ขึ้นในหน้า 'ต้องให้ EVP ตัดสินใจ / ติดตาม' ตอนนำเสนอ"><input type="checkbox" data-k="evp" ${r.evp ? "checked" : ""}>ขอ EVP ตัดสินใจ</label></td></tr>`).join("");
 }
 const endTxt = r => r.s === "done" ? "เสร็จสิ้น" : r.d ? dLong(r.d) : ST[r.s];
 const tm = v => v ? v.replace(/^(\d{1,2}):(\d{2}).*$/, "$1:$2") + " น." : "";
 function paperHtml(m) {
   return `<div class="lg"><img src="data:image/png;base64,${LOGO}" alt="PCG"></div>
   <table><tr><td class="ttl" colspan="4">บันทึกการประชุม  Project Weekly</td></tr>
-    <tr><td class="lbl">ผู้เข้าร่วมประชุม</td><td colspan="3">${esc(m.att)}</td></tr>
-    <tr><td class="lbl">ผู้จัดทำบันทึกการประชุม</td><td colspan="3">${esc(m.by)}</td></tr>
+    <tr><td class="lbl">ผู้เข้าร่วมประชุม</td><td colspan="3">${esc(attText(m))}</td></tr>
+    <tr><td class="lbl">ผู้จัดทำบันทึกการประชุม</td><td colspan="3">${esc(byText(m))}</td></tr>
     <tr><td class="lbl">วันที่ประชุม</td><td>${esc(dLong(m.date))}</td><td class="lbl">สถานที่ประชุม</td><td>${esc(m.place)}</td></tr>
     <tr><td class="lbl">เวลาเริ่มประชุม</td><td>${esc(tm(m.t1))}</td><td class="lbl">เวลาเลิกประชุม</td><td>${esc(tm(m.t2))}</td></tr></table>
   <div class="sec">สรุปประเด็นสำคัญจากการประชุม</div>
@@ -306,10 +461,13 @@ const repaint = () => { const m = cur(); if (m) $("paper").innerHTML = paperHtml
 
 /* ---------- แก้ไข ---------- */
 document.addEventListener("input", e => {
+  if (VIEW !== "edit" || e.target.closest("#dlg")) return;
   const m = cur(); if (!m) return; const f = e.target.dataset.f, k = e.target.dataset.k;
-  if (f) { m[f] = f === "no" ? +e.target.value || 0 : clean(e.target.value); save(m); repaint(); return; }
+  if (f === "byId" && e.target.value === "__new") { e.target.value = m.byId || ""; personNew(id => { m.byId = id; save(m); render(); }); return; }
+  if (f) { m[f] = f === "no" ? +e.target.value || 0 : clean(e.target.value); save(m); repaint(); if (f === "t1" || f === "t2") document.querySelectorAll("[data-tr]").forEach(b => b.classList.toggle("on", b.dataset.tr === m.t1 + "|" + m.t2)); return; }
   if (k && e.target.closest("#tb")) { const tr = e.target.closest("tr"), r = m.rows[+tr.dataset.i];
     if (k === "red") { r.red = e.target.checked; tr.classList.toggle("red", r.red); }
+    else if (k === "evp") { r.evp = e.target.checked; tr.classList.toggle("evp", r.evp); }
     else if (k === "s") { r.s = e.target.value; e.target.className = "st " + r.s; }
     else { r[k] = clean(e.target.value); if (e.target.tagName === "TEXTAREA") { e.target.style.height = "auto"; e.target.style.height = e.target.scrollHeight + "px"; } }
     save(m); repaint(); }
@@ -317,14 +475,25 @@ document.addEventListener("input", e => {
 document.addEventListener("change", e => { if (e.target.id === "finChk") { const m = cur(); m.final = e.target.checked; save(m, true); renderList(); } });
 let ARM = null;
 document.addEventListener("click", e => {
-  const m = cur(); const t = e.target;
+  const m = cur(); const t = e.target; const c = sel => t.closest(sel);
+  if (c("[data-go]")) { const v = c("[data-go]").dataset.go; if (v === "edit" && !cur()) { newMeeting(); return; } go(v, v === "edit" ? CUR : ""); return; }
+  if (c("[data-show]")) { flush(); PI = 0; go("show", c("[data-show]").dataset.show); return; }
+  if (c("[data-edit]")) { go("edit", c("[data-edit]").dataset.edit); return; }
+  if (c("[data-word]")) { const w = DB.find(x => x.id === c("[data-word]").dataset.word); if (w) exportWord(w); return; }
+  if (c("[data-new]")) { newMeeting(); return; }
+  if (c("[data-imp]")) { if (!window.JSZip) { toast("โหลดตัวอ่านไฟล์ไม่สำเร็จ ลองรีเฟรชหน้า"); return; } $("impFile").click(); return; }
+  if (c("[data-people]")) { peopleDlg(); return; }
+  if (VIEW !== "edit" || c("#dlg")) return;
+  if (c("[data-unatt]")) { m.attIds = (m.attIds || []).filter(x => x !== c("[data-unatt]").dataset.unatt); save(m); $("attPick").innerHTML = attHtml(m); repaint(); return; }
+  if (c("[data-addatt]")) { attDlg(m); return; }
+  if (c("[data-tr]")) { const [a, b] = c("[data-tr]").dataset.tr.split("|"); m.t1 = a; m.t2 = b; save(m); render(); return; }
   if (t.id === "addRow") { m.rows.push({ id: "R" + uid(), p: "", t: "", o: "", d: "", s: "todo" }); save(m); render(); const a = document.querySelectorAll('#tb tr:last-child textarea')[0]; if (a) a.focus(); return; }
   if (t.closest("[data-mv]")) { const i = +t.closest("tr").dataset.i, j = i + +t.closest("[data-mv]").dataset.mv; if (j < 0 || j >= m.rows.length) return; [m.rows[i], m.rows[j]] = [m.rows[j], m.rows[i]]; save(m); render(); return; }
   if (t.closest("[data-rm]")) { const b = t.closest("[data-rm]"), i = +t.closest("tr").dataset.i;
     if (ARM !== b) { document.querySelectorAll(".arm").forEach(x => x.classList.remove("arm")); ARM = b; b.classList.add("arm"); toast("กด ✕ อีกครั้งเพื่อลบแถว"); return; }
     m.rows.splice(i, 1); ARM = null; save(m); render(); return; }
   if (t.id === "delBtn") { if (ARM !== t) { ARM = t; t.classList.add("arm"); t.textContent = "กดอีกครั้งเพื่อลบ W" + m.no; return; }
-    m.del = true; ARM = null; save(m, true); CUR = (live()[0] || {}).id || null; render(); toast("ลบแล้ว"); return; }
+    m.del = true; ARM = null; save(m, true); CUR = (live()[0] || {}).id || null; go("home"); toast("ลบแล้ว"); return; }
   if (t.id === "wordBtn") { exportWord(m); return; }
   if (t.id === "taskBtn") { taskDlg(m); return; }
   if (t.id === "pasteBtn") { pasteDlg(); return; }
@@ -354,12 +523,11 @@ function pasteDlg() {
 }
 
 /* ---------- นำเข้าไฟล์ Word เดิม (.docx ตามแบบฟอร์ม Project Weekly) ---------- */
-$("impBtn").onclick = () => { if (!window.JSZip) { toast("โหลดตัวอ่านไฟล์ไม่สำเร็จ ลองรีเฟรชหน้า"); return; } $("impFile").click(); };
 $("impFile").onchange = async e => { const fs = [...e.target.files]; e.target.value = ""; let n = 0, last = null;
   for (const f of fs) { try { const m = await readDocx(f); const dup = live().find(x => x.date === m.date);
       if (dup) { toast("มีการประชุมวันที่ " + dShort(m.date) + " อยู่แล้ว · ข้าม " + f.name); continue; }
-      DB.push(m); save(m, true); n++; last = m; } catch (er) { toast("อ่าน " + f.name + " ไม่ได้: " + er.message); } }
-  if (last) { CUR = last.id; render(); toast("นำเข้าแล้ว " + n + " ไฟล์"); } };
+      DB.push(m); migrate(m); save(m, true); n++; last = m; } catch (er) { toast("อ่าน " + f.name + " ไม่ได้: " + er.message); } }
+  if (last) { CUR = last.id; render(); toast("นำเข้าแล้ว " + n + " ไฟล์ · เพิ่มชื่อผู้เข้าร่วมในรายชื่อบุคคลให้แล้ว (เติมตำแหน่งได้ที่ 👥)"); } };
 async function readDocx(f) {
   const z = await JSZip.loadAsync(await f.arrayBuffer()), xml = await z.file("word/document.xml").async("string");
   const doc = new DOMParser().parseFromString(xml, "application/xml"), W = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
@@ -388,6 +556,105 @@ async function readDocx(f) {
   return clean(m);
 }
 
+/* ---------- เลือกผู้เข้าร่วม / เพิ่มบุคคล / จัดการรายชื่อ ---------- */
+const pformHtml = () => `<div class="pform"><div class="fld"><label for="nName">ชื่อ-สกุล</label><input id="nName" placeholder="เช่น วัฒนา เทศเอม"></div>
+  <div class="fld"><label for="nPos">ตำแหน่ง</label><input id="nPos" placeholder="เช่น เจ้าหน้าที่งานโครงการ"></div><div class="fld"><label for="nOrg">หน่วยงาน</label><input id="nOrg" value="PCG"></div>
+  <button type="button" class="pbtn" id="nAdd" style="padding:9px 14px">＋ สร้าง</button></div>`;
+function addFromForm() { const n = bare(clean($("nName").value)); if (!n) { $("nName").focus(); toast("ใส่ชื่อ-สกุลก่อน"); return null; }
+  if (people().some(x => bare(x.name) === n)) { toast("มีชื่อนี้ในรายชื่อแล้ว"); return people().find(x => bare(x.name) === n).id; }
+  const p = { id: "P" + uid(), name: n, pos: clean($("nPos").value.trim()), org: clean($("nOrg").value.trim()) || "PCG", ord: PR().list.length + 1 }; PR().list.push(p); save(PR(), true); return p.id; }
+function attDlg(m) {
+  const draw = () => { const q = ($("aq") || {}).value || "", sel = new Set(m.attIds || []);
+    $("aList").innerHTML = people().filter(p => !q || (p.name + " " + p.pos).toLowerCase().includes(q.toLowerCase())).map(p => `<label class="prow"><input type="checkbox" data-pp="${p.id}" ${sel.has(p.id) ? "checked" : ""}><span><b>${esc(khun(p.name))}</b> <small>${esc(p.pos || "")}${p.org && p.org !== "PCG" ? " · " + esc(p.org) : ""}</small></span></label>`).join("") || `<div class="hint">ยังไม่มีรายชื่อ · สร้างด้านล่าง</div>`; };
+  dbox.innerHTML = `<h3>ผู้เข้าร่วมประชุม · W${esc(m.no)}</h3><input class="srch" id="aq" type="search" placeholder="ค้นหาชื่อ / ตำแหน่ง" aria-label="ค้นหาบุคคล">
+    <div class="plist" id="aList"></div><b style="font-size:14px">สร้างบุคคลใหม่</b>${pformHtml()}
+    <div class="ft"><span class="sp hint">ติ๊กเลือกแล้วบันทึกทันที</span><button type="button" class="pbtn" data-x="1">เสร็จ</button></div>`;
+  dlg.hidden = false; draw(); $("aq").oninput = draw;
+  $("aList").onchange = e => { const id = e.target.dataset.pp; if (!id) return; const s2 = new Set(m.attIds || []); e.target.checked ? s2.add(id) : s2.delete(id);
+    m.attIds = people().map(p => p.id).filter(x => s2.has(x)); save(m); render(); };
+  $("nAdd").onclick = () => { const id = addFromForm(); if (!id) return; if (!(m.attIds || []).includes(id)) m.attIds = (m.attIds || []).concat(id); save(m); attDlg(m); render(); toast("เพิ่มแล้ว"); };
+}
+function personNew(cb) { dbox.innerHTML = `<h3>เพิ่มบุคคลใหม่</h3>${pformHtml()}<div class="ft"><button type="button" class="gbtn" data-x="1">ยกเลิก</button></div>`; dlg.hidden = false;
+  $("nAdd").onclick = () => { const id = addFromForm(); if (id) { closeDlg(); cb(id); } }; }
+function peopleDlg() {
+  const L = people();
+  dbox.innerHTML = `<h3>👥 รายชื่อบุคคล</h3><div class="hint">ใช้เลือกผู้เข้าร่วมและผู้จัดทำ · แก้แล้วบันทึกเอง · ชื่อในรายงานแสดงเป็น "คุณ" + ชื่อ</div>
+    <div style="overflow-x:auto"><table class="ptbl"><thead><tr><th>ชื่อ-สกุล</th><th>ตำแหน่ง</th><th>หน่วยงาน</th><th></th></tr></thead><tbody>
+    ${L.map(p => `<tr><td><input data-pe="${p.id}|name" value="${esc(p.name)}" aria-label="ชื่อ-สกุล"></td><td><input data-pe="${p.id}|pos" value="${esc(p.pos || "")}" aria-label="ตำแหน่ง"></td><td><input data-pe="${p.id}|org" value="${esc(p.org || "PCG")}" aria-label="หน่วยงาน" style="width:90px"></td>
+      <td><button type="button" class="gbtn sm danger" data-pdel="${p.id}">ลบ</button></td></tr>`).join("") || `<tr><td colspan="4" class="hint">ยังไม่มีรายชื่อ</td></tr>`}</tbody></table></div>
+    <b style="font-size:14px">สร้างบุคคลใหม่</b>${pformHtml()}<div class="ft"><button type="button" class="pbtn" data-x="1">เสร็จ</button></div>`;
+  dlg.hidden = false;
+  dbox.oninput = e => { const k = e.target.dataset.pe; if (!k) return; const [id, f] = k.split("|"), p = pById(id); if (!p) return; p[f] = f === "name" ? bare(clean(e.target.value)) : clean(e.target.value.trim()); save(PR()); };
+  dbox.onclick = e => { const d = e.target.closest("[data-pdel]"); if (d) { if (!d.classList.contains("arm")) { d.classList.add("arm"); d.textContent = "กดอีกครั้ง"; return; } pById(d.dataset.pdel).del = true; save(PR(), true); peopleDlg(); render(); } };
+  $("nAdd").onclick = () => { if (addFromForm()) { peopleDlg(); render(); } };
+}
+dlg.addEventListener("click", e => { if (e.target.closest("[data-x]")) { dbox.oninput = null; dbox.onclick = null; render(); } });
+
+/* ---------- โหมดนำเสนอ (Presentation สำหรับ EVP) ---------- */
+const prevOf = m => live().filter(x => (x.date || "") < (m.date || "")).sort((a, b) => b.date.localeCompare(a.date))[0];
+const late = (r, m) => r.s !== "done" && r.d && r.d < (m.date || TODAY);
+function evpRows(m) { return m.rows.filter(r => r.s !== "done" && (r.evp || (+r.carry || 0) >= 2 || late(r, m)))
+  .sort((a, b) => (b.evp ? 1 : 0) - (a.evp ? 1 : 0) || (+b.carry || 0) - (+a.carry || 0)); }
+const dayDiff = (a, b) => Math.round((new Date(b + "T00:00:00") - new Date(a + "T00:00:00")) / 864e5);
+const SCOL = { done: "#0f9a6e", prog: "#e0b000", todo: "#8a97ae" };
+function slides(m) {
+  const P = prevOf(m), c = cnt(m), n = m.rows.length, logo = `<img src="data:image/png;base64,${LOGO}" alt="PCG">`;
+  const head = (k, t) => `<div class="sh"><div style="flex:1"><div class="k">${k}</div><h2>${t}</h2></div>${logo}</div>`;
+  const foot = `<div class="sf"><span>บันทึกการประชุม Project Weekly · W${esc(m.no)} · ${esc(dLong(m.date))}</span><span class="pgn"></span></div>`;
+  const item = (r, extra) => `<div class="it" style="--c:${SCOL[r.s]}"><div class="p">${esc(r.p || "–")}</div><div class="t">${esc(r.t)}</div>${extra ? `<div>${extra}</div>` : ""}
+    <div class="r"><span class="pill ${r.s}">${ST[r.s]}</span><span>👤 ${esc(r.o || "–")}</span><span>🗓 ${r.d ? esc(dShort(r.d)) : "–"}</span></div></div>`;
+  const S = [];
+  const who = (m.attIds || []).map(pById).filter(Boolean);
+  S.push(`<section class="sl cover"><div class="cv"><div class="logo">${logo}</div><div class="kk">PCG · Project Team · Weekly Meeting</div>
+    <div style="display:flex;align-items:flex-end;gap:36px;flex-wrap:wrap"><span class="wbig">W${esc(m.no)}</span><h1>บันทึกการประชุม<br>Project Weekly</h1></div>
+    <div class="meta"><div><span>วันที่ประชุม</span>${esc(dLong(m.date))}</div><div><span>เวลา</span>${esc(tRange(m) || "–")}</div><div><span>สถานที่</span>${esc(m.place || "–")}</div><div><span>ผู้จัดทำ</span>${esc(byText(m) || "–")}</div></div>
+    <div class="who">${who.map(p => `<div>${esc(khun(p.name))}${p.pos ? ` <small>· ${esc(p.pos)}</small>` : ""}</div>`).join("") || (m.att ? `<div>${esc(m.att)}</div>` : "")}</div></div></section>`);
+  const pc = P ? cnt(P) : null, dlt = (a, b) => b == null ? "" : a - b > 0 ? "▲ " + (a - b) : a - b < 0 ? "▼ " + (b - a) : "เท่าเดิม";
+  const old = m.rows.filter(r => r.s !== "done" && (+r.carry || 0) >= 2).length, oldP = P ? P.rows.filter(r => r.s !== "done" && (+r.carry || 0) >= 2).length : null;
+  const pct = x => n ? Math.round(x / n * 100) : 0;
+  S.push(`<section class="sl">${head("ภาพรวม", "สถานะงานสัปดาห์นี้")}<div class="sb">
+    <div class="kpis"><div class="kpi" style="--c:#1d4fa8"><span class="l">งานทั้งหมด</span><span class="v">${n}</span><span class="d">${P ? "เทียบ W" + esc(P.no) + ": " + dlt(n, P.rows.length) : "&nbsp;"}</span></div>
+      <div class="kpi" style="--c:#0f9a6e"><span class="l">เสร็จสิ้น</span><span class="v">${c.done}</span><span class="d">${pct(c.done)}% ของงาน${pc ? " · " + dlt(c.done, pc.done) : ""}</span></div>
+      <div class="kpi" style="--c:#c99a00"><span class="l">กำลังดำเนินการ</span><span class="v">${c.prog + c.todo}</span><span class="d">${c.todo ? "ยังไม่เริ่ม " + c.todo + " งาน" : "&nbsp;"}</span></div>
+      <div class="kpi" style="--c:#d92d20"><span class="l">ค้าง ≥ 2 สัปดาห์</span><span class="v">${old}</span><span class="d">${oldP != null ? "เทียบ W" + esc(P.no) + ": " + dlt(old, oldP) : "&nbsp;"}</span></div></div>
+    <div class="bigbar">${c.done ? `<i style="width:${pct(c.done)}%;background:#0f9a6e">เสร็จสิ้น ${pct(c.done)}%</i>` : ""}${c.prog ? `<i style="width:${pct(c.prog)}%;background:#e0b000">กำลังดำเนินการ ${pct(c.prog)}%</i>` : ""}${c.todo ? `<i style="width:${pct(c.todo)}%;background:#8a97ae">ยังไม่เริ่ม ${pct(c.todo)}%</i>` : ""}</div>
+    <div class="note2">หัวข้อโครงการ ${new Set(m.rows.map(r => r.p).filter(Boolean)).size} หัวข้อ · งานใหม่สัปดาห์นี้ ${m.rows.filter(r => !r.carry).length} งาน · ยกมาจากครั้งก่อน ${m.rows.filter(r => r.carry).length} งาน · ต้องติดตาม/ขอตัดสินใจ ${evpRows(m).length} งาน</div>
+  </div>${foot}</section>`);
+  const closed = m.rows.filter(r => r.s === "done");
+  const chunk = (a, k) => { const o = []; for (let i = 0; i < a.length; i += k) o.push(a.slice(i, i + k)); return o.length ? o : [[]]; };
+  chunk(closed, 4).forEach((g, i, A) => S.push(`<section class="sl">${head("ปิดงานแล้ว", "งานที่เสร็จสิ้น" + (A.length > 1 ? ` (${i + 1}/${A.length})` : ""))}<div class="sb">
+    ${g.length ? `<div class="items">${g.map(r => item(r, r.carry ? `<span class="flag" style="background:#d6f3e7;color:#0a7a56">ปิดงานที่ยกมา ${r.carry} สัปดาห์</span>` : "")).join("")}</div>` : `<div class="empty2">ยังไม่มีงานที่เสร็จสิ้นในการประชุมนี้</div>`}</div>${foot}</section>`));
+  const ev = evpRows(m);
+  chunk(ev, 4).forEach((g, i, A) => S.push(`<section class="sl">${head("สำหรับ EVP", "ต้องตัดสินใจ / ติดตาม" + (A.length > 1 ? ` (${i + 1}/${A.length})` : ""))}<div class="sb">
+    ${g.length ? `<div class="items">${g.map(r => item(r, (r.evp ? '<span class="flag evp">ขอ EVP ตัดสินใจ</span>' : "") + ((+r.carry || 0) >= 2 ? `<span class="flag">ค้าง ${r.carry} สัปดาห์</span>` : "") + (late(r, m) ? `<span class="flag">เลยกำหนด ${dayDiff(r.d, m.date)} วัน</span>` : ""))).join("")}</div>`
+      : `<div class="empty2">✓ ไม่มีงานค้างนานหรือเลยกำหนด</div>`}</div>${foot}</section>`));
+  const groups = []; m.rows.forEach(r => { const k = r.p || "อื่นๆ"; let g = groups.find(x => x.k === k); if (!g) groups.push(g = { k, rows: [] }); g.rows.push(r); });
+  groups.forEach(g => { const gc = cnt({ rows: g.rows });
+    chunk(g.rows, 4).forEach((part, i, A) => S.push(`<section class="sl">${head("รายละเอียดโครงการ", esc(g.k) + (A.length > 1 ? ` (${i + 1}/${A.length})` : ""))}<div class="sb">
+      <div class="row" style="gap:10px"><span class="pill done">เสร็จสิ้น ${gc.done}</span><span class="pill prog">กำลังดำเนินการ ${gc.prog}</span>${gc.todo ? `<span class="pill todo">ยังไม่เริ่ม ${gc.todo}</span>` : ""}</div>
+      <div class="items">${part.map(r => item(r, (r.carry ? `<span class="flag" style="background:#e8ecf4;color:#50607e">ยกมา ${r.carry} สัปดาห์</span>` : `<span class="flag" style="background:#e6eefe;color:#1d4fa8">ใหม่</span>`) + (r.evp ? '<span class="flag evp">ขอ EVP ตัดสินใจ</span>' : ""))).join("")}</div></div>${foot}</section>`)); });
+  chunk(m.rows, 8).forEach((g, i, A) => S.push(`<section class="sl">${head("สรุป", "ตารางสรุปประเด็นสำคัญ" + (A.length > 1 ? ` (${i + 1}/${A.length})` : ""))}<div class="sb">
+    <table class="stbl"><thead><tr><th style="width:20%">หัวข้อโครงการ</th><th>งานที่ต้องทำ (Task)</th><th style="width:16%">ผู้รับผิดชอบ</th><th style="width:17%">กำหนดเสร็จ</th></tr></thead>
+    <tbody>${g.map(r => `<tr class="${r.red ? "redt" : ""}"><td>${esc(r.p)}</td><td>${esc(r.t)}</td><td>${esc(r.o)}</td><td class="${r.s === "done" ? "done" : r.s === "prog" ? "prog" : ""}">${esc(endTxt(r))}</td></tr>`).join("") || `<tr><td colspan="4">ยังไม่มีงาน</td></tr>`}</tbody></table></div>${foot}</section>`));
+  return S;
+}
+let PI = 0, PN = 0;
+function openPres(m) { const S = slides(m); PN = S.length; $("stage").innerHTML = S.join(""); $("pTitle").textContent = "W" + m.no + " · " + dShort(m.date);
+  $("stage").querySelectorAll(".pgn").forEach((x, i) => x.textContent = (i + 2) + " / " + PN); PI = Math.min(PI, PN - 1); showSl(); fitStage(); }
+function showSl() { $("stage").querySelectorAll(".sl").forEach((x, i) => x.classList.toggle("on", i === PI)); $("pNo").textContent = (PI + 1) + " / " + PN; }
+function fitStage() { const vp = $("pVp"), k = Math.min(vp.clientWidth / 1600, vp.clientHeight / 900) * 0.98; $("stage").style.transform = `translate(-50%,-50%) scale(${k})`; }
+const step = d => { PI = Math.max(0, Math.min(PN - 1, PI + d)); showSl(); };
+$("pPrev").onclick = () => step(-1); $("pNext").onclick = () => step(1);
+$("pClose").onclick = () => { PI = 0; go(LASTV, LASTV === "edit" ? CUR : ""); };
+$("pFull").onclick = () => { const el = $("vPres"); (document.fullscreenElement ? document.exitFullscreen() : el.requestFullscreen ? el.requestFullscreen() : Promise.reject()).catch(() => toast("เบราว์เซอร์นี้เต็มจอไม่ได้ · กด F11 แทน")); };
+$("pVp").onclick = e => { const r = $("pVp").getBoundingClientRect(); step(e.clientX - r.left < r.width / 3 ? -1 : 1); };
+addEventListener("resize", () => { if (VIEW === "show") fitStage(); });
+document.addEventListener("fullscreenchange", () => setTimeout(fitStage, 60));
+addEventListener("keydown", e => { if (VIEW !== "show") return; if (["ArrowRight", "PageDown", " ", "Enter"].includes(e.key)) { e.preventDefault(); step(1); } else if (["ArrowLeft", "PageUp", "Backspace"].includes(e.key)) { e.preventDefault(); step(-1); }
+  else if (e.key === "Home") { PI = 0; showSl(); } else if (e.key === "End") { PI = PN - 1; showSl(); } else if (e.key === "Escape" && !document.fullscreenElement) $("pClose").click(); });
+let TX = null; $("pVp").addEventListener("touchstart", e => TX = e.touches[0].clientX, { passive: true });
+$("pVp").addEventListener("touchend", e => { if (TX == null) return; const d = e.changedTouches[0].clientX - TX; if (Math.abs(d) > 40) { step(d < 0 ? 1 : -1); e.preventDefault(); } TX = null; });
+
 /* ---------- Export Word ตามแบบฟอร์มเดิม ---------- */
 async function exportWord(m) {
   if (!window.docx) { toast("โหลดตัวสร้าง Word ไม่สำเร็จ ลองรีเฟรชหน้า"); return; }
@@ -401,8 +668,8 @@ async function exportWord(m) {
   const W = 9072;  /* A4 หักขอบซ้าย-ขวาตามไฟล์ต้นฉบับ */
   const head = new D.Table({ width: { size: W, type: D.WidthType.DXA }, columnWidths: [2899, 2353, 1767, 2053], rows: [
     new D.TableRow({ children: [cell("บันทึกการประชุม  Project Weekly", { span: 4, b: true, center: true })] }),
-    new D.TableRow({ children: [cell("ผู้เข้าร่วมประชุม", { b: true, w: 2899 }), cell(m.att, { span: 3 })] }),
-    new D.TableRow({ children: [cell("ผู้จัดทำบันทึกการประชุม", { b: true }), cell(m.by, { span: 3 })] }),
+    new D.TableRow({ children: [cell("ผู้เข้าร่วมประชุม", { b: true, w: 2899 }), cell(attText(m), { span: 3 })] }),
+    new D.TableRow({ children: [cell("ผู้จัดทำบันทึกการประชุม", { b: true }), cell(byText(m), { span: 3 })] }),
     new D.TableRow({ children: [cell("วันที่ประชุม", { b: true }), cell(dLong(m.date)), cell("สถานที่ประชุม", { b: true }), cell(m.place)] }),
     new D.TableRow({ children: [cell("เวลาเริ่มประชุม", { b: true }), cell(tm(m.t1)), cell("เวลาเลิกประชุม", { b: true }), cell(tm(m.t2))] }) ] });
   const nv = (t, o) => cell(t, Object.assign({ fill: "002060", color: "FFFFFF", center: true }, o || {}));
@@ -458,7 +725,7 @@ async function taskDlg(m) {
     } catch (e) { toast("ส่งไม่สำเร็จ: " + e.message); } };
 }
 
-syncLabel(); CUR = (live()[0] || {}).id || null; render(); sbSync();
+syncLabel(); route(); sbSync();   /* migrate หลังซิงก์ (กันรายชื่อบุคคลในเครื่องทับของเครื่องอื่น) */
 addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && !PEND.size && !document.activeElement.matches("input,textarea,select")) sbSync(); });
 addEventListener("beforeunload", () => { if (PEND.size) flush(); });
 </script>
