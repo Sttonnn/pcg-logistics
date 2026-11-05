@@ -154,7 +154,7 @@
   .pres { position: fixed; inset: 0; z-index: 80; background: #0a1430; display: flex; flex-direction: column; }
   .pres .bar2 { display: flex; gap: 8px; align-items: center; padding: 10px 14px; color: #cfd8ee; font-size: 13.5px; flex-wrap: wrap; }
   .pres .bar2 button { border: 0; border-radius: 10px; padding: 7px 12px; background: rgba(255,255,255,.1); color: #fff; font-weight: 600; }
-  .pres .bar2 .sp { flex: 1; }
+  .pres .bar2 .sp { flex: 1; } .pres .bar2 button:disabled { opacity: .35; cursor: default; }
   .pres .vp { flex: 1; position: relative; overflow: hidden; }
   .stage { position: absolute; left: 50%; top: 50%; width: 1600px; height: 900px; transform-origin: center; }
   .sl { position: absolute; inset: 0; border-radius: 18px; overflow: hidden; background: #f4f6fb; color: #14213d; font-family: var(--f-body); display: none; }
@@ -194,6 +194,35 @@
   .stbl th { background: #002060; color: #fff; text-align: left; padding: 14px 16px; font-size: 19px; }
   .stbl td { padding: 12px 16px; border-top: 1px solid #e3e8f1; vertical-align: top; }
   .stbl td.done { background: #00b050; color: #fff; font-weight: 700; } .stbl td.prog { background: #ffff00; font-weight: 700; } .stbl tr.redt td { color: #d00; }
+  /* 5 พ.ย. รอบ 3: หน้ารายงาน = รายการ (ผู้ใช้สั่ง) · ดูรายงาน = หน้าเดียวแบบไฟล์ Word */
+  .mlist { background: var(--card); border-radius: 22px; box-shadow: var(--shadow); overflow: hidden; }
+  .mlist table { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 760px; }
+  .mlist th { background: var(--navy); color: #fff; text-align: left; font-weight: 600; font-size: 13px; padding: 10px 14px; white-space: nowrap; }
+  .mlist td { padding: 10px 14px; border-top: 1px solid var(--line); vertical-align: middle; }
+  .mlist tr:hover td { background: var(--soft); }
+  .mlist .w { font-family: var(--f-disp); font-weight: 700; font-size: 17px; color: var(--navy2); white-space: nowrap; }
+  .mlist .mini { display: flex; height: 8px; border-radius: 999px; overflow: hidden; background: var(--soft); width: 120px; margin-top: 5px; }
+  .mlist .mini i { display: block; height: 100%; }
+  .mlist .acts { display: flex; gap: 6px; justify-content: flex-end; white-space: nowrap; }
+  .mlist .acts .pbtn, .mlist .acts .gbtn { padding: 7px 12px; font-size: 13.5px; }
+  .pres .vp { overflow: auto; background: #dfe5ef; padding: 24px 16px 48px; }
+  .doc { background: #fff; color: #111; max-width: 1180px; margin: 0 auto; border-radius: 6px; box-shadow: 0 6px 30px rgba(0,0,0,.25); padding: clamp(20px, 3.4vw, 48px); font-size: clamp(14px, 1.25vw, 19px); }
+  .doc .lg { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 12px; }
+  .doc .lg img { height: clamp(40px, 4vw, 62px); }
+  .doc .sum { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .doc .sum span { border-radius: 999px; padding: 4px 12px; font-weight: 700; font-size: .78em; }
+  .doc table { border-collapse: collapse; width: 100%; }
+  .doc th, .doc td { border: 1px solid #555; padding: .45em .65em; vertical-align: top; color: #111; }
+  .doc .ttl { text-align: center; font-weight: 700; font-size: 1.2em; }
+  .doc .lbl { font-weight: 700; width: 24%; }
+  .doc .nv { background: #002060; color: #fff; text-align: center; }
+  .doc .sec { font-weight: 700; margin: 1.1em 0 .45em; font-size: 1.1em; }
+  .doc td.done { background: #00b050; text-align: center; } .doc td.prog { background: #ffff00; text-align: center; } .doc td.todo { text-align: center; }
+  .doc tr.redt td { color: #e00; }
+  .doc .tg { display: inline-block; margin: 4px 6px 0 0; font-size: .72em; font-weight: 700; padding: 1px 9px; border-radius: 999px; background: #fff1d6; color: #8a5a00; }
+  .doc .tg.c { background: #eef1f6; color: #50607e; }
+  .doc .who { line-height: 1.7; } .doc .who small { color: #666; }
+  @media (max-width: 760px) { .pres .vp { padding: 10px 6px 30px; } .doc { font-size: 13px; } .doc .lbl { width: 32%; } }
   @media (max-width: 760px) { .pform { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 1000px) { .main { grid-template-columns: 1fr; } .side { position: static; max-height: none; } }
   @media (max-width: 760px) { .form { grid-template-columns: 1fr 1fr; } .fld.w2, .fld.w4 { grid-column: 1 / -1; } .hero h1 { font-size: 21px; } .paper { padding: 14px; } .card { padding: 16px; } }
@@ -238,9 +267,10 @@
 <input type="file" id="impFile" accept=".docx" multiple hidden>
 <div class="pres" id="vPres" hidden>
   <div class="bar2"><button type="button" id="pClose">✕ ปิด</button><span id="pTitle"></span><span class="sp"></span>
-    <button type="button" id="pPrev" aria-label="หน้าก่อน">◀</button><span id="pNo"></span><button type="button" id="pNext" aria-label="หน้าถัดไป">▶</button>
+    <button type="button" id="pPrev" title="การประชุมครั้งก่อน">◀ ครั้งก่อน</button><span id="pNo"></span><button type="button" id="pNext" title="การประชุมครั้งถัดไป">ครั้งถัดไป ▶</button>
+    <button type="button" id="pWord">⬇ Word</button><button type="button" id="pEdit">✎ แก้ไข</button>
     <button type="button" id="pFull">⛶ เต็มจอ</button></div>
-  <div class="vp" id="pVp"><div class="stage" id="stage"></div></div>
+  <div class="vp" id="pVp"><div class="doc" id="doc"></div></div>
 </div>
 <div class="dlg" id="dlg" hidden><div class="dbox" id="dbox"></div></div>
 <div class="toast" id="toast" hidden></div>
@@ -353,7 +383,7 @@ function go(v, id) { const h = "#" + v + (id ? "-" + id : ""); if (location.hash
 function route() {
   const h = location.hash.slice(1), mm = h.match(/^(home|edit|show)(?:-(.+))?$/), v = mm ? mm[1] : "home", id = mm && mm[2];
   if (id && DB.some(m => m.id === id && !m.del)) CUR = id; if (!CUR || !cur() || cur().del || cur().cfg) CUR = (live()[0] || {}).id || null;
-  VIEW = v; if (v !== "show") LASTV = v; else PI = PI || 0; $("vHome").hidden = v !== "home"; $("vEdit").hidden = v !== "edit"; $("vPres").hidden = v !== "show";
+  VIEW = v; if (v !== "show") LASTV = v; $("vHome").hidden = v !== "home"; $("vEdit").hidden = v !== "edit"; $("vPres").hidden = v !== "show";
   document.querySelectorAll("[data-go]").forEach(b => b.classList.toggle("on", b.dataset.go === v || (v === "show" && b.dataset.go === "home")));
   if (v === "show") { if (!cur()) { go("home"); return; } openPres(cur()); } else if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   render();
@@ -365,17 +395,17 @@ const cnt = m => { const c = { done: 0, prog: 0, todo: 0 }; m.rows.forEach(r => 
 function renderHome() {
   const q = ($("hq") || {}).value || "", L = live().filter(m => !q || searchTxt(m).includes(q.toLowerCase()));
   const keep = document.activeElement && document.activeElement.id === "hq";
-  $("vHome").innerHTML = `<section class="card"><div class="ch"><h2>เลือกรายงานการประชุม</h2><span class="hint">กด ▶ นำเสนอ เพื่อเปิดแบบ Presentation (เต็มจอ)</span></div>
+  $("vHome").innerHTML = `<section class="card"><div class="ch"><h2>เลือกรายงานการประชุม</h2><span class="hint">กด 📄 ดูรายงาน เพื่อเปิดรายงานหน้าเดียว (นำเสนอเต็มจอได้)</span></div>
     <div class="tools"><button type="button" class="pbtn" data-new="1">＋ ประชุมสัปดาห์ถัดไป</button><button type="button" class="gbtn" data-imp="1">⇪ นำเข้าไฟล์ Word เดิม</button>
       <button type="button" class="gbtn" data-people="1">👥 รายชื่อบุคคล (${people().length})</button><input class="srch" id="hq" type="search" placeholder="ค้นหาหัวข้อ / งาน / ชื่อ" value="${esc(q)}" aria-label="ค้นหารายงาน"></div></section>
-    <div class="cards">${L.map((m, i) => { const c = cnt(m), n = m.rows.length || 1, old = m.rows.filter(r => r.s !== "done" && (+r.carry || 0) >= 2).length, ev = evpRows(m).length;
-      return `<article class="mc ${i === 0 && !q ? "latest" : ""}"><div class="top"><span class="wno">W${esc(m.no)}</span><div style="min-width:0"><h3>${esc(dLong(m.date))}</h3>
-        <div class="sub">${esc(m.place)} · ${esc(tRange(m))} · ${(m.attIds || []).length} คน</div></div></div>
-        <div class="row">${m.final ? '<span class="badge ok">✓ ปิดบันทึก</span>' : '<span class="badge">ร่าง</span>'}${ev ? `<span class="badge">ต้องติดตาม/ขอตัดสินใจ ${ev}</span>` : ""}${i === 0 && !q ? '<span class="badge ok">ล่าสุด</span>' : ""}</div>
-        <div class="bar"><i style="width:${c.done / n * 100}%;background:var(--ok)"></i><i style="width:${c.prog / n * 100}%;background:#f2c200"></i><i style="width:${c.todo / n * 100}%;background:#c3ccdc"></i></div>
-        <div class="nums"><span><b>${m.rows.length}</b> งาน</span><span><b>${c.done}</b> เสร็จสิ้น</span><span><b>${c.prog}</b> กำลังดำเนินการ</span><span><b>${old}</b> ค้าง ≥2 สัปดาห์</span></div>
-        <div class="acts"><button type="button" class="pbtn" data-show="${m.id}">▶ นำเสนอ</button><button type="button" class="gbtn" data-edit="${m.id}">✎ แก้ไข</button><button type="button" class="gbtn" data-word="${m.id}">⬇ Word</button></div></article>`; }).join("")
-      || `<section class="card"><div class="empty">${DB.some(m => !m.cfg) ? "ไม่พบรายงานที่ค้นหา" : 'ยังไม่มีรายงาน · กด "นำเข้าไฟล์ Word เดิม" หรือ "ประชุมสัปดาห์ถัดไป"'}</div></section>`}</div>`;
+    <div class="mlist"><div style="overflow-x:auto"><table><thead><tr><th>ครั้งที่</th><th>วันที่ประชุม</th><th>สถานที่ · เวลา</th><th>งาน</th><th>สถานะงาน</th><th>บันทึก</th><th></th></tr></thead><tbody>
+    ${L.map(m => { const c = cnt(m), n = m.rows.length || 1, ev = evpRows(m).length;
+      return `<tr><td class="w">W${esc(m.no)}</td><td><b>${esc(dLong(m.date))}</b></td><td>${esc(m.place)}<br><span class="hint">${esc(tRange(m))}</span></td>
+        <td>${m.rows.length} งาน${ev ? `<br><span class="badge">ติดตาม/ขอตัดสินใจ ${ev}</span>` : ""}</td>
+        <td><span class="hint">เสร็จ ${c.done} · กำลังทำ ${c.prog + c.todo}</span><div class="mini"><i style="width:${c.done / n * 100}%;background:var(--ok)"></i><i style="width:${c.prog / n * 100}%;background:#f2c200"></i><i style="width:${c.todo / n * 100}%;background:#c3ccdc"></i></div></td>
+        <td>${m.final ? '<span class="badge ok">✓ ปิดบันทึก</span>' : '<span class="badge">ร่าง</span>'}</td>
+        <td><div class="acts"><button type="button" class="pbtn" data-show="${m.id}">📄 ดูรายงาน</button><button type="button" class="gbtn" data-edit="${m.id}">✎ แก้ไข</button><button type="button" class="gbtn" data-word="${m.id}">⬇ Word</button></div></td></tr>`; }).join("")
+      || `<tr><td colspan="7" class="empty">${DB.some(m => !m.cfg) ? "ไม่พบรายงานที่ค้นหา" : 'ยังไม่มีรายงาน · กด "นำเข้าไฟล์ Word เดิม" หรือ "ประชุมสัปดาห์ถัดไป"'}</td></tr>`}</tbody></table></div></div>`;
   if (keep) { const h = $("hq"); h.focus(); h.setSelectionRange(h.value.length, h.value.length); }
 }
 document.addEventListener("input", e => { if (e.target.id === "hq") renderHome(); });
@@ -395,7 +425,7 @@ function render() {
   if (!m) { $("col").innerHTML = `<section class="card"><div class="empty">ยังไม่มีบันทึกการประชุม<br><br><button type="button" class="pbtn" onclick="newMeeting()">＋ เริ่มบันทึกการประชุมแรก</button></div></section>`; return; }
   $("col").innerHTML = `
   <section class="card">
-    <div class="crumb"><button type="button" class="gbtn sm" data-go="home">← หน้ารายงาน</button><span class="hint">กำลังแก้ W${esc(m.no)} · ${esc(dShort(m.date))}</span><span style="flex:1"></span><button type="button" class="pbtn" data-show="${m.id}" style="padding:8px 16px">▶ นำเสนอ</button></div>
+    <div class="crumb"><button type="button" class="gbtn sm" data-go="home">← หน้ารายงาน</button><span class="hint">กำลังแก้ W${esc(m.no)} · ${esc(dShort(m.date))}</span><span style="flex:1"></span><button type="button" class="pbtn" data-show="${m.id}" style="padding:8px 16px">📄 ดูรายงาน</button></div>
     <div class="ch"><span class="n">1</span><h2>ข้อมูลการประชุม</h2><span class="hint">เติมให้จากครั้งก่อน · แก้แล้วบันทึกเอง</span></div>
     <div class="form">
       ${fld("no", "ครั้งที่ (W)", "", "number")}${fld("date", "วันที่ประชุม", "", "date")}${fld("place", "สถานที่ประชุม")}
@@ -477,7 +507,7 @@ let ARM = null;
 document.addEventListener("click", e => {
   const m = cur(); const t = e.target; const c = sel => t.closest(sel);
   if (c("[data-go]")) { const v = c("[data-go]").dataset.go; if (v === "edit" && !cur()) { newMeeting(); return; } go(v, v === "edit" ? CUR : ""); return; }
-  if (c("[data-show]")) { flush(); PI = 0; go("show", c("[data-show]").dataset.show); return; }
+  if (c("[data-show]")) { flush(); go("show", c("[data-show]").dataset.show); return; }
   if (c("[data-edit]")) { go("edit", c("[data-edit]").dataset.edit); return; }
   if (c("[data-word]")) { const w = DB.find(x => x.id === c("[data-word]").dataset.word); if (w) exportWord(w); return; }
   if (c("[data-new]")) { newMeeting(); return; }
@@ -597,63 +627,30 @@ function evpRows(m) { return m.rows.filter(r => r.s !== "done" && (r.evp || (+r.
   .sort((a, b) => (b.evp ? 1 : 0) - (a.evp ? 1 : 0) || (+b.carry || 0) - (+a.carry || 0)); }
 const dayDiff = (a, b) => Math.round((new Date(b + "T00:00:00") - new Date(a + "T00:00:00")) / 864e5);
 const SCOL = { done: "#0f9a6e", prog: "#e0b000", todo: "#8a97ae" };
-function slides(m) {
-  const P = prevOf(m), c = cnt(m), n = m.rows.length, logo = `<img src="data:image/png;base64,${LOGO}" alt="PCG">`;
-  const head = (k, t) => `<div class="sh"><div style="flex:1"><div class="k">${k}</div><h2>${t}</h2></div>${logo}</div>`;
-  const foot = `<div class="sf"><span>บันทึกการประชุม Project Weekly · W${esc(m.no)} · ${esc(dLong(m.date))}</span><span class="pgn"></span></div>`;
-  const item = (r, extra) => `<div class="it" style="--c:${SCOL[r.s]}"><div class="p">${esc(r.p || "–")}</div><div class="t">${esc(r.t)}</div>${extra ? `<div>${extra}</div>` : ""}
-    <div class="r"><span class="pill ${r.s}">${ST[r.s]}</span><span>👤 ${esc(r.o || "–")}</span><span>🗓 ${r.d ? esc(dShort(r.d)) : "–"}</span></div></div>`;
-  const S = [];
-  const who = (m.attIds || []).map(pById).filter(Boolean);
-  S.push(`<section class="sl cover"><div class="cv"><div class="logo">${logo}</div><div class="kk">PCG · Project Team · Weekly Meeting</div>
-    <div style="display:flex;align-items:flex-end;gap:36px;flex-wrap:wrap"><span class="wbig">W${esc(m.no)}</span><h1>บันทึกการประชุม<br>Project Weekly</h1></div>
-    <div class="meta"><div><span>วันที่ประชุม</span>${esc(dLong(m.date))}</div><div><span>เวลา</span>${esc(tRange(m) || "–")}</div><div><span>สถานที่</span>${esc(m.place || "–")}</div><div><span>ผู้จัดทำ</span>${esc(byText(m) || "–")}</div></div>
-    <div class="who">${who.map(p => `<div>${esc(khun(p.name))}${p.pos ? ` <small>· ${esc(p.pos)}</small>` : ""}</div>`).join("") || (m.att ? `<div>${esc(m.att)}</div>` : "")}</div></div></section>`);
-  const pc = P ? cnt(P) : null, dlt = (a, b) => b == null ? "" : a - b > 0 ? "▲ " + (a - b) : a - b < 0 ? "▼ " + (b - a) : "เท่าเดิม";
-  const old = m.rows.filter(r => r.s !== "done" && (+r.carry || 0) >= 2).length, oldP = P ? P.rows.filter(r => r.s !== "done" && (+r.carry || 0) >= 2).length : null;
-  const pct = x => n ? Math.round(x / n * 100) : 0;
-  S.push(`<section class="sl">${head("ภาพรวม", "สถานะงานสัปดาห์นี้")}<div class="sb">
-    <div class="kpis"><div class="kpi" style="--c:#1d4fa8"><span class="l">งานทั้งหมด</span><span class="v">${n}</span><span class="d">${P ? "เทียบ W" + esc(P.no) + ": " + dlt(n, P.rows.length) : "&nbsp;"}</span></div>
-      <div class="kpi" style="--c:#0f9a6e"><span class="l">เสร็จสิ้น</span><span class="v">${c.done}</span><span class="d">${pct(c.done)}% ของงาน${pc ? " · " + dlt(c.done, pc.done) : ""}</span></div>
-      <div class="kpi" style="--c:#c99a00"><span class="l">กำลังดำเนินการ</span><span class="v">${c.prog + c.todo}</span><span class="d">${c.todo ? "ยังไม่เริ่ม " + c.todo + " งาน" : "&nbsp;"}</span></div>
-      <div class="kpi" style="--c:#d92d20"><span class="l">ค้าง ≥ 2 สัปดาห์</span><span class="v">${old}</span><span class="d">${oldP != null ? "เทียบ W" + esc(P.no) + ": " + dlt(old, oldP) : "&nbsp;"}</span></div></div>
-    <div class="bigbar">${c.done ? `<i style="width:${pct(c.done)}%;background:#0f9a6e">เสร็จสิ้น ${pct(c.done)}%</i>` : ""}${c.prog ? `<i style="width:${pct(c.prog)}%;background:#e0b000">กำลังดำเนินการ ${pct(c.prog)}%</i>` : ""}${c.todo ? `<i style="width:${pct(c.todo)}%;background:#8a97ae">ยังไม่เริ่ม ${pct(c.todo)}%</i>` : ""}</div>
-    <div class="note2">หัวข้อโครงการ ${new Set(m.rows.map(r => r.p).filter(Boolean)).size} หัวข้อ · งานใหม่สัปดาห์นี้ ${m.rows.filter(r => !r.carry).length} งาน · ยกมาจากครั้งก่อน ${m.rows.filter(r => r.carry).length} งาน · ต้องติดตาม/ขอตัดสินใจ ${evpRows(m).length} งาน</div>
-  </div>${foot}</section>`);
-  const closed = m.rows.filter(r => r.s === "done");
-  const chunk = (a, k) => { const o = []; for (let i = 0; i < a.length; i += k) o.push(a.slice(i, i + k)); return o.length ? o : [[]]; };
-  chunk(closed, 4).forEach((g, i, A) => S.push(`<section class="sl">${head("ปิดงานแล้ว", "งานที่เสร็จสิ้น" + (A.length > 1 ? ` (${i + 1}/${A.length})` : ""))}<div class="sb">
-    ${g.length ? `<div class="items">${g.map(r => item(r, r.carry ? `<span class="flag" style="background:#d6f3e7;color:#0a7a56">ปิดงานที่ยกมา ${r.carry} สัปดาห์</span>` : "")).join("")}</div>` : `<div class="empty2">ยังไม่มีงานที่เสร็จสิ้นในการประชุมนี้</div>`}</div>${foot}</section>`));
-  const ev = evpRows(m);
-  chunk(ev, 4).forEach((g, i, A) => S.push(`<section class="sl">${head("สำหรับ EVP", "ต้องตัดสินใจ / ติดตาม" + (A.length > 1 ? ` (${i + 1}/${A.length})` : ""))}<div class="sb">
-    ${g.length ? `<div class="items">${g.map(r => item(r, (r.evp ? '<span class="flag evp">ขอ EVP ตัดสินใจ</span>' : "") + ((+r.carry || 0) >= 2 ? `<span class="flag">ค้าง ${r.carry} สัปดาห์</span>` : "") + (late(r, m) ? `<span class="flag">เลยกำหนด ${dayDiff(r.d, m.date)} วัน</span>` : ""))).join("")}</div>`
-      : `<div class="empty2">✓ ไม่มีงานค้างนานหรือเลยกำหนด</div>`}</div>${foot}</section>`));
-  const groups = []; m.rows.forEach(r => { const k = r.p || "อื่นๆ"; let g = groups.find(x => x.k === k); if (!g) groups.push(g = { k, rows: [] }); g.rows.push(r); });
-  groups.forEach(g => { const gc = cnt({ rows: g.rows });
-    chunk(g.rows, 4).forEach((part, i, A) => S.push(`<section class="sl">${head("รายละเอียดโครงการ", esc(g.k) + (A.length > 1 ? ` (${i + 1}/${A.length})` : ""))}<div class="sb">
-      <div class="row" style="gap:10px"><span class="pill done">เสร็จสิ้น ${gc.done}</span><span class="pill prog">กำลังดำเนินการ ${gc.prog}</span>${gc.todo ? `<span class="pill todo">ยังไม่เริ่ม ${gc.todo}</span>` : ""}</div>
-      <div class="items">${part.map(r => item(r, (r.carry ? `<span class="flag" style="background:#e8ecf4;color:#50607e">ยกมา ${r.carry} สัปดาห์</span>` : `<span class="flag" style="background:#e6eefe;color:#1d4fa8">ใหม่</span>`) + (r.evp ? '<span class="flag evp">ขอ EVP ตัดสินใจ</span>' : ""))).join("")}</div></div>${foot}</section>`)); });
-  chunk(m.rows, 8).forEach((g, i, A) => S.push(`<section class="sl">${head("สรุป", "ตารางสรุปประเด็นสำคัญ" + (A.length > 1 ? ` (${i + 1}/${A.length})` : ""))}<div class="sb">
-    <table class="stbl"><thead><tr><th style="width:20%">หัวข้อโครงการ</th><th>งานที่ต้องทำ (Task)</th><th style="width:16%">ผู้รับผิดชอบ</th><th style="width:17%">กำหนดเสร็จ</th></tr></thead>
-    <tbody>${g.map(r => `<tr class="${r.red ? "redt" : ""}"><td>${esc(r.p)}</td><td>${esc(r.t)}</td><td>${esc(r.o)}</td><td class="${r.s === "done" ? "done" : r.s === "prog" ? "prog" : ""}">${esc(endTxt(r))}</td></tr>`).join("") || `<tr><td colspan="4">ยังไม่มีงาน</td></tr>`}</tbody></table></div>${foot}</section>`));
-  return S;
+/* รายงานหน้าเดียว แบบไฟล์ Word (ปรับให้อ่านบนจอ: ผู้เข้าร่วมพร้อมตำแหน่ง · สรุปจำนวน · ป้ายขอ EVP ตัดสินใจ / ยกมา) */
+function docHtml(m) {
+  const c = cnt(m), who = (m.attIds || []).map(pById).filter(Boolean);
+  const att = who.length ? who.map(p => esc(khun(p.name)) + (p.pos ? ` <small>(${esc(p.pos)})</small>` : "")).join(", ") : esc(attText(m));
+  return `<div class="lg"><img src="data:image/png;base64,${LOGO}" alt="PCG"><div class="sum"><span style="background:#eef1f6;color:#14213d">ทั้งหมด ${m.rows.length} งาน</span><span style="background:#d6f3e7;color:#0a7a56">เสร็จสิ้น ${c.done}</span><span style="background:#fff3b0;color:#6b5000">กำลังดำเนินการ ${c.prog + c.todo}</span>${evpRows(m).length ? `<span style="background:#fff1d6;color:#8a5a00">ติดตาม/ขอตัดสินใจ ${evpRows(m).length}</span>` : ""}</div></div>
+  <table><tr><td class="ttl" colspan="4">บันทึกการประชุม  Project Weekly${m.no ? " · W" + esc(m.no) : ""}</td></tr>
+    <tr><td class="lbl">ผู้เข้าร่วมประชุม</td><td colspan="3" class="who">${who.length ? "PCG: " : ""}${att}</td></tr>
+    <tr><td class="lbl">ผู้จัดทำบันทึกการประชุม</td><td colspan="3">${esc(byText(m))}</td></tr>
+    <tr><td class="lbl">วันที่ประชุม</td><td>${esc(dLong(m.date))}</td><td class="lbl">สถานที่ประชุม</td><td>${esc(m.place)}</td></tr>
+    <tr><td class="lbl">เวลาเริ่มประชุม</td><td>${esc(tm(m.t1))}</td><td class="lbl">เวลาเลิกประชุม</td><td>${esc(tm(m.t2))}</td></tr></table>
+  <div class="sec">สรุปประเด็นสำคัญจากการประชุม</div>
+  <table><tr><td class="nv" colspan="4">ประจำวันที่ ${esc(dLong(m.date))}</td></tr>
+    <tr><td class="nv" style="width:19%">หัวข้อโครงการ</td><td class="nv">งานที่ต้องทำ (Task)</td><td class="nv" style="width:17%">ผู้รับผิดชอบ</td><td class="nv" style="width:17%">กำหนดเสร็จ</td></tr>
+    ${m.rows.map(r => `<tr class="${r.red ? "redt" : ""}"><td>${esc(r.p)}</td><td>${esc(r.t)}${r.evp || (+r.carry || 0) >= 2 || late(r, m) ? "<br>" : ""}${r.evp ? '<span class="tg">ขอ EVP ตัดสินใจ</span>' : ""}${(+r.carry || 0) >= 2 && r.s !== "done" ? `<span class="tg c">ค้าง ${r.carry} สัปดาห์</span>` : ""}${late(r, m) ? `<span class="tg">เลยกำหนด ${dayDiff(r.d, m.date)} วัน</span>` : ""}</td><td>${esc(r.o)}</td><td class="${r.s}">${esc(endTxt(r))}</td></tr>`).join("") || `<tr><td colspan="4" style="text-align:center;color:#888">ยังไม่มีงาน</td></tr>`}</table>`;
 }
-let PI = 0, PN = 0;
-function openPres(m) { const S = slides(m); PN = S.length; $("stage").innerHTML = S.join(""); $("pTitle").textContent = "W" + m.no + " · " + dShort(m.date);
-  $("stage").querySelectorAll(".pgn").forEach((x, i) => x.textContent = (i + 2) + " / " + PN); PI = Math.min(PI, PN - 1); showSl(); fitStage(); }
-function showSl() { $("stage").querySelectorAll(".sl").forEach((x, i) => x.classList.toggle("on", i === PI)); $("pNo").textContent = (PI + 1) + " / " + PN; }
-function fitStage() { const vp = $("pVp"), k = Math.min(vp.clientWidth / 1600, vp.clientHeight / 900) * 0.98; $("stage").style.transform = `translate(-50%,-50%) scale(${k})`; }
-const step = d => { PI = Math.max(0, Math.min(PN - 1, PI + d)); showSl(); };
-$("pPrev").onclick = () => step(-1); $("pNext").onclick = () => step(1);
-$("pClose").onclick = () => { PI = 0; go(LASTV, LASTV === "edit" ? CUR : ""); };
+function openPres(m) { $("doc").innerHTML = docHtml(m); $("pTitle").textContent = "W" + m.no + " · " + dShort(m.date); $("pVp").scrollTop = 0;
+  const L = live(), i = L.findIndex(x => x.id === m.id); $("pPrev").disabled = i >= L.length - 1; $("pNext").disabled = i <= 0; $("pNo").textContent = ""; }
+const stepM = d => { const L = live(), i = L.findIndex(x => x.id === CUR), j = i - d; if (j >= 0 && j < L.length) go("show", L[j].id); };
+$("pPrev").onclick = () => stepM(-1); $("pNext").onclick = () => stepM(1);
+$("pWord").onclick = () => { const m = cur(); if (m) exportWord(m); };
+$("pEdit").onclick = () => go("edit", CUR);
+$("pClose").onclick = () => go(LASTV, LASTV === "edit" ? CUR : "");
 $("pFull").onclick = () => { const el = $("vPres"); (document.fullscreenElement ? document.exitFullscreen() : el.requestFullscreen ? el.requestFullscreen() : Promise.reject()).catch(() => toast("เบราว์เซอร์นี้เต็มจอไม่ได้ · กด F11 แทน")); };
-$("pVp").onclick = e => { const r = $("pVp").getBoundingClientRect(); step(e.clientX - r.left < r.width / 3 ? -1 : 1); };
-addEventListener("resize", () => { if (VIEW === "show") fitStage(); });
-document.addEventListener("fullscreenchange", () => setTimeout(fitStage, 60));
-addEventListener("keydown", e => { if (VIEW !== "show") return; if (["ArrowRight", "PageDown", " ", "Enter"].includes(e.key)) { e.preventDefault(); step(1); } else if (["ArrowLeft", "PageUp", "Backspace"].includes(e.key)) { e.preventDefault(); step(-1); }
-  else if (e.key === "Home") { PI = 0; showSl(); } else if (e.key === "End") { PI = PN - 1; showSl(); } else if (e.key === "Escape" && !document.fullscreenElement) $("pClose").click(); });
-let TX = null; $("pVp").addEventListener("touchstart", e => TX = e.touches[0].clientX, { passive: true });
-$("pVp").addEventListener("touchend", e => { if (TX == null) return; const d = e.changedTouches[0].clientX - TX; if (Math.abs(d) > 40) { step(d < 0 ? 1 : -1); e.preventDefault(); } TX = null; });
+addEventListener("keydown", e => { if (VIEW !== "show") return; if (e.key === "Escape" && !document.fullscreenElement) $("pClose").click(); });
 
 /* ---------- Export Word ตามแบบฟอร์มเดิม ---------- */
 async function exportWord(m) {
