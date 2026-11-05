@@ -221,10 +221,15 @@
   .doc .sec { font-weight: 700; margin: 1.1em 0 .45em; font-size: 1.1em; }
   .doc td.done { background: #00b050; text-align: center; } .doc td.prog { background: #ffff00; text-align: center; } .doc td.todo { text-align: center; }
   .doc tr.redt td { color: #e00; }
+  .doc td.tp { font-weight: 700; color: #14213d; background: #f5f7fb; }
+  .doc td.ow, .doc td.en, .paper td.ow, .paper td.en { vertical-align: middle; text-align: center; white-space: nowrap; }
+  .doc td.ow { white-space: normal; } .doc td.en { font-weight: 700; } .doc td.en.todo { color: #50607e; font-weight: 400; }
+  .doc tr:not(:first-child):not(:nth-child(2)) td { line-height: 1.55; }
+  .paper td.tp { font-weight: 700; background: #f5f7fb; } .paper td.ow { white-space: normal; }
   .doc .tg { display: inline-block; margin: 4px 6px 0 0; font-size: .72em; font-weight: 700; padding: 1px 9px; border-radius: 999px; background: #fff1d6; color: #8a5a00; }
   .doc .tg.c { background: #eef1f6; color: #50607e; }
   .doc .who { line-height: 1.7; } .doc .who small { color: #666; }
-  @media (max-width: 760px) { .pres .vp { padding: 10px 6px 30px; } .doc { font-size: 13px; } .doc .lbl { width: 32%; } }
+  @media (max-width: 760px) { .pres .vp { padding: 10px 6px 30px; } .doc { font-size: 13px; } .doc .lbl { width: 32%; } .doc th, .doc td { padding: .4em .4em; } .doc td.en { font-size: .88em; padding: .4em .3em; } }
   @media (max-width: 760px) { .pform { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 1000px) { .main { grid-template-columns: 1fr; } .side { position: static; max-height: none; } }
   @media (max-width: 760px) { .form { grid-template-columns: 1fr 1fr; } .fld.w2, .fld.w4 { grid-column: 1 / -1; } .hero h1 { font-size: 21px; } .paper { padding: 14px; } .card { padding: 16px; } }
@@ -482,7 +487,11 @@ function rowsHtml(m) {
     <td><select class="st ${r.s}" data-k="s" aria-label="สถานะ">${Object.keys(ST).map(k => `<option value="${k}" ${k === r.s ? "selected" : ""}>${ST[k]}</option>`).join("")}</select></td>
     <td class="ac"><button type="button" data-mv="-1" title="เลื่อนขึ้น">↑</button> <button type="button" data-mv="1" title="เลื่อนลง">↓</button> <button type="button" class="x" data-rm="1" title="ลบแถว (กดสองครั้ง)">✕</button><label title="ตัวแดงในรายงาน"><input type="checkbox" data-k="red" ${r.red ? "checked" : ""}>แดง</label><br><label class="evp" title="ขึ้นในหน้า 'ต้องให้ EVP ตัดสินใจ / ติดตาม' ตอนนำเสนอ"><input type="checkbox" data-k="evp" ${r.evp ? "checked" : ""}>ขอ EVP ตัดสินใจ</label></td></tr>`).join("");
 }
-const endTxt = r => r.s === "done" ? "เสร็จสิ้น" : r.d ? dLong(r.d) : ST[r.s];
+const dMid = s => { if (!s) return ""; const [y, m, d] = s.split("-").map(Number); return d + " " + TH_S[m - 1] + " " + y; };   /* 15 พ.ย. 2026 (ไม่ตัดบรรทัดในช่องกำหนดเสร็จ) */
+const endTxt = r => r.s === "done" ? "เสร็จสิ้น" : r.d ? dMid(r.d) : ST[r.s];
+const ownTxt = o => String(o || "").split(/\s*[,，、/]\s*|\s+และ\s+/).map(x => x.trim()).filter(Boolean).join(", ");
+/* แถวงาน: หัวข้อเดียวกันติดกัน = รวมช่องหัวข้อ (rowspan) */
+const topicSpan = rows => rows.map((r, i) => { if (i && (rows[i - 1].p || "") === (r.p || "") && r.p) return 0; let n = 1; while (r.p && rows[i + n] && (rows[i + n].p || "") === (r.p || "")) n++; return n; });
 const tm = v => v ? v.replace(/^(\d{1,2}):(\d{2}).*$/, "$1:$2") + " น." : "";
 function paperHtml(m) {
   return `<div class="lg"><img src="data:image/png;base64,${LOGO}" alt="PCG"></div>
@@ -494,7 +503,7 @@ function paperHtml(m) {
   <div class="sec">สรุปประเด็นสำคัญจากการประชุม</div>
   <table><tr><td class="nv" colspan="4">ประจำวันที่ ${esc(dLong(m.date))}</td></tr>
     <tr><td class="nv">หัวข้อโครงการ</td><td class="nv">งานที่ต้องทำ (Task)</td><td class="nv">ผู้รับผิดชอบ</td><td class="nv">กำหนดเสร็จ</td></tr>
-    ${m.rows.map(r => `<tr class="${r.red ? "redt" : ""}"><td>${esc(r.p)}</td><td>${esc(r.t)}</td><td>${esc(r.o)}</td><td class="${r.s === "done" ? "done" : r.s === "prog" ? "prog" : ""}">${esc(endTxt(r))}</td></tr>`).join("")}</table>`;
+    ${(() => { const sp = topicSpan(m.rows); return m.rows.map((r, i) => `<tr class="${r.red ? "redt" : ""}">${sp[i] ? `<td class="tp" rowspan="${sp[i]}">${esc(r.p)}</td>` : ""}<td>${esc(r.t)}</td><td class="ow">${esc(ownTxt(r.o))}</td><td class="en ${r.s}">${esc(endTxt(r))}</td></tr>`).join(""); })()}</table>`;
 }
 const fitAreas = () => document.querySelectorAll(".rt textarea").forEach(a => { a.style.height = "auto"; a.style.height = a.scrollHeight + "px"; });
 const repaint = () => { const m = cur(); if (m) $("paper").innerHTML = paperHtml(m); renderList(); };
@@ -649,8 +658,8 @@ function docHtml(m) {
     <tr><td class="lbl">เวลาเริ่มประชุม</td><td>${esc(tm(m.t1))}</td><td class="lbl">เวลาเลิกประชุม</td><td>${esc(tm(m.t2))}</td></tr></table>
   <div class="sec">สรุปประเด็นสำคัญจากการประชุม</div>
   <table><tr><td class="nv" colspan="4">ประจำวันที่ ${esc(dLong(m.date))}</td></tr>
-    <tr><td class="nv" style="width:19%">หัวข้อโครงการ</td><td class="nv">งานที่ต้องทำ (Task)</td><td class="nv" style="width:17%">ผู้รับผิดชอบ</td><td class="nv" style="width:17%">กำหนดเสร็จ</td></tr>
-    ${m.rows.map(r => `<tr class="${r.red ? "redt" : ""}"><td>${esc(r.p)}</td><td>${esc(r.t)}${r.evp || (+r.carry || 0) >= 2 || late(r, m) ? "<br>" : ""}${r.evp ? '<span class="tg">ขอ EVP ตัดสินใจ</span>' : ""}${(+r.carry || 0) >= 2 && r.s !== "done" ? `<span class="tg c">ค้าง ${r.carry} สัปดาห์</span>` : ""}${late(r, m) ? `<span class="tg">เลยกำหนด ${dayDiff(r.d, m.date)} วัน</span>` : ""}</td><td>${esc(r.o)}</td><td class="${r.s}">${esc(endTxt(r))}</td></tr>`).join("") || `<tr><td colspan="4" style="text-align:center;color:#888">ยังไม่มีงาน</td></tr>`}</table>`;
+    <tr><td class="nv" style="width:18%">หัวข้อโครงการ</td><td class="nv">งานที่ต้องทำ (Task)</td><td class="nv" style="width:15%">ผู้รับผิดชอบ</td><td class="nv" style="width:14%">กำหนดเสร็จ</td></tr>
+    ${(() => { const sp = topicSpan(m.rows); return m.rows.map((r, i) => `<tr class="${r.red ? "redt" : ""}">${sp[i] ? `<td class="tp" rowspan="${sp[i]}">${esc(r.p)}</td>` : ""}<td>${esc(r.t)}${r.evp || (+r.carry || 0) >= 2 || late(r, m) ? "<br>" : ""}${r.evp ? '<span class="tg">ขอ EVP ตัดสินใจ</span>' : ""}${(+r.carry || 0) >= 2 && r.s !== "done" ? `<span class="tg c">ค้าง ${r.carry} สัปดาห์</span>` : ""}${late(r, m) ? `<span class="tg">เลยกำหนด ${dayDiff(r.d, m.date)} วัน</span>` : ""}</td><td class="ow">${esc(ownTxt(r.o))}</td><td class="en ${r.s}">${esc(endTxt(r))}</td></tr>`).join(""); })() || `<tr><td colspan="4" style="text-align:center;color:#888">ยังไม่มีงาน</td></tr>`}</table>`;
 }
 function openPres(m) { $("doc").innerHTML = docHtml(m); $("pTitle").textContent = "W" + m.no + " · " + dShort(m.date); $("pVp").scrollTop = 0;
   const L = live(), i = L.findIndex(x => x.id === m.id); $("pPrev").disabled = i >= L.length - 1; $("pNext").disabled = i <= 0; $("pNo").textContent = ""; }
@@ -680,11 +689,11 @@ async function exportWord(m) {
     new D.TableRow({ children: [cell("วันที่ประชุม", { b: true }), cell(dLong(m.date)), cell("สถานที่ประชุม", { b: true }), cell(m.place)] }),
     new D.TableRow({ children: [cell("เวลาเริ่มประชุม", { b: true }), cell(tm(m.t1)), cell("เวลาเลิกประชุม", { b: true }), cell(tm(m.t2))] }) ] });
   const nv = (t, o) => cell(t, Object.assign({ fill: "002060", color: "FFFFFF", center: true }, o || {}));
-  const body = new D.Table({ width: { size: W, type: D.WidthType.DXA }, columnWidths: [1745, 4100, 1667, 1560], rows: [
+  const body = new D.Table({ width: { size: W, type: D.WidthType.DXA }, columnWidths: [1700, 3880, 1700, 1792], rows: [
     new D.TableRow({ children: [nv("ประจำวันที่ " + dLong(m.date), { span: 4, size: 28 })] }),
     new D.TableRow({ tableHeader: true, children: [nv("หัวข้อโครงการ"), nv("งานที่ต้องทำ (Task)"), nv("ผู้รับผิดชอบ"), nv("กำหนดเสร็จ")] }),
     ...m.rows.map(r => { const c = r.red ? "EE0000" : "000000";
-      return new D.TableRow({ children: [cell(r.p, { size: 28, color: c }), cell(r.t, { color: c }), cell(r.o, { color: c }),
+      return new D.TableRow({ children: [cell(r.p, { size: 28, color: c }), cell(r.t, { color: c }), cell(ownTxt(r.o), { color: c, center: true }),
         cell(endTxt(r), { color: c, center: true, fill: r.s === "done" ? "00B050" : r.s === "prog" ? "FFFF00" : undefined })] }); }) ] });
   const logo = Uint8Array.from(atob(LOGO), ch => ch.charCodeAt(0));
   const doc = new D.Document({ sections: [{
