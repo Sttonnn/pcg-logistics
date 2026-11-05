@@ -203,6 +203,8 @@
   .mlist .w { font-family: var(--f-disp); font-weight: 700; font-size: 17px; color: var(--navy2); white-space: nowrap; }
   .mlist .mini { display: flex; height: 8px; border-radius: 999px; overflow: hidden; background: var(--soft); width: 120px; margin-top: 5px; }
   .mlist .mini i { display: block; height: 100%; }
+  .mlist tr.mg td { background: #e9effa; cursor: pointer; font-size: 15px; padding: 9px 14px; border-top: 2px solid #c9d6ee; }
+  .mlist tr.mg:hover td { background: #dfe8f8; } .mlist tr.mg .car { display: inline-block; width: 18px; color: var(--navy2); }
   .mlist .acts { display: flex; gap: 6px; justify-content: flex-end; white-space: nowrap; }
   .mlist .acts .pbtn, .mlist .acts .gbtn { padding: 7px 12px; font-size: 13.5px; }
   .pres .vp { overflow: auto; background: #dfe5ef; padding: 24px 16px 48px; }
@@ -392,6 +394,13 @@ addEventListener("hashchange", route);
 
 /* ---------- หน้ารายงาน (เลือกรายงาน → นำเสนอ / แก้ไข) ---------- */
 const cnt = m => { const c = { done: 0, prog: 0, todo: 0 }; m.rows.forEach(r => c[r.s] = (c[r.s] || 0) + 1); return c; };
+/* 5 พ.ย. ผู้ใช้สั่ง: หน้ารายการจัดกลุ่มตามเดือน · ค่าเริ่ม = กาง 2 เดือนล่าสุด · จำค่าพับ/กางในเครื่อง */
+let MOPEN = new Set(); try { MOPEN = new Set(JSON.parse(localStorage.getItem("pcg-mom-mopen") || "[]")); } catch (e) {}
+function monthGroups(L) { const g = new Map(); L.forEach(m => { const k = (m.date || "").slice(0, 7) || "ไม่ระบุ"; if (!g.has(k)) g.set(k, []); g.get(k).push(m); }); return [...g.entries()]; }
+document.addEventListener("click", e => { const t = e.target.closest("[data-mg]"); if (!t) return;
+  if (!MOPEN.size) monthGroups(live()).slice(0, 2).forEach(([k]) => MOPEN.add(k));
+  const k = t.dataset.mg; MOPEN.has(k) ? MOPEN.delete(k) : MOPEN.add(k); if (!MOPEN.size) MOPEN.add("__none");
+  try { localStorage.setItem("pcg-mom-mopen", JSON.stringify([...MOPEN])); } catch (er) {} renderHome(); });
 function renderHome() {
   const q = ($("hq") || {}).value || "", L = live().filter(m => !q || searchTxt(m).includes(q.toLowerCase()));
   const keep = document.activeElement && document.activeElement.id === "hq";
@@ -399,12 +408,13 @@ function renderHome() {
     <div class="tools"><button type="button" class="pbtn" data-new="1">＋ ประชุมสัปดาห์ถัดไป</button><button type="button" class="gbtn" data-imp="1">⇪ นำเข้าไฟล์ Word เดิม</button>
       <button type="button" class="gbtn" data-people="1">👥 รายชื่อบุคคล (${people().length})</button><input class="srch" id="hq" type="search" placeholder="ค้นหาหัวข้อ / งาน / ชื่อ" value="${esc(q)}" aria-label="ค้นหารายงาน"></div></section>
     <div class="mlist"><div style="overflow-x:auto"><table><thead><tr><th>ครั้งที่</th><th>วันที่ประชุม</th><th>สถานที่ · เวลา</th><th>งาน</th><th>สถานะงาน</th><th>บันทึก</th><th></th></tr></thead><tbody>
-    ${L.map(m => { const c = cnt(m), n = m.rows.length || 1, ev = evpRows(m).length;
+    ${monthGroups(L).map(([ym, G], gi) => { const open = q || MOPEN.has(ym) || (!MOPEN.size && gi < 2), gd = G.reduce((a, m) => a + cnt(m).done, 0), gn = G.reduce((a, m) => a + m.rows.length, 0);
+      return `<tr class="mg ${open ? "on" : ""}" data-mg="${ym}"><td colspan="7"><span class="car">${open ? "▾" : "▸"}</span><b>${TH_M[+ym.slice(5) - 1]} ${+ym.slice(0, 4) + 543}</b><span class="hint"> · ${G.length} ครั้ง · ${gn} งาน · เสร็จ ${gd}</span></td></tr>` + (open ? G.map(m => { const c = cnt(m), n = m.rows.length || 1, ev = evpRows(m).length;
       return `<tr><td class="w">W${esc(m.no)}</td><td><b>${esc(dLong(m.date))}</b></td><td>${esc(m.place)}<br><span class="hint">${esc(tRange(m))}</span></td>
         <td>${m.rows.length} งาน${ev ? `<br><span class="badge">ติดตาม/ขอตัดสินใจ ${ev}</span>` : ""}</td>
         <td><span class="hint">เสร็จ ${c.done} · กำลังทำ ${c.prog + c.todo}</span><div class="mini"><i style="width:${c.done / n * 100}%;background:var(--ok)"></i><i style="width:${c.prog / n * 100}%;background:#f2c200"></i><i style="width:${c.todo / n * 100}%;background:#c3ccdc"></i></div></td>
         <td>${m.final ? '<span class="badge ok">✓ ปิดบันทึก</span>' : '<span class="badge">ร่าง</span>'}</td>
-        <td><div class="acts"><button type="button" class="pbtn" data-show="${m.id}">📄 ดูรายงาน</button><button type="button" class="gbtn" data-edit="${m.id}">✎ แก้ไข</button><button type="button" class="gbtn" data-word="${m.id}">⬇ Word</button></div></td></tr>`; }).join("")
+        <td><div class="acts"><button type="button" class="pbtn" data-show="${m.id}">📄 ดูรายงาน</button><button type="button" class="gbtn" data-edit="${m.id}">✎ แก้ไข</button><button type="button" class="gbtn" data-word="${m.id}">⬇ Word</button></div></td></tr>`; }).join("") : ""); }).join("")
       || `<tr><td colspan="7" class="empty">${DB.some(m => !m.cfg) ? "ไม่พบรายงานที่ค้นหา" : 'ยังไม่มีรายงาน · กด "นำเข้าไฟล์ Word เดิม" หรือ "ประชุมสัปดาห์ถัดไป"'}</td></tr>`}</tbody></table></div></div>`;
   if (keep) { const h = $("hq"); h.focus(); h.setSelectionRange(h.value.length, h.value.length); }
 }
