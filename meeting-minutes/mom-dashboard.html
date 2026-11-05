@@ -221,6 +221,9 @@
   .doc .sec { font-weight: 700; margin: 1.1em 0 .45em; font-size: 1.1em; }
   .doc td.done { background: #00b050; text-align: center; } .doc td.prog { background: #ffff00; text-align: center; } .doc td.todo { text-align: center; }
   .doc tr.redt td { color: #e00; }
+  .bds { display: flex; flex-wrap: wrap; gap: 6px; min-width: 150px; }
+  .bds .bd { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border: 1.5px solid #cfd8e8; border-radius: 999px; cursor: pointer; font-size: 14px; font-weight: 600; white-space: nowrap; }
+  .bds .bd:has(input:checked) { background: #e8efff; border-color: #2f5bd3; color: #1d3f9e; }
   .doc td.tp { font-weight: 700; color: #14213d; background: #f5f7fb; }
   .doc td.ow, .doc td.en, .paper td.ow, .paper td.en { vertical-align: middle; text-align: center; white-space: nowrap; }
   .doc td.ow { white-space: normal; } .doc td.en { font-weight: 700; } .doc td.en.todo { color: #50607e; font-weight: 400; }
@@ -712,6 +715,10 @@ const norm = s => (s || "").toLowerCase().trim().replace(/^(พี่|น้อ�
 function boardOf(owner, team) { const toks = (owner || "").split(/[,/&]| และ /).map(norm).filter(Boolean);
   for (const t of toks) for (const b of team) { const ns = [b.n, b.sub, b.own].map(norm).filter(Boolean); if (ns.some(n => n.includes(t) || t.includes(n))) return b.k; }
   return team[0].k; }
+/* หลายคนในช่องผู้รับผิดชอบ → คืนทุกบอร์ดที่ชื่อตรง (ไม่ตรงเลย = บอร์ดแรก) */
+function boardsOf(owner, team) { const toks = (owner || "").split(/[,/&]| และ /).map(norm).filter(Boolean), out = [];
+  for (const t of toks) for (const b of team) { const ns = [b.n, b.sub, b.own].map(norm).filter(Boolean); if (ns.some(n => n.includes(t) || t.includes(n)) && !out.includes(b.k)) out.push(b.k); }
+  return out.length ? out : [team[0].k]; }
 async function taskDlg(m) {
   if (location.protocol === "file:") { toast("ต้องเปิดจากเว็บจริงถึงจะส่งได้"); return; }
   const L = m.rows.filter(r => r.s !== "done" && !r.task && (r.t || r.p));
@@ -721,23 +728,26 @@ async function taskDlg(m) {
     const a = await r.json(); const tm = a.find(x => x.id === "CFG:team"); if (tm && Array.isArray(tm.members) && tm.members.length) team = clean(tm.members);
     a.forEach(x => { if (x.bd !== undefined && x.no) { const b = x.bd || "ton"; nos[b] = Math.max(nos[b] || 0, +x.no || 0); } });
   } catch (e) { toast("เชื่อม Daily Task ไม่ได้: " + e.message); return; }
-  dbox.innerHTML = `<h3>ส่ง Task เข้า Daily Task</h3><div class="hint">ส่งเฉพาะงานที่ยังไม่เสร็จและยังไม่เคยส่ง · เลือกบอร์ด (คน) ได้ · ส่งแล้วแก้ต่อที่หน้า Daily Task</div>
-    <div style="overflow-x:auto"><table><thead><tr><th><input type="checkbox" id="tAll" checked aria-label="เลือกทั้งหมด"></th><th>งาน</th><th>ผู้รับผิดชอบ</th><th>Target</th><th>บอร์ด</th></tr></thead><tbody>
+  dbox.innerHTML = `<h3>ส่ง Task เข้า Daily Task</h3><div class="hint">ส่งเฉพาะงานที่ยังไม่เสร็จและยังไม่เคยส่ง · เลือกได้หลายคนต่องาน (1 คน = 1 งานในบอร์ดของคนนั้น) · ส่งแล้วแก้ต่อที่หน้า Daily Task</div>
+    <div style="overflow-x:auto"><table><thead><tr><th><input type="checkbox" id="tAll" checked aria-label="เลือกทั้งหมด"></th><th>งาน</th><th>ผู้รับผิดชอบ</th><th>Target</th><th>ส่งให้ (เลือกได้หลายคน)</th></tr></thead><tbody>
     ${L.map((r, i) => `<tr><td><input type="checkbox" data-ti="${i}" checked aria-label="เลือก"></td><td><b>${esc(r.p)}</b><br>${esc(r.t)}</td><td>${esc(r.o)}</td><td>${esc(r.d ? dShort(r.d) : "–")}</td>
-      <td><select data-tb="${i}" aria-label="บอร์ด">${team.map(b => `<option value="${esc(b.k)}" ${b.k === boardOf(r.o, team) ? "selected" : ""}>${esc(b.n)}</option>`).join("")}</select></td></tr>`).join("")}</tbody></table></div>
+      <td><div class="bds">${team.map(b => `<label class="bd"><input type="checkbox" data-tb="${i}" value="${esc(b.k)}" ${boardsOf(r.o, team).includes(b.k) ? "checked" : ""}><span>${esc(b.n)}</span></label>`).join("")}</div></td></tr>`).join("")}</tbody></table></div>
     <div class="ft"><span class="sp hint">ความคืบหน้าเริ่มต้น: ยังไม่เริ่ม 0% · กำลังดำเนินการ 25%</span><button type="button" class="gbtn" data-x="1">ยกเลิก</button><button type="button" class="pbtn" id="tOk">ส่ง</button></div>`;
   dlg.hidden = false;
   $("tAll").onchange = e => dbox.querySelectorAll("[data-ti]").forEach(c => c.checked = e.target.checked);
   $("tOk").onclick = async () => {
     const at = nowIso(), out = [];
-    dbox.querySelectorAll("[data-ti]:checked").forEach(c => { const i = +c.dataset.ti, r = L[i], bd = dbox.querySelector(`[data-tb="${i}"]`).value;
-      nos[bd] = (nos[bd] || 0) + 1; const prog = r.s === "prog" ? 25 : 0, id = "MOM-" + r.id;
+    let none = 0;
+    dbox.querySelectorAll("[data-ti]:checked").forEach(c => { const i = +c.dataset.ti, r = L[i], bds = [...dbox.querySelectorAll(`[data-tb="${i}"]:checked`)].map(x => x.value);
+      if (!bds.length) { none++; return; }
+      bds.forEach(bd => { nos[bd] = (nos[bd] || 0) + 1; const prog = r.s === "prog" ? 25 : 0, id = "MOM-" + r.id + (bds.length > 1 ? "-" + bd : "");
       out.push({ r, t: { id, bd, no: nos[bd], title: clean((r.p ? r.p + " · " : "") + r.t), owner: clean(r.o), pri: "M", start: m.date, target: r.d || "", prog,
-        note: "จากบันทึกการประชุม Project Weekly W" + m.no + " (" + dShort(m.date) + ")", created: at, u: at, by: "MoM", hist: [{ at, from: null, p: prog, by: "MoM" }] } }); });
+        note: "จากบันทึกการประชุม Project Weekly W" + m.no + " (" + dShort(m.date) + ")", created: at, u: at, by: "MoM", hist: [{ at, from: null, p: prog, by: "MoM" }] } }); }); });
+    if (none) { toast("มี " + none + " งานที่ยังไม่ได้เลือกคน · ติ๊กชื่ออย่างน้อย 1 คน หรือเอาเครื่องหมายหน้างานออก"); return; }
     if (!out.length) { closeDlg(); return; }
     try { const r = await fetch(SBU + "daily_tasks?on_conflict=id", { method: "POST", headers: sbH({ Prefer: "resolution=ignore-duplicates,return=minimal" }),
         body: JSON.stringify(out.map(x => ({ id: x.t.id, rec: x.t, updated_at: at }))) }); if (!r.ok) throw new Error(r.status);
-      out.forEach(x => x.r.task = x.t.id); save(m, true); closeDlg(); render(); toast("ส่งเข้า Daily Task แล้ว " + out.length + " งาน");
+      out.forEach(x => x.r.task = x.r.task && x.r.task !== x.t.id ? x.r.task + "," + x.t.id : x.t.id); save(m, true); closeDlg(); render(); toast("ส่งเข้า Daily Task แล้ว " + out.length + " งาน");
     } catch (e) { toast("ส่งไม่สำเร็จ: " + e.message); } };
 }
 
