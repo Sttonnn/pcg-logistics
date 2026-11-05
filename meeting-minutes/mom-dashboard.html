@@ -34,6 +34,50 @@
   .hero h1 { font-size: 26px; line-height: 1.2; }
   .sync { font-size: 12.5px; font-weight: 600; padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.16); white-space: nowrap; }
   .sync.bad { background: var(--gold); color: #2b1b00; }
+  /* 5 พ.ย. ออกแบบใหม่ (ผู้ใช้ขอ: กดง่าย ไม่ซ้อน · ไอคอน/ภาพ · ปุ่ม Update) */
+  .hero { position: relative; overflow: hidden; padding: 26px 30px; min-height: 120px; }
+  .hero::before { content: ""; position: absolute; width: 380px; height: 380px; right: -90px; top: -190px; border-radius: 50%; background: radial-gradient(circle, rgba(127,224,210,.35), transparent 65%); }
+  .hero::after { content: ""; position: absolute; width: 260px; height: 260px; left: 32%; bottom: -200px; border-radius: 50%; background: radial-gradient(circle, rgba(255,211,77,.22), transparent 65%); }
+  .hero > * { position: relative; z-index: 1; }
+  .hero .art { width: 230px; height: 106px; flex: none; margin: -6px 0 -10px; filter: drop-shadow(0 10px 18px rgba(0,0,0,.18)); }
+  .hero .sync { order: 5; }
+  svg.i { flex: none; vertical-align: -3px; }
+  .pbtn, .gbtn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; transition: transform .12s, box-shadow .12s, background .12s; }
+  .pbtn:hover { transform: translateY(-1px); box-shadow: 0 12px 22px rgba(29,79,168,.32); } .gbtn:hover { background: #fff; border-color: #c4d0e4; }
+  .kps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+  .kp { background: var(--card); border-radius: 22px; padding: 16px 18px; box-shadow: var(--shadow); display: flex; gap: 14px; align-items: center; position: relative; overflow: hidden; }
+  .kp::after { content: ""; position: absolute; right: -30px; top: -30px; width: 110px; height: 110px; border-radius: 50%; background: var(--kc); opacity: .08; }
+  .kp .kic { width: 50px; height: 50px; border-radius: 16px; display: grid; place-items: center; color: #fff; background: var(--kg); box-shadow: 0 8px 18px var(--ks); flex: none; }
+  .kp div { display: grid; min-width: 0; } .kp small { font-size: 12.5px; color: var(--ink2); font-weight: 600; }
+  .kp b { font-family: var(--f-disp); font-size: 30px; line-height: 1.15; color: var(--kc); } .kp b i { font-style: normal; font-size: 14px; color: var(--ink2); font-weight: 600; }
+  .kp span:last-child { font-size: 12.5px; color: var(--ink3); }
+  .kp .kbar { display: block; height: 6px; border-radius: 99px; background: #e6ecf5; margin: 3px 0 4px; overflow: hidden; } .kp .kbar u { display: block; height: 100%; background: linear-gradient(90deg, #34c38f, #0f9a6e); border-radius: 99px; }
+  .kp.k1 { --kc: #1d4fa8; --kg: linear-gradient(135deg, #2f6bea, #0f2a5c); --ks: rgba(29,79,168,.3); }
+  .kp.k2 { --kc: #0f9a6e; --kg: linear-gradient(135deg, #34c38f, #0a7a56); --ks: rgba(15,154,110,.3); }
+  .kp.k3 { --kc: #c27c00; --kg: linear-gradient(135deg, #ffc533, #e08a00); --ks: rgba(224,138,0,.3); }
+  .kp.k4 { --kc: #d9480f; --kg: linear-gradient(135deg, #ff8a5b, #d9480f); --ks: rgba(217,72,15,.28); }
+  .hic { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; color: var(--navy2); background: #e6eefe; flex: none; }
+  .ch h2 { display: flex; align-items: center; }
+  .sbox { flex: 1 1 240px; display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--soft); border-radius: 12px; padding: 0 12px; color: var(--ink3); }
+  .sbox input { border: 0; background: transparent; padding: 9px 0; width: 100%; outline: none; color: var(--ink); }
+  .sbox:focus-within { border-color: var(--navy2); background: #fff; }
+  .mlist .w { display: inline-grid; place-items: center; min-width: 46px; height: 46px; padding: 0 6px; border-radius: 14px; color: #fff !important; background: linear-gradient(135deg, #2f6bea, #0f2a5c); box-shadow: 0 6px 14px rgba(29,79,168,.25); font-size: 16px !important; }
+  .mlist .il { display: flex; align-items: center; gap: 6px; } .mlist .il svg { color: var(--navy2); } .mlist .il.hint svg { color: var(--ink3); }
+  .mlist .pc { font-family: var(--f-disp); font-weight: 700; color: var(--ok); font-size: 15px; }
+  .mlist .mini { width: 150px; }
+  .mlist .mic { display: inline-flex; color: var(--navy2); margin-right: 6px; vertical-align: -2px; }
+  .mlist tbody tr:not(.mg) td { padding-top: 13px; padding-bottom: 13px; }
+  .ch .n { width: 38px; height: 38px; border-radius: 12px; }
+  .ch .n.c2 { background: linear-gradient(135deg, #8b5cf6, #5b21b6); } .ch .n.c3 { background: linear-gradient(135deg, #14b8a6, #0f766e); } .ch .n.c4 { background: linear-gradient(135deg, #ff8a5b, #d9480f); }
+  .ebar2 { position: sticky; top: 8px; z-index: 30; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; background: rgba(255,255,255,.92); backdrop-filter: blur(10px); border-radius: 18px; padding: 10px 12px; box-shadow: 0 10px 26px rgba(15,42,92,.14); border: 1px solid var(--line); }
+  .ebar2 .et { flex: 1; min-width: 180px; display: grid; } .ebar2 .et b { font-family: var(--f-disp); font-size: 16px; }
+  .ust { font-size: 12.5px; color: var(--ink3); display: inline-flex; align-items: center; gap: 4px; } .ust.dirty { color: #c25400; font-weight: 700; } .ust.ok { color: var(--ok); font-weight: 600; }
+  .ubtn { border: 0; border-radius: 14px; padding: 11px 22px; font-weight: 800; font-size: 15.5px; color: #fff; background: linear-gradient(135deg, #34c38f, #0a7a56); box-shadow: 0 8px 18px rgba(15,154,110,.32); display: inline-flex; align-items: center; gap: 8px; }
+  .ubtn:hover { transform: translateY(-1px); } .ubtn:disabled { opacity: .6; }
+  .ubtn.pulse { animation: upl 1.6s ease-in-out infinite; }
+  @keyframes upl { 0%, 100% { box-shadow: 0 8px 18px rgba(15,154,110,.32), 0 0 0 0 rgba(52,195,143,.55); } 50% { box-shadow: 0 8px 18px rgba(15,154,110,.32), 0 0 0 9px rgba(52,195,143,0); } }
+  @media (max-width: 1100px) { .kps { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hero .art { display: none; } }
+  @media (max-width: 560px) { .kps { grid-template-columns: 1fr 1fr; gap: 10px; } .kp { padding: 12px; gap: 10px; } .kp .kic { width: 40px; height: 40px; } .kp b { font-size: 24px; } .ubtn { padding: 10px 16px; } .ebar2 .et { order: -1; flex-basis: 100%; } }
 
   .main { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 18px; align-items: start; }
   .side { background: var(--card); border-radius: 22px; padding: 14px; box-shadow: var(--shadow); display: grid; gap: 8px; position: sticky; top: 10px; max-height: calc(100vh - 20px); overflow: auto; }
@@ -256,16 +300,23 @@
     <a class="back" href="../index.html">← หน้าหลัก</a>
     <span class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6a1 1 0 0 1 1 1v1H8V5a1 1 0 0 1 1-1z"/><path d="M8 5H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><path d="M8 12h8M8 16h5"/></svg></span>
     <div class="t"><small>PCG · Project Team · Weekly Meeting</small><h1>บันทึกการประชุม Project Weekly</h1></div>
-    <nav class="row" aria-label="มุมมอง"><button type="button" class="hbtn" data-go="home">📊 หน้ารายงาน</button><button type="button" class="hbtn" data-go="edit">✎ ทำ / แก้ไขรายงาน</button></nav>
     <span class="sync" id="sync">กำลังเชื่อมข้อมูล…</span>
+    <svg class="art" viewBox="0 0 260 120" aria-hidden="true"><defs><linearGradient id="ag" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".95"/><stop offset="1" stop-color="#cfe3ff" stop-opacity=".85"/></linearGradient></defs>
+      <rect x="18" y="14" width="150" height="96" rx="14" fill="rgba(255,255,255,.12)"/><rect x="30" y="26" width="150" height="88" rx="14" fill="url(#ag)"/>
+      <rect x="44" y="40" width="60" height="8" rx="4" fill="#1d4fa8"/><rect x="44" y="56" width="120" height="6" rx="3" fill="#c7d5ee"/><rect x="44" y="68" width="98" height="6" rx="3" fill="#c7d5ee"/><rect x="44" y="80" width="110" height="6" rx="3" fill="#c7d5ee"/>
+      <circle cx="150" cy="44" r="9" fill="#0f9a6e"/><path d="m145.5 44 3 3 5.5-6" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="44" y="94" width="40" height="10" rx="5" fill="#ffd34d"/><rect x="90" y="94" width="40" height="10" rx="5" fill="#34c38f"/>
+      <circle cx="205" cy="44" r="16" fill="#ffd34d"/><circle cx="205" cy="38" r="6" fill="#0f2a5c"/><path d="M195 52c2-6 18-6 20 0" fill="#0f2a5c"/>
+      <circle cx="232" cy="72" r="14" fill="#7fe0d2"/><circle cx="232" cy="67" r="5" fill="#0f2a5c"/><path d="M224 79c2-5 14-5 16 0" fill="#0f2a5c"/>
+      <circle cx="200" cy="92" r="12" fill="#a9c6ff"/><circle cx="200" cy="88" r="4.5" fill="#0f2a5c"/><path d="M193 98c2-4 12-4 14 0" fill="#0f2a5c"/></svg>
   </header>
 
   <section id="vHome" class="col" hidden></section>
   <div class="main" id="vEdit" hidden>
     <aside class="side">
-      <button type="button" class="pbtn" id="newBtn">＋ ประชุมสัปดาห์ถัดไป</button>
-      <button type="button" class="gbtn" data-imp="1">⇪ นำเข้าไฟล์ Word เดิม</button>
-      <button type="button" class="gbtn" data-people="1">👥 รายชื่อบุคคล</button>
+      <button type="button" class="pbtn" id="newBtn"><svg class="i" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> ประชุมสัปดาห์ถัดไป</button>
+      <button type="button" class="gbtn" data-imp="1"><svg class="i" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg> นำเข้าไฟล์ Word เดิม</button>
+      <button type="button" class="gbtn" data-people="1"><svg class="i" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 20v-1a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v1M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 20v-1a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> รายชื่อบุคคล</button>
       <input class="srch" id="q" type="search" placeholder="ค้นหาหัวข้อ / งาน / ชื่อ" aria-label="ค้นหา">
       <h3>การประชุม</h3>
       <div id="list" style="display:grid;gap:6px"></div>
@@ -297,6 +348,16 @@ const TH_M = ["มกราคม","กุมภาพันธ์","มีน�
 const TH_S = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
 const ST = { done: "เสร็จสิ้น", prog: "กำลังดำเนินการ", todo: "ยังไม่เริ่ม" };
 const $ = id => document.getElementById(id);
+/* ไอคอนเส้น (stroke = currentColor) */
+const IC = { plus: "M12 5v14M5 12h14", up: "M12 16V4M7 9l5-5 5 5M4 20h16", users: "M16 20v-1a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v1M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 20v-1a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75",
+  search: "M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.3-4.3", file: "M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM14 3v5h5M9 13h6M9 17h4",
+  edit: "M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z", down: "M12 4v12M7 11l5 5 5-5M4 20h16", cal: "M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z",
+  pin: "M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12zM12 11.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z", clock: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2",
+  check: "M20 6 9 17l-5-5", list: "M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01", alert: "M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z",
+  save: "M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2zM17 21v-8H7v8M7 3v5h8", back: "M15 18l-6-6 6-6", info: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 16v-4M12 8h.01",
+  mic: "M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zM19 11a7 7 0 0 1-14 0M12 18v3", send: "M22 2 11 13M22 2l-7 20-4-9-9-4z", star: "M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z",
+  flag: "M4 22V4M4 4h12l-2 4 2 4H4", trend: "M3 17l6-6 4 4 8-8M15 7h6v6" };
+const ic = (k, sz) => `<svg class="i" width="${sz || 17}" height="${sz || 17}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IC[k]}"/></svg>`;
 const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const clean = v => typeof v === "string" ? v.replace(/[<>"'`]/g, c => ({ "<": "‹", ">": "›", '"': "″", "'": "′", "`": "′" })[c]) : Array.isArray(v) ? v.map(clean) : v && typeof v === "object" ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, clean(x)])) : v;
 const toast = t => { const el = $("toast"); el.textContent = t; el.hidden = false; clearTimeout(toast.h); toast.h = setTimeout(() => el.hidden = true, 2800); };
@@ -325,13 +386,23 @@ const cur = () => DB.find(m => m.id === CUR);
 function syncLabel() { const el = $("sync"); el.className = "sync" + (SBOK === false ? " bad" : "");
   el.textContent = SBOK === null ? "กำลังเชื่อมข้อมูล…" : SBOK ? "✓ เชื่อมทุกเครื่องแล้ว" : "⚠ ยังไม่เชื่อม: เก็บในเครื่องนี้"; }
 async function sbAll() { const r = await fetch(SBU + TBL + "?select=id,rec", { headers: sbH() }); if (!r.ok) throw new Error(r.status); return (await r.json()).map(x => clean(x.rec)); }
-async function sbUp(L) { const r = await fetch(SBU + TBL + "?on_conflict=id", { method: "POST", headers: sbH({ Prefer: "resolution=merge-duplicates,return=minimal" }),
+async function sbUp(L, keep) { const r = await fetch(SBU + TBL + "?on_conflict=id", { method: "POST", keepalive: !!keep, headers: sbH({ Prefer: "resolution=merge-duplicates,return=minimal" }),
   body: JSON.stringify(L.map(m => ({ id: m.id, rec: m, updated_at: nowIso() }))) }); if (!r.ok) throw new Error(r.status); }
 function lsSave() { try { localStorage.setItem(LSK, JSON.stringify(DB)); } catch (e) {} }
 const PEND = new Set();
-function save(m, now) { m.u = nowIso(); lsSave(); PEND.add(m.id); clearTimeout(save.h); save.h = setTimeout(flush, now ? 0 : 700); }
-async function flush() { const L = DB.filter(m => PEND.has(m.id)); PEND.clear(); if (!L.length || location.protocol === "file:") return;
-  try { await sbUp(L); if (!SBOK) { SBOK = true; syncLabel(); } } catch (e) { SBOK = false; syncLabel(); L.forEach(m => PEND.add(m.id)); } }
+let DIRTY = false, LASTUP = "";
+function save(m, now) { m.u = nowIso(); lsSave(); PEND.add(m.id);
+  if (!now && VIEW === "edit" && m.id === CUR) { DIRTY = true; updBar(); return; }   /* 5 พ.ย. ผู้ใช้ขอ: หน้าแก้ไขกด Update เอง */
+  clearTimeout(save.h); save.h = setTimeout(flush, now ? 0 : 700); }
+async function flush(keep) { const L = DB.filter(m => PEND.has(m.id)); PEND.clear(); if (!L.length) { DIRTY = false; updBar(); return true; } if (location.protocol === "file:") { DIRTY = false; updBar(); return true; }
+  try { await sbUp(L, keep); if (!SBOK) { SBOK = true; syncLabel(); } DIRTY = false; LASTUP = new Date().toTimeString().slice(0, 5); updBar(); return true; }
+  catch (e) { SBOK = false; syncLabel(); L.forEach(m => PEND.add(m.id)); updBar(); return false; } }
+function updBar() { const el = $("ust"), b = $("updBtn"); if (!el || !b) return;
+  el.className = "ust" + (DIRTY ? " dirty" : LASTUP ? " ok" : "");
+  el.innerHTML = DIRTY ? "● มีการแก้ไขที่ยังไม่ได้กด Update" : LASTUP ? ic("check", 15) + " อัปเดตแล้ว " + LASTUP + " น. · ทุกเครื่องเห็นตรงกัน" : "แก้ไขแล้วกด Update เพื่อบันทึก";
+  b.classList.toggle("pulse", DIRTY); }
+async function doUpdate() { const b = $("updBtn"); if (b) b.disabled = true; const ok = await flush(); if (b) b.disabled = false;
+  toast(ok ? "✓ อัปเดตแล้ว" : "⚠ อัปเดตไม่สำเร็จ (เก็บไว้ในเครื่องแล้ว) · ลองกดอีกครั้ง"); }
 async function sbSync() {
   if (location.protocol === "file:") { SBOK = false; syncLabel(); return; }
   try { const rem = await sbAll(), mp = new Map(DB.map(m => [m.id, m])), up = [];
@@ -393,8 +464,8 @@ function go(v, id) { const h = "#" + v + (id ? "-" + id : ""); if (location.hash
 function route() {
   const h = location.hash.slice(1), mm = h.match(/^(home|edit|show)(?:-(.+))?$/), v = mm ? mm[1] : "home", id = mm && mm[2];
   if (id && DB.some(m => m.id === id && !m.del)) CUR = id; if (!CUR || !cur() || cur().del || cur().cfg) CUR = (live()[0] || {}).id || null;
+  if (VIEW === "edit" && v !== "edit" && DIRTY) { flush(); toast("อัปเดตการแก้ไขให้อัตโนมัติแล้ว"); }
   VIEW = v; if (v !== "show") LASTV = v; $("vHome").hidden = v !== "home"; $("vEdit").hidden = v !== "edit"; $("vPres").hidden = v !== "show";
-  document.querySelectorAll("[data-go]").forEach(b => b.classList.toggle("on", b.dataset.go === v || (v === "show" && b.dataset.go === "home")));
   if (v === "show") { if (!cur()) { go("home"); return; } openPres(cur()); } else if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   render();
 }
@@ -412,17 +483,27 @@ document.addEventListener("click", e => { const t = e.target.closest("[data-mg]"
 function renderHome() {
   const q = ($("hq") || {}).value || "", L = live().filter(m => !q || searchTxt(m).includes(q.toLowerCase()));
   const keep = document.activeElement && document.activeElement.id === "hq";
-  $("vHome").innerHTML = `<section class="card"><div class="ch"><h2>เลือกรายงานการประชุม</h2><span class="hint">กด 📄 ดูรายงาน เพื่อเปิดรายงานหน้าเดียว (นำเสนอเต็มจอได้)</span></div>
-    <div class="tools"><button type="button" class="pbtn" data-new="1">＋ ประชุมสัปดาห์ถัดไป</button><button type="button" class="gbtn" data-imp="1">⇪ นำเข้าไฟล์ Word เดิม</button>
-      <button type="button" class="gbtn" data-people="1">👥 รายชื่อบุคคล (${people().length})</button><input class="srch" id="hq" type="search" placeholder="ค้นหาหัวข้อ / งาน / ชื่อ" value="${esc(q)}" aria-label="ค้นหารายงาน"></div></section>
-    <div class="mlist"><div style="overflow-x:auto"><table><thead><tr><th>ครั้งที่</th><th>วันที่ประชุม</th><th>สถานที่ · เวลา</th><th>งาน</th><th>สถานะงาน</th><th>บันทึก</th><th></th></tr></thead><tbody>
+  const A = live(), lt = A[0], lc = lt ? cnt(lt) : { done: 0, prog: 0, todo: 0 }, ln = lt ? lt.rows.length : 0, lp = ln ? Math.round(lc.done / ln * 100) : 0;
+  const old = lt ? lt.rows.filter(r => r.s !== "done" && (+r.carry || 0) >= 2).length : 0, ev = lt ? evpRows(lt).length : 0;
+  const kp = (cl, i, l, v, sub) => `<div class="kp ${cl}"><span class="kic">${ic(i, 22)}</span><div><small>${l}</small><b>${v}</b><span>${sub}</span></div></div>`;
+  $("vHome").innerHTML = `<div class="kps">
+      ${kp("k1", "cal", "การประชุมทั้งหมด", A.length + " <i>ครั้ง</i>", lt ? "ล่าสุด W" + esc(lt.no) + " · " + esc(dShort(lt.date)) : "ยังไม่มีบันทึก")}
+      ${kp("k2", "check", "งานเสร็จ (ครั้งล่าสุด)", lp + "<i>%</i>", `<em class="kbar"><u style="width:${lp}%"></u></em>เสร็จ ${lc.done} จาก ${ln} งาน`)}
+      ${kp("k3", "list", "งานค้างยกไปครั้งถัดไป", (lc.prog + lc.todo) + " <i>งาน</i>", old ? "ค้าง ≥2 สัปดาห์ " + old + " งาน" : "ไม่มีงานค้างนาน")}
+      ${kp("k4", "flag", "ติดตาม / ขอตัดสินใจ", ev + " <i>เรื่อง</i>", ev ? "ดูในรายงานครั้งล่าสุด" : "ไม่มีเรื่องรอตัดสินใจ")}
+    </div>
+    <section class="card tcard"><div class="ch"><span class="hic">${ic("file", 20)}</span><h2>เลือกรายงานการประชุม</h2><span class="hint">กด “ดูรายงาน” เพื่อเปิดรายงานหน้าเดียว (นำเสนอเต็มจอได้)</span></div>
+    <div class="tools"><button type="button" class="pbtn" data-new="1">${ic("plus")} ประชุมสัปดาห์ถัดไป</button><button type="button" class="gbtn" data-imp="1">${ic("up")} นำเข้าไฟล์ Word เดิม</button>
+      <button type="button" class="gbtn" data-people="1">${ic("users")} รายชื่อบุคคล (${people().length})</button><label class="sbox">${ic("search")}<input id="hq" type="search" placeholder="ค้นหาหัวข้อ / งาน / ชื่อ" value="${esc(q)}" aria-label="ค้นหารายงาน"></label></div></section>
+    <div class="mlist"><div style="overflow-x:auto"><table><thead><tr><th>ครั้งที่</th><th>วันที่ประชุม</th><th>สถานที่ · เวลา</th><th>งาน</th><th>ความคืบหน้า</th><th>บันทึก</th><th></th></tr></thead><tbody>
     ${monthGroups(L).map(([ym, G], gi) => { const open = q || MOPEN.has(ym) || (!MOPEN.size && gi < 2), gd = G.reduce((a, m) => a + cnt(m).done, 0), gn = G.reduce((a, m) => a + m.rows.length, 0);
-      return `<tr class="mg ${open ? "on" : ""}" data-mg="${ym}"><td colspan="7"><span class="car">${open ? "▾" : "▸"}</span><b>${TH_M[+ym.slice(5) - 1]} ${+ym.slice(0, 4) + 543}</b><span class="hint"> · ${G.length} ครั้ง · ${gn} งาน · เสร็จ ${gd}</span></td></tr>` + (open ? G.map(m => { const c = cnt(m), n = m.rows.length || 1, ev = evpRows(m).length;
-      return `<tr><td class="w">W${esc(m.no)}</td><td><b>${esc(dLong(m.date))}</b></td><td>${esc(m.place)}<br><span class="hint">${esc(tRange(m))}</span></td>
-        <td>${m.rows.length} งาน${ev ? `<br><span class="badge">ติดตาม/ขอตัดสินใจ ${ev}</span>` : ""}</td>
-        <td><span class="hint">เสร็จ ${c.done} · กำลังทำ ${c.prog + c.todo}</span><div class="mini"><i style="width:${c.done / n * 100}%;background:var(--ok)"></i><i style="width:${c.prog / n * 100}%;background:#f2c200"></i><i style="width:${c.todo / n * 100}%;background:#c3ccdc"></i></div></td>
-        <td>${m.final ? '<span class="badge ok">✓ ปิดบันทึก</span>' : '<span class="badge">ร่าง</span>'}</td>
-        <td><div class="acts"><button type="button" class="pbtn" data-show="${m.id}">📄 ดูรายงาน</button><button type="button" class="gbtn" data-edit="${m.id}">✎ แก้ไข</button><button type="button" class="gbtn" data-word="${m.id}">⬇ Word</button></div></td></tr>`; }).join("") : ""); }).join("")
+      return `<tr class="mg ${open ? "on" : ""}" data-mg="${ym}"><td colspan="7"><span class="car">${open ? "▾" : "▸"}</span><span class="mic">${ic("cal", 15)}</span><b>${TH_M[+ym.slice(5) - 1]} ${+ym.slice(0, 4) + 543}</b><span class="hint"> · ${G.length} ครั้ง · ${gn} งาน · เสร็จ ${gd}</span></td></tr>` + (open ? G.map(m => { const c = cnt(m), n = m.rows.length || 1, ev = evpRows(m).length;
+      const pc = Math.round(c.done / n * 100);
+      return `<tr><td><span class="w">W${esc(m.no)}</span></td><td><b>${esc(dLong(m.date))}</b><br><span class="hint">${esc(["วันอาทิตย์","วันจันทร์","วันอังคาร","วันพุธ","วันพฤหัสบดี","วันศุกร์","วันเสาร์"][new Date(m.date + "T00:00:00").getDay()] || "")}</span></td><td><span class="il">${ic("pin", 15)}${esc(m.place) || "–"}</span><span class="il hint">${ic("clock", 15)}${esc(tRange(m)) || "–"}</span></td>
+        <td><b>${m.rows.length}</b> งาน${ev ? `<br><span class="badge">${ic("flag", 12)} ติดตาม ${ev}</span>` : ""}</td>
+        <td><span class="pc">${pc}%</span> <span class="hint">เสร็จ ${c.done} · กำลังทำ ${c.prog + c.todo}</span><div class="mini"><i style="width:${c.done / n * 100}%;background:var(--ok)"></i><i style="width:${c.prog / n * 100}%;background:#f2c200"></i><i style="width:${c.todo / n * 100}%;background:#c3ccdc"></i></div></td>
+        <td>${m.final ? `<span class="badge ok">${ic("check", 12)} ปิดบันทึก</span>` : '<span class="badge">ร่าง</span>'}</td>
+        <td><div class="acts"><button type="button" class="pbtn" data-show="${m.id}">${ic("file", 15)} ดูรายงาน</button><button type="button" class="gbtn" data-edit="${m.id}" title="แก้ไข">${ic("edit", 15)} แก้ไข</button><button type="button" class="gbtn" data-word="${m.id}" title="ดาวน์โหลด Word">${ic("down", 15)} Word</button></div></td></tr>`; }).join("") : ""); }).join("")
       || `<tr><td colspan="7" class="empty">${DB.some(m => !m.cfg) ? "ไม่พบรายงานที่ค้นหา" : 'ยังไม่มีรายงาน · กด "นำเข้าไฟล์ Word เดิม" หรือ "ประชุมสัปดาห์ถัดไป"'}</td></tr>`}</tbody></table></div></div>`;
   if (keep) { const h = $("hq"); h.focus(); h.setSelectionRange(h.value.length, h.value.length); }
 }
@@ -442,9 +523,12 @@ function render() {
   renderList(); const m = cur();
   if (!m) { $("col").innerHTML = `<section class="card"><div class="empty">ยังไม่มีบันทึกการประชุม<br><br><button type="button" class="pbtn" onclick="newMeeting()">＋ เริ่มบันทึกการประชุมแรก</button></div></section>`; return; }
   $("col").innerHTML = `
+  <div class="ebar2"><button type="button" class="gbtn" data-go="home">${ic("back", 16)} หน้ารายงาน</button>
+    <div class="et"><b>กำลังแก้ W${esc(m.no)}</b><span id="ust" class="ust"></span></div>
+    <button type="button" class="gbtn" data-show="${m.id}">${ic("file", 16)} ดูรายงาน</button>
+    <button type="button" class="ubtn" id="updBtn">${ic("save", 17)} Update</button></div>
   <section class="card">
-    <div class="crumb"><button type="button" class="gbtn sm" data-go="home">← หน้ารายงาน</button><span class="hint">กำลังแก้ W${esc(m.no)} · ${esc(dShort(m.date))}</span><span style="flex:1"></span><button type="button" class="pbtn" data-show="${m.id}" style="padding:8px 16px">📄 ดูรายงาน</button></div>
-    <div class="ch"><span class="n">1</span><h2>ข้อมูลการประชุม</h2><span class="hint">เติมให้จากครั้งก่อน · แก้แล้วบันทึกเอง</span></div>
+    <div class="ch"><span class="n">${ic("info", 18)}</span><h2>ข้อมูลการประชุม</h2><span class="hint">เติมให้จากครั้งก่อน · แก้แล้วกด Update</span></div>
     <div class="form">
       ${fld("no", "ครั้งที่ (W)", "", "number")}${fld("date", "วันที่ประชุม", "", "date")}${fld("place", "สถานที่ประชุม")}
       <div class="fld w2"><label for="f-t1">ช่วงเวลาประชุม</label><div class="trange">${tSel("t1", m.t1)}<span>ถึง</span>${tSel("t2", m.t2)}</div>
@@ -454,30 +538,30 @@ function render() {
     </div>
   </section>
   <section class="card">
-    <div class="ch"><span class="n">2</span><h2>โน้ต / ข้อความถอดเสียง</h2><span class="hint">เก็บไว้กับการประชุมนี้ ไม่ออกในรายงาน</span></div>
+    <div class="ch"><span class="n c2">${ic("mic", 18)}</span><h2>โน้ต / ข้อความถอดเสียง</h2><span class="hint">เก็บไว้กับการประชุมนี้ ไม่ออกในรายงาน</span></div>
     <details class="box"><summary>วิธีเอาข้อความจากคลิปเสียง (iPhone)</summary><ol>
       <li>อัดเสียงด้วยแอป "บันทึกเสียง" (Voice Memos) ระหว่างประชุม</li><li>เปิดไฟล์เสียง → แตะ ⋯ → "คัดลอกข้อความถอดเสียง" (iOS 18 ขึ้นไป)</li>
       <li>วางในช่องด้านล่าง แล้วไล่สรุปเป็นแถวในตารางข้อ 3</li><li>ประชุมใน Teams: เปิด Transcript แล้วดาวน์โหลด/คัดลอกมาวางได้เหมือนกัน</li></ol></details>
     <div class="fld"><label for="notes">ข้อความ</label><textarea id="notes" data-f="notes" placeholder="วางข้อความถอดเสียง หรือจดโน้ตระหว่างประชุม">${esc(m.notes)}</textarea></div>
   </section>
   <section class="card">
-    <div class="ch"><span class="n">3</span><h2>สรุปประเด็นสำคัญจากการประชุม</h2>
-      <button type="button" class="gbtn sm" id="pasteBtn">วางจาก Excel</button><button type="button" class="pbtn" id="addRow" style="padding:8px 14px">＋ เพิ่มแถว</button></div>
+    <div class="ch"><span class="n c3">${ic("list", 18)}</span><h2>สรุปประเด็นสำคัญจากการประชุม</h2>
+      <button type="button" class="gbtn sm" id="pasteBtn">วางจาก Excel</button><button type="button" class="pbtn" id="addRow" style="padding:8px 14px">${ic("plus", 16)} เพิ่มแถว</button></div>
     <div class="legend"><span><i style="background:var(--soft);box-shadow:inset 3px 0 0 var(--ink3)"></i>ยกมาจากครั้งก่อน</span><span><i style="background:#fff7c2"></i>กำลังดำเนินการ</span><span><i style="background:var(--ok-soft)"></i>เสร็จสิ้น</span><span style="color:var(--red)">■ ตัวแดง = เน้นในรายงาน</span></div>
     <div class="tw"><table class="rt"><thead><tr><th style="width:118px">ที่มา</th><th style="width:16%">หัวข้อโครงการ</th><th>งานที่ต้องทำ (Task)</th><th style="width:14%">ผู้รับผิดชอบ</th><th style="width:150px">กำหนดเสร็จ</th><th style="width:150px">สถานะ</th><th style="width:150px"></th></tr></thead>
       <tbody id="tb">${rowsHtml(m)}</tbody></table></div>
-    <div class="hint">พิมพ์แล้วบันทึกเอง · งานที่ยังไม่ "เสร็จสิ้น" จะยกไปการประชุมครั้งถัดไป · กำหนดเสร็จว่างได้ (รายงานจะแสดงสถานะแทน)</div>
+    <div class="hint">แก้แล้วกด <b>Update</b> (ปุ่มเขียวด้านบน) · ออกจากหน้านี้ = อัปเดตให้อัตโนมัติ · งานที่ยังไม่ "เสร็จสิ้น" จะยกไปการประชุมครั้งถัดไป · กำหนดเสร็จว่างได้ (รายงานจะแสดงสถานะแทน)</div>
   </section>
   <section class="card">
-    <div class="ch"><span class="n">4</span><h2>รายงาน (แบบฟอร์มเดิม)</h2>
-      <button type="button" class="pbtn" id="wordBtn" style="padding:9px 16px">⬇ ดาวน์โหลด Word</button>
-      <button type="button" class="gbtn" id="taskBtn">→ ส่ง Task เข้า Daily Task</button></div>
+    <div class="ch"><span class="n c4">${ic("file", 18)}</span><h2>รายงาน (แบบฟอร์มเดิม)</h2>
+      <button type="button" class="pbtn" id="wordBtn" style="padding:9px 16px">${ic("down", 16)} ดาวน์โหลด Word</button>
+      <button type="button" class="gbtn" id="taskBtn">${ic("send", 16)} ส่ง Task เข้า Daily Task</button></div>
     <div class="paper" id="paper">${paperHtml(m)}</div>
     <div class="row" style="justify-content:space-between">
       <label class="hint" style="display:inline-flex;gap:6px;align-items:center"><input type="checkbox" id="finChk" ${m.final ? "checked" : ""}> ปิดบันทึก (ตรวจครบแล้ว)</label>
       <button type="button" class="gbtn danger" id="delBtn">ลบการประชุมนี้</button></div>
   </section>`;
-  fitAreas();
+  fitAreas(); updBar(); $("updBtn").onclick = doUpdate;
 }
 function rowsHtml(m) {
   if (!m.rows.length) return `<tr><td colspan="7" class="empty">ยังไม่มีงาน · กด "＋ เพิ่มแถว"</td></tr>`;
@@ -753,7 +837,7 @@ async function taskDlg(m) {
 
 syncLabel(); route(); sbSync();   /* migrate หลังซิงก์ (กันรายชื่อบุคคลในเครื่องทับของเครื่องอื่น) */
 addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && !PEND.size && !document.activeElement.matches("input,textarea,select")) sbSync(); });
-addEventListener("beforeunload", () => { if (PEND.size) flush(); });
+addEventListener("beforeunload", () => { if (PEND.size) flush(true); });
 </script>
 </body>
 </html>
