@@ -6,7 +6,7 @@
 <title>Cleaning Robot Dashboard · PCG</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&display=swap" rel="stylesheet" crossorigin="anonymous">
 <style>
   :root {
     --page: #eef1f5; --card: #ffffff; --ink: #1b2430; --ink-2: #5b6573; --muted: #8b94a1;
@@ -47,16 +47,23 @@
 
   /* ---------- main ---------- */
   main { margin-left: 268px; padding: 26px 30px 60px; }
-  .hero { position: relative; overflow: hidden; border-radius: 22px; padding: 28px 32px; color: #fff;
-    background: linear-gradient(115deg, #1e3044 0%, #2b4a5d 55%, #3d7d88 100%); }
-  .hero::after { content: ""; position: absolute; width: 420px; height: 420px; right: -60px; top: -40px; border-radius: 50%;
-    border: 1px solid rgba(255,255,255,.18); }
-  .hero h1 { margin: 0; font-size: 34px; line-height: 1.2; font-weight: 700; }
-  .hero p { margin: 6px 0 0; opacity: .85; }
-  .chips { position: absolute; right: 28px; top: 50%; transform: translateY(-50%); display: flex; gap: 10px; z-index: 1; }
-  .chip { border-radius: 999px; padding: 6px 16px; font-weight: 600; font-size: 14px; background: rgba(255,255,255,.14);
-    border: 1px solid rgba(255,255,255,.3); white-space: nowrap; }
-  .chip.solid { background: #fff; color: var(--ink); border-color: #fff; }
+  .hero { position: relative; overflow: hidden; border-radius: 22px; padding: 26px 30px; color: #fff; min-height: 140px;
+    display: flex; align-items: center; gap: 20px; border: 2px solid #5c8cf0;
+    background: linear-gradient(100deg, #0a2470 0%, #123c9e 45%, #1d5fd6 100%); }
+  .hero-ic { width: 76px; height: 76px; border-radius: 20px; flex: none; display: grid; place-items: center; z-index: 1;
+    background: linear-gradient(135deg, #3b8bff, #1a5ee0); box-shadow: inset 0 0 0 2px rgba(255,255,255,.35); }
+  .hero-txt { z-index: 1; }
+  .hero h1 { margin: 0; font-size: 36px; line-height: 1.15; font-weight: 700; letter-spacing: -.3px; }
+  .hero p { margin: 6px 0 0; opacity: .9; font-weight: 500; }
+  .hero .upd { font-size: 12.5px; opacity: .75; margin-top: 4px; }
+  .hero-robot { position: absolute; right: 440px; top: 0; height: 100%; width: auto; opacity: .95;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 30%, #000 70%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 30%, #000 70%, transparent 100%); }
+  .chips { margin-left: auto; display: flex; gap: 10px; position: relative; z-index: 2; }
+  .pill-box { background: rgba(6, 22, 80, .78); border: 1px solid rgba(255,255,255,.18); border-radius: 14px; padding: 12px 16px;
+    min-width: 160px; }
+  .pill-box small { display: block; font-size: 12px; opacity: .85; font-weight: 600; }
+  .pill-box b { display: block; font-size: 20px; margin-top: 6px; white-space: nowrap; }
   .menu-btn { display: none; }
 
   .toolbar { background: var(--card); border-radius: 18px; padding: 14px 18px; margin: 22px 0; display: flex; flex-wrap: wrap;
@@ -161,7 +168,100 @@
   .modal button { margin-top: 12px; width: 100%; border: 0; border-radius: 10px; padding: 10px; background: var(--blue-1); color: #fff;
     font-weight: 600; cursor: pointer; }
 
-  @media (max-width: 1180px) { .pair { grid-template-columns: 1fr; } }
+  /* ---------- overview (แบบ Daily Monitor) ---------- */
+  .ov-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; margin-bottom: 18px; }
+  .ov-card { background: var(--card); border-radius: 20px; padding: 18px 20px; box-shadow: 0 2px 10px rgba(16, 40, 90, .06);
+    position: relative; overflow: hidden; }
+  .ov-k .hd { display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 15px; }
+  .ov-ic { width: 46px; height: 46px; border-radius: 13px; display: grid; place-items: center; flex: none; font-size: 20px;
+    font-weight: 700; color: #fff; }
+  .ov-k .val { display: flex; align-items: baseline; justify-content: space-between; margin: 12px 4px 10px 56px; }
+  .ov-k .val b { font-size: 44px; line-height: 1; font-weight: 800; letter-spacing: -.5px; white-space: nowrap; }
+  .ov-k .val span { font-size: 13px; font-weight: 600; color: var(--ink-2); }
+  .ov-bar { height: 10px; border-radius: 999px; background: #edf0f5; overflow: hidden; display: flex; }
+  .ov-bar i { display: block; height: 100%; }
+  .ov-k .ft { display: flex; justify-content: space-between; gap: 10px; border-top: 1px solid var(--line); margin-top: 12px;
+    padding-top: 10px; font-size: 13px; color: var(--ink-2); }
+  .ov-k .ft b { color: var(--ink); white-space: nowrap; }
+  .ov-split { display: flex; gap: 6px; margin: 12px 0 10px; }
+  .ov-split div { flex: 1; border-radius: 12px; padding: 8px 6px; text-align: center; }
+  .ov-split b { display: block; font-size: 28px; line-height: 1.1; font-weight: 800; }
+  .ov-split span { font-size: 12px; font-weight: 600; }
+  .ov-mtd { margin-bottom: 18px; display: grid; grid-template-columns: 1fr auto; gap: 10px 16px; align-items: center; }
+  .ov-mtd .ov-bar { height: 22px; grid-column: 1 / 3; margin-left: 52px; }
+  .ov-mtd .ov-bar i { display: flex; align-items: center; padding-left: 12px; color: #fff; font-size: 12.5px; font-weight: 700;
+    background: linear-gradient(90deg, #1d66fa, #125af2); min-width: 46px; }
+  .ov-mtd .tot { text-align: right; }
+  .ov-mtd .tot small { display: block; font-size: 12px; color: var(--ink-2); }
+  .ov-mtd .tot b { font-size: 20px; white-space: nowrap; }
+  .ov-mtd .note { grid-column: 1 / 3; text-align: right; font-size: 11.5px; color: var(--muted); }
+  .ov-grid { display: grid; grid-template-columns: 1.78fr .98fr; gap: 18px; margin-bottom: 22px; }
+  .ov-title { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+  .ov-title h3 { margin: 0; font-size: 16.5px; }
+  .ov-title .ov-ic { width: 40px; height: 40px; font-size: 18px; }
+  .ov-foot { font-size: 11.5px; color: var(--muted); margin-top: 6px; }
+  .cap-btn { background: linear-gradient(135deg, #1d5fd6, #123c9e) !important; color: #fff; border-color: #123c9e !important; font-weight: 600; }
+  .cap-btn:disabled { opacity: .6; }
+  /* ภาพ Capture 1920×1080: บังคับ layout แบบจอใหญ่เสมอ ไม่ว่าจอจริงจะกว้างเท่าไร */
+  .cap { position: fixed; left: -30000px; top: 0; width: 1920px; height: 1080px; padding: 24px 30px 16px; background: #eef1f5;
+    display: flex; flex-direction: column; gap: 16px; overflow: hidden; font-family: "Prompt", system-ui, sans-serif; }
+  .cap .hero { flex: none; min-height: 136px; padding: 22px 30px !important; flex-wrap: nowrap !important; }
+  .cap .hero h1 { font-size: 36px !important; }
+  .cap .menu-btn { display: none !important; }
+  .cap .hero-ic { display: grid !important; }
+  .cap .hero-robot { display: block !important; }
+  .cap .chips { margin: 0 0 0 auto !important; flex-wrap: nowrap !important; }
+  .cap .ov-kpis { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; margin: 0; }
+  .cap .ov-mtd { margin: 0; grid-template-columns: 1fr auto !important; }
+  .cap .ov-mtd .ov-bar, .cap .ov-mtd .note { grid-column: 1 / 3 !important; margin-left: 52px !important; }
+  .cap .ov-mtd .tot { text-align: right !important; }
+  .cap .ov-grid { grid-template-columns: 1.78fr .98fr !important; margin: 0; flex: 1; min-height: 0; }
+  .cap .ov-grid > .ov-card { height: 100%; }
+  .cap .ov-slicer { display: none; }
+  .cap-foot { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--muted); flex: none; }
+  .ov-slicer { margin-left: auto; flex: none; }
+  .ov-slicer button.on { color: var(--blue-1); }
+  .ov-rnd-head, .ov-rnd { display: grid; grid-template-columns: 76px 1fr auto; gap: 12px; align-items: center; padding: 14px 6px;
+    border-bottom: 1px solid var(--line); }
+  .ov-rnd-head { padding: 8px 6px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); background: #f6f8fb; border-radius: 10px 10px 0 0; }
+  .ov-rnd-head span:last-child, .ov-rnd .a { text-align: right; }
+  .ov-rnd:last-of-type { border-bottom: 0; }
+  .ov-rnd .t { font-size: 22px; font-weight: 800; }
+  .ov-rnd .s .status { font-size: 13.5px; padding: 4px 12px; }
+  .ov-rnd .a { font-size: 17px; font-weight: 700; color: #0b7a6e; white-space: nowrap; }
+  .ov-rnd .a small { font-size: 12px; font-weight: 600; color: var(--ink-2); margin-left: 3px; }
+  .ov-rnd .a.none { color: var(--muted); font-weight: 600; }
+  .ov-rnd.miss .t, .ov-rnd.miss .s { color: var(--muted); }
+  .ov-sum { margin-top: 12px; border-radius: 16px; border: 1px solid #c9dcfb; background: #f3f8ff; padding: 10px 14px; font-size: 13.5px;
+    text-align: center; }
+  @media (max-width: 1380px) { .ov-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hero-robot { display: none; } }
+  @media (max-width: 1180px) { .ov-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 640px) { .ov-kpis { grid-template-columns: 1fr; } .ov-mtd { grid-template-columns: 1fr; } .ov-mtd .ov-bar, .ov-mtd .note { grid-column: 1; margin-left: 0; }
+    .ov-mtd .tot { text-align: left; } .hero { flex-wrap: wrap; } .hero-ic { display: none; } .chips { margin-left: 0; flex-wrap: wrap; } }
+
+  /* ---------- robot output (Excel) + import ---------- */
+  .section.teal { background: #e6f7f5; border-color: #a8e0d8; }
+  .teal .sec-head { background: linear-gradient(90deg, #12a594, #0b7a6e); }
+  .section.green { background: #eaf6ea; border-color: #b9e0b9; }
+  .green .sec-head { background: linear-gradient(90deg, #2f9e44, #237a34); }
+  .kpis.four { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .kpis.four .kpi .v { font-size: 42px; white-space: nowrap; }
+  .rcard .work { margin-top: 6px; font-size: 13px; color: #0b7a6e; font-weight: 600; }
+  .drop { border: 2px dashed #8cc98c; border-radius: 16px; background: #fff; padding: 26px 18px; text-align: center; cursor: pointer;
+    transition: background .15s, border-color .15s; }
+  .drop.over { background: #f1fbf1; border-color: #2f9e44; }
+  .drop b { display: block; font-size: 17px; margin-bottom: 4px; }
+  .drop small { color: var(--ink-2); }
+  .imp-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 14px; }
+  .imp-btn { border: 0; background: #2f9e44; color: #fff; border-radius: 10px; padding: 10px 18px; font-weight: 600; cursor: pointer; }
+  .imp-btn:disabled { opacity: .5; cursor: default; }
+  .imp-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-top: 14px; }
+  .imp-stats div { background: #f6faf6; border: 1px solid #d5ecd5; border-radius: 12px; padding: 10px 12px; }
+  .imp-stats b { display: block; font-size: 22px; }
+  .imp-stats span { font-size: 12.5px; color: var(--ink-2); }
+  .imp-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; }
+  .imp-grid > .card + .card { margin-top: 0; }
+  @media (max-width: 1180px) { .pair { grid-template-columns: 1fr; } .imp-grid { grid-template-columns: 1fr; } }
   @media (max-width: 900px) {
     .side { transform: translateX(-100%); }
     .side.open { transform: none; }
@@ -200,10 +300,12 @@
   </div>
   <nav class="nav" id="nav">
     <a href="#overview" class="active"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></span><span><b>ภาพรวม</b><small>Overview</small></span></a>
+    <a href="#work"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><span><b>ผลงานหุ่นยนต์</b><small>Cleaning output</small></span></a>
     <a href="#trend"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg></span><span><b>แนวโน้มสถานะ</b><small>Status trend</small></span></a>
     <a href="#rounds"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></span><span><b>สถานะรายรอบ</b><small>Round status</small></span></a>
     <a href="#issues"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.01"/></svg></span><span><b>ติดตามปัญหา</b><small>Issue tracking</small></span></a>
     <a href="#reports"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></span><span><b>รายงานทั้งหมด</b><small>All reports</small></span></a>
+    <a href="#import"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg></span><span><b>นำเข้า Excel</b><small>Import SIASUN</small></span></a>
   </nav>
   <div class="side-foot">
     <div id="dataRange">กำลังโหลดข้อมูล…</div>
@@ -215,9 +317,17 @@
 <main>
   <section class="hero" id="overview">
     <button class="menu-btn" id="menuBtn" aria-label="เมนู"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
-    <h1>สถานะหุ่นยนต์ทำความสะอาด</h1>
-    <p>รายงานแต่ละรอบจากกลุ่มไลน์ · ตัดวันที่ 08:00 – 07:59 ของวันถัดไป</p>
-    <div class="chips"><span class="chip" id="chipUpdated">–</span><span class="chip solid" id="chipDate">–</span></div>
+    <span class="hero-ic"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="5" y="7" width="14" height="11" rx="3"/><path d="M12 3v4M9 12h.01M15 12h.01M9 15.5h6M3 20h18"/></svg></span>
+    <div class="hero-txt">
+      <h1>Cleaning Robot Dashboard</h1>
+      <p>ภาพรวมประสิทธิภาพการทำความสะอาดด้วยหุ่นยนต์ (Daily Monitor)</p>
+      <div class="upd" id="chipUpdated">–</div>
+    </div>
+    <img class="hero-robot" alt="" src="data:image/jpeg;base64,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">
+    <div class="chips">
+      <div class="pill-box"><small>▪ วันที่ (Date)</small><b id="chipDate">–</b></div>
+      <div class="pill-box"><small>◎ เป้าหมายรายวัน (TARGET)</small><b id="heroTarget">–</b></div>
+    </div>
   </section>
 
   <div class="toolbar">
@@ -230,20 +340,49 @@
     </div>
     <select id="dateSel" aria-label="เลือกวันที่"></select>
     <button class="ghost" id="refresh">รีเฟรช</button>
+    <button class="ghost cap-btn" id="captureBtn" title="บันทึกภาพหน้าภาพรวมขนาด 1920×1080">📷 Capture ภาพ</button>
     <span class="info" id="info"></span>
   </div>
   <div id="notice"></div>
 
-  <div class="pair">
-    <section class="section blue">
-      <div class="sec-head"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="5" y="7" width="14" height="11" rx="3"/><path d="M12 3v4M9 12h.01M15 12h.01M9 16h6"/></svg></span>สรุปสถานะรอบการทำงาน</div>
-      <div class="kpis" id="kpiStatus"></div>
+  <!-- ===== ภาพรวม (Overview) ===== -->
+  <div class="ov-kpis" id="ovKpis"></div>
+  <section class="ov-card ov-mtd" id="ovMtd"></section>
+  <div class="ov-grid">
+    <section class="ov-card">
+      <div class="ov-title"><span class="ov-ic" style="background:#e8f0fe;color:var(--blue-1)">↗</span><div><h3 id="ovTrendTitle">Trend พื้นที่ทำความสะอาด (ตร.ม.) เทียบเป้าหมาย (7 วัน)</h3></div>
+        <div class="seg ov-slicer" id="trendDays">
+          <button data-n="7" class="on">7 วัน</button><button data-n="15">15 วัน</button><button data-n="30">30 วัน</button>
+        </div>
+      </div>
+      <div class="legend" style="justify-content:center">
+        <span><span class="sw" style="background:var(--good)"></span>ถึงเป้า</span>
+        <span><span class="sw" style="background:var(--orange-1)"></span>ต่ำกว่าเป้า</span>
+        <span><span class="sw" style="background:none;height:3px;border-radius:2px;background:#2563eb"></span>% เทียบเป้าหมาย</span>
+      </div>
+      <div class="chart" id="ovTrend"></div>
+      <div class="ov-foot">ช่องที่ไม่มีข้อมูลนำเข้าแสดงเป็น "—" ไม่ได้แปลว่าเป็นผลงาน 0 ตร.ม.</div>
     </section>
-    <section class="section orange">
-      <div class="sec-head"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.01"/></svg></span>ปัญหาที่ได้รับรายงาน</div>
-      <div class="kpis" id="kpiIssue"></div>
+    <section class="ov-card ov-rounds">
+      <div class="ov-title"><span class="ov-ic" style="background:#fde6e6;color:var(--critical)">!</span><div><h3>รายงานการทำงานของ Robot</h3><div class="desc" style="margin:0" id="ovRoundsDate"></div></div></div>
+      <div id="ovRounds"></div>
     </section>
   </div>
+
+  <section class="section teal" id="work">
+    <div class="sec-head"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>ผลงานหุ่นยนต์ (จาก Excel SIASUN)<span class="right" id="workNote"></span></div>
+    <div class="card">
+      <h3 id="areaTitle">พื้นที่ทำความสะอาด</h3>
+      <div class="desc" id="areaDesc"></div>
+      <div class="legend" id="areaLegend"></div>
+      <div class="chart" id="areaChart"></div>
+    </div>
+    <div class="card">
+      <h3>งานของหุ่นยนต์ในช่วงที่เลือก</h3>
+      <div class="desc">แต่ละงานจัดเข้ารอบจากเวลาเริ่ม ด้วยกติกาเดียวกับรายงานในไลน์</div>
+      <div class="tablewrap" id="runTable"></div>
+    </div>
+  </section>
 
   <section class="section plain" id="trend">
     <div class="sec-head"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg></span><span id="trendTitle">แนวโน้มสถานะ</span></div>
@@ -270,6 +409,7 @@
 
   <section class="section red" id="issues">
     <div class="sec-head"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></span>ติดตามปัญหา<span class="right">บันทึกแล้วทุกเครื่องเห็นตรงกัน</span></div>
+    <div class="kpis four" id="kpiIssue" style="margin-bottom:16px"></div>
     <div class="card">
       <div class="tbar">
         <div class="desc" style="margin:0">ตั้งสถานะการติดตามและหมายเหตุ แล้วกดบันทึก (เก็บในชีต Reports คอลัมน์ K–L)</div>
@@ -285,6 +425,38 @@
   <section class="section plain" id="reports">
     <div class="sec-head"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></span>รายงานทั้งหมดในช่วงที่เลือก</div>
     <div class="card"><div class="tablewrap" id="allTable"></div></div>
+  </section>
+
+  <section class="section green" id="import">
+    <div class="sec-head"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg></span>นำเข้าข้อมูล Excel จาก SIASUN<span class="right">ไฟล์จาก cloud.robot-clean.com</span></div>
+    <div class="imp-grid">
+      <div class="card">
+        <h3>1. เลือกไฟล์ Excel</h3>
+        <div class="desc">Export รายงานงาน (任务报告) จากเว็บ SIASUN แล้วลากไฟล์มาวาง หรือคลิกเพื่อเลือก (.xlsx / .xls ไม่เกิน 12 MB)</div>
+        <label class="drop" id="drop">
+          <b>ลากไฟล์ Excel มาวางที่นี่</b>
+          <small>หรือคลิกเพื่อเลือกไฟล์</small>
+          <input type="file" id="fileInput" accept=".xlsx,.xls,.xlsm" hidden>
+        </label>
+        <div id="impPreview"></div>
+        <div class="imp-row">
+          <button class="imp-btn" id="impBtn" disabled>ตรวจสอบและบันทึกเข้าระบบ</button>
+          <span class="desc" style="margin:0" id="impStatus"></span>
+        </div>
+        <div id="impResult"></div>
+      </div>
+      <div class="card">
+        <h3>หลักเกณฑ์</h3>
+        <div class="desc" style="margin-bottom:6px">
+          • นำเข้าไฟล์เดิมซ้ำได้ งานที่เคยบันทึกแล้วจะถูกข้าม (ตรวจจาก SN + เวลาเริ่ม + เวลาจบ + ชื่องาน)<br>
+          • งานถูกจัดเข้ารอบ 08:00 / 14:00 / 20:00 / 02:00 ที่ใกล้เวลาเริ่มที่สุด และตัดวันที่ 08:00<br>
+          • เวลาทำงานคำนวณจาก เวลาจบ − เวลาเริ่ม (ไม่ใช้คอลัมน์ 用时)<br>
+          • ไม่ได้เก็บไฟล์ Excel ต้นฉบับ เก็บเฉพาะข้อมูลที่แปลงแล้วในชีต Runs
+        </div>
+        <h3 style="margin-top:14px">ประวัติการนำเข้าล่าสุด</h3>
+        <div class="tablewrap" id="importLog"></div>
+      </div>
+    </div>
   </section>
 </main>
 
@@ -314,10 +486,12 @@ var FOLLOW = ['รอดำเนินการ', 'กำลังแก้ไ�
 var MONTHS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
 var MONTHS_FULL = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
 var PERIOD_LABEL = { daily: 'รายวัน', weekly: '7 วัน', monthly: 'รายเดือน', yearly: 'รายปี' };
-var ROUNDS = ['08:00', '16:00', '24:00']; // รอบปกติของหุ่นยนต์ (ตรงกับ ROUNDS ใน Parser.gs)
+var ROUNDS = ['08:00', '14:00', '20:00', '02:00']; // รอบปกติของหุ่นยนต์ (ตรงกับ ROUNDS ใน Parser.gs)
 
 var DATA = [], generatedAt = '';
-var state = { period: 'daily', day: null, tmode: 'open' };
+var RUNS = [], IMPORTS = [], SETTINGS = {};
+var SHEETJS_URL = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+var state = { period: 'daily', day: null, tmode: 'open', trendDays: 7 };
 
 // ---------- key ----------
 function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return null; } }
@@ -350,6 +524,8 @@ document.getElementById('keyInput').addEventListener('keydown', function (e) { i
 function load() {
   if (!API_URL) {
     DATA = demoData().map(prep);
+    RUNS = demoRuns().map(prepRun);
+    IMPORTS = []; SETTINGS = { dailyTargetSqm: 18000, monthlyTargetSqm: 300000 };
     generatedAt = '';
     notice('โหมดตัวอย่าง: แสดงข้อมูลจำลอง — วาง Web app URL ในตัวแปร API_URL ในไฟล์นี้เพื่อดูข้อมูลจริง');
     ready();
@@ -367,6 +543,9 @@ function load() {
         return;
       }
       DATA = d.rows.map(prep);
+      RUNS = (d.runs || []).map(prepRun);
+      IMPORTS = d.imports || [];
+      SETTINGS = d.settings || {};
       generatedAt = d.generatedAt || '';
       notice('');
       ready();
@@ -374,13 +553,31 @@ function load() {
     .catch(function (e) { notice('เชื่อมต่อ Apps Script ไม่ได้: ' + e.message + ' (เช็ค API_URL และการ Deploy แบบ Anyone)', true); });
 }
 
+// "8:00" / "24:00:00" / "0:00" -> "08:00" / "24:00" ให้ตรงกับรูปแบบของบอท
+function normRound(s) {
+  var m = String(s).match(/^(\d{1,2})[:.](\d{2})/);
+  if (!m) return String(s);
+  var h = +m[1];
+  if ((h === 0 || h === 24) && m[2] === '00') return '24:00';
+  return (h < 10 ? '0' : '') + h + ':' + m[2];
+}
 function prep(r) {
+  r.round = normRound(r.round);
   var p = r.date.split('/');
   r.day = Date.UTC(+p[2], +p[1] - 1, +p[0]) / 864e5;
   var t = r.round.split(':');
   r.min = (+t[0]) * 60 + (+t[1]);
   r.problem = r.status !== ST.NORMAL;
   r.follow = r.follow || (r.problem ? 'รอดำเนินการ' : '');
+  return r;
+}
+
+function prepRun(r) {
+  r.round = normRound(r.round);
+  var p = r.date.split('/');
+  r.day = Date.UTC(+p[2], +p[1] - 1, +p[0]) / 864e5;
+  var t = r.round.split(':');
+  r.min = (+t[0]) * 60 + (+t[1]);
   return r;
 }
 
@@ -406,7 +603,7 @@ function dayLabel(day, withYear) { var x = ymd(day); return x.d + ' ' + MONTHS[x
 function roundKey(min) { return (min - 480 + 1440) % 1440; }
 function uniqueDays() {
   var seen = {}, out = [];
-  DATA.forEach(function (r) { if (!seen[r.day]) { seen[r.day] = 1; out.push(r.day); } });
+  DATA.concat(RUNS).forEach(function (r) { if (!seen[r.day]) { seen[r.day] = 1; out.push(r.day); } });
   return out.sort(function (a, b) { return b - a; });
 }
 function range() {
@@ -425,13 +622,144 @@ function render() {
   document.getElementById('chipUpdated').textContent = generatedAt ? 'อัปเดต ' + generatedAt.split(' ')[1] : 'ข้อมูลตัวอย่าง';
   document.getElementById('info').textContent = 'มีข้อมูล ' + uniqueDays().length + ' วัน · แสดง' + PERIOD_LABEL[state.period] + ' ' + rg.label +
     (days > 1 ? ' (' + days + ' วัน)' : '');
+  renderOverview(rg, rows);
   renderKpis(rows);
   renderLegends();
+  renderWork(rg);
+  renderImportLog();
   renderTrend(rg, rows);
   renderGrid(rg, rows);
   renderByRound(rows);
   renderIssues(rows);
   renderAll(rows);
+}
+
+// ---------- ภาพรวม (Daily Monitor) ----------
+function ovKpi(o) {
+  return '<div class="ov-card ov-k"><div class="hd"><span class="ov-ic" style="background:' + o.icBg + '">' + o.ic + '</span>' + o.title + '</div>' +
+    (o.body || '<div class="val"><b style="color:' + o.color + '">' + o.value + '</b><span>' + (o.unit || '') + '</span></div>') +
+    '<div class="ov-bar">' + o.bar + '</div><div class="ft"><span>' + o.ftL + '</span><b style="color:' + (o.ftColor || 'var(--ink)') + '">' + o.ftR + '</b></div></div>';
+}
+function barFill(pct, bg) { return '<i style="width:' + Math.max(0, Math.min(100, pct)) + '%;background:' + bg + '"></i>'; }
+function ddmm(day) { var x = ymd(day); return p2(x.d) + '/' + p2(x.m + 1); }
+
+function renderOverview(rg, rows) {
+  var days = rg.e - rg.s + 1, dt = SETTINGS.dailyTargetSqm || 0, target = dt * days, daily = state.period === 'daily';
+  var w = sumRuns(RUNS.filter(function (r) { return r.day >= rg.s && r.day <= rg.e; }));
+  var c = count(rows), n = rows.length, expected = ROUNDS.length * days, eff = w.sec ? w.area / (w.sec / 3600) : 0;
+  var pct = w.count && target ? Math.round(w.area / target * 100) : null, gap = w.area - target;
+  document.getElementById('heroTarget').textContent = dt ? fmtInt(dt) + ' ตร.ม. / วัน' : 'ยังไม่ได้ตั้งเป้า';
+
+  document.getElementById('ovKpis').innerHTML = [
+    ovKpi({ ic: '▦', icBg: 'linear-gradient(135deg,#3b8bff,#1d5fd6)', title: 'พื้นที่ทำความสะอาดได้' + (daily ? 'วันนี้' : 'ในช่วงนี้'),
+      value: w.count ? fmtInt(w.area) : '—', unit: 'ตร.ม.', color: '#1442a8',
+      bar: barFill(target ? w.area / target * 100 : 0, 'linear-gradient(90deg,#34d399,#10b981)'),
+      ftL: 'เป้าหมาย (Target)', ftR: target ? fmtInt(target) + ' ตร.ม.' : 'ยังไม่ได้ตั้ง' }),
+    ovKpi({ ic: '◎', icBg: 'linear-gradient(135deg,#34d399,#0ea371)', title: '% พื้นที่ทำความสะอาดเทียบเป้าหมาย',
+      value: pct === null ? '—' : pct + '%', color: pct !== null && pct < 100 ? 'var(--orange-2)' : '#0ea371',
+      bar: barFill(pct || 0, 'linear-gradient(90deg,#34d399,#10b981)'),
+      ftL: 'ผลรวม (ขาด/เกิน)', ftR: pct === null ? '—' : (gap >= 0 ? '+' : '') + fmtInt(gap) + ' ตร.ม.', ftColor: gap >= 0 ? '#0ea371' : 'var(--critical)' }),
+    ovKpi({ ic: '⚑', icBg: 'linear-gradient(135deg,#ffb547,#f97316)', title: 'สรุปการทำงาน Auto / Manual / Error',
+      body: '<div class="ov-split">' +
+        '<div style="background:#e5f6e5;color:#087a08"><b>' + c[ST.NORMAL] + '</b><span>✓ Auto</span></div>' +
+        '<div style="background:#fff3d6;color:var(--warning-ink)"><b>' + c[ST.MANUAL] + '</b><span>! Manual</span></div>' +
+        '<div style="background:#fde6e6;color:var(--critical)"><b>' + c[ST.ISSUE] + '</b><span>✕ Error</span></div></div>',
+      bar: n ? barFill(c[ST.NORMAL] / n * 100, 'var(--good)') + barFill(c[ST.MANUAL] / n * 100, 'var(--warning)') + barFill(c[ST.ISSUE] / n * 100, 'var(--critical)') : '',
+      ftL: 'รอบที่รายงาน', ftR: n + ' / ' + expected + ' รอบ' + (n ? ' · Auto ' + Math.round(c[ST.NORMAL] / n * 100) + '%' : '') }),
+    ovKpi({ ic: '◔', icBg: 'linear-gradient(135deg,#a78bfa,#6d28d9)', title: 'ชั่วโมงทำงาน (Net Time)',
+      value: w.count ? clock(w.sec) : '—', unit: 'ชม.:นาที', color: '#5b21b6',
+      bar: barFill(w.sec / (days * 86400) * 100, 'linear-gradient(90deg,#c4b5fd,#7c3aed)'),
+      ftL: 'ประสิทธิภาพ', ftR: w.count ? fmtInt(eff) + ' ตร.ม./ชม.' : '—' }),
+  ].join('');
+
+  // ยอดสะสมประจำเดือน (ถึงวันที่เลือก)
+  var x = ymd(state.day), ms = Date.UTC(x.y, x.m, 1) / 864e5, dim = new Date(Date.UTC(x.y, x.m + 1, 0)).getUTCDate();
+  var mRuns = RUNS.filter(function (r) { return r.day >= ms && r.day <= state.day; }), mw = sumRuns(mRuns);
+  var mTarget = SETTINGS.monthlyTargetSqm || dt * dim, mPct = mTarget ? Math.round(mw.area / mTarget * 100) : 0;
+  var mDays = {}; mRuns.forEach(function (r) { mDays[r.day] = 1; });
+  document.getElementById('ovMtd').innerHTML =
+    '<div class="ov-title" style="margin:0"><span class="ov-ic" style="background:#e8f0fe;color:var(--blue-1)">▭</span><h3>ยอดสะสมพื้นที่ทำความสะอาดประจำเดือน (MTD Progress) · ' + MONTHS_FULL[x.m] + ' ' + (x.y + 543) + '</h3></div>' +
+    '<div class="tot"><small>ยอดสะสมรวม / เป้าหมายเดือน</small><b>' + fmtInt(mw.area) + ' / ' + (mTarget ? fmtInt(mTarget) : '—') + ' ตร.ม.</b></div>' +
+    '<div class="ov-bar"><i style="width:' + Math.max(0, Math.min(100, mPct)) + '%">' + (mTarget ? mPct + '%' : '') + '</i></div>' +
+    '<div class="note">มีข้อมูลนำเข้า ' + Object.keys(mDays).length + ' วันในเดือนที่เลือก · ยอดสะสมอาจไม่ครบหากยังไม่ Import ไฟล์ย้อนหลัง</div>';
+
+  renderOvTrend(document.getElementById('ovTrend'), state.day, dt, state.trendDays);
+  renderOvRounds(state.day);
+}
+
+/** กราฟพื้นที่ n วันล่าสุด (แท่ง) + % เทียบเป้า (เส้น) · size = {w, h} ใช้ตอน Capture */
+function renderOvTrend(el, endDay, dt, n, size) {
+  var pts = [];
+  document.getElementById('ovTrendTitle').textContent = 'Trend พื้นที่ทำความสะอาด (ตร.ม.) เทียบเป้าหมาย (' + n + ' วัน)';
+  for (var d = endDay - n + 1; d <= endDay; d++) {
+    var s = sumRuns(RUNS.filter(function (r) { return r.day === d; }));
+    pts.push({ day: d, has: s.count > 0, area: s.area, sec: s.sec, count: s.count, pct: dt && s.count ? s.area / dt * 100 : null });
+  }
+  var max = Math.max.apply(null, [dt || 1].concat(pts.map(function (p) { return p.area; }))) * 1.12;
+  var ticks = niceTicks(max), top = ticks[ticks.length - 1];
+  var W = size ? size.w : Math.max(280, el.clientWidth), H = size ? size.h : 340, L = 58, R = dt ? 50 : 12, T = 44, B = 30;
+  var pw = W - L - R, ph = H - T - B, step = pw / pts.length, bw = Math.max(5, Math.min(72, step * 0.58));
+  var showPill = step >= 46, showVal = bw >= 44, every = Math.ceil(pts.length / Math.max(2, Math.floor(pw / 52)));
+  var y = function (v) { return T + ph - v / top * ph; }, svg = '';
+  ticks.forEach(function (t) {
+    svg += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y(t) + '" y2="' + y(t) + '" stroke="var(--line)" stroke-dasharray="4 4"/>' +
+      '<text x="' + (L - 10) + '" y="' + (y(t) + 4) + '" text-anchor="end" font-size="12.5" fill="var(--ink-2)">' + fmtInt(t) + '</text>' +
+      (dt ? '<text x="' + (W - R + 10) + '" y="' + (y(t) + 4) + '" font-size="12.5" fill="var(--ink-2)">' + Math.round(t / dt * 100) + '%</text>' : '');
+  });
+  svg += '<text x="' + (L - 10) + '" y="' + (T - 22) + '" text-anchor="end" font-size="12" fill="var(--muted)">ตร.ม.</text>' +
+    (dt ? '<text x="' + (W - R + 10) + '" y="' + (T - 22) + '" font-size="12" fill="var(--muted)">%</text>' : '');
+  var line = '', pen = false, dots = '';
+  pts.forEach(function (p, i) {
+    var cx = L + step * i + step / 2, by = y(p.area);
+    if (p.has) {
+      var fill = dt ? (p.area >= dt ? 'var(--good)' : 'var(--orange-1)') : '#12a594', bh = p.area / top * ph;
+      svg += barPath(cx - bw / 2, by, bw, bh, Math.min(6, bw / 2), fill);
+      var inside = bh > 44; // ค่าพื้นที่อยู่ในแท่ง ใต้จุด % (ไม่ทับกัน)
+      if (showVal) svg += '<text x="' + cx + '" y="' + (inside ? by + 30 : dt ? by - 64 : by - 8) + '" text-anchor="middle" font-size="13" font-weight="700" fill="' + (inside ? '#fff' : 'var(--ink)') + '">' + fmtInt(p.area) + '</text>';
+      if (dt) {
+        line += (pen ? 'L' : 'M') + cx + ' ' + by; pen = true;
+        var lbl = Math.round(p.pct) + '%', lw = lbl.length * 8 + 14, ly = Math.max(4, by - 50);
+        dots += '<circle cx="' + cx + '" cy="' + by + '" r="' + (showPill ? 5.5 : 3.5) + '" fill="#fff" stroke="#2563eb" stroke-width="2.5"/>' + (showPill ?
+          '<rect x="' + (cx - lw / 2) + '" y="' + ly + '" width="' + lw + '" height="24" rx="6" fill="#fff" stroke="#93b4f5"/>' +
+          '<text x="' + cx + '" y="' + (ly + 16.5) + '" text-anchor="middle" font-size="13" font-weight="700" fill="#1442a8">' + lbl + '</text>' : '');
+      }
+    } else {
+      pen = false;
+      svg += '<text x="' + cx + '" y="' + (T + ph - 8) + '" text-anchor="middle" font-size="16" fill="var(--muted)">—</text>';
+    }
+    if ((pts.length - 1 - i) % every === 0) svg += '<text x="' + cx + '" y="' + (H - 8) + '" text-anchor="middle" font-size="13" fill="var(--ink-2)">' + ddmm(p.day) + '</text>';
+    svg += '<rect class="hit" data-i="' + i + '" x="' + (L + step * i) + '" y="' + T + '" width="' + step + '" height="' + ph + '" fill="transparent"/>';
+  });
+  if (line) svg += '<path d="' + line + '" fill="none" stroke="#2563eb" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>';
+  svg += dots + '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + (T + ph) + '" y2="' + (T + ph) + '" stroke="var(--axis)"/>';
+  el.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Trend พื้นที่ทำความสะอาด 7 วัน">' + svg + '</svg>';
+  hover(el, '.hit', function (t) {
+    var p = pts[+t.getAttribute('data-i')];
+    if (!p.has) return '<b>' + dayLabel(p.day, true) + '</b><span style="color:var(--muted)">ไม่มีข้อมูลนำเข้า</span>';
+    return '<b>' + dayLabel(p.day, true) + '</b><div class="r"><span>พื้นที่</span><span>' + fmtInt(p.area) + ' ตร.ม.</span></div>' +
+      (p.pct !== null ? '<div class="r"><span>เทียบเป้า</span><span>' + Math.round(p.pct) + '%</span></div>' : '') +
+      '<div class="r"><span>เวลาทำงาน</span><span>' + clock(p.sec) + ' ชม.</span></div><div class="r"><span>จำนวนงาน</span><span>' + p.count + '</span></div>';
+  }, function (t, on) { t.setAttribute('fill', on ? 'rgba(37,99,235,0.05)' : 'transparent'); });
+}
+
+function renderOvRounds(day) {
+  document.getElementById('ovRoundsDate').textContent = 'ข้อมูลของวันที่ ' + dayLabel(day, true) + ' (08:00 – 07:59)';
+  var reps = DATA.filter(function (r) { return r.day === day; }), by = {};
+  reps.forEach(function (r) { by[r.round] = r; });
+  var list = ROUNDS.slice();
+  reps.forEach(function (r) { if (list.indexOf(r.round) < 0) list.push(r.round); });
+  list.sort(function (a, b) { return roundKey(toMin(a)) - roundKey(toMin(b)); });
+  var c = count(reps), h = '<div class="ov-rnd-head"><span>เวลา</span><span>สถานะ</span><span>พื้นที่ทำความสะอาด</span></div>';
+  list.forEach(function (rd) {
+    var r = by[rd], w = sumRuns(RUNS.filter(function (x) { return x.day === day && x.round === rd; }));
+    var area = w.count ? '<div class="a">' + fmtInt(w.area) + '<small>ตร.ม.</small></div>' : '<div class="a none">—</div>';
+    h += '<div class="ov-rnd' + (r ? '' : ' miss') + '"><div class="t">' + rd + '</div><div class="s">' +
+      (r ? statusPill(r.status) : '❓ ยังไม่มีรายงาน') + '</div>' + area + '</div>';
+  });
+  var msg = !reps.length ? 'ยังไม่มีรายงานในวันนี้'
+    : c[ST.MANUAL] + c[ST.ISSUE] === 0 ? '<b>ทำงาน AUTO ปกติทุกรอบที่รายงาน ✓</b>'
+    : '<b>Auto ' + c[ST.NORMAL] + ' · Manual ' + c[ST.MANUAL] + ' · Error ' + c[ST.ISSUE] + '</b><br>ติดตามปัญหาได้ที่หัวข้อ "ติดตามปัญหา"';
+  document.getElementById('ovRounds').innerHTML = h + '<div class="ov-sum">' + msg + '</div>';
 }
 
 function count(rows) {
@@ -446,13 +774,6 @@ function kpi(title, value, unit, pill, color, bg, icon, valueColor) {
 }
 function renderKpis(rows) {
   var c = count(rows), n = rows.length, pct = n ? Math.round(c[ST.NORMAL] / n * 100) : 0;
-  document.getElementById('kpiStatus').innerHTML = [
-    kpi('รอบที่รายงาน', n, 'รอบ', range().s === range().e ? 'วันที่เลือก' : (range().e - range().s + 1) + ' วัน', 'var(--blue-1)', '#e8f0fe', '#'),
-    kpi('AUTO ปกติ', n ? pct + '%' : '–', '', c[ST.NORMAL] + ' รอบ', 'var(--good)', '#e5f6e5', '✓', '#087a08'),
-    kpi('ต้องกด Manual', c[ST.MANUAL], 'รอบ', n ? Math.round(c[ST.MANUAL] / n * 100) + '% ของรอบ' : '', 'var(--warning)', '#fff3d6', '!', 'var(--warning-ink)'),
-    kpi('ผิดปกติ', c[ST.ISSUE], 'รอบ', n ? Math.round(c[ST.ISSUE] / n * 100) + '% ของรอบ' : '', 'var(--critical)', '#fde6e6', '✕', 'var(--critical)'),
-  ].join('');
-
   var open = DATA.filter(function (r) { return r.problem && r.follow === 'รอดำเนินการ'; }).length;
   var doing = DATA.filter(function (r) { return r.problem && r.follow === 'กำลังแก้ไข'; }).length;
   var probs = rows.filter(function (r) { return r.problem; });
@@ -483,26 +804,11 @@ function width(id) { return Math.max(280, document.getElementById(id).clientWidt
 // trend: daily = round cards, weekly/monthly = bars per day, yearly = bars per month
 function renderTrend(rg, rows) {
   var el = document.getElementById('trendChart'), legend = document.getElementById('legend1');
-  if (state.period === 'daily') {
-    document.getElementById('trendTitle').textContent = 'รายงานแต่ละรอบ · ' + rg.label;
-    document.getElementById('trendDesc').textContent = 'เรียงจากรอบแรกของวัน (08:00) ถึงรอบสุดท้ายก่อน 08:00 วันถัดไป';
-    legend.style.display = 'none';
-    var list = rows.slice().sort(function (a, b) { return roundKey(a.min) - roundKey(b.min); });
-    var have = {}; list.forEach(function (r) { have[r.round] = 1; });
-    var expected = commonRounds().filter(function (rd) { return !have[rd]; });
-    if (!list.length && !expected.length) { el.innerHTML = '<div class="empty-msg">ยังไม่มีรายงานในวันนี้</div>'; return; }
-    var cards = list.map(function (r) {
-      return { k: roundKey(r.min), h: '<div class="rcard" style="--rc:' + STYLE[r.status].color + '"><div class="time">' + r.round + '</div>' +
-        statusPill(r.status) + '<div class="who">' + (r.name ? 'โดย ' + esc(r.name) : '') + (r.reportedAt ? ' · ' + esc(r.reportedAt.split(' ')[1] || '') + ' น.' : '') +
-        '</div><div class="msg">' + esc(r.text) + '</div></div>' };
-    }).concat(expected.map(function (rd) {
-      var t = rd.split(':');
-      return { k: roundKey(+t[0] * 60 + +t[1]), h: '<div class="rcard missing"><div class="time">' + rd + '</div>ยังไม่มีรายงาน</div>' };
-    })).sort(function (a, b) { return a.k - b.k; });
-    el.innerHTML = '<div class="rounds">' + cards.map(function (c) { return c.h; }).join('') + '</div>';
-    return;
-  }
   legend.style.display = '';
+  if (state.period === 'daily') { // รายวัน: รายงานแต่ละรอบอยู่ในภาพรวมแล้ว จึงแสดงแนวโน้ม 7 วันล่าสุดแทน
+    rows = DATA.filter(function (r) { return r.day > rg.e - 7 && r.day <= rg.e; });
+    rg = { s: rg.e - 6, e: rg.e, label: dayLabel(rg.e - 6) + ' – ' + dayLabel(rg.e, true) };
+  }
   var buckets = [], key;
   if (state.period === 'yearly') {
     document.getElementById('trendTitle').textContent = 'แนวโน้มสถานะรายเดือน · ' + rg.label;
@@ -642,6 +948,289 @@ function renderByRound(rows) {
   }, function (t, on) { t.setAttribute('fill', on ? 'rgba(31,99,218,0.06)' : 'transparent'); });
 }
 
+// ---------- robot output from Excel ----------
+function sumRuns(list) {
+  var t = { count: 0, area: 0, sec: 0, energy: 0, water: 0 };
+  list.forEach(function (r) { t.count++; t.area += r.area; t.sec += r.sec; t.energy += r.energy; t.water += r.water; });
+  return t;
+}
+function fmtInt(n) { return Math.round(n).toLocaleString('en-US'); }
+function clock(sec) { var m = Math.round(sec / 60); return Math.floor(m / 60) + ':' + (m % 60 < 10 ? '0' : '') + (m % 60); }
+
+function renderWork(rg) {
+  var runs = RUNS.filter(function (r) { return r.day >= rg.s && r.day <= rg.e; });
+  var w = sumRuns(runs), days = rg.e - rg.s + 1, target = (SETTINGS.dailyTargetSqm || 0) * days;
+  var eff = w.sec ? w.area / (w.sec / 3600) : 0;
+  document.getElementById('workNote').textContent = RUNS.length ? 'นำเข้าแล้ว ' + RUNS.length + ' งาน' : 'ยังไม่ได้นำเข้า Excel';
+  // กราฟพื้นที่: รายวัน = แยกรอบ, สัปดาห์/เดือน = รายวัน, ปี = รายเดือน
+  var buckets = [], key, perTarget = 0, x0 = ymd(rg.e);
+  if (state.period === 'daily') {
+    document.getElementById('areaTitle').textContent = 'พื้นที่แยกตามรอบ · ' + rg.label;
+    ROUNDS.forEach(function (rd) { buckets.push({ id: rd, label: rd, full: 'รอบ ' + rd }); });
+    key = function (r) { return r.round; };
+  } else if (state.period === 'yearly') {
+    document.getElementById('areaTitle').textContent = 'พื้นที่รายเดือน · ' + rg.label;
+    for (var m = 0; m <= x0.m; m++) buckets.push({ id: m, label: MONTHS[m], full: MONTHS_FULL[m] + ' ' + (x0.y + 543) });
+    key = function (r) { return ymd(r.day).m; };
+  } else {
+    document.getElementById('areaTitle').textContent = 'พื้นที่รายวัน · ' + rg.label;
+    for (var d = rg.s; d <= rg.e; d++) buckets.push({ id: d, label: dayLabel(d), full: dayLabel(d, true) });
+    key = function (r) { return r.day; };
+    perTarget = SETTINGS.dailyTargetSqm || 0;
+  }
+  document.getElementById('areaDesc').textContent = runs.length
+    ? 'ตร.ม. ที่หุ่นยนต์รายงานใน Excel' + (perTarget ? ' · แท่งเขียว = ถึงเป้า ' + fmtInt(perTarget) + ' ตร.ม./วัน, ส้ม = ต่ำกว่าเป้า' : '') + ' · ช่องว่าง = ไม่มีข้อมูล'
+    : 'ยังไม่มีข้อมูลจาก Excel ในช่วงนี้ — นำเข้าได้ที่หัวข้อ "นำเข้า Excel" ด้านล่าง';
+  document.getElementById('areaLegend').innerHTML = perTarget
+    ? '<span><span class="sw" style="background:var(--good)"></span>ถึงเป้า</span><span><span class="sw" style="background:var(--orange-1)"></span>ต่ำกว่าเป้า</span><span><span class="sw" style="background:none;border-top:2px dashed var(--ink-2);height:0;border-radius:0"></span>เป้าหมาย</span>'
+    : '';
+  var by = {};
+  buckets.forEach(function (b) { by[b.id] = []; });
+  runs.forEach(function (r) { var k = key(r); if (by[k]) by[k].push(r); });
+  areaBars(document.getElementById('areaChart'), buckets, by, perTarget);
+  renderRunTable(runs);
+}
+
+function areaBars(el, buckets, by, target) {
+  if (!buckets.some(function (b) { return by[b.id].length; })) { el.innerHTML = '<div class="empty-msg">ไม่มีข้อมูลพื้นที่ในช่วงนี้</div>'; return; }
+  var sums = {};
+  buckets.forEach(function (b) { sums[b.id] = sumRuns(by[b.id]); });
+  var max = Math.max.apply(null, [target || 1].concat(buckets.map(function (b) { return sums[b.id].area; })));
+  var ticks = niceTicks(max), top = ticks[ticks.length - 1];
+  var W = width('areaChart'), H = 260, L = 54, R = 8, T = 12, B = 28;
+  var pw = W - L - R, ph = H - T - B, step = pw / buckets.length, bw = Math.max(3, Math.min(40, step * 0.62));
+  var y = function (v) { return T + ph - v / top * ph; }, svg = '';
+  ticks.forEach(function (t) {
+    svg += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y(t) + '" y2="' + y(t) + '" stroke="var(--line)"/>' +
+      '<text x="' + (L - 8) + '" y="' + (y(t) + 4) + '" text-anchor="end" font-size="11.5" fill="var(--muted)">' + fmtInt(t) + '</text>';
+  });
+  var every = Math.ceil(buckets.length / Math.max(2, Math.floor(pw / 60)));
+  buckets.forEach(function (b, i) {
+    var cx = L + step * i + step / 2, s = sums[b.id];
+    if (s.count) {
+      var fill = target ? (s.area >= target ? 'var(--good)' : 'var(--orange-1)') : '#12a594';
+      svg += barPath(cx - bw / 2, y(s.area), bw, s.area / top * ph, Math.min(4, bw / 2), fill);
+    }
+    if (i % every === 0) svg += '<text x="' + cx + '" y="' + (H - 8) + '" text-anchor="middle" font-size="11.5" fill="var(--muted)">' + b.label + '</text>';
+    svg += '<rect class="hit" data-i="' + i + '" x="' + (L + step * i) + '" y="' + T + '" width="' + step + '" height="' + ph + '" fill="transparent"/>';
+  });
+  if (target) svg += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y(target) + '" y2="' + y(target) + '" stroke="var(--ink-2)" stroke-dasharray="5 4"/>' +
+    '<text x="' + (W - R) + '" y="' + (y(target) - 6) + '" text-anchor="end" font-size="11.5" fill="var(--ink-2)">เป้า ' + fmtInt(target) + '</text>';
+  svg += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + (T + ph) + '" y2="' + (T + ph) + '" stroke="var(--axis)"/>';
+  el.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="พื้นที่ทำความสะอาด">' + svg + '</svg>';
+  hover(el, '.hit', function (t) {
+    var b = buckets[+t.getAttribute('data-i')], s = sums[b.id];
+    if (!s.count) return '<b>' + b.full + '</b><span style="color:var(--muted)">ไม่มีข้อมูลจาก Excel</span>';
+    return '<b>' + b.full + '</b><div class="r"><span>พื้นที่</span><span>' + fmtInt(s.area) + ' ตร.ม.</span></div>' +
+      (target ? '<div class="r"><span>เทียบเป้า</span><span>' + Math.round(s.area / target * 100) + '%</span></div>' : '') +
+      '<div class="r"><span>เวลาทำงาน</span><span>' + clock(s.sec) + ' ชม.</span></div><div class="r"><span>จำนวนงาน</span><span>' + s.count + '</span></div>';
+  }, function (t, on) { t.setAttribute('fill', on ? 'rgba(18,165,148,0.08)' : 'transparent'); });
+}
+
+function renderRunTable(runs) {
+  var el = document.getElementById('runTable');
+  var list = runs.slice().sort(function (a, b) { return a.start < b.start ? 1 : -1; });
+  if (!list.length) { el.innerHTML = '<div class="empty-msg">ไม่มีงานในช่วงนี้</div>'; return; }
+  var h = '<table><thead><tr><th>วันที่</th><th>รอบ</th><th>งาน / โซน</th><th>หุ่นยนต์</th><th>เริ่ม – จบ</th><th>เวลา (ชม.)</th><th>พื้นที่ (ตร.ม.)</th><th>ไฟฟ้า (kWh)</th><th>น้ำ (ลิตร)</th></tr></thead><tbody>';
+  list.slice(0, 300).forEach(function (r) {
+    h += '<tr><td class="nw">' + dayLabel(r.day, true) + '</td><td class="nw">' + r.round + '</td><td>' + esc(r.task) + '</td><td class="nw">' + esc(r.robot) +
+      '</td><td class="nw">' + esc(r.start.slice(5, 16)) + ' – ' + esc(r.end.slice(11, 16)) + '</td><td class="nw">' + clock(r.sec) + '</td><td class="nw">' +
+      r.area.toLocaleString('en-US', { maximumFractionDigits: 2 }) + '</td><td class="nw">' + r.energy + '</td><td class="nw">' + r.water + '</td></tr>';
+  });
+  el.innerHTML = h + '</tbody></table>' + (list.length > 300 ? '<div class="desc">แสดง 300 งานล่าสุด จาก ' + list.length + '</div>' : '');
+}
+
+// ---------- import Excel ----------
+var importRows = [], importFile = '';
+var HEADER_MAP = [ // ชื่อหัวคอลัมน์ใน Excel ของ SIASUN (จีน) + ชื่อภาษาอังกฤษสำรอง
+  ['sn', ['sn', 'robotsn', 'serialnumber']],
+  ['name', ['机器人名称', 'robotname']],
+  ['task', ['任务名称', 'taskname']],
+  ['start', ['任务开始时间', 'starttime', 'taskstarttime']],
+  ['end', ['任务结束时间', 'endtime', 'taskendtime']],
+  ['area', ['清扫面积', 'cleaningarea', 'area']],
+  ['energy', ['用电量', 'powerconsumption', 'energy']],
+  ['water', ['用水量', 'waterconsumption', 'water']],
+  ['report', ['上报日期', 'reportdate']],
+];
+function normHead(h) { return String(h).replace(/\s|_/g, '').replace(/（/g, '(').replace(/）/g, ')').toLowerCase(); }
+function matchField(h) {
+  var n = normHead(h);
+  for (var i = 0; i < HEADER_MAP.length; i++) {
+    if (HEADER_MAP[i][1].some(function (k) { return n === k || n.indexOf(k + '(') === 0 || (k.length > 3 && n.indexOf(k) === 0); })) return HEADER_MAP[i][0];
+  }
+  return null;
+}
+function loadScript(url, globalName, errMsg) {
+  if (window[globalName]) return Promise.resolve();
+  return new Promise(function (ok, fail) {
+    var s = document.createElement('script');
+    s.src = url; s.onload = ok;
+    s.onerror = function () { fail(new Error(errMsg)); };
+    document.head.appendChild(s);
+  });
+}
+function loadSheetJS() { return loadScript(SHEETJS_URL, 'XLSX', 'โหลดตัวอ่าน Excel ไม่สำเร็จ (เช็คอินเทอร์เน็ต)'); }
+
+// ---------- Capture ภาพภาพรวม 1920×1080 ----------
+// ใช้ html-to-image: ให้ browser วาดหน้าเว็บจริง (ผ่าน SVG foreignObject) ภาพจึงเหมือนในแอป ทั้งเงา สีไล่ ขอบจาง และฟอนต์
+var HTML_TO_IMAGE_URL = 'https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js';
+
+/** แทน var(--สี) ในแอตทริบิวต์ของ SVG ด้วยค่าจริง (กันสีหายเวลา SVG ถูกคัดลอกไปวาดในภาพ) */
+function inlineSvgVars(svg) {
+  var cs = getComputedStyle(document.documentElement);
+  svg.setAttribute('font-family', 'Prompt, Tahoma, sans-serif');
+  svg.querySelectorAll('*').forEach(function (n) {
+    ['fill', 'stroke'].forEach(function (a) {
+      var v = n.getAttribute(a);
+      if (v && v.indexOf('var(') >= 0) n.setAttribute(a, v.replace(/var\((--[\w-]+)\)/g, function (m, k) { return cs.getPropertyValue(k).trim() || '#000'; }));
+    });
+  });
+}
+
+function captureOverview() {
+  var btn = document.getElementById('captureBtn'), label = btn.textContent;
+  btn.disabled = true; btn.textContent = 'กำลังสร้างภาพ…';
+  var cap = document.createElement('div');
+  loadScript(HTML_TO_IMAGE_URL, 'htmlToImage', 'โหลดตัวสร้างภาพไม่สำเร็จ (เช็คอินเทอร์เน็ต)').then(function () {
+    return document.fonts ? document.fonts.ready : null;
+  }).then(function () {
+    cap.className = 'cap';
+    var hero = document.getElementById('overview').cloneNode(true);
+    var grid = document.querySelector('.ov-grid').cloneNode(true), chart = grid.querySelector('#ovTrend');
+    var foot = document.createElement('div');
+    foot.className = 'cap-foot';
+    foot.innerHTML = '<span>PCG LOGISTICS · Cleaning Robot Dashboard</span><span>' + esc(document.getElementById('chipDate').textContent) +
+      ' · ' + esc(document.getElementById('info').textContent) + '</span><span>' +
+      (generatedAt ? 'ข้อมูลอัปเดต ณ ' + esc(generatedAt) + ' (GMT+7)' : 'ข้อมูลตัวอย่าง') + '</span>';
+    [hero, document.getElementById('ovKpis').cloneNode(true), document.getElementById('ovMtd').cloneNode(true), grid, foot]
+      .forEach(function (n) { cap.appendChild(n); });
+    cap.querySelectorAll('[id]').forEach(function (n) { n.removeAttribute('id'); });
+    document.body.appendChild(cap);
+    // วาดกราฟใหม่ให้เต็มพื้นที่ของภาพ
+    var card = chart.closest('.ov-card'), cr = card.getBoundingClientRect(), r = chart.getBoundingClientRect();
+    renderOvTrend(chart, state.day, SETTINGS.dailyTargetSqm || 0, state.trendDays,
+      { w: Math.round(r.width), h: Math.max(240, Math.round(cr.bottom - r.top - 44)) });
+    cap.querySelectorAll('svg').forEach(inlineSvgVars);
+    // style: วาง clone ที่มุมซ้ายบนของภาพ (ตัวจริงถูกซ่อนไว้นอกจอ)
+    return htmlToImage.toBlob(cap, { width: 1920, height: 1080, pixelRatio: 1, backgroundColor: '#eef1f5',
+      style: { position: 'static', left: '0', top: '0' } });
+  }).then(function (blob) {
+    if (!blob) throw new Error('สร้างไฟล์ภาพไม่ได้');
+    var a = document.createElement('a'), d = ymd(state.day);
+    a.href = URL.createObjectURL(blob);
+    a.download = 'Cleaning-Robot-Dashboard_' + d.y + '-' + p2(d.m + 1) + '-' + p2(d.d) + '.png';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000);
+  }).catch(function (e) {
+    notice('สร้างภาพไม่สำเร็จ: ' + e.message, true);
+  }).then(function () {
+    if (cap.parentNode) cap.remove();
+    btn.disabled = false; btn.textContent = label;
+  });
+}
+document.getElementById('captureBtn').addEventListener('click', captureOverview);
+function p2(n) { return (n < 10 ? '0' : '') + n; }
+/** ค่าเวลาจาก Excel (serial number หรือข้อความ) -> "yyyy-mm-dd HH:mm:ss" */
+function excelTime(v) {
+  if (typeof v === 'number' && isFinite(v)) {
+    var secs = Math.round(v * 86400), c = XLSX.SSF.parse_date_code(Math.floor(secs / 86400)), s = secs % 86400;
+    if (!c) return '';
+    return c.y + '-' + p2(c.m) + '-' + p2(c.d) + ' ' + p2(Math.floor(s / 3600)) + ':' + p2(Math.floor(s % 3600 / 60)) + ':' + p2(s % 60);
+  }
+  var m = String(v || '').trim().match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})[ T]+(\d{1,2}):(\d{2})(?::(\d{2}))?/);
+  return m ? m[1] + '-' + p2(+m[2]) + '-' + p2(+m[3]) + ' ' + p2(+m[4]) + ':' + m[5] + ':' + (m[6] || '00') : '';
+}
+function readExcel(file) {
+  var status = document.getElementById('impStatus'), btn = document.getElementById('impBtn');
+  document.getElementById('impResult').innerHTML = '';
+  btn.disabled = true; importRows = []; importFile = file.name;
+  if (file.size > 12 * 1024 * 1024) { status.textContent = 'ไฟล์ใหญ่เกิน 12 MB'; return; }
+  status.textContent = 'กำลังอ่านไฟล์…';
+  loadSheetJS().then(function () { return file.arrayBuffer(); }).then(function (buf) {
+    var wb = XLSX.read(buf, { type: 'array' });
+    var grid = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, raw: true, defval: '' });
+    var hi = -1, cols = {};
+    for (var i = 0; i < Math.min(grid.length, 15) && hi < 0; i++) {
+      var c = {};
+      grid[i].forEach(function (h, j) { var f = matchField(h); if (f && !(f in c)) c[f] = j; });
+      if ('start' in c && 'end' in c && 'area' in c) { hi = i; cols = c; }
+    }
+    if (hi < 0) throw new Error('ไม่พบหัวคอลัมน์ของรายงาน SIASUN (ต้องมี 任务开始时间, 任务结束时间, 清扫面积)');
+    var get = function (row, f) { return f in cols ? row[cols[f]] : ''; };
+    grid.slice(hi + 1).forEach(function (row) {
+      if (!row.some(function (v) { return String(v).trim() !== ''; })) return;
+      importRows.push({ sn: String(get(row, 'sn')).trim(), name: String(get(row, 'name')).trim(), task: String(get(row, 'task')).trim(),
+        start: excelTime(get(row, 'start')), end: excelTime(get(row, 'end')), area: get(row, 'area'),
+        energy: get(row, 'energy'), water: get(row, 'water'), report: String(get(row, 'report')).trim() });
+    });
+    showPreview(file.name);
+  }).catch(function (e) { status.textContent = e.message; });
+}
+function showPreview(name) {
+  var status = document.getElementById('impStatus'), btn = document.getElementById('impBtn');
+  var ok = importRows.filter(function (r) { return r.start && r.end; });
+  var area = ok.reduce(function (s, r) { return s + (Number(String(r.area).replace(/,/g, '')) || 0); }, 0);
+  var starts = ok.map(function (r) { return r.start; }).sort();
+  var h = '<div class="imp-stats"><div><b>' + importRows.length + '</b><span>รายการในไฟล์</span></div>' +
+    '<div><b>' + fmtInt(area) + '</b><span>พื้นที่รวม (ตร.ม.)</span></div>' +
+    '<div><b style="font-size:15px">' + (starts.length ? esc(starts[0].slice(0, 10)) + '<br>' + esc(starts[starts.length - 1].slice(0, 10)) : '–') + '</b><span>ช่วงเวลาเริ่มงาน</span></div></div>';
+  h += '<div class="tablewrap" style="margin-top:12px"><table><thead><tr><th>งาน</th><th>เริ่ม</th><th>จบ</th><th>พื้นที่</th></tr></thead><tbody>' +
+    importRows.slice(0, 5).map(function (r) {
+      return '<tr><td>' + esc(r.task) + '</td><td class="nw">' + (esc(r.start) || '<span class="saved err">อ่านไม่ได้</span>') + '</td><td class="nw">' +
+        (esc(r.end) || '<span class="saved err">อ่านไม่ได้</span>') + '</td><td class="nw">' + esc(r.area) + '</td></tr>';
+    }).join('') + '</tbody></table>' + (importRows.length > 5 ? '<div class="desc">ตัวอย่าง 5 จาก ' + importRows.length + ' รายการ</div>' : '') + '</div>';
+  document.getElementById('impPreview').innerHTML = h;
+  status.textContent = esc(name);
+  btn.disabled = !importRows.length;
+}
+function doImport() {
+  var btn = document.getElementById('impBtn'), status = document.getElementById('impStatus');
+  if (!importRows.length) return;
+  if (!API_URL) { document.getElementById('impResult').innerHTML = '<div class="notice" style="margin-top:12px">โหมดตัวอย่าง: อ่านไฟล์ได้ ' + importRows.length + ' รายการ แต่ยังไม่ได้บันทึก (ไม่ได้ตั้ง API_URL)</div>'; return; }
+  btn.disabled = true;
+  var total = { scanned: 0, inserted: 0, duplicates: 0, invalid: 0, warnings: [] }, size = 200, i = 0;
+  var next = function () {
+    if (i >= importRows.length) return finish();
+    status.textContent = 'กำลังบันทึก ' + Math.min(i + size, importRows.length) + ' / ' + importRows.length + '…';
+    var chunk = importRows.slice(i, i + size); i += size;
+    fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'importRuns', key: getKey(), fileName: importFile, rows: chunk }) })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d.error) throw new Error(d.error);
+        ['scanned', 'inserted', 'duplicates', 'invalid'].forEach(function (k) { total[k] += d[k] || 0; });
+        total.warnings = total.warnings.concat(d.warnings || []).slice(0, 10);
+        next();
+      })
+      .catch(function (e) { status.textContent = 'บันทึกไม่สำเร็จ: ' + e.message; btn.disabled = false; finish(true); });
+  };
+  var finish = function (failed) {
+    document.getElementById('impResult').innerHTML = '<div class="imp-stats">' +
+      '<div><b style="color:#237a34">' + total.inserted + '</b><span>บันทึกใหม่</span></div>' +
+      '<div><b>' + total.duplicates + '</b><span>ซ้ำ (ข้าม)</span></div>' +
+      '<div><b style="color:' + (total.invalid ? 'var(--critical)' : 'inherit') + '">' + total.invalid + '</b><span>ผิดรูปแบบ</span></div></div>' +
+      (total.warnings.length ? '<div class="desc" style="margin-top:8px">' + total.warnings.map(esc).join('<br>') + '</div>' : '');
+    if (!failed) { status.textContent = 'นำเข้าเสร็จแล้ว'; importRows = []; load(); }
+  };
+  next();
+}
+function renderImportLog() {
+  var el = document.getElementById('importLog');
+  if (!IMPORTS.length) { el.innerHTML = '<div class="empty-msg">ยังไม่มีการนำเข้า</div>'; return; }
+  el.innerHTML = '<table><thead><tr><th>เวลา</th><th>ไฟล์</th><th>ใหม่</th><th>ซ้ำ</th><th>ผิด</th></tr></thead><tbody>' +
+    IMPORTS.map(function (x) {
+      return '<tr><td class="nw">' + esc(x.at) + '</td><td>' + esc(x.file) + '</td><td class="nw">' + x.inserted + '</td><td class="nw">' + x.duplicates + '</td><td class="nw">' + x.invalid + '</td></tr>';
+    }).join('') + '</tbody></table>';
+}
+(function () {
+  var drop = document.getElementById('drop'), input = document.getElementById('fileInput');
+  input.addEventListener('change', function () { if (input.files[0]) readExcel(input.files[0]); input.value = ''; });
+  ['dragenter', 'dragover'].forEach(function (t) { drop.addEventListener(t, function (e) { e.preventDefault(); drop.classList.add('over'); }); });
+  ['dragleave', 'drop'].forEach(function (t) { drop.addEventListener(t, function (e) { e.preventDefault(); drop.classList.remove('over'); }); });
+  drop.addEventListener('drop', function (e) { var f = e.dataTransfer.files[0]; if (f) readExcel(f); });
+  document.getElementById('impBtn').addEventListener('click', doImport);
+})();
+
 // ---------- tables ----------
 function sortDesc(a, b) { return b.day - a.day || roundKey(b.min) - roundKey(a.min); }
 function renderIssues(rows) {
@@ -708,6 +1297,12 @@ document.getElementById('tabs').addEventListener('click', function (e) {
   this.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
   state.period = b.getAttribute('data-p'); render();
 });
+document.getElementById('trendDays').addEventListener('click', function (e) {
+  var b = e.target.closest('button'); if (!b) return;
+  this.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
+  state.trendDays = +b.getAttribute('data-n');
+  renderOvTrend(document.getElementById('ovTrend'), state.day, SETTINGS.dailyTargetSqm || 0, state.trendDays);
+});
 document.getElementById('tmode').addEventListener('click', function (e) {
   var b = e.target.closest('button'); if (!b) return;
   this.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
@@ -749,6 +1344,23 @@ function demoData() {
       var txt = st === ST.NORMAL ? 'รอบ ' + rd + ' robot ทำงาน auto ปกติครับ' : st === ST.MANUAL ? 'รอบ ' + rd + ' robot ไม่ออก auto ต้องกด manual task ครับ' : 'รอบ ' + rd + ' robot ค้างกลางทาง ครับ';
       out.push({ row: out.length + 2, reportedAt: date + ' ' + rd.replace(':00', ':05'), date: date, round: rd, status: st, name: names[Math.floor(rnd() * 3)],
         text: txt, edited: '', msgId: 'demo' + out.length, follow: st === ST.NORMAL ? '' : d < t - 5 ? 'แก้ไขแล้ว' : d < t - 2 ? 'กำลังแก้ไข' : '', note: '' });
+    });
+  }
+  return out;
+}
+
+// งานจำลองจาก Excel (โหมดตัวอย่าง)
+function demoRuns() {
+  var out = [], seed = 11, rnd = function () { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }, t = todayBiz();
+  for (var d = t - 60; d < t; d++) {
+    ROUNDS.forEach(function (rd) {
+      if (rnd() < 0.08) return;
+      var h = +rd.slice(0, 2), cal = h < 8 ? d + 1 : d, x = ymd(cal), dt = ymd(d);
+      var day = x.y + '-' + p2(x.m + 1) + '-' + p2(x.d), sec = Math.round((2.8 + rnd() * 1.2) * 3600);
+      var endH = h + Math.floor(sec / 3600), endM = Math.floor(sec % 3600 / 60);
+      out.push({ date: dt.d + '/' + (dt.m + 1) + '/' + dt.y, round: rd, robot: 'SIASUN-01', task: 'โซน ' + 'ABCD'.charAt(Math.floor(rnd() * 4)),
+        start: day + ' ' + rd + ':05', end: day + ' ' + p2(endH % 24) + ':' + p2(endM) + ':00', sec: sec,
+        area: Math.round(3800 + rnd() * 2600), energy: Math.round(8 + rnd() * 4), water: Math.round(40 + rnd() * 30) });
     });
   }
   return out;
