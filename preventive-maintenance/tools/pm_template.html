@@ -577,7 +577,7 @@
   <h3>สถานะใน Axons → บน Dashboard</h3>
   <table><tr><th>Axons</th><th>Dashboard</th></tr>
     <tr><td>เสร็จสิ้น</td><td><b style="color:#0a6b4d">เสร็จ</b></td></tr>
-    <tr><td>มอบหมายงาน · กำลังดำเนินการ · รอประเมินงานหลังซ่อม</td><td><b style="color:#0f3fa4">กำลังทำ</b> (มีผลตรวจแล้ว = <b style="color:#7b61ff">ตรวจแล้ว รอปิดงาน</b> · เลยวันกำหนดและไม่มีผล = <b style="color:#c2410c">เลยกำหนด</b>)</td></tr>
+    <tr><td>มอบหมายงาน · กำลังดำเนินการ · รอประเมินงานหลังซ่อม</td><td><b style="color:#0f3fa4">กำลังทำ</b> (มีผลตรวจแล้ว = <b style="color:#1a5fe4">เสร็จสิ้น</b> · เลยวันกำหนดและไม่มีผล = <b style="color:#c2410c">เลยกำหนด</b>)</td></tr>
     <tr><td>รอสร้างใบงาน</td><td>แผนงาน — ไม่นับ (ติ๊ก "แสดงแผนงาน" เพื่อดู)</td></tr>
     <tr><td>ยกเลิกงาน</td><td>ไม่นับ (ติ๊ก "แสดงงานที่ยกเลิก" เพื่อดู)</td></tr></table>
   <p style="font-size:12.5px;color:#8a5200;background:#fff4dd;padding:8px 10px;border-radius:10px">ตรวจหน้างานแล้วแต่ยังไม่กดรับงาน/บันทึกผลใน Axons → ระบบยังนับเป็น "เลยกำหนด" จนกว่าจะบันทึกผลแล้วอัปโหลดไฟล์ใหม่</p>
@@ -714,7 +714,9 @@ function rows(ignore = {}) {
     (S.cancel || GROUP[r.s] !== "cancel") &&
     (ignore.plan || S.plan || GROUP[r.s] !== "wait"));
 }
-const grp = r => GROUP[r.s] || "prog";
+/* 6 พ.ย. ผู้ใช้สั่ง: มีผลตรวจแล้ว (ผ่าน/ไม่ผ่าน) = เสร็จสิ้น แม้สถานะในระบบยังเป็น กำลังดำเนินการ/รอประเมินงานหลังซ่อม */
+const grp = r => { const g = GROUP[r.s] || "prog"; return g === "prog" && r.r ? "done" : g; };
+const stTxt = r => GROUP[r.s] === "done" || grp(r) !== "done" ? r.s : "เสร็จสิ้น";
 /* ปฏิเสธงาน = ถือว่าลบออกจากระบบ (ผู้ใช้สั่ง 15 ต.ค.) → ไม่นับทุกที่ ดูได้ที่เมนู "ประวัติปฏิเสธใบงาน" */
 const isRej = r => /ปฏิเสธ/.test(r.s || "");
 const isFail = r => r.r.startsWith("fail");
@@ -921,7 +923,7 @@ function renderTable() {
     return `<tr class="${isFail(r) ? "bad" : ""}"><td class="num" style="font-weight:700;white-space:nowrap">${r.w === "-" ? "<span style='color:#9aa6bd'>ยังไม่มีเลข</span>" : r.w}</td>
       <td><div style="font-weight:700">${r.e}</div><div style="font-size:12px;color:#5a6784">${r.n}</div></td><td>${kindTag(r)} ${freqTag(r)} <span style="font-size:12.5px;color:#5a6784">${r.t === "-" ? "" : r.t}</span></td>
       <td style="white-space:nowrap">${fmtD(dueOf(r))}${isPP(r) ? `<div style="font-size:12px;color:#6a3fd0;font-weight:700">เลื่อนนัด${r.pp ? " · เดิม " + fmtD(r.due) : ""}</div>` : ""}${od ? `<div style="font-size:12px;color:#a8250f;font-weight:700">เลยกำหนด</div>` : ""}</td>
-      <td><span class="pill" style="background:${g.bg};color:${g.fg}">${r.s}</span></td><td>${res}</td></tr>`;
+      <td><span class="pill" style="background:${g.bg};color:${g.fg}"${stTxt(r) !== r.s ? ` title="สถานะในระบบ: ${r.s}"` : ""}>${stTxt(r)}</span></td><td>${res}</td></tr>`;
   }).join("") || `<tr><td colspan="6" style="text-align:center;color:#5a6784;padding:22px">ไม่พบใบงาน</td></tr>`;
   $("more").style.display = R.length > S.limit ? "" : "none";
   $("more").textContent = "แสดงเพิ่ม (" + (R.length - S.limit).toLocaleString() + " ใบ)";
