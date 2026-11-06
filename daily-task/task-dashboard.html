@@ -523,6 +523,19 @@
   .mgh b { display: block; font-family: Prompt, Anuphan; font-size: 17px; } .mgh span { font-size: 13px; opacity: .85; }
   .mgh.ok { background: linear-gradient(90deg, #e7f8ef, #f5fcf8); color: #065f46; border: 1px solid #bfe6d3; } .mgh.bad { background: linear-gradient(90deg, #fee2e2, #fff5f5); color: #991b1b; border: 1px solid #fecaca; }
   .mgg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 14px; }
+  .mgsub { font-family: Prompt, Anuphan; font-size: 16px; margin: 14px 0 8px; color: var(--ink); } .mgsub small { font-family: Anuphan; font-weight: 500; font-size: 12.5px; color: var(--mut); margin-left: 6px; }
+  .mgback { margin: 6px 0 2px; }
+  .mgp { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin-bottom: 6px; }
+  .mgpc { text-align: left; font: inherit; cursor: pointer; background: #fff; border: 1px solid var(--line); border-top: 5px solid var(--tc); border-radius: 18px; padding: 14px 16px; display: grid; gap: 10px; box-shadow: 0 6px 18px rgba(4,120,87,.08); transition: transform .15s, box-shadow .15s; color: var(--ink); }
+  .mgpc:hover { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(4,120,87,.16); }
+  .mgph { display: flex; align-items: center; gap: 10px; } .mgph > span:nth-child(2) { flex: 1; min-width: 0; } .mgph b { display: block; font-family: Prompt, Anuphan; font-size: 17px; } .mgph small { color: var(--mut); font-size: 12px; }
+  .mgph .av { width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center; color: #fff; font-family: Prompt, Anuphan; font-size: 19px; background: linear-gradient(135deg, #34d399, #047857); flex: none; }
+  .mgph em { font-style: normal; font-weight: 800; font-size: 12px; color: #fff; background: var(--tc); border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
+  .mgpn { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; } .mgpn div { background: #f6faf8; border-radius: 12px; padding: 7px 4px; text-align: center; } .mgpn b { display: block; font-size: 20px; } .mgpn span { font-size: 11.5px; color: var(--mut); } .mgpn .r b { color: #dc2626; }
+  .mgpb { height: 8px; border-radius: 99px; background: #e5efe9; overflow: hidden; } .mgpb span { display: block; height: 100%; background: linear-gradient(90deg, #34d399, #059669); }
+  .mgpp { font-size: 12px; color: var(--mut); margin-top: -4px; }
+  .mgpf { display: flex; flex-wrap: wrap; gap: 6px; } .mgpf span { font-size: 12px; border-radius: 999px; padding: 3px 9px; background: #f1f5f4; color: #94a3b8; } .mgpf span.on { background: color-mix(in srgb, var(--fc) 12%, #fff); color: var(--fc); font-weight: 700; }
+  .mgpgo { font-size: 12.5px; font-weight: 700; color: #047857; justify-self: end; }
   .mggc { border-radius: 16px; background: #fff; border: 1px solid var(--line); border-top: 4px solid var(--gc); overflow: hidden; }
   .mggh { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; background: var(--gb); border-bottom: 1px solid var(--line); }
   .mggh b { display: block; color: var(--gc); font-family: Prompt, Anuphan; font-size: 15px; } .mggh small { color: var(--mut); font-size: 12px; }
@@ -1043,6 +1056,24 @@ function mgGroups(cnt) {
     <div class="mggh"><span><b>${g.t}</b><small>${g.d}</small></span><em class="${n ? "" : "z"}">${n ? n + " งาน" : "✓ ปกติ"}</em></div>
     ${g.items.map(([k, l, ic]) => { const v = cnt(k); return `<button type="button" class="mgi ${v ? "" : "z"} ${S.mx === k ? "sel" : ""}" data-mx="${k}" style="--fc:${FL[k].c}"><i>${sv(IC[ic] || IC.delay, 16)}</i><span>${l}</span><b class="num">${v}</b></button>`; }).join("")}</div>`; }).join("")}</div>`;
 }
+/* 6 พ.ย. ผู้ใช้ขอ: หน้าผู้จัดการ (ทั้งทีม) แสดงภาพรวมรายคนก่อน · กดการ์ด = ดูรายละเอียดของคนนั้น */
+function mgPeople() {
+  const A = leaves(liveAll()).filter(t => !t.cancel);
+  return `<div class="mgp">${BOARDS.map(b => {
+    const L = A.filter(t => bdOf(t) === b.k), F = L.map(flagsOf), has = k => F.filter(f => f.includes(k)).length;
+    const n = L.length, done = L.filter(t => stOf(t) === "done").length, open = L.filter(t => ["prog", "wait", "delay"].includes(stOf(t))).length;
+    const dl = L.filter(t => stOf(t) === "delay").length, now = F.filter(f => f.some(k => ["nowhy", "block", "over"].includes(k))).length;
+    const watch = F.filter(f => f.some(k => ["delay", "risk"].includes(k))).length, disc = F.filter(f => f.some(k => ["stale", "inc", "moved"].includes(k))).length;
+    const pct = n ? Math.round(done / n * 100) : 0, tone = now ? "bad" : watch ? "warn" : "ok";
+    const tc = { bad: "#b91c1c", warn: "#c2410c", ok: "#047857" }[tone];
+    return `<button type="button" class="mgpc ${tone}" data-ms="${b.k}" style="--tc:${tc}">
+      <div class="mgph"><span class="av">${esc((b.n || "?").slice(0, 1))}</span><span><b>${esc(b.n)}</b><small>${esc(b.pos || b.sub || b.own || "")}</small></span>
+        <em>${tone === "bad" ? "ต้องจัดการ" : tone === "warn" ? "เฝ้าระวัง" : "ปกติ"}</em></div>
+      <div class="mgpn"><div><b class="num">${n}</b><span>งานทั้งหมด</span></div><div><b class="num">${open}</b><span>งานค้าง</span></div><div class="${dl ? "r" : ""}"><b class="num">${dl}</b><span>Delay</span></div><div><b class="num">${has("soon")}</b><span>ครบใน 7 วัน</span></div></div>
+      <div class="mgpb"><span style="width:${pct}%"></span></div><small class="mgpp">เสร็จแล้ว ${done}/${n} งาน (${pct}%)</small>
+      <div class="mgpf"><span class="${now ? "on" : ""}" style="--fc:#b91c1c">ต้องแก้ทันที <b>${now}</b></span><span class="${watch ? "on" : ""}" style="--fc:#c2410c">เฝ้าระวัง <b>${watch}</b></span><span class="${disc ? "on" : ""}" style="--fc:#475569">วินัยอัปเดต <b>${disc}</b></span></div>
+      <span class="mgpgo">ดูรายละเอียด →</span></button>`; }).join("")}</div>`;
+}
 function renderMg() {
   const L = leaves(scopeL()).filter(t => !t.cancel), rows = L.map(t => ({ t, f: flagsOf(t) })).filter(x => x.f.length);
   const cnt = k => rows.filter(x => x.f.includes(k)).length;
@@ -1065,8 +1096,9 @@ function renderMg() {
   <section class="panel"><h2>${ib("mg", "linear-gradient(135deg,#34d399,#047857)")}ต้องจัดการวันนี้ · ${esc(scopeName())} <span class="tag">${rows.filter(x => x.f.some(k => k !== "soon")).length} งาน</span>
     <span class="tv-r"><button type="button" class="btn pri sm" data-rv="1">${sv(IC.done, 15)}อัปเดตประจำสัปดาห์</button><button type="button" class="btn line sm" data-rep="wk">${sv(IC.xl, 15)}Export รายงานสัปดาห์</button><button type="button" class="btn line sm" data-print="1">${sv(IC.print, 15)}พิมพ์ / PDF</button></span></h2>
     <p class="hint">ดูเฉพาะข้อยกเว้นตามมาตรฐานแผนก · กดการ์ดเพื่อกรอง · กดงานเพื่อแก้ไข</p>
+    ${S.ms === "team" ? `<h3 class="mgsub">ภาพรวมรายคน <small>กดการ์ดเพื่อดูรายละเอียดของคนนั้น</small></h3>${mgPeople()}<h3 class="mgsub">ข้อยกเว้นทั้งทีม <small>กดแต่ละแถวเพื่อดูรายการงาน</small></h3>` : `<button type="button" class="btn line sm mgback" data-ms="team">← กลับภาพรวมทั้งทีม</button>`}
     ${mgGroups(cnt)}
-    <div class="mgl">${sel.slice(0, 60).map(ln).join("") || `<div class="ok">✓ ไม่มีงานที่ต้องจัดการ${S.mx ? "ในหมวดนี้" : ""}</div>`}</div></section>
+    ${S.ms === "team" && !S.mx ? `<div class="note">กดการ์ดของแต่ละคนด้านบน หรือกดแถวในกล่องข้อยกเว้น เพื่อดูรายการงาน</div>` : `<div class="mgl">${sel.slice(0, 60).map(ln).join("") || `<div class="ok">✓ ไม่มีงานที่ต้องจัดการ${S.mx ? "ในหมวดนี้" : ""}</div>`}</div>`}</section>
   <div class="g2" style="margin-top:16px">
     <section class="panel"><h2>${ib("mo", "linear-gradient(135deg,#38bdf8,#2563eb)")}งานเข้า vs งานปิด · 8 สัปดาห์</h2><p class="hint">ทีมทำทันไหม: แท่งปิด (เขียว) ควรสูงกว่าหรือเท่าแท่งเข้า (ฟ้า) · สัปดาห์ จ.–อา.</p>
       <div class="wkc">${wk.map(w => `<div class="wkb" title="สัปดาห์ ${fmtD(w.a)} · เข้า ${w.add} · ปิด ${w.done}"><div class="wkbars"><span style="height:${w.add / mx * 100}%;background:#60a5fa"><i>${w.add || ""}</i></span><span style="height:${w.done / mx * 100}%;background:${ST.done.c}"><i>${w.done || ""}</i></span></div><small>${fmtD(w.a).replace(/ \d+$/, "")}</small></div>`).join("")}</div>
