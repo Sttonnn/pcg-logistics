@@ -408,6 +408,41 @@
 .sk-name{font-size:12px;font-weight:700;color:#14254a;margin-top:6px;text-align:center;line-height:1.2;min-height:30px;word-break:break-word}
 .sk-col.big .sk-name{font-size:13.5px}
 .sk-n{font-size:11px;color:#5a6784;font-weight:600}
+
+  /* หน้าติดตามตรวจรถ MHE (Forklift) */
+  body.fkv .filters, body.fkv #tabs, body.fkv #stats, body.fkv #seg { display: none !important; }
+  .fkbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .fkbtn { border: 0; border-radius: 12px; padding: 10px 16px; font: inherit; font-weight: 700; color: #fff; cursor: pointer; background: linear-gradient(135deg, #7a3fd0, #4c1d95); }
+  .fkbtn.l { background: #fff; color: #4c1d95; border: 1px solid #d9cdf5; }
+  .fkcard { background: #fff; border-radius: 22px; padding: 26px 28px; box-shadow: 0 10px 30px rgba(20,30,60,.08); display: grid; gap: 18px; max-width: 1180px; width: 100%; }
+  .fkhd { display: flex; gap: 18px; align-items: center; justify-content: space-between; flex-wrap: wrap; border-bottom: 3px solid #7a3fd0; padding-bottom: 14px; }
+  .fkk { font-size: 11.5px; letter-spacing: .14em; font-weight: 800; color: #7a3fd0; }
+  .fkhd h2 { margin: 2px 0 4px; font-size: 24px; color: #14213d; }
+  .fks { font-size: 13px; color: #5a6784; }
+  .fkbig { display: grid; justify-items: center; padding: 10px 22px; border-radius: 18px; min-width: 150px; }
+  .fkbig b { font-size: 44px; line-height: 1; } .fkbig span { font-size: 13px; font-weight: 700; }
+  .fkbig.bad { background: #fdecea; color: #b42318; } .fkbig.ok { background: #e3f6ee; color: #0a7a56; }
+  .fkkp { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+  .fkkp div { background: #f6f7fb; border-radius: 14px; padding: 12px 14px; display: grid; }
+  .fkkp b { font-size: 28px; line-height: 1.1; } .fkkp span { font-size: 12.5px; color: #5a6784; font-weight: 600; }
+  .fkkp .o { color: #d9480f; } .fkkp .r { color: #b42318; } .fkkp .g { color: #0a7a56; }
+  .fkt { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .fkt th { background: #2b1a55; color: #fff; text-align: left; padding: 10px 12px; font-size: 13px; white-space: nowrap; }
+  .fkt td { border-bottom: 1px solid #eceff5; padding: 10px 12px; vertical-align: middle; }
+  .fkt tr.r td:first-child { box-shadow: inset 4px 0 0 #d92d20; } .fkt tr.o td:first-child { box-shadow: inset 4px 0 0 #f59e0b; }
+  .fkt td b { font-size: 15px; } .fkt td:nth-child(2) { min-width: 130px; white-space: nowrap; } .fkt td small { display: block; font-size: 12px; color: #6b7894; }
+  .fkt td.n { color: #8a97ae; font-weight: 700; width: 34px; } .fkt td.c { text-align: center; white-space: nowrap; }
+  .fkt .bg { display: inline-block; border-radius: 999px; padding: 3px 12px; font-weight: 800; }
+  .fkt .bg.o { background: #fff1e0; color: #c2410c; } .fkt .bg.r { background: #fdecea; color: #b42318; }
+  .fkt .rt { color: #b42318; } .fkt .ot { color: #c2410c; }
+  .fkt td.vl { line-height: 2; }
+  .vc { display: inline-block; margin: 0 6px 0 0; padding: 2px 10px; border-radius: 8px; background: #f2eefc; color: #3b2a6b; font-size: 12.5px; font-weight: 600; line-height: 1.6; }
+  .vc i { font-style: normal; color: #c2410c; font-weight: 800; } .vc.f { background: #fdecea; color: #8a1c13; } .vc.f i { color: #8a1c13; }
+  .vc.more { background: #eceff5; color: #50607e; }
+  .fkall { padding: 26px; text-align: center; font-size: 18px; font-weight: 800; color: #0a7a56; background: #e3f6ee; border-radius: 16px; }
+  .fkgood { font-size: 13.5px; color: #3b4a66; background: #f0faf5; border-radius: 12px; padding: 10px 14px; line-height: 1.7; } .fkgood b { color: #0a7a56; }
+  @media (max-width: 760px) { .fkkp { grid-template-columns: 1fr 1fr; } .fkcard { padding: 18px 14px; } .fkt th:nth-child(1), .fkt td.n { display: none; } }
+  @media print { body.fkv #side, body.fkv header, body.fkv .fkbar, body.fkv .sidefab { display: none !important; } body.fkv .fkcard { box-shadow: none; max-width: none; } }
 </style>
 <script src="https://sttonnn.github.io/pcg-logistics/shared/pcg-gate.js" data-title="Preventive Maintenance Data"></script>
 </head>
@@ -507,6 +542,12 @@
       </div>
       <div class="tbl-wrap"><table><thead><tr><th>ใบงาน</th><th>อุปกรณ์</th><th>ประเภท</th><th>คลัง / สาขา</th><th>วันที่พบ</th><th>สถานะซ่อม</th><th>เสีย (วัน)</th></tr></thead><tbody id="fBody"></tbody></table></div>
     </section>
+  </div>
+
+  <div id="vFk" style="display:none;gap:16px">
+    <div class="fkbar"><span class="hint">หน้าเดียวสำหรับแคปส่งผู้รับผิดชอบ · นับเฉพาะใบตรวจรถ MHE (Reach / Counter Balance / Stacker / Order Pick / Robot Cleaning)</span>
+      <span style="flex:1"></span><button type="button" class="fkbtn" id="fkShot">📷 บันทึกเป็นรูป</button><button type="button" class="fkbtn l" id="fkPrint">🖨 พิมพ์</button></div>
+    <div id="fkCard" class="fkcard"></div>
   </div>
 
   <div id="vRej" style="display:none;gap:22px">
@@ -893,7 +934,50 @@ function renderTabs() {
   $("vOverview").style.display = S.view === "overview" ? "grid" : "none";
   $("vFail").style.display = S.view === "fail" ? "grid" : "none";
   $("vRej").style.display = S.view === "rej" ? "grid" : "none";
+  $("vFk").style.display = S.view === "fk" ? "grid" : "none"; document.body.classList.toggle("fkv", S.view === "fk");
 }
+/* 6 พ.ย. ผู้ใช้ขอ: หน้าติดตามงาน Forklift (ใบตรวจรถ MHE) สรุป 1 หน้า ว่าคลังไหนค้างตรวจ · ไว้แคปส่งผู้รับผิดชอบ */
+const fkEsc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+function fkStat() {
+  const L = DATA.filter(r => !isRej(r) && kindOf(r) === "mhe" && GROUP[r.s] !== "cancel" && GROUP[r.s] !== "wait");
+  const by = new Map();
+  L.forEach(r => { const k = r.p + "|" + r.b; if (!by.has(k)) by.set(k, { p: r.p, b: r.b, all: [], late: [], fail: [], due: 0, ok: 0 }); const g = by.get(k); g.all.push(r);
+    if (dueOf(r) && dueOf(r) <= ASOF) { g.due++; if (grp(r) === "done" || r.r) g.ok++; }
+    if (overdue(r)) g.late.push(r); if (isFail(r) && repSt(r) !== "fixed") g.fail.push(r); });
+  const B = [...by.values()].map(g => { const veh = new Map(); g.late.forEach(r => { const k = eqOf(r), d = dayDiff(dueOf(r), ASOF); const v = veh.get(k); if (!v || d > v.d) veh.set(k, { e: r.e, d, n: (v ? v.n : 0) + 1 }); else v.n++; });
+    g.veh = [...veh.values()].sort((a, b) => b.d - a.d); g.max = g.veh.length ? g.veh[0].d : 0; g.pend = g.late.length + g.fail.length; return g; });
+  const ord = g => (g.p === "WHA05" ? 0 : 1 + REGIONS.findIndex(([, bs]) => bs.includes(g.b)));
+  const bad = B.filter(g => g.pend).sort((a, b) => b.late.length - a.late.length || b.max - a.max || b.fail.length - a.fail.length);
+  const good = B.filter(g => !g.pend).sort((a, b) => ord(a) - ord(b));
+  return { B, bad, good, nBr: bad.length, late: bad.reduce((a, g) => a + g.late.length, 0), veh: bad.reduce((a, g) => a + g.veh.length, 0), fail: bad.reduce((a, g) => a + g.fail.length, 0) };
+}
+function renderFk() {
+  const F = fkStat(), where = g => (g.p === "RDC01" ? "RDC · " + regionOf(g.b) : "คลังในประเทศ");
+  const sev = g => g.max > 7 || g.fail.length ? "r" : "o";
+  $("fkCard").innerHTML = `<div class="fkhd"><div><div class="fkk">PCG · PREVENTIVE MAINTENANCE · FORKLIFT</div><h2>ติดตามการตรวจเช็ครถ MHE (Forklift)</h2>
+      <div class="fks">ข้อมูล ณ ${fmtD(ASOF)} · ค้างตรวจ = ถึงกำหนดแล้วยังไม่มีผลตรวจ · ไม่ผ่าน = ตรวจแล้วพบปัญหา ยังไม่แก้ไข</div></div>
+      <div class="fkbig ${F.nBr ? "bad" : "ok"}"><b>${F.nBr}</b><span>${F.nBr ? "คลังที่ต้องติดตาม" : "✓ ไม่มีคลังค้างตรวจ"}</span></div></div>
+    <div class="fkkp"><div><b class="o">${F.veh}</b><span>รถที่ค้างตรวจ (คัน)</span></div><div><b class="o">${F.late}</b><span>ใบตรวจที่เลยกำหนด</span></div><div><b class="r">${F.fail}</b><span>ตรวจไม่ผ่าน ยังไม่แก้ไข</span></div><div><b class="g">${F.good.length}</b><span>คลังที่ตรวจครบ</span></div></div>
+    ${F.bad.length ? `<table class="fkt"><thead><tr><th>#</th><th>คลัง / สาขา</th><th>ค้างตรวจ</th><th>ค้างนานสุด</th><th>ไม่ผ่าน ยังไม่แก้</th><th>รถที่ต้องตรวจ / แก้ไข</th></tr></thead><tbody>
+      ${F.bad.map((g, i) => `<tr class="${sev(g)}"><td class="n">${i + 1}</td><td><b>${fkEsc(g.b)}</b><small>${where(g)}</small></td>
+        <td class="c">${g.late.length ? `<span class="bg o">${g.veh.length} คัน</span><small>${g.late.length} ใบ</small>` : "–"}</td>
+        <td class="c">${g.max ? `<b class="${g.max > 7 ? "rt" : "ot"}">${g.max} วัน</b>` : "–"}</td>
+        <td class="c">${g.fail.length ? `<span class="bg r">${g.fail.length} ใบ</span>` : "–"}</td>
+        <td class="vl">${g.veh.slice(0, 8).map(v => `<span class="vc">${fkEsc(v.e)} <i>${v.d} วัน</i></span>`).join("")}${g.veh.length > 8 ? `<span class="vc more">+${g.veh.length - 8} คัน</span>` : ""}
+          ${g.fail.slice(0, 4).map(r => `<span class="vc f">✕ ${fkEsc(r.e)} <i>ไม่ผ่าน · ${fmtD(failDate(r))}</i></span>`).join("")}${g.fail.length > 4 ? `<span class="vc f more">+${g.fail.length - 4}</span>` : ""}</td></tr>`).join("")}
+    </tbody></table>` : `<div class="fkall">✓ ทุกคลังตรวจรถ MHE ครบตามกำหนด</div>`}
+    ${F.good.length ? `<div class="fkgood"><b>✓ ตรวจครบ ไม่มีค้าง (${F.good.length})</b> ${F.good.map(g => fkEsc(g.b)).join(" · ")}</div>` : ""}`;
+}
+async function fkShot() {
+  const b = $("fkShot"); b.disabled = true; b.textContent = "กำลังสร้างรูป…";
+  try {
+    if (!window.html2canvas) await new Promise((ok, ng) => { const s = document.createElement("script"); s.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"; s.onload = ok; s.onerror = ng; document.head.appendChild(s); });
+    const c = await html2canvas($("fkCard"), { scale: 2, backgroundColor: "#ffffff" });
+    const a = document.createElement("a"); a.href = c.toDataURL("image/png"); a.download = "ติดตามตรวจรถ MHE " + ASOF + ".png"; document.body.appendChild(a); a.click(); a.remove();
+  } catch (e) { alert("สร้างรูปไม่สำเร็จ ใช้วิธีแคปหน้าจอแทนได้"); }
+  b.disabled = false; b.textContent = "📷 บันทึกเป็นรูป";
+}
+document.addEventListener("click", e => { if (e.target.closest("#fkShot")) fkShot(); else if (e.target.closest("#fkPrint")) window.print(); });
 function renderRej() {
   const q = ($("rjQ").value || "").trim().toLowerCase(), all = DATA.filter(isRej);
   const by = {}; all.forEach(r => by[r.b] = (by[r.b] || 0) + 1);
@@ -1125,6 +1209,7 @@ function renderSide() {
     <div class="sh">มุมมอง</div>
     <button type="button" class="sitem ${S.view === "overview" ? "on" : ""}" data-view="overview"><span class="ic">${sv(SIC.ov)}</span><span class="tx">ภาพรวม PM<small>ตารางรวมทุกสาขา</small></span></button>
     <button type="button" class="sitem ${S.view === "fail" ? "on" : ""}" data-view="fail"><span class="ic">${sv(SIC.fail)}</span><span class="tx">สถิติการเสีย<small>ไม่ผ่าน · ติดตามซ่อม</small></span>${nFail ? `<span class="bd hot">${nFail}</span>` : ""}</button>
+    <button type="button" class="sitem ${S.view === "fk" ? "on" : ""}" data-view="fk"><span class="ic">${kIcon("mhe", 19)}</span><span class="tx">ติดตามตรวจรถ MHE<small>Forklift · คลังไหนค้างตรวจ</small></span>${fkStat().nBr ? `<span class="bd hot">${fkStat().nBr}</span>` : ""}</button>
     <button type="button" class="sitem ${S.view === "rej" ? "on" : ""}" data-view="rej"><span class="ic">${sv("M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M4.93 4.93l14.14 14.14")}</span><span class="tx">ปฏิเสธใบงาน<small>ประวัติ · ไม่นับในภาพรวม</small></span>${nRej ? `<span class="bd">${nRej}</span>` : ""}</button>
     <div class="sh">ประเภทการตรวจ</div>${kItem("wh")}${kItem("mhe")}${kItem("all")}
     <div class="sh">อื่นๆ</div>
@@ -1190,7 +1275,7 @@ function renderReady() {
       <span style="margin-left:auto">${Object.entries(RCOL).map(([k, v]) => `<b style="color:${v}">● ${k === "WHA" ? "คลังในประเทศ" : k}</b>`).join(" ")}</span></div>
     <div class="rdy-grid">${cards.join("") || `<div style="color:#5a6784">ไม่มีข้อมูลเครื่องในตัวกรองนี้</div>`}</div>`;
 }
-function render() { renderFilters(); renderHero(); renderTabs(); renderSide(); renderReady(); if (S.view === "overview") { renderDrill(); if (S.wh !== "all" && S.branch !== "all") renderTable(); } else if (S.view === "rej") renderRej(); else renderFail(); }
+function render() { renderFilters(); renderHero(); renderTabs(); renderSide(); renderReady(); if (S.view === "overview") { renderDrill(); if (S.wh !== "all" && S.branch !== "all") renderTable(); } else if (S.view === "rej") renderRej(); else if (S.view === "fk") renderFk(); else renderFail(); }
 
 /* ตัวกรอง/เรียงลำดับของตารางรวม */
 document.addEventListener("change", e => {
