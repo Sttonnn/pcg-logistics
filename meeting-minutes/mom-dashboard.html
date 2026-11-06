@@ -450,7 +450,7 @@ function renderList() {
   const q = $("q").value.trim().toLowerCase();
   const L = live().filter(m => !q || [m.att, m.notes, ...m.rows.map(r => r.p + " " + r.t + " " + r.o)].join(" ").toLowerCase().includes(q));
   $("list").innerHTML = L.map(m => { const open = m.rows.filter(r => r.s !== "done").length;
-    return `<button type="button" class="wk ${m.id === CUR ? "on" : ""}" data-m="${m.id}"><b>W${esc(m.no)} · ${esc(dShort(m.date))}</b><small>${ttlOf(m) !== "Project Weekly" ? esc(ttlOf(m)) + " · " : ""}${m.rows.length} งาน · ค้าง ${open}${m.final ? " · ✓ ปิดบันทึก" : ' · <span class="dr">ร่าง</span>'}</small></button>`; }).join("")
+    return `<button type="button" class="wk ${m.id === CUR ? "on" : ""}" data-m="${m.id}"><b>${esc(ttlOf(m))}</b><small>W${esc(m.no)} · ${esc(dShort(m.date))} · ${m.rows.length} งาน · ค้าง ${open}${m.final ? " · ✓ ปิดบันทึก" : ' · <span class="dr">ร่าง</span>'}</small></button>`; }).join("")
     || `<div class="hint" style="padding:6px">${DB.length ? "ไม่พบ" : "ยังไม่มีบันทึก · กด \"ประชุมสัปดาห์ถัดไป\" หรือนำเข้าไฟล์ Word เดิม"}</div>`;
   const c = live()[0], open = c ? c.rows.filter(r => r.s !== "done") : [], old = open.filter(r => (+r.carry || 0) >= 2);
   $("tip").innerHTML = c ? `งานค้างล่าสุด (W${esc(c.no)})<b>${open.length} งาน</b>${old.length ? "ค้างตั้งแต่ 2 สัปดาห์ขึ้นไป " + old.length + " งาน" : "จะยกไปประชุมครั้งถัดไปอัตโนมัติ"}` : "ประชุมครั้งถัดไปจะยกงานที่ยังไม่เสร็จมาให้อัตโนมัติ";
