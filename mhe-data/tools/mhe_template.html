@@ -280,7 +280,7 @@
       <div class="ttl"><span class="kicker">PCG Logistics · Material Handling Equipment</span><h1>PCG Overall MHE Data</h1><span class="sub" id="asof"></span></div>
       <div class="acts">
         <button class="btn y" id="upBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg>อัปโหลด Excel</button>
-        <button class="btn g" id="addBtn">＋ เพิ่มรถ</button>
+        <button class="btn g" id="logBtn" title="ดูว่าอัปโหลดไฟล์ไหน วันไหน">🕘 ประวัติการอัปโหลด</button><button class="btn g" id="addBtn">＋ เพิ่มรถ</button>
         <button class="btn g" id="xlsBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"/></svg>Export</button>
         <input type="file" id="file" accept=".xlsx,.xls" hidden><input type="file" id="bfile" accept=".xlsx,.xls" hidden><input type="file" id="cfile" accept=".pdf,image/*,.doc,.docx,.xlsx,.xls" multiple hidden>
       </div>
@@ -417,7 +417,7 @@ async function sbSave(rows) {
 }
 function db() {
   const m = new Map(BASE.map(r => [r.id, r]));
-  Object.values(OVR).forEach(x => { if (/^(BID|CFG|SPEC|DLV|FILE):/.test(x.id)) return; if (x.removed) m.delete(x.id); else if (x.rec) m.set(x.id, Object.assign({}, x.rec, { id: x.id, _web: x.updated_at })); });
+  Object.values(OVR).forEach(x => { if (/^(BID|CFG|SPEC|DLV|FILE|LOG):/.test(x.id)) return; if (x.removed) m.delete(x.id); else if (x.rec) m.set(x.id, Object.assign({}, x.rec, { id: x.id, _web: x.updated_at })); });
   return [...m.values()].map(r => r.site && pcgSite(r.site) !== r.site ? Object.assign({}, r, { site: pcgSite(r.site) }) : r);
 }
 let ALL = [];
@@ -434,7 +434,7 @@ const yearOf = r => { const b = bOf(r); return b === "exp" ? "exp" : r.end ? r.e
 
 function render() {
   ALL = db();
-  $("asof").textContent = "ข้อมูลจากไฟล์ ณ " + ASOF + (LAST ? " · แก้ไข/อัปโหลดบนเว็บล่าสุด " + new Date(LAST).toLocaleString("th-TH", { dateStyle: "medium", timeStyle: "short" }) : "") + (ONLINE ? "" : "");
+  $("asof").textContent = "ข้อมูลจากไฟล์ ณ " + ASOF + (upLogs()[0] ? " · อัปโหลดล่าสุด " + thDT(upLogs()[0].at) : "") + (LAST ? " · แก้ไข/อัปโหลดบนเว็บล่าสุด " + new Date(LAST).toLocaleString("th-TH", { dateStyle: "medium", timeStyle: "short" }) : "") + (ONLINE ? "" : "");
   const base = ALL.filter(r => match(r));
   /* การ์ดแจ้งเตือน */
   const cnt = k => base.filter(r => bOf(r) === k).length, rent = a => a.reduce((s, r) => s + (+r.price || 0), 0);
@@ -546,7 +546,19 @@ async function saveCar() {
 }
 
 /* ---- อัปโหลด Excel (รวมกับของเดิม ไม่แทนที่) ---- */
-let PEND = null;
+let PEND = null, UPMETA = null;
+/* 6 พ.ย. ผู้ใช้ขอ: ประวัติการอัปโหลด · 1 ครั้ง = แถว id LOG:<เวลา> ในตาราง mhe_vehicles เดิม (ไม่ต้องสร้างตาราง) */
+const nowTH = () => new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 16);
+const upLogs = () => Object.values(OVR).filter(x => /^LOG:/.test(x.id) && x.rec && !x.removed).map(x => x.rec).sort((a, b) => (b.at || "").localeCompare(a.at || ""));
+const thDT = s => { if (!s) return "-"; const [d, t] = s.split("T"), [y, m, dd] = d.split("-").map(Number); return dd + " " + ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."][m - 1] + " " + (y + 543 - 2500) + (t ? " " + t.slice(0, 5) + " น." : ""); };
+function showLogs() {
+  const L = upLogs();
+  $("dlg").innerHTML = `<div class="dh"><div><h3>ประวัติการอัปโหลด</h3><div class="t2">ทุกครั้งที่อัปโหลด Excel แล้วกดบันทึก · ข้อมูลจากไฟล์ตั้งต้น ${esc(ASOF)}</div></div><button class="btn l" data-close>✕</button></div>
+    <div class="db">${L.length ? `<div class="tw"><table class="chg"><thead><tr><th>วันที่อัปโหลด</th><th>ไฟล์</th><th>อ่านได้</th><th>ใหม่</th><th>เปลี่ยน</th><th>เหมือนเดิม</th></tr></thead><tbody>${L.map(x => `<tr><td style="white-space:nowrap"><b>${thDT(x.at)}</b></td><td>${esc(x.file || "-")}</td><td>${x.rows ?? "-"} คัน</td><td>${x.add ?? "-"}</td><td>${x.upd ?? "-"}</td><td>${x.same ?? "-"}</td></tr>`).join("")}</tbody></table></div>` : `<div class="note">ยังไม่มีประวัติการอัปโหลดบนเว็บ (เริ่มบันทึกตั้งแต่ 6 พ.ย. 2569)</div>`}</div>
+    <div class="df"><button class="btn l" data-close>ปิด</button></div>`;
+  if (!$("dlg").open) $("dlg").showModal();
+}
+document.addEventListener("click", e => { if (e.target.closest("#logBtn")) showLogs(); });
 async function upload(file) {
   let rows;
   try { const wb = XLSX.read(await file.arrayBuffer(), { type: "array" }); rows = mheParse(XLSX, wb); }
@@ -555,7 +567,7 @@ async function upload(file) {
   const cur = new Map(ALL.map(r => [r.id, r])), add = [], upd = [], same = [];
   rows.forEach(r => { const o = cur.get(r.id); if (!o) add.push(r); else { const diff = CMP.filter(k => String(o[k] ?? "") !== String(r[k] ?? "")); diff.length ? upd.push([r, o, diff]) : same.push(r); } });
   const ids = new Set(rows.map(r => r.id)), kept = ALL.filter(r => !ids.has(r.id));
-  PEND = [...add, ...upd.map(x => x[0])];
+  PEND = [...add, ...upd.map(x => x[0])]; UPMETA = { file: file.name, rows: rows.length, add: add.length, upd: upd.length, same: same.length };
   const lbl = k => (FIELDS.flatMap(g => g[1]).find(f => f[0] === k) || [k, k])[1];
   $("dlg").innerHTML = `<div class="dh"><div><h3>ตรวจก่อนบันทึก · ${esc(file.name)}</h3><div class="t2">อ่านได้ ${rows.length} คัน · รวมกับข้อมูลเดิม (รถที่ไม่อยู่ในไฟล์ยังเก็บไว้)</div></div><button class="x" data-close>✕</button></div>
     <div class="db"><div class="sumg"><div class="f"><span>รถใหม่</span><b style="color:var(--ok)">${add.length}</b></div><div class="f"><span>มีการเปลี่ยนแปลง</span><b style="color:var(--m12)">${upd.length}</b></div><div class="f"><span>เหมือนเดิม</span><b>${same.length}</b></div><div class="f"><span>ไม่อยู่ในไฟล์ (เก็บไว้)</span><b style="color:var(--ink2)">${kept.length}</b></div></div>
@@ -1393,7 +1405,7 @@ document.addEventListener("click", async e => {
   if ("save" in t.dataset) { saveCar(); return; }
   if (t.dataset.revert) { await sbSave([{ id: t.dataset.revert, rec: null, removed: false }]); delete OVR[t.dataset.revert]; $("dlg").close(); render(); toast("คืนค่าตามไฟล์แล้ว"); return; }
   if (t.dataset.del) { if (!t.classList.contains("arm")) { t.classList.add("arm"); t.textContent = "กดอีกครั้งเพื่อยืนยันลบ"; return; } await sbSave([{ id: t.dataset.del, removed: true }]); $("dlg").close(); render(); toast("ลบแล้ว"); return; }
-  if ("commit" in t.dataset && PEND) { t.disabled = true; t.textContent = "กำลังบันทึก…"; await sbSave(PEND.map(r => { const rec = Object.assign({}, r), o = ALL.find(x => x.id === r.id); delete rec.id; if (o) RENEWK.forEach(k => rec[k] = o[k] || ""); return { id: r.id, rec }; })); PEND = null; $("dlg").close(); render(); toast(ONLINE ? "บันทึกแล้ว" : "บันทึกในเบราว์เซอร์นี้แล้ว"); return; }
+  if ("commit" in t.dataset && PEND) { t.disabled = true; t.textContent = "กำลังบันทึก…"; await sbSave(PEND.map(r => { const rec = Object.assign({}, r), o = ALL.find(x => x.id === r.id); delete rec.id; if (o) RENEWK.forEach(k => rec[k] = o[k] || ""); return { id: r.id, rec }; })); PEND = null; if (UPMETA) { const at = nowTH(); await sbSave([{ id: "LOG:" + at + ":" + Math.random().toString(36).slice(2, 6), rec: Object.assign({ log: true, at }, UPMETA) }]); UPMETA = null; } $("dlg").close(); render(); toast(ONLINE ? "บันทึกแล้ว" : "บันทึกในเบราว์เซอร์นี้แล้ว"); return; }
 });
 document.addEventListener("click", e => { if (!S.ppe) return; const ch = e.target.closest(".pch"), ce = e.target.closest("td.pce");
   if (ch) { PPSEL = PPSEL === ch.dataset.car ? null : ch.dataset.car; renderPPE(); if (PPSEL) toast("เลือกรถแล้ว · กดช่องปลายทางเพื่อโยก"); return; }
