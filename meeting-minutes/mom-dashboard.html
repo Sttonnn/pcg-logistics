@@ -65,6 +65,7 @@
   .mlist .il { display: flex; align-items: center; gap: 6px; } .mlist .il svg { color: var(--navy2); } .mlist .il.hint svg { color: var(--ink3); }
   .mlist .pc { font-family: var(--f-disp); font-weight: 700; color: var(--ok); font-size: 15px; }
   .mlist .mini { width: 150px; }
+  .mlist .mt { margin-top: 6px; font-weight: 700; font-size: 13.5px; color: var(--navy2); max-width: 200px; line-height: 1.35; }
   .mlist .mic { display: inline-flex; color: var(--navy2); margin-right: 6px; vertical-align: -2px; }
   .mlist tbody tr:not(.mg) td { padding-top: 13px; padding-bottom: 13px; }
   .ch .n { width: 38px; height: 38px; border-radius: 12px; }
@@ -437,7 +438,7 @@ function migrate(m) { if (Array.isArray(m.attIds)) return;
 function newMeeting() {
   const last = live()[0], d = new Date();
   if (last && last.date) { const n = new Date(last.date + "T00:00:00"); n.setDate(n.getDate() + 7); if (ymd(n) > ymd(d)) d.setTime(n.getTime()); }
-  const m = { id: "M" + uid(), no: (last ? (+last.no || 0) : 0) + 1, date: ymd(d), attIds: last && last.attIds ? last.attIds.slice() : [], byId: last ? last.byId : "", att: "", by: "", place: last ? last.place : "WH05",
+  const m = { id: "M" + uid(), no: (last ? (+last.no || 0) : 0) + 1, date: ymd(d), attIds: last && last.attIds ? last.attIds.slice() : [], byId: last ? last.byId : "", att: "", by: "", place: last ? last.place : "WH05", title: last ? last.title || "" : "",
     t1: last ? last.t1 : "09:30", t2: last ? last.t2 : "11:30", notes: "", created: nowIso(),
     rows: last ? last.rows.filter(r => r.s !== "done").map(r => Object.assign({}, r, { id: "R" + uid(), carry: (+r.carry || 0) + 1, from: r.id })) : [] };
   DB.push(m); CUR = m.id; save(m, true); go("edit", m.id); toast(last ? "สร้าง W" + m.no + " แล้ว · ยกงานที่ยังไม่เสร็จมา " + m.rows.length + " งาน" : "สร้างการประชุมแล้ว");
@@ -449,14 +450,14 @@ function renderList() {
   const q = $("q").value.trim().toLowerCase();
   const L = live().filter(m => !q || [m.att, m.notes, ...m.rows.map(r => r.p + " " + r.t + " " + r.o)].join(" ").toLowerCase().includes(q));
   $("list").innerHTML = L.map(m => { const open = m.rows.filter(r => r.s !== "done").length;
-    return `<button type="button" class="wk ${m.id === CUR ? "on" : ""}" data-m="${m.id}"><b>W${esc(m.no)} · ${esc(dShort(m.date))}</b><small>${m.rows.length} งาน · ค้าง ${open}${m.final ? " · ✓ ปิดบันทึก" : ' · <span class="dr">ร่าง</span>'}</small></button>`; }).join("")
+    return `<button type="button" class="wk ${m.id === CUR ? "on" : ""}" data-m="${m.id}"><b>W${esc(m.no)} · ${esc(dShort(m.date))}</b><small>${ttlOf(m) !== "Project Weekly" ? esc(ttlOf(m)) + " · " : ""}${m.rows.length} งาน · ค้าง ${open}${m.final ? " · ✓ ปิดบันทึก" : ' · <span class="dr">ร่าง</span>'}</small></button>`; }).join("")
     || `<div class="hint" style="padding:6px">${DB.length ? "ไม่พบ" : "ยังไม่มีบันทึก · กด \"ประชุมสัปดาห์ถัดไป\" หรือนำเข้าไฟล์ Word เดิม"}</div>`;
   const c = live()[0], open = c ? c.rows.filter(r => r.s !== "done") : [], old = open.filter(r => (+r.carry || 0) >= 2);
   $("tip").innerHTML = c ? `งานค้างล่าสุด (W${esc(c.no)})<b>${open.length} งาน</b>${old.length ? "ค้างตั้งแต่ 2 สัปดาห์ขึ้นไป " + old.length + " งาน" : "จะยกไปประชุมครั้งถัดไปอัตโนมัติ"}` : "ประชุมครั้งถัดไปจะยกงานที่ยังไม่เสร็จมาให้อัตโนมัติ";
 }
 $("list").onclick = e => { const b = e.target.closest("[data-m]"); if (b) { flush(); go("edit", b.dataset.m); scrollTo({ top: 0, behavior: "smooth" }); } };
 $("q").oninput = renderList;
-const searchTxt = m => [attText(m), m.notes, ...m.rows.map(r => r.p + " " + r.t + " " + r.o)].join(" ").toLowerCase();
+const searchTxt = m => [ttlOf(m), attText(m), m.notes, ...m.rows.map(r => r.p + " " + r.t + " " + r.o)].join(" ").toLowerCase();
 
 /* ---------- เส้นทาง: #home · #edit-<id> · #show-<id> ---------- */
 let VIEW = "home", LASTV = "home";
@@ -495,11 +496,11 @@ function renderHome() {
     <section class="card tcard"><div class="ch"><span class="hic">${ic("file", 20)}</span><h2>เลือกรายงานการประชุม</h2><span class="hint">กด “ดูรายงาน” เพื่อเปิดรายงานหน้าเดียว (นำเสนอเต็มจอได้)</span></div>
     <div class="tools"><button type="button" class="pbtn" data-new="1">${ic("plus")} ประชุมสัปดาห์ถัดไป</button><button type="button" class="gbtn" data-imp="1">${ic("up")} นำเข้าไฟล์ Word เดิม</button>
       <button type="button" class="gbtn" data-people="1">${ic("users")} รายชื่อบุคคล (${people().length})</button><label class="sbox">${ic("search")}<input id="hq" type="search" placeholder="ค้นหาหัวข้อ / งาน / ชื่อ" value="${esc(q)}" aria-label="ค้นหารายงาน"></label></div></section>
-    <div class="mlist"><div style="overflow-x:auto"><table><thead><tr><th>ครั้งที่</th><th>วันที่ประชุม</th><th>สถานที่ · เวลา</th><th>งาน</th><th>ความคืบหน้า</th><th>บันทึก</th><th></th></tr></thead><tbody>
+    <div class="mlist"><div style="overflow-x:auto"><table><thead><tr><th>ครั้งที่ · หัวข้อ</th><th>วันที่ประชุม</th><th>สถานที่ · เวลา</th><th>งาน</th><th>ความคืบหน้า</th><th>บันทึก</th><th></th></tr></thead><tbody>
     ${monthGroups(L).map(([ym, G], gi) => { const open = q || MOPEN.has(ym) || (!MOPEN.size && gi < 2), gd = G.reduce((a, m) => a + cnt(m).done, 0), gn = G.reduce((a, m) => a + m.rows.length, 0);
       return `<tr class="mg ${open ? "on" : ""}" data-mg="${ym}"><td colspan="7"><span class="car">${open ? "▾" : "▸"}</span><span class="mic">${ic("cal", 15)}</span><b>${TH_M[+ym.slice(5) - 1]} ${+ym.slice(0, 4) + 543}</b><span class="hint"> · ${G.length} ครั้ง · ${gn} งาน · เสร็จ ${gd}</span></td></tr>` + (open ? G.map(m => { const c = cnt(m), n = m.rows.length || 1, ev = evpRows(m).length;
       const pc = Math.round(c.done / n * 100);
-      return `<tr><td><span class="w">W${esc(m.no)}</span></td><td><b>${esc(dLong(m.date))}</b><br><span class="hint">${esc(["วันอาทิตย์","วันจันทร์","วันอังคาร","วันพุธ","วันพฤหัสบดี","วันศุกร์","วันเสาร์"][new Date(m.date + "T00:00:00").getDay()] || "")}</span></td><td><span class="il">${ic("pin", 15)}${esc(m.place) || "–"}</span><span class="il hint">${ic("clock", 15)}${esc(tRange(m)) || "–"}</span></td>
+      return `<tr><td><span class="w">W${esc(m.no)}</span>${ttlOf(m) !== "Project Weekly" ? `<div class="mt">${esc(ttlOf(m))}</div>` : ""}</td><td><b>${esc(dLong(m.date))}</b><br><span class="hint">${esc(["วันอาทิตย์","วันจันทร์","วันอังคาร","วันพุธ","วันพฤหัสบดี","วันศุกร์","วันเสาร์"][new Date(m.date + "T00:00:00").getDay()] || "")}</span></td><td><span class="il">${ic("pin", 15)}${esc(m.place) || "–"}</span><span class="il hint">${ic("clock", 15)}${esc(tRange(m)) || "–"}</span></td>
         <td><b>${m.rows.length}</b> งาน${ev ? `<br><span class="badge">${ic("flag", 12)} ติดตาม ${ev}</span>` : ""}</td>
         <td><span class="pc">${pc}%</span> <span class="hint">เสร็จ ${c.done} · กำลังทำ ${c.prog + c.todo}</span><div class="mini"><i style="width:${c.done / n * 100}%;background:var(--ok)"></i><i style="width:${c.prog / n * 100}%;background:#f2c200"></i><i style="width:${c.todo / n * 100}%;background:#c3ccdc"></i></div></td>
         <td>${m.final ? `<span class="badge ok">${ic("check", 12)} ปิดบันทึก</span>` : '<span class="badge">ร่าง</span>'}</td>
@@ -510,7 +511,9 @@ function renderHome() {
 document.addEventListener("input", e => { if (e.target.id === "hq") renderHome(); });
 
 /* ---------- หน้าการประชุม ---------- */
-const fld = (k, l, cls, type) => { const m = cur(); return `<div class="fld ${cls || ""}"><label for="f-${k}">${l}</label><input id="f-${k}" data-f="${k}" type="${type || "text"}" value="${esc(m[k])}"></div>`; };
+/* 6 พ.ย. ผู้ใช้ขอ: ช่องชื่อหัวข้อการประชุม (ว่าง = Project Weekly) */
+const ttlOf = m => (m && m.title || "").trim() || "Project Weekly";
+const fld = (k, l, cls, type, ph) => { const m = cur(); return `<div class="fld ${cls || ""}"><label for="f-${k}">${l}</label><input id="f-${k}" data-f="${k}" type="${type || "text"}" value="${esc(m[k])}"${ph ? ` placeholder="${ph}"` : ""}></div>`; };
 const TIMES = (() => { const a = []; for (let h = 6; h <= 21; h++) for (const mi of [0, 30]) a.push(pad(h) + ":" + pad(mi)); return a; })();
 const PRESETS = [["09:00", "10:00"], ["09:30", "11:30"], ["10:00", "12:00"], ["13:00", "14:00"], ["13:30", "15:30"]];
 const tRange = m => (m.t1 ? m.t1 + (m.t2 ? "–" + m.t2 : "") + " น." : "");
@@ -524,13 +527,13 @@ function render() {
   if (!m) { $("col").innerHTML = `<section class="card"><div class="empty">ยังไม่มีบันทึกการประชุม<br><br><button type="button" class="pbtn" onclick="newMeeting()">＋ เริ่มบันทึกการประชุมแรก</button></div></section>`; return; }
   $("col").innerHTML = `
   <div class="ebar2"><button type="button" class="gbtn" data-go="home">${ic("back", 16)} หน้ารายงาน</button>
-    <div class="et"><b>กำลังแก้ W${esc(m.no)}</b><span id="ust" class="ust"></span></div>
+    <div class="et"><b>กำลังแก้ W${esc(m.no)} · ${esc(ttlOf(m))}</b><span id="ust" class="ust"></span></div>
     <button type="button" class="gbtn" data-show="${m.id}">${ic("file", 16)} ดูรายงาน</button>
     <button type="button" class="ubtn" id="updBtn">${ic("save", 17)} Update</button></div>
   <section class="card">
     <div class="ch"><span class="n">${ic("info", 18)}</span><h2>ข้อมูลการประชุม</h2><span class="hint">เติมให้จากครั้งก่อน · แก้แล้วกด Update</span></div>
     <div class="form">
-      ${fld("no", "ครั้งที่ (W)", "", "number")}${fld("date", "วันที่ประชุม", "", "date")}${fld("place", "สถานที่ประชุม")}
+      ${fld("title", "ชื่อหัวข้อการประชุม", "all", "text", "เช่น Project Weekly · ประชุมผู้รับเหมา · Kick-off โครงการ (ว่าง = Project Weekly)")}${fld("no", "ครั้งที่ (W)", "", "number")}${fld("date", "วันที่ประชุม", "", "date")}${fld("place", "สถานที่ประชุม")}
       <div class="fld w2"><label for="f-t1">ช่วงเวลาประชุม</label><div class="trange">${tSel("t1", m.t1)}<span>ถึง</span>${tSel("t2", m.t2)}</div>
         <div class="presets">${PRESETS.map(([a, b]) => `<button type="button" data-tr="${a}|${b}" class="${m.t1 === a && m.t2 === b ? "on" : ""}">${a}–${b}</button>`).join("")}</div></div>
       <div class="fld all"><label>ผู้เข้าร่วมประชุม (${(m.attIds || []).length} คน)</label><div class="pick" id="attPick">${attHtml(m)}</div></div>
@@ -582,7 +585,7 @@ const topicSpan = rows => rows.map((r, i) => { if (i && (rows[i - 1].p || "") ==
 const tm = v => v ? v.replace(/^(\d{1,2}):(\d{2}).*$/, "$1:$2") + " น." : "";
 function paperHtml(m) {
   return `<div class="lg"><img src="data:image/png;base64,${LOGO}" alt="PCG"></div>
-  <table><tr><td class="ttl" colspan="4">บันทึกการประชุม  Project Weekly</td></tr>
+  <table><tr><td class="ttl" colspan="4">บันทึกการประชุม  ${esc(ttlOf(m))}</td></tr>
     <tr><td class="lbl">ผู้เข้าร่วมประชุม</td><td colspan="3">${esc(attText(m))}</td></tr>
     <tr><td class="lbl">ผู้จัดทำบันทึกการประชุม</td><td colspan="3">${esc(byText(m))}</td></tr>
     <tr><td class="lbl">วันที่ประชุม</td><td>${esc(dLong(m.date))}</td><td class="lbl">สถานที่ประชุม</td><td>${esc(m.place)}</td></tr>
@@ -600,7 +603,7 @@ document.addEventListener("input", e => {
   if (VIEW !== "edit" || e.target.closest("#dlg")) return;
   const m = cur(); if (!m) return; const f = e.target.dataset.f, k = e.target.dataset.k;
   if (f === "byId" && e.target.value === "__new") { e.target.value = m.byId || ""; personNew(id => { m.byId = id; save(m); render(); }); return; }
-  if (f) { m[f] = f === "no" ? +e.target.value || 0 : clean(e.target.value); save(m); repaint(); if (f === "t1" || f === "t2") document.querySelectorAll("[data-tr]").forEach(b => b.classList.toggle("on", b.dataset.tr === m.t1 + "|" + m.t2)); return; }
+  if (f) { m[f] = f === "no" ? +e.target.value || 0 : clean(e.target.value); save(m); repaint(); if (f === "title" || f === "no") { const eb = document.querySelector(".ebar2 .et b"); if (eb) eb.textContent = "กำลังแก้ W" + m.no + " · " + ttlOf(m); renderList(); } if (f === "t1" || f === "t2") document.querySelectorAll("[data-tr]").forEach(b => b.classList.toggle("on", b.dataset.tr === m.t1 + "|" + m.t2)); return; }
   if (k && e.target.closest("#tb")) { const tr = e.target.closest("tr"), r = m.rows[+tr.dataset.i];
     if (k === "red") { r.red = e.target.checked; tr.classList.toggle("red", r.red); }
     else if (k === "evp") { r.evp = e.target.checked; tr.classList.toggle("evp", r.evp); }
@@ -738,7 +741,7 @@ function docHtml(m) {
   const c = cnt(m), who = (m.attIds || []).map(pById).filter(Boolean);
   const att = who.length ? who.map(p => esc(khun(p.name)) + (p.pos ? ` <small>(${esc(p.pos)})</small>` : "")).join(", ") : esc(attText(m));
   return `<div class="lg"><img src="data:image/png;base64,${LOGO}" alt="PCG"><div class="sum"><span style="background:#eef1f6;color:#14213d">ทั้งหมด ${m.rows.length} งาน</span><span style="background:#d6f3e7;color:#0a7a56">เสร็จสิ้น ${c.done}</span><span style="background:#fff3b0;color:#6b5000">กำลังดำเนินการ ${c.prog + c.todo}</span>${evpRows(m).length ? `<span style="background:#fff1d6;color:#8a5a00">ติดตาม/ขอตัดสินใจ ${evpRows(m).length}</span>` : ""}</div></div>
-  <table><tr><td class="ttl" colspan="4">บันทึกการประชุม  Project Weekly${m.no ? " · W" + esc(m.no) : ""}</td></tr>
+  <table><tr><td class="ttl" colspan="4">บันทึกการประชุม  ${esc(ttlOf(m))}${m.no ? " · W" + esc(m.no) : ""}</td></tr>
     <tr><td class="lbl">ผู้เข้าร่วมประชุม</td><td colspan="3" class="who">${who.length ? "PCG: " : ""}${att}</td></tr>
     <tr><td class="lbl">ผู้จัดทำบันทึกการประชุม</td><td colspan="3">${esc(byText(m))}</td></tr>
     <tr><td class="lbl">วันที่ประชุม</td><td>${esc(dLong(m.date))}</td><td class="lbl">สถานที่ประชุม</td><td>${esc(m.place)}</td></tr>
@@ -770,7 +773,7 @@ async function exportWord(m) {
     children: [new D.Paragraph({ alignment: o.center ? D.AlignmentType.CENTER : D.AlignmentType.LEFT, children: [run(t, { bold: o.b, color: o.color, size: o.size })] })] }); };
   const W = 9072;  /* A4 หักขอบซ้าย-ขวาตามไฟล์ต้นฉบับ */
   const head = new D.Table({ width: { size: W, type: D.WidthType.DXA }, columnWidths: [2899, 2353, 1767, 2053], rows: [
-    new D.TableRow({ children: [cell("บันทึกการประชุม  Project Weekly", { span: 4, b: true, center: true })] }),
+    new D.TableRow({ children: [cell("บันทึกการประชุม  " + ttlOf(m), { span: 4, b: true, center: true })] }),
     new D.TableRow({ children: [cell("ผู้เข้าร่วมประชุม", { b: true, w: 2899 }), cell(attText(m), { span: 3 })] }),
     new D.TableRow({ children: [cell("ผู้จัดทำบันทึกการประชุม", { b: true }), cell(byText(m), { span: 3 })] }),
     new D.TableRow({ children: [cell("วันที่ประชุม", { b: true }), cell(dLong(m.date)), cell("สถานที่ประชุม", { b: true }), cell(m.place)] }),
@@ -788,7 +791,7 @@ async function exportWord(m) {
     headers: { default: new D.Header({ children: [new D.Paragraph({ children: [new D.ImageRun({ data: logo, transformation: { width: 144, height: 76 } })] })] }) },
     children: [head, new D.Paragraph({ spacing: { before: 240, after: 120 }, children: [run("สรุปประเด็นสำคัญจากการประชุม", { bold: true })] }), body] }] });
   const blob = await D.Packer.toBlob(doc), a = document.createElement("a");
-  a.href = URL.createObjectURL(blob); a.download = m.date + "_Minute_meeting_Project_Weekly_W" + (m.no || "") + ".docx";
+  a.href = URL.createObjectURL(blob); a.download = m.date + "_Minute_meeting_" + ttlOf(m).replace(/[\\/:*?"<>|\s]+/g, "_") + "_W" + (m.no || "") + ".docx";
   document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
   toast("ดาวน์โหลด Word แล้ว");
 }
@@ -826,7 +829,7 @@ async function taskDlg(m) {
       if (!bds.length) { none++; return; }
       bds.forEach(bd => { nos[bd] = (nos[bd] || 0) + 1; const prog = r.s === "prog" ? 25 : 0, id = "MOM-" + r.id + (bds.length > 1 ? "-" + bd : "");
       out.push({ r, t: { id, bd, no: nos[bd], title: clean((r.p ? r.p + " · " : "") + r.t), owner: clean(r.o), pri: "M", start: m.date, target: r.d || "", prog,
-        note: "จากบันทึกการประชุม Project Weekly W" + m.no + " (" + dShort(m.date) + ")", created: at, u: at, by: "MoM", hist: [{ at, from: null, p: prog, by: "MoM" }] } }); }); });
+        note: "จากบันทึกการประชุม " + ttlOf(m) + " W" + m.no + " (" + dShort(m.date) + ")", created: at, u: at, by: "MoM", hist: [{ at, from: null, p: prog, by: "MoM" }] } }); }); });
     if (none) { toast("มี " + none + " งานที่ยังไม่ได้เลือกคน · ติ๊กชื่ออย่างน้อย 1 คน หรือเอาเครื่องหมายหน้างานออก"); return; }
     if (!out.length) { closeDlg(); return; }
     try { const r = await fetch(SBU + "daily_tasks?on_conflict=id", { method: "POST", headers: sbH({ Prefer: "resolution=ignore-duplicates,return=minimal" }),
